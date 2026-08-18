@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as ArchitectureRouteImport } from './routes/architecture'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as RolesRouteImport } from './routes/roles'
+import { Route as AuthenticatedConfigurationRouteImport } from './routes/_authenticated/configuration'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedReviewRouteImport } from './routes/_authenticated/review'
@@ -42,6 +43,12 @@ const RolesRoute = RolesRouteImport.update({
   path: '/roles',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedConfigurationRoute =
+  AuthenticatedConfigurationRouteImport.update({
+    id: '/configuration',
+    path: '/configuration',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -63,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
   '/roles': typeof RolesRoute
+  '/configuration': typeof AuthenticatedConfigurationRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/review': typeof AuthenticatedReviewRoute
@@ -72,6 +80,7 @@ export interface FileRoutesByTo {
   '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
   '/roles': typeof RolesRoute
+  '/configuration': typeof AuthenticatedConfigurationRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/review': typeof AuthenticatedReviewRoute
@@ -83,6 +92,7 @@ export interface FileRoutesById {
   '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
   '/roles': typeof RolesRoute
+  '/_authenticated/configuration': typeof AuthenticatedConfigurationRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/review': typeof AuthenticatedReviewRoute
@@ -94,6 +104,7 @@ export interface FileRouteTypes {
     | '/architecture'
     | '/auth'
     | '/roles'
+    | '/configuration'
     | '/dashboard'
     | '/onboarding'
     | '/review'
@@ -103,6 +114,7 @@ export interface FileRouteTypes {
     | '/architecture'
     | '/auth'
     | '/roles'
+    | '/configuration'
     | '/dashboard'
     | '/onboarding'
     | '/review'
@@ -113,6 +125,7 @@ export interface FileRouteTypes {
     | '/architecture'
     | '/auth'
     | '/roles'
+    | '/_authenticated/configuration'
     | '/_authenticated/dashboard'
     | '/_authenticated/onboarding'
     | '/_authenticated/review'
@@ -163,6 +176,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RolesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/configuration': {
+      id: '/_authenticated/configuration'
+      path: '/configuration'
+      fullPath: '/configuration'
+      preLoaderRoute: typeof AuthenticatedConfigurationRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -188,12 +208,14 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedConfigurationRoute: typeof AuthenticatedConfigurationRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedReviewRoute: typeof AuthenticatedReviewRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedConfigurationRoute: AuthenticatedConfigurationRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedReviewRoute: AuthenticatedReviewRoute,
