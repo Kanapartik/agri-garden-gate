@@ -295,6 +295,9 @@ export interface PurposeLike {
  * strictly separate from baseline platform consent (never bundled). First-party
  * and third-party consumers produce identical cards — no neutrality gap.
  */
+/** Purposes covered by baseline platform consent are never sold as partner cards. */
+export const BASELINE_PURPOSE_CODES: readonly string[] = ["platform_account", "onboarding_verification"];
+
 export function partnerConsentCards(
   consumers: readonly ConsumerLike[],
   purposes: readonly PurposeLike[],
@@ -305,6 +308,7 @@ export function partnerConsentCards(
     if (consumer.status !== "active") continue;
     for (const purpose of purposes) {
       if (!purpose.requires_explicit_consent) continue;
+      if (BASELINE_PURPOSE_CODES.includes(purpose.code)) continue;
       const grant = grants.find(
         (g) => g.consumer_id === consumer.id && g.purpose_code === purpose.code && g.revoked_at === null,
       );
