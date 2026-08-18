@@ -19,6 +19,7 @@ import { Route as AuthenticatedConfigurationRouteImport } from './routes/_authen
 import { Route as AuthenticatedConsentRouteImport } from './routes/_authenticated/consent'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedFarmRouteImport } from './routes/_authenticated/farm'
+import { Route as AuthenticatedFpoRouteImport } from './routes/_authenticated/fpo'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedReviewRouteImport } from './routes/_authenticated/review'
 
@@ -72,6 +73,11 @@ const AuthenticatedFarmRoute = AuthenticatedFarmRouteImport.update({
   path: '/farm',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedFpoRoute = AuthenticatedFpoRouteImport.update({
+  id: '/fpo',
+  path: '/fpo',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
@@ -93,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/consent': typeof AuthenticatedConsentRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/farm': typeof AuthenticatedFarmRoute
+  '/fpo': typeof AuthenticatedFpoRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/review': typeof AuthenticatedReviewRoute
 }
@@ -106,6 +113,7 @@ export interface FileRoutesByTo {
   '/consent': typeof AuthenticatedConsentRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/farm': typeof AuthenticatedFarmRoute
+  '/fpo': typeof AuthenticatedFpoRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/review': typeof AuthenticatedReviewRoute
 }
@@ -121,6 +129,7 @@ export interface FileRoutesById {
   '/_authenticated/consent': typeof AuthenticatedConsentRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/farm': typeof AuthenticatedFarmRoute
+  '/_authenticated/fpo': typeof AuthenticatedFpoRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/review': typeof AuthenticatedReviewRoute
 }
@@ -136,6 +145,7 @@ export interface FileRouteTypes {
     | '/consent'
     | '/dashboard'
     | '/farm'
+    | '/fpo'
     | '/onboarding'
     | '/review'
   fileRoutesByTo: FileRoutesByTo
@@ -149,6 +159,7 @@ export interface FileRouteTypes {
     | '/consent'
     | '/dashboard'
     | '/farm'
+    | '/fpo'
     | '/onboarding'
     | '/review'
   id:
@@ -163,6 +174,7 @@ export interface FileRouteTypes {
     | '/_authenticated/consent'
     | '/_authenticated/dashboard'
     | '/_authenticated/farm'
+    | '/_authenticated/fpo'
     | '/_authenticated/onboarding'
     | '/_authenticated/review'
   fileRoutesById: FileRoutesById
@@ -247,6 +259,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedFarmRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/fpo': {
+      id: '/_authenticated/fpo'
+      path: '/fpo'
+      fullPath: '/fpo'
+      preLoaderRoute: typeof AuthenticatedFpoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/onboarding': {
       id: '/_authenticated/onboarding'
       path: '/onboarding'
@@ -270,6 +289,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedConsentRoute: typeof AuthenticatedConsentRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFarmRoute: typeof AuthenticatedFarmRoute
+  AuthenticatedFpoRoute: typeof AuthenticatedFpoRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedReviewRoute: typeof AuthenticatedReviewRoute
 }
@@ -280,6 +300,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedConsentRoute: AuthenticatedConsentRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFarmRoute: AuthenticatedFarmRoute,
+  AuthenticatedFpoRoute: AuthenticatedFpoRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedReviewRoute: AuthenticatedReviewRoute,
 }
