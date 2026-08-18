@@ -191,6 +191,69 @@ export type Database = {
         }
         Relationships: []
       }
+      commerce_entitlements: {
+        Row: {
+          currency: string | null
+          ends_at: string | null
+          features: Json
+          has_retainer: boolean
+          id: string
+          plan_code: string
+          profile_id: string | null
+          retainer_amount: number | null
+          starts_at: string
+          status: Database["public"]["Enums"]["membership_status"]
+          tenant_id: string | null
+          transaction_fee_bps: number | null
+          updated_at: string
+        }
+        Insert: {
+          currency?: string | null
+          ends_at?: string | null
+          features?: Json
+          has_retainer?: boolean
+          id?: string
+          plan_code?: string
+          profile_id?: string | null
+          retainer_amount?: number | null
+          starts_at?: string
+          status?: Database["public"]["Enums"]["membership_status"]
+          tenant_id?: string | null
+          transaction_fee_bps?: number | null
+          updated_at?: string
+        }
+        Update: {
+          currency?: string | null
+          ends_at?: string | null
+          features?: Json
+          has_retainer?: boolean
+          id?: string
+          plan_code?: string
+          profile_id?: string | null
+          retainer_amount?: number | null
+          starts_at?: string
+          status?: Database["public"]["Enums"]["membership_status"]
+          tenant_id?: string | null
+          transaction_fee_bps?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commerce_entitlements_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commerce_entitlements_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       consent_broker_requests: {
         Row: {
           app_id: string
@@ -829,6 +892,458 @@ export type Database = {
             columns: ["application_id"]
             isOneToOne: false
             referencedRelation: "onboarding_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketplace_disputes: {
+        Row: {
+          assigned_to: string | null
+          category: string
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          evidence: Json
+          id: string
+          is_synthetic: boolean
+          order_id: string
+          raised_by: string | null
+          resolution_note: string | null
+          status: Database["public"]["Enums"]["dispute_status"]
+          summary: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          category: string
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          evidence?: Json
+          id?: string
+          is_synthetic?: boolean
+          order_id: string
+          raised_by?: string | null
+          resolution_note?: string | null
+          status?: Database["public"]["Enums"]["dispute_status"]
+          summary: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          category?: string
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          evidence?: Json
+          id?: string
+          is_synthetic?: boolean
+          order_id?: string
+          raised_by?: string | null
+          resolution_note?: string | null
+          status?: Database["public"]["Enums"]["dispute_status"]
+          summary?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketplace_disputes_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketplace_listings: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          description: string
+          geography_id: string | null
+          id: string
+          is_sponsored: boolean
+          is_synthetic: boolean
+          min_order_qty: number | null
+          price_max: number | null
+          price_min: number | null
+          published_at: string | null
+          quality: Json
+          quality_score: number
+          region_code: string | null
+          review_note: string | null
+          seller_profile_id: string
+          sponsored_slot: string | null
+          status: Database["public"]["Enums"]["listing_status"]
+          title: string
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          geography_id?: string | null
+          id?: string
+          is_sponsored?: boolean
+          is_synthetic?: boolean
+          min_order_qty?: number | null
+          price_max?: number | null
+          price_min?: number | null
+          published_at?: string | null
+          quality?: Json
+          quality_score?: number
+          region_code?: string | null
+          review_note?: string | null
+          seller_profile_id: string
+          sponsored_slot?: string | null
+          status?: Database["public"]["Enums"]["listing_status"]
+          title: string
+          unit?: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          geography_id?: string | null
+          id?: string
+          is_sponsored?: boolean
+          is_synthetic?: boolean
+          min_order_qty?: number | null
+          price_max?: number | null
+          price_min?: number | null
+          published_at?: string | null
+          quality?: Json
+          quality_score?: number
+          region_code?: string | null
+          review_note?: string | null
+          seller_profile_id?: string
+          sponsored_slot?: string | null
+          status?: Database["public"]["Enums"]["listing_status"]
+          title?: string
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketplace_listings_geography_id_fkey"
+            columns: ["geography_id"]
+            isOneToOne: false
+            referencedRelation: "geographies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketplace_listings_seller_profile_id_fkey"
+            columns: ["seller_profile_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketplace_orders: {
+        Row: {
+          agreed_price: number | null
+          buyer_profile_id: string
+          buyer_user_id: string | null
+          created_at: string
+          id: string
+          is_synthetic: boolean
+          quantity: number
+          quote_id: string | null
+          rfq_id: string | null
+          seller_profile_id: string
+          seller_user_id: string | null
+          status: Database["public"]["Enums"]["market_order_status"]
+          status_note: string | null
+          terms: Json
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          agreed_price?: number | null
+          buyer_profile_id: string
+          buyer_user_id?: string | null
+          created_at?: string
+          id?: string
+          is_synthetic?: boolean
+          quantity: number
+          quote_id?: string | null
+          rfq_id?: string | null
+          seller_profile_id: string
+          seller_user_id?: string | null
+          status?: Database["public"]["Enums"]["market_order_status"]
+          status_note?: string | null
+          terms?: Json
+          unit?: string
+          updated_at?: string
+        }
+        Update: {
+          agreed_price?: number | null
+          buyer_profile_id?: string
+          buyer_user_id?: string | null
+          created_at?: string
+          id?: string
+          is_synthetic?: boolean
+          quantity?: number
+          quote_id?: string | null
+          rfq_id?: string | null
+          seller_profile_id?: string
+          seller_user_id?: string | null
+          status?: Database["public"]["Enums"]["market_order_status"]
+          status_note?: string | null
+          terms?: Json
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketplace_orders_buyer_profile_id_fkey"
+            columns: ["buyer_profile_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketplace_orders_quote_id_fkey"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_quotes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketplace_orders_rfq_id_fkey"
+            columns: ["rfq_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_rfqs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketplace_orders_seller_profile_id_fkey"
+            columns: ["seller_profile_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketplace_profiles: {
+        Row: {
+          categories: string[]
+          contact_email: string
+          created_at: string
+          created_by: string | null
+          decided_at: string | null
+          decided_by: string | null
+          decision_note: string | null
+          display_name: string
+          id: string
+          is_synthetic: boolean
+          organization_id: string | null
+          party_kind: Database["public"]["Enums"]["market_party_kind"]
+          profile_data: Json
+          regions: string[]
+          side: Database["public"]["Enums"]["market_side"]
+          state: Database["public"]["Enums"]["market_profile_state"]
+          tenant_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          categories?: string[]
+          contact_email?: string
+          created_at?: string
+          created_by?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          display_name: string
+          id?: string
+          is_synthetic?: boolean
+          organization_id?: string | null
+          party_kind: Database["public"]["Enums"]["market_party_kind"]
+          profile_data?: Json
+          regions?: string[]
+          side: Database["public"]["Enums"]["market_side"]
+          state?: Database["public"]["Enums"]["market_profile_state"]
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          categories?: string[]
+          contact_email?: string
+          created_at?: string
+          created_by?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          display_name?: string
+          id?: string
+          is_synthetic?: boolean
+          organization_id?: string | null
+          party_kind?: Database["public"]["Enums"]["market_party_kind"]
+          profile_data?: Json
+          regions?: string[]
+          side?: Database["public"]["Enums"]["market_side"]
+          state?: Database["public"]["Enums"]["market_profile_state"]
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketplace_profiles_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketplace_profiles_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketplace_quotes: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          is_synthetic: boolean
+          listing_id: string | null
+          note: string
+          price: number
+          rfq_id: string
+          seller_profile_id: string
+          status: string
+          unit: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_synthetic?: boolean
+          listing_id?: string | null
+          note?: string
+          price: number
+          rfq_id: string
+          seller_profile_id: string
+          status?: string
+          unit?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_synthetic?: boolean
+          listing_id?: string | null
+          note?: string
+          price?: number
+          rfq_id?: string
+          seller_profile_id?: string
+          status?: string
+          unit?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketplace_quotes_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketplace_quotes_rfq_id_fkey"
+            columns: ["rfq_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_rfqs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketplace_quotes_seller_profile_id_fkey"
+            columns: ["seller_profile_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketplace_rfqs: {
+        Row: {
+          aggregating_tenant_id: string | null
+          aggregation_authority_ref: string | null
+          buyer_profile_id: string
+          category: string
+          created_at: string
+          created_by: string | null
+          delivery_region: string | null
+          id: string
+          is_aggregated: boolean
+          is_synthetic: boolean
+          needed_by: string | null
+          notes: string
+          quantity: number
+          status: Database["public"]["Enums"]["rfq_status"]
+          title: string
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          aggregating_tenant_id?: string | null
+          aggregation_authority_ref?: string | null
+          buyer_profile_id: string
+          category: string
+          created_at?: string
+          created_by?: string | null
+          delivery_region?: string | null
+          id?: string
+          is_aggregated?: boolean
+          is_synthetic?: boolean
+          needed_by?: string | null
+          notes?: string
+          quantity: number
+          status?: Database["public"]["Enums"]["rfq_status"]
+          title: string
+          unit?: string
+          updated_at?: string
+        }
+        Update: {
+          aggregating_tenant_id?: string | null
+          aggregation_authority_ref?: string | null
+          buyer_profile_id?: string
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          delivery_region?: string | null
+          id?: string
+          is_aggregated?: boolean
+          is_synthetic?: boolean
+          needed_by?: string | null
+          notes?: string
+          quantity?: number
+          status?: Database["public"]["Enums"]["rfq_status"]
+          title?: string
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketplace_rfqs_aggregating_tenant_id_fkey"
+            columns: ["aggregating_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketplace_rfqs_buyer_profile_id_fkey"
+            columns: ["buyer_profile_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -2078,6 +2593,44 @@ export type Database = {
           },
         ]
       }
+      sponsored_placements: {
+        Row: {
+          created_at: string
+          ends_at: string | null
+          id: string
+          is_active: boolean
+          listing_id: string
+          slot: string
+          starts_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean
+          listing_id: string
+          slot: string
+          starts_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean
+          listing_id?: string
+          slot?: string
+          starts_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sponsored_placements_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       synthetic_actors: {
         Row: {
           created_at: string
@@ -2532,11 +3085,13 @@ export type Database = {
         | "scheme_publisher"
         | "scheme_reviewer"
         | "partner_developer"
+        | "market_operator"
       case_status: "open" | "in_review" | "approved" | "rejected" | "escalated"
       consent_kind: "baseline_platform" | "optional_partner"
       consumer_tier: "sandbox" | "standard" | "premium"
       contact_channel: "email" | "sms" | "whatsapp"
       contact_verification_status: "pending" | "verified" | "failed" | "expired"
+      dispute_status: "open" | "human_review" | "resolved" | "rejected"
       farm_sync_state: "local_draft" | "synced" | "conflict"
       gate_status: "pending" | "approved" | "rejected"
       geo_level: "country" | "state" | "district" | "block" | "village"
@@ -2547,6 +3102,27 @@ export type Database = {
         | "manual_review"
         | "duplicate_hold"
       invitation_status: "pending" | "accepted" | "revoked" | "expired"
+      listing_status: "draft" | "pending_review" | "published" | "delisted"
+      market_order_status:
+        | "created"
+        | "accepted"
+        | "fulfilled"
+        | "cancelled"
+        | "disputed"
+        | "closed"
+      market_party_kind:
+        | "input_supplier"
+        | "equipment_supplier"
+        | "buyer_trader"
+        | "processor"
+        | "fpo_aggregator"
+      market_profile_state:
+        | "draft"
+        | "submitted"
+        | "approved"
+        | "rejected"
+        | "suspended"
+      market_side: "seller" | "buyer"
       member_status: "invited" | "active" | "suspended" | "removed"
       membership_status: "active" | "suspended" | "revoked"
       onboarding_channel:
@@ -2586,6 +3162,7 @@ export type Database = {
         | "expired"
         | "revoked"
       record_status: "pending" | "active" | "verified" | "rejected" | "revoked"
+      rfq_status: "draft" | "open" | "quoted" | "ordered" | "cancelled"
       rollout_status: "planned" | "configuring" | "piloting" | "live" | "paused"
       scheme_application_status:
         | "draft"
@@ -2747,12 +3324,14 @@ export const Constants = {
         "scheme_publisher",
         "scheme_reviewer",
         "partner_developer",
+        "market_operator",
       ],
       case_status: ["open", "in_review", "approved", "rejected", "escalated"],
       consent_kind: ["baseline_platform", "optional_partner"],
       consumer_tier: ["sandbox", "standard", "premium"],
       contact_channel: ["email", "sms", "whatsapp"],
       contact_verification_status: ["pending", "verified", "failed", "expired"],
+      dispute_status: ["open", "human_review", "resolved", "rejected"],
       farm_sync_state: ["local_draft", "synced", "conflict"],
       gate_status: ["pending", "approved", "rejected"],
       geo_level: ["country", "state", "district", "block", "village"],
@@ -2764,6 +3343,30 @@ export const Constants = {
         "duplicate_hold",
       ],
       invitation_status: ["pending", "accepted", "revoked", "expired"],
+      listing_status: ["draft", "pending_review", "published", "delisted"],
+      market_order_status: [
+        "created",
+        "accepted",
+        "fulfilled",
+        "cancelled",
+        "disputed",
+        "closed",
+      ],
+      market_party_kind: [
+        "input_supplier",
+        "equipment_supplier",
+        "buyer_trader",
+        "processor",
+        "fpo_aggregator",
+      ],
+      market_profile_state: [
+        "draft",
+        "submitted",
+        "approved",
+        "rejected",
+        "suspended",
+      ],
+      market_side: ["seller", "buyer"],
       member_status: ["invited", "active", "suspended", "removed"],
       membership_status: ["active", "suspended", "revoked"],
       onboarding_channel: [
@@ -2808,6 +3411,7 @@ export const Constants = {
         "revoked",
       ],
       record_status: ["pending", "active", "verified", "rejected", "revoked"],
+      rfq_status: ["draft", "open", "quoted", "ordered", "cancelled"],
       rollout_status: ["planned", "configuring", "piloting", "live", "paused"],
       scheme_application_status: [
         "draft",
