@@ -4422,6 +4422,11 @@ export type Database = {
         | "researcher"
         | "policymaker"
         | "postharvest_provider_admin"
+        | "talent_candidate"
+        | "training_partner_admin"
+        | "employer_recruiter"
+        | "employment_exchange_admin"
+        | "talent_operator"
       case_status: "open" | "in_review" | "approved" | "rejected" | "escalated"
       certification_state:
         | "draft"
@@ -4732,6 +4737,11 @@ export const Constants = {
         "researcher",
         "policymaker",
         "postharvest_provider_admin",
+        "talent_candidate",
+        "training_partner_admin",
+        "employer_recruiter",
+        "employment_exchange_admin",
+        "talent_operator",
       ],
       case_status: ["open", "in_review", "approved", "rejected", "escalated"],
       certification_state: [
