@@ -43,7 +43,7 @@ function Field({
 }: {
   field: FieldDef;
   value: FormValue | undefined;
-  error?: string;
+  error?: string | undefined;
   disabled: boolean;
   geographies: GeographyOption[];
   onChange: (value: FormValue) => void;
