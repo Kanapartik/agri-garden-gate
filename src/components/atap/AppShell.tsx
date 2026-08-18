@@ -26,6 +26,7 @@ export function navItemsForRoles(roles: AppRole[], signedIn: boolean): NavItem[]
     { to: "/dashboard", label: "Access console" },
     { to: "/onboarding", label: "My onboarding" },
     { to: "/farm", label: "My farm" },
+    { to: "/intelligence", label: "Farm intelligence" },
     { to: "/consent", label: "Consent" },
     { to: "/discovery", label: "Schemes" },
     { to: "/market", label: "Marketplace" },
