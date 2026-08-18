@@ -25,6 +25,8 @@ export type AppRole =
   | "onboarding_officer"
   | "field_agent"
   | "consumer_api_manager"
+  | "scheme_publisher"
+  | "scheme_reviewer"
   | "viewer";
 
 export interface TierPolicy {

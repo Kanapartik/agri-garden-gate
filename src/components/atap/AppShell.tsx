@@ -27,7 +27,22 @@ export function navItemsForRoles(roles: AppRole[], signedIn: boolean): NavItem[]
     { to: "/onboarding", label: "My onboarding" },
     { to: "/farm", label: "My farm" },
     { to: "/consent", label: "Consent" },
+    { to: "/discovery", label: "Schemes" },
   ];
+
+  if (roles.some((r) => r === "tenant_admin" || r === "onboarding_officer" || r === "field_agent")) {
+    items.push({ to: "/fpo", label: "FPO workspace" });
+  }
+  if (
+    roles.some(
+      (r) => r === "scheme_publisher" || r === "scheme_reviewer" || r === "platform_admin",
+    )
+  ) {
+    items.push({ to: "/schemes", label: "Government" });
+  }
+  if (roles.includes("platform_admin") || roles.includes("auditor")) {
+    items.push({ to: "/rollout", label: "District" });
+  }
 
   const isReviewer = roles.some(
     (r) => r === "onboarding_officer" || r === "tenant_admin" || r === "platform_admin",

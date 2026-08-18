@@ -349,6 +349,76 @@ export type Database = {
         }
         Relationships: []
       }
+      district_rollouts: {
+        Row: {
+          checklist: Json
+          config: Json
+          created_at: string
+          created_by: string | null
+          fpo_tenant_id: string | null
+          geography_id: string
+          govt_tenant_id: string | null
+          id: string
+          is_synthetic: boolean
+          label: string
+          status: Database["public"]["Enums"]["rollout_status"]
+          template_code: string
+          updated_at: string
+        }
+        Insert: {
+          checklist?: Json
+          config?: Json
+          created_at?: string
+          created_by?: string | null
+          fpo_tenant_id?: string | null
+          geography_id: string
+          govt_tenant_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          label: string
+          status?: Database["public"]["Enums"]["rollout_status"]
+          template_code: string
+          updated_at?: string
+        }
+        Update: {
+          checklist?: Json
+          config?: Json
+          created_at?: string
+          created_by?: string | null
+          fpo_tenant_id?: string | null
+          geography_id?: string
+          govt_tenant_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          label?: string
+          status?: Database["public"]["Enums"]["rollout_status"]
+          template_code?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "district_rollouts_fpo_tenant_id_fkey"
+            columns: ["fpo_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "district_rollouts_geography_id_fkey"
+            columns: ["geography_id"]
+            isOneToOne: false
+            referencedRelation: "geographies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "district_rollouts_govt_tenant_id_fkey"
+            columns: ["govt_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       document_records: {
         Row: {
           checksum: string | null
@@ -519,6 +589,79 @@ export type Database = {
         }
         Relationships: []
       }
+      fpo_members: {
+        Row: {
+          added_by: string | null
+          contact_hint: string | null
+          created_at: string
+          display_name: string
+          farmer_user_id: string | null
+          geography_id: string | null
+          id: string
+          import_batch_id: string | null
+          is_synthetic: boolean
+          member_ref: string
+          status: Database["public"]["Enums"]["member_status"]
+          tenant_id: string
+          updated_at: string
+          village_code: string | null
+        }
+        Insert: {
+          added_by?: string | null
+          contact_hint?: string | null
+          created_at?: string
+          display_name: string
+          farmer_user_id?: string | null
+          geography_id?: string | null
+          id?: string
+          import_batch_id?: string | null
+          is_synthetic?: boolean
+          member_ref: string
+          status?: Database["public"]["Enums"]["member_status"]
+          tenant_id: string
+          updated_at?: string
+          village_code?: string | null
+        }
+        Update: {
+          added_by?: string | null
+          contact_hint?: string | null
+          created_at?: string
+          display_name?: string
+          farmer_user_id?: string | null
+          geography_id?: string | null
+          id?: string
+          import_batch_id?: string | null
+          is_synthetic?: boolean
+          member_ref?: string
+          status?: Database["public"]["Enums"]["member_status"]
+          tenant_id?: string
+          updated_at?: string
+          village_code?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_members_geography_id_fkey"
+            columns: ["geography_id"]
+            isOneToOne: false
+            referencedRelation: "geographies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_members_import_batch_id_fkey"
+            columns: ["import_batch_id"]
+            isOneToOne: false
+            referencedRelation: "member_import_batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_members_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       geographies: {
         Row: {
           code: string
@@ -612,6 +755,53 @@ export type Database = {
             columns: ["application_id"]
             isOneToOne: false
             referencedRelation: "onboarding_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      member_import_batches: {
+        Row: {
+          accepted_count: number
+          created_at: string
+          errors: Json
+          id: string
+          is_synthetic: boolean
+          rejected_count: number
+          row_count: number
+          source_label: string
+          tenant_id: string
+          uploaded_by: string
+        }
+        Insert: {
+          accepted_count?: number
+          created_at?: string
+          errors?: Json
+          id?: string
+          is_synthetic?: boolean
+          rejected_count?: number
+          row_count?: number
+          source_label: string
+          tenant_id: string
+          uploaded_by: string
+        }
+        Update: {
+          accepted_count?: number
+          created_at?: string
+          errors?: Json
+          id?: string
+          is_synthetic?: boolean
+          rejected_count?: number
+          row_count?: number
+          source_label?: string
+          tenant_id?: string
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_import_batches_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
         ]
@@ -1161,6 +1351,185 @@ export type Database = {
           },
         ]
       }
+      scheme_applications: {
+        Row: {
+          applicant_user_id: string
+          created_at: string
+          decided_at: string | null
+          decision_note: string | null
+          form_data: Json
+          id: string
+          is_synthetic: boolean
+          prefill_consent_ok: boolean
+          prefill_source: string
+          reviewer_user_id: string | null
+          rule_evaluation: Json
+          scheme_id: string
+          scheme_version: number
+          status: Database["public"]["Enums"]["scheme_application_status"]
+          submitted_via_tenant_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          applicant_user_id: string
+          created_at?: string
+          decided_at?: string | null
+          decision_note?: string | null
+          form_data?: Json
+          id?: string
+          is_synthetic?: boolean
+          prefill_consent_ok?: boolean
+          prefill_source?: string
+          reviewer_user_id?: string | null
+          rule_evaluation?: Json
+          scheme_id: string
+          scheme_version: number
+          status?: Database["public"]["Enums"]["scheme_application_status"]
+          submitted_via_tenant_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          applicant_user_id?: string
+          created_at?: string
+          decided_at?: string | null
+          decision_note?: string | null
+          form_data?: Json
+          id?: string
+          is_synthetic?: boolean
+          prefill_consent_ok?: boolean
+          prefill_source?: string
+          reviewer_user_id?: string | null
+          rule_evaluation?: Json
+          scheme_id?: string
+          scheme_version?: number
+          status?: Database["public"]["Enums"]["scheme_application_status"]
+          submitted_via_tenant_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheme_applications_scheme_id_fkey"
+            columns: ["scheme_id"]
+            isOneToOne: false
+            referencedRelation: "schemes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheme_applications_submitted_via_tenant_id_fkey"
+            columns: ["submitted_via_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scheme_versions: {
+        Row: {
+          changelog: string
+          created_at: string
+          created_by: string | null
+          form_fields: Json
+          id: string
+          published_at: string | null
+          rules: Json
+          scheme_id: string
+          version: number
+        }
+        Insert: {
+          changelog: string
+          created_at?: string
+          created_by?: string | null
+          form_fields?: Json
+          id?: string
+          published_at?: string | null
+          rules?: Json
+          scheme_id: string
+          version: number
+        }
+        Update: {
+          changelog?: string
+          created_at?: string
+          created_by?: string | null
+          form_fields?: Json
+          id?: string
+          published_at?: string | null
+          rules?: Json
+          scheme_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheme_versions_scheme_id_fkey"
+            columns: ["scheme_id"]
+            isOneToOne: false
+            referencedRelation: "schemes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      schemes: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string | null
+          current_version: number
+          geography_id: string | null
+          id: string
+          is_synthetic: boolean
+          requires_human_decision: boolean
+          status: Database["public"]["Enums"]["scheme_status"]
+          summary: string
+          tenant_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by?: string | null
+          current_version?: number
+          geography_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          requires_human_decision?: boolean
+          status?: Database["public"]["Enums"]["scheme_status"]
+          summary: string
+          tenant_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          current_version?: number
+          geography_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          requires_human_decision?: boolean
+          status?: Database["public"]["Enums"]["scheme_status"]
+          summary?: string
+          tenant_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "schemes_geography_id_fkey"
+            columns: ["geography_id"]
+            isOneToOne: false
+            referencedRelation: "geographies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "schemes_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       synthetic_actors: {
         Row: {
           created_at: string
@@ -1225,6 +1594,65 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "tenant_entitlements_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenant_invitations: {
+        Row: {
+          accepted_at: string | null
+          accepted_by: string | null
+          created_at: string
+          expires_at: string
+          id: string
+          invited_by: string
+          invited_email: string
+          invited_role: Database["public"]["Enums"]["app_role"]
+          is_synthetic: boolean
+          note: string | null
+          status: Database["public"]["Enums"]["invitation_status"]
+          tenant_id: string
+          token_hash: string
+          updated_at: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          invited_by: string
+          invited_email: string
+          invited_role: Database["public"]["Enums"]["app_role"]
+          is_synthetic?: boolean
+          note?: string | null
+          status?: Database["public"]["Enums"]["invitation_status"]
+          tenant_id: string
+          token_hash: string
+          updated_at?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          invited_by?: string
+          invited_email?: string
+          invited_role?: Database["public"]["Enums"]["app_role"]
+          is_synthetic?: boolean
+          note?: string | null
+          status?: Database["public"]["Enums"]["invitation_status"]
+          tenant_id?: string
+          token_hash?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_invitations_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -1375,6 +1803,41 @@ export type Database = {
         }
         Relationships: []
       }
+      training_completions: {
+        Row: {
+          checklist_code: string
+          completed_at: string
+          id: string
+          item_key: string
+          tenant_id: string | null
+          user_id: string
+        }
+        Insert: {
+          checklist_code: string
+          completed_at?: string
+          id?: string
+          item_key: string
+          tenant_id?: string | null
+          user_id: string
+        }
+        Update: {
+          checklist_code?: string
+          completed_at?: string
+          id?: string
+          item_key?: string
+          tenant_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "training_completions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -1514,6 +1977,8 @@ export type Database = {
         | "field_agent"
         | "consumer_api_manager"
         | "viewer"
+        | "scheme_publisher"
+        | "scheme_reviewer"
       case_status: "open" | "in_review" | "approved" | "rejected" | "escalated"
       consent_kind: "baseline_platform" | "optional_partner"
       consumer_tier: "sandbox" | "standard" | "premium"
@@ -1527,6 +1992,8 @@ export type Database = {
         | "failed"
         | "manual_review"
         | "duplicate_hold"
+      invitation_status: "pending" | "accepted" | "revoked" | "expired"
+      member_status: "invited" | "active" | "suspended" | "removed"
       membership_status: "active" | "suspended" | "revoked"
       onboarding_channel:
         | "self_service"
@@ -1547,6 +2014,15 @@ export type Database = {
         | "expired"
         | "revoked"
       record_status: "pending" | "active" | "verified" | "rejected" | "revoked"
+      rollout_status: "planned" | "configuring" | "piloting" | "live" | "paused"
+      scheme_application_status:
+        | "draft"
+        | "submitted"
+        | "in_review"
+        | "approved"
+        | "rejected"
+        | "withdrawn"
+      scheme_status: "draft" | "published" | "closed"
       step_status: "not_started" | "in_progress" | "complete"
       tenant_relationship_type:
         | "parent"
@@ -1696,6 +2172,8 @@ export const Constants = {
         "field_agent",
         "consumer_api_manager",
         "viewer",
+        "scheme_publisher",
+        "scheme_reviewer",
       ],
       case_status: ["open", "in_review", "approved", "rejected", "escalated"],
       consent_kind: ["baseline_platform", "optional_partner"],
@@ -1711,6 +2189,8 @@ export const Constants = {
         "manual_review",
         "duplicate_hold",
       ],
+      invitation_status: ["pending", "accepted", "revoked", "expired"],
+      member_status: ["invited", "active", "suspended", "removed"],
       membership_status: ["active", "suspended", "revoked"],
       onboarding_channel: [
         "self_service",
@@ -1734,6 +2214,16 @@ export const Constants = {
         "revoked",
       ],
       record_status: ["pending", "active", "verified", "rejected", "revoked"],
+      rollout_status: ["planned", "configuring", "piloting", "live", "paused"],
+      scheme_application_status: [
+        "draft",
+        "submitted",
+        "in_review",
+        "approved",
+        "rejected",
+        "withdrawn",
+      ],
+      scheme_status: ["draft", "published", "closed"],
       step_status: ["not_started", "in_progress", "complete"],
       tenant_relationship_type: [
         "parent",

@@ -18,9 +18,13 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedConfigurationRouteImport } from './routes/_authenticated/configuration'
 import { Route as AuthenticatedConsentRouteImport } from './routes/_authenticated/consent'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedDiscoveryRouteImport } from './routes/_authenticated/discovery'
 import { Route as AuthenticatedFarmRouteImport } from './routes/_authenticated/farm'
+import { Route as AuthenticatedFpoRouteImport } from './routes/_authenticated/fpo'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedReviewRouteImport } from './routes/_authenticated/review'
+import { Route as AuthenticatedRolloutRouteImport } from './routes/_authenticated/rollout'
+import { Route as AuthenticatedSchemesRouteImport } from './routes/_authenticated/schemes'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -67,9 +71,19 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDiscoveryRoute = AuthenticatedDiscoveryRouteImport.update({
+  id: '/discovery',
+  path: '/discovery',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedFarmRoute = AuthenticatedFarmRouteImport.update({
   id: '/farm',
   path: '/farm',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedFpoRoute = AuthenticatedFpoRouteImport.update({
+  id: '/fpo',
+  path: '/fpo',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
@@ -82,6 +96,16 @@ const AuthenticatedReviewRoute = AuthenticatedReviewRouteImport.update({
   path: '/review',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedRolloutRoute = AuthenticatedRolloutRouteImport.update({
+  id: '/rollout',
+  path: '/rollout',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSchemesRoute = AuthenticatedSchemesRouteImport.update({
+  id: '/schemes',
+  path: '/schemes',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -92,9 +116,13 @@ export interface FileRoutesByFullPath {
   '/configuration': typeof AuthenticatedConfigurationRoute
   '/consent': typeof AuthenticatedConsentRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/discovery': typeof AuthenticatedDiscoveryRoute
   '/farm': typeof AuthenticatedFarmRoute
+  '/fpo': typeof AuthenticatedFpoRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/review': typeof AuthenticatedReviewRoute
+  '/rollout': typeof AuthenticatedRolloutRoute
+  '/schemes': typeof AuthenticatedSchemesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -105,9 +133,13 @@ export interface FileRoutesByTo {
   '/configuration': typeof AuthenticatedConfigurationRoute
   '/consent': typeof AuthenticatedConsentRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/discovery': typeof AuthenticatedDiscoveryRoute
   '/farm': typeof AuthenticatedFarmRoute
+  '/fpo': typeof AuthenticatedFpoRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/review': typeof AuthenticatedReviewRoute
+  '/rollout': typeof AuthenticatedRolloutRoute
+  '/schemes': typeof AuthenticatedSchemesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -120,9 +152,13 @@ export interface FileRoutesById {
   '/_authenticated/configuration': typeof AuthenticatedConfigurationRoute
   '/_authenticated/consent': typeof AuthenticatedConsentRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/discovery': typeof AuthenticatedDiscoveryRoute
   '/_authenticated/farm': typeof AuthenticatedFarmRoute
+  '/_authenticated/fpo': typeof AuthenticatedFpoRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/review': typeof AuthenticatedReviewRoute
+  '/_authenticated/rollout': typeof AuthenticatedRolloutRoute
+  '/_authenticated/schemes': typeof AuthenticatedSchemesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -135,9 +171,13 @@ export interface FileRouteTypes {
     | '/configuration'
     | '/consent'
     | '/dashboard'
+    | '/discovery'
     | '/farm'
+    | '/fpo'
     | '/onboarding'
     | '/review'
+    | '/rollout'
+    | '/schemes'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -148,9 +188,13 @@ export interface FileRouteTypes {
     | '/configuration'
     | '/consent'
     | '/dashboard'
+    | '/discovery'
     | '/farm'
+    | '/fpo'
     | '/onboarding'
     | '/review'
+    | '/rollout'
+    | '/schemes'
   id:
     | '__root__'
     | '/'
@@ -162,9 +206,13 @@ export interface FileRouteTypes {
     | '/_authenticated/configuration'
     | '/_authenticated/consent'
     | '/_authenticated/dashboard'
+    | '/_authenticated/discovery'
     | '/_authenticated/farm'
+    | '/_authenticated/fpo'
     | '/_authenticated/onboarding'
     | '/_authenticated/review'
+    | '/_authenticated/rollout'
+    | '/_authenticated/schemes'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -240,11 +288,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/discovery': {
+      id: '/_authenticated/discovery'
+      path: '/discovery'
+      fullPath: '/discovery'
+      preLoaderRoute: typeof AuthenticatedDiscoveryRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/farm': {
       id: '/_authenticated/farm'
       path: '/farm'
       fullPath: '/farm'
       preLoaderRoute: typeof AuthenticatedFarmRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/fpo': {
+      id: '/_authenticated/fpo'
+      path: '/fpo'
+      fullPath: '/fpo'
+      preLoaderRoute: typeof AuthenticatedFpoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/onboarding': {
@@ -261,6 +323,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedReviewRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/rollout': {
+      id: '/_authenticated/rollout'
+      path: '/rollout'
+      fullPath: '/rollout'
+      preLoaderRoute: typeof AuthenticatedRolloutRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/schemes': {
+      id: '/_authenticated/schemes'
+      path: '/schemes'
+      fullPath: '/schemes'
+      preLoaderRoute: typeof AuthenticatedSchemesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -269,9 +345,13 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedConfigurationRoute: typeof AuthenticatedConfigurationRoute
   AuthenticatedConsentRoute: typeof AuthenticatedConsentRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDiscoveryRoute: typeof AuthenticatedDiscoveryRoute
   AuthenticatedFarmRoute: typeof AuthenticatedFarmRoute
+  AuthenticatedFpoRoute: typeof AuthenticatedFpoRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedReviewRoute: typeof AuthenticatedReviewRoute
+  AuthenticatedRolloutRoute: typeof AuthenticatedRolloutRoute
+  AuthenticatedSchemesRoute: typeof AuthenticatedSchemesRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -279,9 +359,13 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedConfigurationRoute: AuthenticatedConfigurationRoute,
   AuthenticatedConsentRoute: AuthenticatedConsentRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDiscoveryRoute: AuthenticatedDiscoveryRoute,
   AuthenticatedFarmRoute: AuthenticatedFarmRoute,
+  AuthenticatedFpoRoute: AuthenticatedFpoRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedReviewRoute: AuthenticatedReviewRoute,
+  AuthenticatedRolloutRoute: AuthenticatedRolloutRoute,
+  AuthenticatedSchemesRoute: AuthenticatedSchemesRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

@@ -1,0 +1,436 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
+import { PageHeader } from "@/components/atap/AppShell";
+import { StateBadge } from "@/components/atap/StatusBadge";
+import { TrainingChecklistPanel } from "@/components/atap/TrainingChecklist";
+import { Button } from "@/components/ui/button";
+import {
+  acceptInvite,
+  getFpoWorkspace,
+  importMembers,
+  inviteStaff,
+  revokeInvite,
+  rosterVisibilityProbe,
+  setMemberStatus,
+} from "@/lib/atap/district.functions";
+import type { AppRole } from "@/lib/atap/policy";
+
+export const Route = createFileRoute("/_authenticated/fpo")({
+  head: () => ({
+    meta: [
+      { title: "FPO workspace — AgriGhar ATAP" },
+      {
+        name: "description",
+        content:
+          "FPO owners and admins invite staff, delegate scoped roles and onboard members in bulk. Roster authority never grants farmer data access.",
+      },
+      { property: "og:title", content: "FPO workspace — AgriGhar ATAP" },
+      {
+        property: "og:description",
+        content: "Staff delegation and member onboarding for farmer producer organizations.",
+      },
+    ],
+  }),
+  component: FpoPage,
+});
+
+function FpoPage() {
+  const queryClient = useQueryClient();
+  const fetchWorkspace = useServerFn(getFpoWorkspace);
+  const invite = useServerFn(inviteStaff);
+  const revoke = useServerFn(revokeInvite);
+  const accept = useServerFn(acceptInvite);
+  const importRows = useServerFn(importMembers);
+  const memberStatus = useServerFn(setMemberStatus);
+  const probe = useServerFn(rosterVisibilityProbe);
+
+  const [tenantId, setTenantId] = useState("");
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState<AppRole | "">("");
+  const [note, setNote] = useState("");
+  const [token, setToken] = useState("");
+  const [rows, setRows] = useState("");
+  const [sourceLabel, setSourceLabel] = useState("");
+  const [probeResult, setProbeResult] = useState<string | null>(null);
+
+  const workspace = useQuery({
+    queryKey: ["atap", "fpo-workspace"],
+    queryFn: () => fetchWorkspace(),
+  });
+
+  const data = workspace.data;
+  const activeTenant = useMemo(
+    () => data?.tenants.find((t) => t.id === tenantId) ?? data?.tenants[0] ?? null,
+    [data, tenantId],
+  );
+
+  const refresh = async () => {
+    await queryClient.invalidateQueries({ queryKey: ["atap", "fpo-workspace"] });
+  };
+
+  const inviteMutation = useMutation({
+    mutationFn: () =>
+      invite({
+        data: {
+          tenantId: activeTenant?.id ?? "",
+          email,
+          role: (role || activeTenant?.invitableRoles[0] || "viewer") as AppRole,
+          note,
+        },
+      }),
+    onSuccess: async (res) => {
+      toast.success("Invitation created — share the reference with the invitee");
+      setToken(res.id);
+      setEmail("");
+      setNote("");
+      await refresh();
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const acceptMutation = useMutation({
+    mutationFn: () => accept({ data: { inviteId: token } }),
+    onSuccess: async () => {
+      toast.success("Invitation accepted — scoped role granted and audited");
+      setToken("");
+      await refresh();
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const importMutation = useMutation({
+    mutationFn: () =>
+      importRows({
+        data: {
+          tenantId: activeTenant?.id ?? "",
+          rows,
+          sourceLabel: sourceLabel || "manual paste",
+        },
+      }),
+    onSuccess: async (res) => {
+      toast.success(`${res.accepted} member(s) added, ${res.rejected} row(s) rejected`);
+      setRows("");
+      await refresh();
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  if (workspace.isLoading) {
+    return <main className="mx-auto max-w-6xl px-6 py-12 text-sm text-muted-foreground">Loading…</main>;
+  }
+
+  if (!data || data.tenants.length === 0) {
+    return (
+      <main className="mx-auto max-w-3xl space-y-6 px-6 py-12">
+        <PageHeader
+          title="FPO workspace"
+          description="You are not currently a member of an approved FPO tenant. Accept an invitation below, or ask a platform admin to provision your organization."
+        />
+        <section className="panel space-y-3 p-5">
+          <h2 className="font-display text-sm font-semibold">Accept a staff invitation</h2>
+          <input
+            className="field-base"
+            placeholder="Invitation reference"
+            value={token}
+            onChange={(e) => setToken(e.target.value)}
+          />
+          <Button
+            onClick={() => acceptMutation.mutate()}
+            disabled={!token || acceptMutation.isPending}
+          >
+            Accept invitation
+          </Button>
+          <p className="field-hint">
+            Accepting grants only the scoped role named on the invitation, inside that one tenant.
+          </p>
+        </section>
+      </main>
+    );
+  }
+
+  const tenantInvites = data.invites.filter((i) => i.tenant_id === activeTenant?.id);
+  const tenantMembers = data.members.filter((m) => m.tenant_id === activeTenant?.id);
+  const tenantBatches = data.batches.filter((b) => b.tenant_id === activeTenant?.id);
+  const canManage = (activeTenant?.roles ?? []).includes("tenant_admin");
+
+  return (
+    <main className="mx-auto max-w-6xl space-y-10 px-6 py-12">
+      <PageHeader
+        title="FPO workspace"
+        description="Delegate scoped staff roles and onboard members. Membership records are roster data only — they never grant access to a farmer's farm profile or documents."
+      />
+
+      <section className="panel space-y-4 p-5">
+        <div className="flex flex-wrap items-center gap-3">
+          <label className="text-sm font-medium" htmlFor="tenant">
+            Organization
+          </label>
+          <select
+            id="tenant"
+            className="field-base max-w-sm"
+            value={activeTenant?.id ?? ""}
+            onChange={(e) => setTenantId(e.target.value)}
+          >
+            {data.tenants.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name} · {t.tenant_type}
+              </option>
+            ))}
+          </select>
+          <div className="flex flex-wrap gap-2">
+            {(activeTenant?.roles ?? []).map((r) => (
+              <StateBadge key={r} state={r} />
+            ))}
+          </div>
+        </div>
+        <p className="field-hint">
+          Delegated purchasing authority is{" "}
+          <strong>{data.delegatedPurchasingEnabled ? "enabled" : "disabled"}</strong> — it stays off
+          until decision D-08 is validated, regardless of flag state.
+        </p>
+      </section>
+
+      <section className="grid gap-6 lg:grid-cols-2">
+        <div className="panel space-y-3 p-5">
+          <h2 className="font-display text-base font-semibold">Invite staff</h2>
+          {canManage ? (
+            <>
+              <input
+                className="field-base"
+                placeholder="staff@example.org"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <select
+                className="field-base"
+                value={role || activeTenant?.invitableRoles[0] || ""}
+                onChange={(e) => setRole(e.target.value as AppRole)}
+              >
+                {(activeTenant?.invitableRoles ?? []).map((r) => (
+                  <option key={r} value={r}>
+                    {r.replaceAll("_", " ")}
+                  </option>
+                ))}
+              </select>
+              <input
+                className="field-base"
+                placeholder="Note (optional)"
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+              />
+              <Button onClick={() => inviteMutation.mutate()} disabled={inviteMutation.isPending}>
+                Create invitation
+              </Button>
+              {token ? (
+                <p className="field-hint break-all">
+                  Invitation reference: <code>{token}</code>
+                </p>
+              ) : null}
+              <p className="field-hint">
+                Platform admin and auditor roles are never delegable from a tenant — they require the
+                privileged access workflow.
+              </p>
+            </>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Only a tenant admin of this organization can invite staff.
+            </p>
+          )}
+        </div>
+
+        <div className="panel space-y-3 p-5">
+          <h2 className="font-display text-base font-semibold">Pending invitations</h2>
+          {tenantInvites.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No invitations yet.</p>
+          ) : (
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th />
+                </tr>
+              </thead>
+              <tbody>
+                {tenantInvites.map((i) => (
+                  <tr key={i.id}>
+                    <td>{i.invited_email}</td>
+                    <td>{i.invited_role.replaceAll("_", " ")}</td>
+                    <td>
+                      <StateBadge state={i.status} />
+                    </td>
+                    <td className="text-right">
+                      {canManage && i.status === "pending" ? (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={async () => {
+                            await revoke({ data: { inviteId: i.id } });
+                            toast.success("Invitation revoked and audited");
+                            await refresh();
+                          }}
+                        >
+                          Revoke
+                        </Button>
+                      ) : null}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+          <div className="space-y-2 border-t border-border pt-3">
+            <input
+              className="field-base"
+              placeholder="Accept an invitation reference"
+              value={token}
+              onChange={(e) => setToken(e.target.value)}
+            />
+            <Button
+              variant="outline"
+              onClick={() => acceptMutation.mutate()}
+              disabled={!token || acceptMutation.isPending}
+            >
+              Accept invitation
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      <section className="panel space-y-3 p-5">
+        <h2 className="font-display text-base font-semibold">Bulk member onboarding</h2>
+        <p className="field-hint">
+          One member per line: <code>member_ref, display name, village_code, contact hint</code>. Rows
+          that fail are reported individually; re-importing the same file adds no duplicates.
+        </p>
+        {canManage ? (
+          <>
+            <input
+              className="field-base"
+              placeholder="Source label (e.g. Warangal register sheet 3)"
+              value={sourceLabel}
+              onChange={(e) => setSourceLabel(e.target.value)}
+            />
+            <textarea
+              className="field-base min-h-32 font-mono text-xs"
+              placeholder={"M-001, Lakshmi D., IN-TS-WGL-B1-V1\nM-002, Ravi K."}
+              value={rows}
+              onChange={(e) => setRows(e.target.value)}
+            />
+            <Button onClick={() => importMutation.mutate()} disabled={!rows || importMutation.isPending}>
+              Import members
+            </Button>
+          </>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            Only a tenant admin can import members. Staff and field agents have read-only roster access.
+          </p>
+        )}
+        {tenantBatches.length > 0 ? (
+          <div className="space-y-3 border-t border-border pt-3">
+            {tenantBatches.map((b) => (
+              <div key={b.id} className="text-sm">
+                <p className="font-medium">
+                  {b.source_label} — {b.accepted_count} accepted, {b.rejected_count} rejected of{" "}
+                  {b.row_count}
+                </p>
+                {b.errors.length > 0 ? (
+                  <ul className="mt-1 list-disc pl-5 text-xs text-muted-foreground">
+                    {b.errors.map((err, idx) => (
+                      <li key={`${b.id}-${idx}`}>
+                        Row {err.line}: {err.reason.replaceAll("_", " ")}
+                        {err.raw ? ` — ${err.raw}` : ""}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        ) : null}
+      </section>
+
+      <section className="panel space-y-3 p-5">
+        <h2 className="font-display text-base font-semibold">Member roster</h2>
+        {tenantMembers.length === 0 ? (
+          <p className="text-sm text-muted-foreground">No members yet.</p>
+        ) : (
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Ref</th>
+                <th>Name</th>
+                <th>Village</th>
+                <th>Status</th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {tenantMembers.map((m) => (
+                <tr key={m.id}>
+                  <td className="font-mono text-xs">{m.member_ref}</td>
+                  <td>{m.display_name}</td>
+                  <td>{m.village_code ?? "—"}</td>
+                  <td>
+                    <StateBadge state={m.status} />
+                  </td>
+                  <td className="text-right">
+                    {canManage && m.status !== "removed" ? (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={async () => {
+                          await memberStatus({
+                            data: {
+                              memberId: m.id,
+                              status: m.status === "suspended" ? "active" : "suspended",
+                            },
+                          });
+                          toast.success("Member status updated and audited");
+                          await refresh();
+                        }}
+                      >
+                        {m.status === "suspended" ? "Reinstate" : "Suspend"}
+                      </Button>
+                    ) : null}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </section>
+
+      <section className="panel space-y-3 p-5">
+        <h2 className="font-display text-base font-semibold">Scoped visibility probe</h2>
+        <p className="field-hint">
+          Confirms that FPO staff authority stops at the roster: it returns the purposes this role
+          grants over farmer data (expected: none).
+        </p>
+        <Button
+          variant="outline"
+          onClick={async () => {
+            const res = await probe({ data: { tenantId: activeTenant?.id ?? "" } });
+            setProbeResult(
+              `roster readable: ${res.canReadRoster} · farmer-data purposes granted: ${
+                res.grantedFarmerPurposes.length === 0 ? "none" : res.grantedFarmerPurposes.join(", ")
+              } · other farmers' farm rows visible: ${res.otherFarmRowsVisible}`,
+            );
+          }}
+        >
+          Run probe
+        </Button>
+        {probeResult ? <p className="text-sm">{probeResult}</p> : null}
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="font-display text-base font-semibold">Role training</h2>
+        <TrainingChecklistPanel progress={data.training} invalidateKey="fpo-workspace" />
+      </section>
+    </main>
+  );
+}
