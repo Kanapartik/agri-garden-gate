@@ -182,12 +182,22 @@ describe("value-add economics", () => {
     },
   ];
 
+  const ricePrice = labeledMoney({
+    amount: 4100,
+    currency: "INR",
+    unit: "quintal",
+    label: "observed",
+    sourceKey: "synthetic:enam:rice",
+    asOf: "2026-08-01",
+  });
+
   it("uses configured recovery percentages rather than hard-coded conversions", () => {
     const base = evaluateValueAdd({
       commodity: "Paddy",
       inputQuintal: 100,
       steps,
       rawPrice: observed,
+      processedPrice: ricePrice,
       assumptionSource: "platform_default",
     });
     const higher = evaluateValueAdd({
@@ -195,6 +205,7 @@ describe("value-add economics", () => {
       inputQuintal: 100,
       steps: [{ ...steps[0]!, recovery_pct: 70 }],
       rawPrice: observed,
+      processedPrice: ricePrice,
       assumptionSource: "processor_override",
     });
     expect(base.finalOutputQuintal).toBe(65);
@@ -208,13 +219,17 @@ describe("value-add economics", () => {
       inputQuintal: 50,
       steps,
       rawPrice: observed,
+      processedPrice: ricePrice,
       packagingPerQuintal: 40,
       transportPerQuintal: 25,
       assumptionSource: "platform_default",
     });
     expect(result.estimatedRealization.label).toBe("derived_scenario");
     expect(Object.keys(result.estimatedRealization.assumptions ?? {}).length).toBeGreaterThan(0);
-    expect(result.rawRealization.label).toBe("observed");
+    // The lot-level raw comparison is itself derived from an observed unit price.
+    expect(result.rawRealization.label).toBe("derived_scenario");
+    expect(result.rawPrice.label).toBe("observed");
+    expect(result.processedObservedPrice?.label).toBe("observed");
     expect(result.totalByproductValue).toBeGreaterThan(0);
     expect(result.totalProcessingCost).toBeGreaterThan(0);
   });
