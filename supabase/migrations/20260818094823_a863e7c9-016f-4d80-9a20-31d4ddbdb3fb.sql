@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.is_partner_staff(uuid, uuid) FROM anon;

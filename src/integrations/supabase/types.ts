@@ -191,6 +191,80 @@ export type Database = {
         }
         Relationships: []
       }
+      consent_broker_requests: {
+        Row: {
+          app_id: string
+          consumer_id: string | null
+          created_at: string
+          decided_at: string | null
+          environment: Database["public"]["Enums"]["partner_env"]
+          grant_id: string | null
+          id: string
+          purpose_code: string
+          reason: string
+          requested_scopes: string[]
+          status: string
+          subject_user_id: string
+        }
+        Insert: {
+          app_id: string
+          consumer_id?: string | null
+          created_at?: string
+          decided_at?: string | null
+          environment?: Database["public"]["Enums"]["partner_env"]
+          grant_id?: string | null
+          id?: string
+          purpose_code: string
+          reason?: string
+          requested_scopes?: string[]
+          status?: string
+          subject_user_id: string
+        }
+        Update: {
+          app_id?: string
+          consumer_id?: string | null
+          created_at?: string
+          decided_at?: string | null
+          environment?: Database["public"]["Enums"]["partner_env"]
+          grant_id?: string | null
+          id?: string
+          purpose_code?: string
+          reason?: string
+          requested_scopes?: string[]
+          status?: string
+          subject_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consent_broker_requests_app_id_fkey"
+            columns: ["app_id"]
+            isOneToOne: false
+            referencedRelation: "partner_apps"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consent_broker_requests_consumer_id_fkey"
+            columns: ["consumer_id"]
+            isOneToOne: false
+            referencedRelation: "api_consumers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consent_broker_requests_grant_id_fkey"
+            columns: ["grant_id"]
+            isOneToOne: false
+            referencedRelation: "consent_grants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consent_broker_requests_purpose_code_fkey"
+            columns: ["purpose_code"]
+            isOneToOne: false
+            referencedRelation: "data_purposes"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
       consent_grants: {
         Row: {
           consumer_id: string
@@ -1192,6 +1266,480 @@ export type Database = {
           },
         ]
       }
+      partner_api_calls: {
+        Row: {
+          app_id: string
+          created_at: string
+          deny_reason: string | null
+          endpoint: string
+          environment: Database["public"]["Enums"]["partner_env"]
+          id: string
+          is_first_party: boolean
+          latency_ms: number
+          outcome: string
+          purpose_code: string | null
+          registration_id: string
+          status_code: number
+          subject_user_id: string | null
+          tier: Database["public"]["Enums"]["consumer_tier"]
+        }
+        Insert: {
+          app_id: string
+          created_at?: string
+          deny_reason?: string | null
+          endpoint: string
+          environment: Database["public"]["Enums"]["partner_env"]
+          id?: string
+          is_first_party?: boolean
+          latency_ms?: number
+          outcome: string
+          purpose_code?: string | null
+          registration_id: string
+          status_code?: number
+          subject_user_id?: string | null
+          tier?: Database["public"]["Enums"]["consumer_tier"]
+        }
+        Update: {
+          app_id?: string
+          created_at?: string
+          deny_reason?: string | null
+          endpoint?: string
+          environment?: Database["public"]["Enums"]["partner_env"]
+          id?: string
+          is_first_party?: boolean
+          latency_ms?: number
+          outcome?: string
+          purpose_code?: string | null
+          registration_id?: string
+          status_code?: number
+          subject_user_id?: string | null
+          tier?: Database["public"]["Enums"]["consumer_tier"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_api_calls_app_id_fkey"
+            columns: ["app_id"]
+            isOneToOne: false
+            referencedRelation: "partner_apps"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "partner_api_calls_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "partner_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_apps: {
+        Row: {
+          consumer_id: string | null
+          created_at: string
+          created_by: string | null
+          environment: Database["public"]["Enums"]["partner_env"]
+          id: string
+          name: string
+          rate_limit_per_min: number
+          redirect_uris: string[]
+          registration_id: string
+          scopes: string[]
+          status: string
+          tier: Database["public"]["Enums"]["consumer_tier"]
+          updated_at: string
+        }
+        Insert: {
+          consumer_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          environment?: Database["public"]["Enums"]["partner_env"]
+          id?: string
+          name: string
+          rate_limit_per_min?: number
+          redirect_uris?: string[]
+          registration_id: string
+          scopes?: string[]
+          status?: string
+          tier?: Database["public"]["Enums"]["consumer_tier"]
+          updated_at?: string
+        }
+        Update: {
+          consumer_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          environment?: Database["public"]["Enums"]["partner_env"]
+          id?: string
+          name?: string
+          rate_limit_per_min?: number
+          redirect_uris?: string[]
+          registration_id?: string
+          scopes?: string[]
+          status?: string
+          tier?: Database["public"]["Enums"]["consumer_tier"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_apps_consumer_id_fkey"
+            columns: ["consumer_id"]
+            isOneToOne: false
+            referencedRelation: "api_consumers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "partner_apps_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "partner_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_credentials: {
+        Row: {
+          app_id: string
+          client_id: string
+          environment: Database["public"]["Enums"]["partner_env"]
+          id: string
+          issued_at: string
+          issued_by: string | null
+          revoked_at: string | null
+          scopes: string[]
+          secret_hash: string
+          secret_prefix: string
+          status: string
+        }
+        Insert: {
+          app_id: string
+          client_id: string
+          environment: Database["public"]["Enums"]["partner_env"]
+          id?: string
+          issued_at?: string
+          issued_by?: string | null
+          revoked_at?: string | null
+          scopes?: string[]
+          secret_hash: string
+          secret_prefix: string
+          status?: string
+        }
+        Update: {
+          app_id?: string
+          client_id?: string
+          environment?: Database["public"]["Enums"]["partner_env"]
+          id?: string
+          issued_at?: string
+          issued_by?: string | null
+          revoked_at?: string | null
+          scopes?: string[]
+          secret_hash?: string
+          secret_prefix?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_credentials_app_id_fkey"
+            columns: ["app_id"]
+            isOneToOne: false
+            referencedRelation: "partner_apps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_production_requests: {
+        Row: {
+          app_id: string
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          decision_note: string | null
+          id: string
+          justification: string
+          registration_id: string
+          requested_by: string | null
+          requested_scopes: string[]
+          requested_tier: Database["public"]["Enums"]["consumer_tier"]
+          status: Database["public"]["Enums"]["gate_status"]
+          updated_at: string
+        }
+        Insert: {
+          app_id: string
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          id?: string
+          justification?: string
+          registration_id: string
+          requested_by?: string | null
+          requested_scopes?: string[]
+          requested_tier?: Database["public"]["Enums"]["consumer_tier"]
+          status?: Database["public"]["Enums"]["gate_status"]
+          updated_at?: string
+        }
+        Update: {
+          app_id?: string
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          id?: string
+          justification?: string
+          registration_id?: string
+          requested_by?: string | null
+          requested_scopes?: string[]
+          requested_tier?: Database["public"]["Enums"]["consumer_tier"]
+          status?: Database["public"]["Enums"]["gate_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_production_requests_app_id_fkey"
+            columns: ["app_id"]
+            isOneToOne: false
+            referencedRelation: "partner_apps"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "partner_production_requests_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "partner_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_registrations: {
+        Row: {
+          contact_email: string
+          created_at: string
+          created_by: string | null
+          display_name: string
+          id: string
+          intended_use: string
+          is_synthetic: boolean
+          legal_decided_at: string | null
+          legal_decided_by: string | null
+          legal_note: string | null
+          legal_status: Database["public"]["Enums"]["gate_status"]
+          organization_id: string | null
+          partner_kind: Database["public"]["Enums"]["partner_kind"]
+          requested_purposes: string[]
+          sandbox_tenant_id: string | null
+          security_decided_at: string | null
+          security_decided_by: string | null
+          security_note: string | null
+          security_status: Database["public"]["Enums"]["gate_status"]
+          state: Database["public"]["Enums"]["partner_reg_state"]
+          tenant_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          contact_email: string
+          created_at?: string
+          created_by?: string | null
+          display_name: string
+          id?: string
+          intended_use?: string
+          is_synthetic?: boolean
+          legal_decided_at?: string | null
+          legal_decided_by?: string | null
+          legal_note?: string | null
+          legal_status?: Database["public"]["Enums"]["gate_status"]
+          organization_id?: string | null
+          partner_kind: Database["public"]["Enums"]["partner_kind"]
+          requested_purposes?: string[]
+          sandbox_tenant_id?: string | null
+          security_decided_at?: string | null
+          security_decided_by?: string | null
+          security_note?: string | null
+          security_status?: Database["public"]["Enums"]["gate_status"]
+          state?: Database["public"]["Enums"]["partner_reg_state"]
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          contact_email?: string
+          created_at?: string
+          created_by?: string | null
+          display_name?: string
+          id?: string
+          intended_use?: string
+          is_synthetic?: boolean
+          legal_decided_at?: string | null
+          legal_decided_by?: string | null
+          legal_note?: string | null
+          legal_status?: Database["public"]["Enums"]["gate_status"]
+          organization_id?: string | null
+          partner_kind?: Database["public"]["Enums"]["partner_kind"]
+          requested_purposes?: string[]
+          sandbox_tenant_id?: string | null
+          security_decided_at?: string | null
+          security_decided_by?: string | null
+          security_note?: string | null
+          security_status?: Database["public"]["Enums"]["gate_status"]
+          state?: Database["public"]["Enums"]["partner_reg_state"]
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_registrations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "partner_registrations_sandbox_tenant_id_fkey"
+            columns: ["sandbox_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "partner_registrations_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_webhooks: {
+        Row: {
+          app_id: string
+          created_at: string
+          created_by: string | null
+          environment: Database["public"]["Enums"]["partner_env"]
+          event_types: string[]
+          id: string
+          is_active: boolean
+          secret_hash: string
+          secret_prefix: string
+          target_url: string
+          updated_at: string
+        }
+        Insert: {
+          app_id: string
+          created_at?: string
+          created_by?: string | null
+          environment?: Database["public"]["Enums"]["partner_env"]
+          event_types?: string[]
+          id?: string
+          is_active?: boolean
+          secret_hash?: string
+          secret_prefix?: string
+          target_url: string
+          updated_at?: string
+        }
+        Update: {
+          app_id?: string
+          created_at?: string
+          created_by?: string | null
+          environment?: Database["public"]["Enums"]["partner_env"]
+          event_types?: string[]
+          id?: string
+          is_active?: boolean
+          secret_hash?: string
+          secret_prefix?: string
+          target_url?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_webhooks_app_id_fkey"
+            columns: ["app_id"]
+            isOneToOne: false
+            referencedRelation: "partner_apps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_workflow_cases: {
+        Row: {
+          app_id: string
+          created_at: string
+          created_by: string | null
+          decided_at: string | null
+          decided_by: string | null
+          decision_note: string | null
+          environment: Database["public"]["Enums"]["partner_env"]
+          evidence: Json
+          id: string
+          kind: Database["public"]["Enums"]["partner_case_kind"]
+          payload: Json
+          purpose_code: string | null
+          registration_id: string
+          requires_human_decision: boolean
+          signals: Json
+          status: Database["public"]["Enums"]["partner_case_status"]
+          subject_user_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          app_id: string
+          created_at?: string
+          created_by?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          environment?: Database["public"]["Enums"]["partner_env"]
+          evidence?: Json
+          id?: string
+          kind: Database["public"]["Enums"]["partner_case_kind"]
+          payload?: Json
+          purpose_code?: string | null
+          registration_id: string
+          requires_human_decision?: boolean
+          signals?: Json
+          status?: Database["public"]["Enums"]["partner_case_status"]
+          subject_user_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          app_id?: string
+          created_at?: string
+          created_by?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          environment?: Database["public"]["Enums"]["partner_env"]
+          evidence?: Json
+          id?: string
+          kind?: Database["public"]["Enums"]["partner_case_kind"]
+          payload?: Json
+          purpose_code?: string | null
+          registration_id?: string
+          requires_human_decision?: boolean
+          signals?: Json
+          status?: Database["public"]["Enums"]["partner_case_status"]
+          subject_user_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_workflow_cases_app_id_fkey"
+            columns: ["app_id"]
+            isOneToOne: false
+            referencedRelation: "partner_apps"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "partner_workflow_cases_purpose_code_fkey"
+            columns: ["purpose_code"]
+            isOneToOne: false
+            referencedRelation: "data_purposes"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "partner_workflow_cases_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "partner_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       platform_config: {
         Row: {
           config_key: string
@@ -1963,6 +2511,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_partner_staff: {
+        Args: { _registration_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_tenant_member: {
         Args: { _tenant_id: string; _user_id: string }
         Returns: boolean
@@ -1979,12 +2531,14 @@ export type Database = {
         | "viewer"
         | "scheme_publisher"
         | "scheme_reviewer"
+        | "partner_developer"
       case_status: "open" | "in_review" | "approved" | "rejected" | "escalated"
       consent_kind: "baseline_platform" | "optional_partner"
       consumer_tier: "sandbox" | "standard" | "premium"
       contact_channel: "email" | "sms" | "whatsapp"
       contact_verification_status: "pending" | "verified" | "failed" | "expired"
       farm_sync_state: "local_draft" | "synced" | "conflict"
+      gate_status: "pending" | "approved" | "rejected"
       geo_level: "country" | "state" | "district" | "block" | "village"
       identity_check_status:
         | "pending"
@@ -2007,6 +2561,24 @@ export type Database = {
         | "rejected"
         | "withdrawn"
       org_status: "draft" | "pending" | "approved" | "rejected" | "suspended"
+      partner_case_kind: "credit_signal" | "loan" | "claim" | "advisory"
+      partner_case_status:
+        | "open"
+        | "awaiting_evidence"
+        | "awaiting_human_decision"
+        | "approved"
+        | "declined"
+        | "withdrawn"
+      partner_env: "sandbox" | "production"
+      partner_kind: "bank" | "insurer" | "agritech"
+      partner_reg_state:
+        | "draft"
+        | "submitted"
+        | "legal_review"
+        | "security_review"
+        | "approved"
+        | "rejected"
+        | "suspended"
       privilege_request_status:
         | "pending"
         | "approved"
@@ -2174,6 +2746,7 @@ export const Constants = {
         "viewer",
         "scheme_publisher",
         "scheme_reviewer",
+        "partner_developer",
       ],
       case_status: ["open", "in_review", "approved", "rejected", "escalated"],
       consent_kind: ["baseline_platform", "optional_partner"],
@@ -2181,6 +2754,7 @@ export const Constants = {
       contact_channel: ["email", "sms", "whatsapp"],
       contact_verification_status: ["pending", "verified", "failed", "expired"],
       farm_sync_state: ["local_draft", "synced", "conflict"],
+      gate_status: ["pending", "approved", "rejected"],
       geo_level: ["country", "state", "district", "block", "village"],
       identity_check_status: [
         "pending",
@@ -2206,6 +2780,26 @@ export const Constants = {
         "withdrawn",
       ],
       org_status: ["draft", "pending", "approved", "rejected", "suspended"],
+      partner_case_kind: ["credit_signal", "loan", "claim", "advisory"],
+      partner_case_status: [
+        "open",
+        "awaiting_evidence",
+        "awaiting_human_decision",
+        "approved",
+        "declined",
+        "withdrawn",
+      ],
+      partner_env: ["sandbox", "production"],
+      partner_kind: ["bank", "insurer", "agritech"],
+      partner_reg_state: [
+        "draft",
+        "submitted",
+        "legal_review",
+        "security_review",
+        "approved",
+        "rejected",
+        "suspended",
+      ],
       privilege_request_status: [
         "pending",
         "approved",
