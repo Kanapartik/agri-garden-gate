@@ -11,11 +11,9 @@ import { setTrainingItem } from "@/lib/atap/district.functions";
 export function TrainingChecklistPanel({
   progress,
   invalidateKey,
-  completedKeys,
 }: {
   progress: TrainingProgress[];
   invalidateKey: string;
-  completedKeys?: Record<string, string[]>;
 }) {
   const queryClient = useQueryClient();
   const setItem = useServerFn(setTrainingItem);
@@ -41,7 +39,7 @@ export function TrainingChecklistPanel({
     <div className="grid gap-4 md:grid-cols-2">
       {progress.map((p) => {
         const checklist = TRAINING_CHECKLISTS.find((c) => c.code === p.code);
-        const done = new Set(completedKeys?.[p.code] ?? []);
+        const done = new Set(p.completedKeys);
         return (
           <section key={p.code} className="panel p-4">
             <header className="mb-3 flex items-baseline justify-between gap-3">
@@ -52,7 +50,7 @@ export function TrainingChecklistPanel({
             </header>
             <ul className="space-y-2 text-sm">
               {checklist?.items.map((item) => {
-                const checked = done.has(item.key) || p.completed === p.total;
+                const checked = done.has(item.key);
                 return (
                   <li key={item.key} className="flex items-start gap-2">
                     <input

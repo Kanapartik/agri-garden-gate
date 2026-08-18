@@ -545,6 +545,7 @@ export interface TrainingProgress {
   completed: number;
   total: number;
   requiredOutstanding: string[];
+  completedKeys: string[];
   ready: boolean;
 }
 
@@ -560,6 +561,7 @@ export function trainingProgress(
     code: checklist.code,
     label: checklist.label,
     completed: checklist.items.filter((i) => done.has(i.key)).length,
+    completedKeys: checklist.items.filter((i) => done.has(i.key)).map((i) => i.key),
     total: checklist.items.length,
     requiredOutstanding,
     ready: requiredOutstanding.length === 0,
