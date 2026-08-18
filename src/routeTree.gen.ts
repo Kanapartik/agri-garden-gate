@@ -23,6 +23,7 @@ import { Route as AuthenticatedFarmRouteImport } from './routes/_authenticated/f
 import { Route as AuthenticatedFpoRouteImport } from './routes/_authenticated/fpo'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedReviewRouteImport } from './routes/_authenticated/review'
+import { Route as AuthenticatedRolloutRouteImport } from './routes/_authenticated/rollout'
 import { Route as AuthenticatedSchemesRouteImport } from './routes/_authenticated/schemes'
 
 const IndexRoute = IndexRouteImport.update({
@@ -95,6 +96,11 @@ const AuthenticatedReviewRoute = AuthenticatedReviewRouteImport.update({
   path: '/review',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedRolloutRoute = AuthenticatedRolloutRouteImport.update({
+  id: '/rollout',
+  path: '/rollout',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedSchemesRoute = AuthenticatedSchemesRouteImport.update({
   id: '/schemes',
   path: '/schemes',
@@ -115,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/fpo': typeof AuthenticatedFpoRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/review': typeof AuthenticatedReviewRoute
+  '/rollout': typeof AuthenticatedRolloutRoute
   '/schemes': typeof AuthenticatedSchemesRoute
 }
 export interface FileRoutesByTo {
@@ -131,6 +138,7 @@ export interface FileRoutesByTo {
   '/fpo': typeof AuthenticatedFpoRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/review': typeof AuthenticatedReviewRoute
+  '/rollout': typeof AuthenticatedRolloutRoute
   '/schemes': typeof AuthenticatedSchemesRoute
 }
 export interface FileRoutesById {
@@ -149,6 +157,7 @@ export interface FileRoutesById {
   '/_authenticated/fpo': typeof AuthenticatedFpoRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/review': typeof AuthenticatedReviewRoute
+  '/_authenticated/rollout': typeof AuthenticatedRolloutRoute
   '/_authenticated/schemes': typeof AuthenticatedSchemesRoute
 }
 export interface FileRouteTypes {
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | '/fpo'
     | '/onboarding'
     | '/review'
+    | '/rollout'
     | '/schemes'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -183,6 +193,7 @@ export interface FileRouteTypes {
     | '/fpo'
     | '/onboarding'
     | '/review'
+    | '/rollout'
     | '/schemes'
   id:
     | '__root__'
@@ -200,6 +211,7 @@ export interface FileRouteTypes {
     | '/_authenticated/fpo'
     | '/_authenticated/onboarding'
     | '/_authenticated/review'
+    | '/_authenticated/rollout'
     | '/_authenticated/schemes'
   fileRoutesById: FileRoutesById
 }
@@ -311,6 +323,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedReviewRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/rollout': {
+      id: '/_authenticated/rollout'
+      path: '/rollout'
+      fullPath: '/rollout'
+      preLoaderRoute: typeof AuthenticatedRolloutRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/schemes': {
       id: '/_authenticated/schemes'
       path: '/schemes'
@@ -331,6 +350,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedFpoRoute: typeof AuthenticatedFpoRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedReviewRoute: typeof AuthenticatedReviewRoute
+  AuthenticatedRolloutRoute: typeof AuthenticatedRolloutRoute
   AuthenticatedSchemesRoute: typeof AuthenticatedSchemesRoute
 }
 
@@ -344,6 +364,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedFpoRoute: AuthenticatedFpoRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedReviewRoute: AuthenticatedReviewRoute,
+  AuthenticatedRolloutRoute: AuthenticatedRolloutRoute,
   AuthenticatedSchemesRoute: AuthenticatedSchemesRoute,
 }
 

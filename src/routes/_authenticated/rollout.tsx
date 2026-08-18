@@ -39,7 +39,7 @@ function RolloutPage() {
     return <main className="mx-auto max-w-5xl px-6 py-12 text-sm text-muted-foreground">Loading…</main>;
   }
 
-  const rows = rollouts.data ?? [];
+  const rows = rollouts.data?.rollouts ?? [];
 
   return (
     <main className="mx-auto max-w-5xl space-y-8 px-6 py-12">
