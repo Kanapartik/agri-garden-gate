@@ -556,6 +556,136 @@ export type Database = {
           },
         ]
       }
+      district_template_clones: {
+        Row: {
+          applied_config: Json
+          cloned_scheme_codes: Json
+          config_overrides: Json
+          created_at: string
+          created_by: string | null
+          forked_code: boolean
+          geography_id: string
+          id: string
+          is_synthetic: boolean
+          local_roles: Json
+          locale: string
+          rollout_id: string
+          sequence_index: number
+          template_id: string
+          template_version: number
+        }
+        Insert: {
+          applied_config?: Json
+          cloned_scheme_codes?: Json
+          config_overrides?: Json
+          created_at?: string
+          created_by?: string | null
+          forked_code?: boolean
+          geography_id: string
+          id?: string
+          is_synthetic?: boolean
+          local_roles?: Json
+          locale?: string
+          rollout_id: string
+          sequence_index?: number
+          template_id: string
+          template_version: number
+        }
+        Update: {
+          applied_config?: Json
+          cloned_scheme_codes?: Json
+          config_overrides?: Json
+          created_at?: string
+          created_by?: string | null
+          forked_code?: boolean
+          geography_id?: string
+          id?: string
+          is_synthetic?: boolean
+          local_roles?: Json
+          locale?: string
+          rollout_id?: string
+          sequence_index?: number
+          template_id?: string
+          template_version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "district_template_clones_geography_id_fkey"
+            columns: ["geography_id"]
+            isOneToOne: false
+            referencedRelation: "geographies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "district_template_clones_rollout_id_fkey"
+            columns: ["rollout_id"]
+            isOneToOne: false
+            referencedRelation: "district_rollouts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "district_template_clones_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "district_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      district_templates: {
+        Row: {
+          checklist: Json
+          code: string
+          config: Json
+          created_at: string
+          created_by: string | null
+          default_locale: string
+          description: string
+          id: string
+          is_active: boolean
+          label: string
+          local_roles: Json
+          locales: Json
+          scheme_codes: Json
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          checklist?: Json
+          code: string
+          config?: Json
+          created_at?: string
+          created_by?: string | null
+          default_locale?: string
+          description?: string
+          id?: string
+          is_active?: boolean
+          label: string
+          local_roles?: Json
+          locales?: Json
+          scheme_codes?: Json
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          checklist?: Json
+          code?: string
+          config?: Json
+          created_at?: string
+          created_by?: string | null
+          default_locale?: string
+          description?: string
+          id?: string
+          is_active?: boolean
+          label?: string
+          local_roles?: Json
+          locales?: Json
+          scheme_codes?: Json
+          updated_at?: string
+          version?: number
+        }
+        Relationships: []
+      }
       document_records: {
         Row: {
           checksum: string | null
@@ -1477,6 +1607,69 @@ export type Database = {
           },
         ]
       }
+      onboarding_effort_metrics: {
+        Row: {
+          clone_id: string | null
+          cost_amount: number
+          created_at: string
+          currency: string
+          id: string
+          is_operational: boolean
+          is_synthetic: boolean
+          notes: string
+          onboarded_count: number
+          person_days: number
+          phase: string
+          recorded_by: string | null
+          rollout_id: string
+        }
+        Insert: {
+          clone_id?: string | null
+          cost_amount?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          is_operational?: boolean
+          is_synthetic?: boolean
+          notes?: string
+          onboarded_count?: number
+          person_days?: number
+          phase: string
+          recorded_by?: string | null
+          rollout_id: string
+        }
+        Update: {
+          clone_id?: string | null
+          cost_amount?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          is_operational?: boolean
+          is_synthetic?: boolean
+          notes?: string
+          onboarded_count?: number
+          person_days?: number
+          phase?: string
+          recorded_by?: string | null
+          rollout_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "onboarding_effort_metrics_clone_id_fkey"
+            columns: ["clone_id"]
+            isOneToOne: false
+            referencedRelation: "district_template_clones"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "onboarding_effort_metrics_rollout_id_fkey"
+            columns: ["rollout_id"]
+            isOneToOne: false
+            referencedRelation: "district_rollouts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       onboarding_funnel_events: {
         Row: {
           actor_user_id: string | null
@@ -1909,6 +2102,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      partner_certifications: {
+        Row: {
+          badge_awarded_at: string | null
+          badge_expires_at: string | null
+          created_at: string
+          created_by: string | null
+          criteria: Json
+          decided_at: string | null
+          decided_by: string | null
+          decision_note: string | null
+          id: string
+          is_synthetic: boolean
+          programme_code: string
+          state: Database["public"]["Enums"]["certification_state"]
+          subject_id: string
+          subject_type: string
+          updated_at: string
+        }
+        Insert: {
+          badge_awarded_at?: string | null
+          badge_expires_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          criteria?: Json
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          id?: string
+          is_synthetic?: boolean
+          programme_code: string
+          state?: Database["public"]["Enums"]["certification_state"]
+          subject_id: string
+          subject_type: string
+          updated_at?: string
+        }
+        Update: {
+          badge_awarded_at?: string | null
+          badge_expires_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          criteria?: Json
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          id?: string
+          is_synthetic?: boolean
+          programme_code?: string
+          state?: Database["public"]["Enums"]["certification_state"]
+          subject_id?: string
+          subject_type?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       partner_credentials: {
         Row: {
@@ -2593,6 +2840,337 @@ export type Database = {
           },
         ]
       }
+      service_disputes: {
+        Row: {
+          category: string
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          engagement_id: string
+          id: string
+          raised_by: string | null
+          resolution_note: string | null
+          status: string
+          subtype_code: string
+          summary: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          engagement_id: string
+          id?: string
+          raised_by?: string | null
+          resolution_note?: string | null
+          status?: string
+          subtype_code: string
+          summary: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          engagement_id?: string
+          id?: string
+          raised_by?: string | null
+          resolution_note?: string | null
+          status?: string
+          subtype_code?: string
+          summary?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_disputes_engagement_id_fkey"
+            columns: ["engagement_id"]
+            isOneToOne: false
+            referencedRelation: "service_engagements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_disputes_subtype_code_fkey"
+            columns: ["subtype_code"]
+            isOneToOne: false
+            referencedRelation: "service_subtypes"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      service_engagements: {
+        Row: {
+          created_at: string
+          details: Json
+          id: string
+          is_synthetic: boolean
+          provider_id: string
+          requester_tenant_id: string | null
+          requester_user_id: string | null
+          scheduled_for: string | null
+          status: string
+          status_note: string | null
+          subtype_code: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          details?: Json
+          id?: string
+          is_synthetic?: boolean
+          provider_id: string
+          requester_tenant_id?: string | null
+          requester_user_id?: string | null
+          scheduled_for?: string | null
+          status?: string
+          status_note?: string | null
+          subtype_code: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          details?: Json
+          id?: string
+          is_synthetic?: boolean
+          provider_id?: string
+          requester_tenant_id?: string | null
+          requester_user_id?: string | null
+          scheduled_for?: string | null
+          status?: string
+          status_note?: string | null
+          subtype_code?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_engagements_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_engagements_requester_tenant_id_fkey"
+            columns: ["requester_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_engagements_subtype_code_fkey"
+            columns: ["subtype_code"]
+            isOneToOne: false
+            referencedRelation: "service_subtypes"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      service_provider_checks: {
+        Row: {
+          adapter_name: string
+          check_code: string
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          evidence_ref: string | null
+          id: string
+          label: string
+          note: string | null
+          provider_id: string
+          status: string
+        }
+        Insert: {
+          adapter_name?: string
+          check_code: string
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          evidence_ref?: string | null
+          id?: string
+          label: string
+          note?: string | null
+          provider_id: string
+          status?: string
+        }
+        Update: {
+          adapter_name?: string
+          check_code?: string
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          evidence_ref?: string | null
+          id?: string
+          label?: string
+          note?: string | null
+          provider_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_provider_checks_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_providers: {
+        Row: {
+          capacity: Json
+          contact_email: string
+          created_at: string
+          created_by: string | null
+          decided_at: string | null
+          decided_by: string | null
+          decision_note: string | null
+          display_name: string
+          geography_id: string | null
+          id: string
+          is_synthetic: boolean
+          organization_id: string | null
+          service_regions: Json
+          state: Database["public"]["Enums"]["service_provider_state"]
+          subtype_code: string
+          tenant_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          capacity?: Json
+          contact_email: string
+          created_at?: string
+          created_by?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          display_name: string
+          geography_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          organization_id?: string | null
+          service_regions?: Json
+          state?: Database["public"]["Enums"]["service_provider_state"]
+          subtype_code: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          capacity?: Json
+          contact_email?: string
+          created_at?: string
+          created_by?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          display_name?: string
+          geography_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          organization_id?: string | null
+          service_regions?: Json
+          state?: Database["public"]["Enums"]["service_provider_state"]
+          subtype_code?: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_providers_geography_id_fkey"
+            columns: ["geography_id"]
+            isOneToOne: false
+            referencedRelation: "geographies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_providers_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_providers_subtype_code_fkey"
+            columns: ["subtype_code"]
+            isOneToOne: false
+            referencedRelation: "service_subtypes"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "service_providers_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_subtypes: {
+        Row: {
+          code: string
+          description: string
+          dispute_categories: Json
+          domain: Database["public"]["Enums"]["service_domain"]
+          evidence_decided_at: string | null
+          evidence_decided_by: string | null
+          evidence_gate: Database["public"]["Enums"]["evidence_gate_state"]
+          evidence_note: string | null
+          feature_flag_key: string | null
+          is_active: boolean
+          label: string
+          requires_human_decision: boolean
+          sort_order: number
+          updated_at: string
+          verification_checks: Json
+        }
+        Insert: {
+          code: string
+          description?: string
+          dispute_categories?: Json
+          domain: Database["public"]["Enums"]["service_domain"]
+          evidence_decided_at?: string | null
+          evidence_decided_by?: string | null
+          evidence_gate?: Database["public"]["Enums"]["evidence_gate_state"]
+          evidence_note?: string | null
+          feature_flag_key?: string | null
+          is_active?: boolean
+          label: string
+          requires_human_decision?: boolean
+          sort_order?: number
+          updated_at?: string
+          verification_checks?: Json
+        }
+        Update: {
+          code?: string
+          description?: string
+          dispute_categories?: Json
+          domain?: Database["public"]["Enums"]["service_domain"]
+          evidence_decided_at?: string | null
+          evidence_decided_by?: string | null
+          evidence_gate?: Database["public"]["Enums"]["evidence_gate_state"]
+          evidence_note?: string | null
+          feature_flag_key?: string | null
+          is_active?: boolean
+          label?: string
+          requires_human_decision?: boolean
+          sort_order?: number
+          updated_at?: string
+          verification_checks?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_subtypes_feature_flag_key_fkey"
+            columns: ["feature_flag_key"]
+            isOneToOne: false
+            referencedRelation: "feature_flags"
+            referencedColumns: ["key"]
+          },
+        ]
+      }
       sponsored_placements: {
         Row: {
           created_at: string
@@ -2627,6 +3205,81 @@ export type Database = {
             columns: ["listing_id"]
             isOneToOne: false
             referencedRelation: "marketplace_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      support_cases: {
+        Row: {
+          assigned_to: string | null
+          case_type: string
+          created_at: string
+          id: string
+          is_synthetic: boolean
+          queue: string
+          requester_user_id: string | null
+          resolution_note: string | null
+          rollout_id: string | null
+          severity: string
+          sla_hours: number
+          status: Database["public"]["Enums"]["support_case_status"]
+          subject_id: string
+          subject_type: string
+          summary: string
+          tenant_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          case_type?: string
+          created_at?: string
+          id?: string
+          is_synthetic?: boolean
+          queue?: string
+          requester_user_id?: string | null
+          resolution_note?: string | null
+          rollout_id?: string | null
+          severity?: string
+          sla_hours?: number
+          status?: Database["public"]["Enums"]["support_case_status"]
+          subject_id: string
+          subject_type: string
+          summary: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          case_type?: string
+          created_at?: string
+          id?: string
+          is_synthetic?: boolean
+          queue?: string
+          requester_user_id?: string | null
+          resolution_note?: string | null
+          rollout_id?: string | null
+          severity?: string
+          sla_hours?: number
+          status?: Database["public"]["Enums"]["support_case_status"]
+          subject_id?: string
+          subject_type?: string
+          summary?: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_cases_rollout_id_fkey"
+            columns: ["rollout_id"]
+            isOneToOne: false
+            referencedRelation: "district_rollouts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "support_cases_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
         ]
@@ -3086,12 +3739,27 @@ export type Database = {
         | "scheme_reviewer"
         | "partner_developer"
         | "market_operator"
+        | "expansion_manager"
+        | "support_agent"
+        | "service_provider_admin"
       case_status: "open" | "in_review" | "approved" | "rejected" | "escalated"
+      certification_state:
+        | "draft"
+        | "submitted"
+        | "in_review"
+        | "certified"
+        | "declined"
+        | "revoked"
       consent_kind: "baseline_platform" | "optional_partner"
       consumer_tier: "sandbox" | "standard" | "premium"
       contact_channel: "email" | "sms" | "whatsapp"
       contact_verification_status: "pending" | "verified" | "failed" | "expired"
       dispute_status: "open" | "human_review" | "resolved" | "rejected"
+      evidence_gate_state:
+        | "not_evaluated"
+        | "evidence_pending"
+        | "approved"
+        | "rejected"
       farm_sync_state: "local_draft" | "synced" | "conflict"
       gate_status: "pending" | "approved" | "rejected"
       geo_level: "country" | "state" | "district" | "block" | "village"
@@ -3172,7 +3840,27 @@ export type Database = {
         | "rejected"
         | "withdrawn"
       scheme_status: "draft" | "published" | "closed"
+      service_domain:
+        | "chc_equipment_rental"
+        | "logistics"
+        | "ngo_csr_program"
+        | "advisory_service"
+        | "custom_hiring_labour"
+      service_provider_state:
+        | "draft"
+        | "submitted"
+        | "verification"
+        | "approved"
+        | "rejected"
+        | "suspended"
       step_status: "not_started" | "in_progress" | "complete"
+      support_case_status:
+        | "new"
+        | "triaged"
+        | "in_progress"
+        | "waiting_customer"
+        | "resolved"
+        | "closed"
       tenant_relationship_type:
         | "parent"
         | "affiliation"
@@ -3325,13 +4013,30 @@ export const Constants = {
         "scheme_reviewer",
         "partner_developer",
         "market_operator",
+        "expansion_manager",
+        "support_agent",
+        "service_provider_admin",
       ],
       case_status: ["open", "in_review", "approved", "rejected", "escalated"],
+      certification_state: [
+        "draft",
+        "submitted",
+        "in_review",
+        "certified",
+        "declined",
+        "revoked",
+      ],
       consent_kind: ["baseline_platform", "optional_partner"],
       consumer_tier: ["sandbox", "standard", "premium"],
       contact_channel: ["email", "sms", "whatsapp"],
       contact_verification_status: ["pending", "verified", "failed", "expired"],
       dispute_status: ["open", "human_review", "resolved", "rejected"],
+      evidence_gate_state: [
+        "not_evaluated",
+        "evidence_pending",
+        "approved",
+        "rejected",
+      ],
       farm_sync_state: ["local_draft", "synced", "conflict"],
       gate_status: ["pending", "approved", "rejected"],
       geo_level: ["country", "state", "district", "block", "village"],
@@ -3422,7 +4127,30 @@ export const Constants = {
         "withdrawn",
       ],
       scheme_status: ["draft", "published", "closed"],
+      service_domain: [
+        "chc_equipment_rental",
+        "logistics",
+        "ngo_csr_program",
+        "advisory_service",
+        "custom_hiring_labour",
+      ],
+      service_provider_state: [
+        "draft",
+        "submitted",
+        "verification",
+        "approved",
+        "rejected",
+        "suspended",
+      ],
       step_status: ["not_started", "in_progress", "complete"],
+      support_case_status: [
+        "new",
+        "triaged",
+        "in_progress",
+        "waiting_customer",
+        "resolved",
+        "closed",
+      ],
       tenant_relationship_type: [
         "parent",
         "affiliation",
