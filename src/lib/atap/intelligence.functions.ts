@@ -151,7 +151,7 @@ export const getFarmIntelligence = createServerFn({ method: "POST" })
 
     const [{ data: flagRows }, env, parcels, facilities] = await Promise.all([
       supabase.from("feature_flags").select("key, label, enabled, environments"),
-      atapEnv(supabase),
+      Promise.resolve(atapEnv()),
       listParcels(supabase),
       loadFacilities(supabase),
     ]);
@@ -212,7 +212,7 @@ export const getFarmIntelligence = createServerFn({ method: "POST" })
       weather,
       prices,
       season: location.seasonCode,
-      irrigationRecorded: location.irrigationSources.length > 0,
+      irrigationRecorded: profile.irrigationSources.length > 0,
       processedCommodities: paths.map((p) => p.commodity),
     });
 
@@ -672,13 +672,6 @@ export const computeCropOutcomeScenarios = createServerFn({ method: "POST" })
   });
 
 /* ---------------------------------------------------- escalations */
-
-async function createEscalation(
-  supabase: Awaited<ReturnType<typeof requireSupabaseAuth>> extends never ? never : never,
-): Promise<never> {
-  throw new Error("unused");
-}
-void createEscalation;
 
 const escalationValidator = (input: {
   farmId: string;
