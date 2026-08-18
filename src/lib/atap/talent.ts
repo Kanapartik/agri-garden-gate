@@ -207,9 +207,9 @@ export function buildReferralSummary(input: {
   );
   const fields: Record<string, unknown> = {};
   for (const f of allowed) {
-    if (f === "full_name") fields.full_name = input.profile.full_name;
-    if (f === "headline") fields.headline = input.profile.headline;
-    if (f === "skills") fields.skills = input.profile.skills;
+    if (f === "full_name") fields["full_name"] = input.profile.full_name;
+    if (f === "headline") fields["headline"] = input.profile.headline;
+    if (f === "skills") fields["skills"] = input.profile.skills;
   }
   return { candidateId: input.profile.id, status: "shared", fields, redactionReason: null };
 }
