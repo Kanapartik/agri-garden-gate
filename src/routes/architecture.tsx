@@ -63,6 +63,10 @@ const validateItems = [
   "Consent expiry defaults and re-consent cadence per purpose code — unresolved.",
   "Production environment naming and how environments[] maps to deployed targets — unresolved.",
   "Evidence file storage, retention window and residency requirements — unresolved (no storage bucket created yet).",
+  "MFA provider for the platform-admin privilege workflow (TOTP, WebAuthn or partner IdP) — unresolved; B1 records the confirmation flag only.",
+  "Contact verification provider per channel (email / SMS / WhatsApp OTP) — unresolved; only the synthetic provider is wired.",
+  "Whether organisation registry numbers are validated against an external registry (MCA / cooperative registrar) — unresolved.",
+  "Document storage provider and checksum/anti-tamper strategy for DocumentRecord — unresolved.",
 ];
 
 function Architecture() {
