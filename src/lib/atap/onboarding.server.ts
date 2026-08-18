@@ -4,7 +4,14 @@
  */
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import type { AtapEnv, FlagDef, FormValues, RoleDef, StepDef } from "@/lib/atap/onboarding";
+import type {
+  AtapEnv,
+  FlagDef,
+  FormValues,
+  OnboardingStatus,
+  RoleDef,
+  StepDef,
+} from "@/lib/atap/onboarding";
 
 export type AuthedClient = SupabaseClient<Database>;
 
@@ -74,9 +81,9 @@ export async function fetchScaffoldRows(): Promise<ScaffoldRows> {
     roles: (roles.data ?? []) as RoleDef[],
     steps: (steps.data ?? []).map((s) => ({
       ...s,
-      fields: Array.isArray(s.fields) ? (s.fields as StepDef["fields"]) : [],
+      fields: Array.isArray(s.fields) ? (s.fields as unknown as StepDef["fields"]) : [],
       evidence_required: Array.isArray(s.evidence_required)
-        ? (s.evidence_required as StepDef["evidence_required"])
+        ? (s.evidence_required as unknown as StepDef["evidence_required"])
         : [],
     })) as StepDef[],
     geographies: geographies.data ?? [],
@@ -87,7 +94,7 @@ export interface AppRow {
   id: string;
   applicant_user_id: string;
   role_code: string;
-  status: string;
+  status: OnboardingStatus;
   current_step_key: string | null;
   form_data: FormValues;
   is_synthetic: boolean;

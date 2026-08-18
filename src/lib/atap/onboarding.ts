@@ -68,7 +68,8 @@ export interface FlagDef {
 export type OnboardingStatus = "draft" | "pending" | "activated" | "rejected" | "withdrawn";
 export type StepStatus = "not_started" | "in_progress" | "complete";
 
-export type FormValues = Record<string, unknown>;
+export type FormValue = string | number | boolean | string[] | null;
+export type FormValues = Record<string, FormValue>;
 
 /* ------------------------------------------------------------------ flags */
 
@@ -95,7 +96,7 @@ export function stepsForRole(steps: StepDef[], roleCode: string): StepDef[] {
 
 /* ------------------------------------------------------------- validation */
 
-function isEmpty(value: unknown): boolean {
+function isEmpty(value: FormValue | undefined): boolean {
   if (value === null || value === undefined) return true;
   if (typeof value === "string") return value.trim() === "";
   if (Array.isArray(value)) return value.length === 0;

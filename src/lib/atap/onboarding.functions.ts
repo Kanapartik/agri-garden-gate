@@ -71,14 +71,14 @@ export const getOnboardingWorkspace = createServerFn({ method: "GET" })
     ]);
 
     const canReview = (roles.data ?? []).some(
-      (r) => r.role === "onboarding_officer" || r.role === "tenant_admin" || r.role === "platform_admin",
+      (r: { role: string }) => r.role === "onboarding_officer" || r.role === "tenant_admin" || r.role === "platform_admin",
     );
 
     return {
       ...rows,
       env: atapEnv(),
-      mine: apps.filter((a) => a.applicant_user_id === userId),
-      reviewQueue: canReview ? apps.filter((a) => a.applicant_user_id !== userId) : [],
+      mine: apps.filter((a) => a.applicant_user_id === userId) as ApplicationRow[],
+      reviewQueue: (canReview ? apps.filter((a) => a.applicant_user_id !== userId) : []) as ApplicationRow[],
       canReview,
     };
   });
