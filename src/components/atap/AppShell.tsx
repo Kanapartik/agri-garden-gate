@@ -25,6 +25,8 @@ export function navItemsForRoles(roles: AppRole[], signedIn: boolean): NavItem[]
   const items: NavItem[] = [
     { to: "/dashboard", label: "Access console" },
     { to: "/onboarding", label: "My onboarding" },
+    { to: "/farm", label: "My farm" },
+    { to: "/consent", label: "Consent" },
   ];
 
   const isReviewer = roles.some(

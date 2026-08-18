@@ -152,6 +152,45 @@ export type Database = {
           },
         ]
       }
+      baseline_consents: {
+        Row: {
+          accepted_at: string
+          channel: Database["public"]["Enums"]["onboarding_channel"]
+          id: string
+          kind: Database["public"]["Enums"]["consent_kind"]
+          locale: string
+          policy_version: string
+          purposes: Json
+          revoked_at: string | null
+          subject_user_id: string
+          witnessed_by_user_id: string | null
+        }
+        Insert: {
+          accepted_at?: string
+          channel?: Database["public"]["Enums"]["onboarding_channel"]
+          id?: string
+          kind?: Database["public"]["Enums"]["consent_kind"]
+          locale?: string
+          policy_version: string
+          purposes?: Json
+          revoked_at?: string | null
+          subject_user_id: string
+          witnessed_by_user_id?: string | null
+        }
+        Update: {
+          accepted_at?: string
+          channel?: Database["public"]["Enums"]["onboarding_channel"]
+          id?: string
+          kind?: Database["public"]["Enums"]["consent_kind"]
+          locale?: string
+          policy_version?: string
+          purposes?: Json
+          revoked_at?: string | null
+          subject_user_id?: string
+          witnessed_by_user_id?: string | null
+        }
+        Relationships: []
+      }
       consent_grants: {
         Row: {
           consumer_id: string
@@ -366,6 +405,93 @@ export type Database = {
           },
         ]
       }
+      farm_records: {
+        Row: {
+          application_id: string | null
+          area_acres: number | null
+          baseline_profile: Json
+          boundary: Json
+          captured_by_user_id: string | null
+          centroid_lat: number | null
+          centroid_lng: number | null
+          channel: Database["public"]["Enums"]["onboarding_channel"]
+          client_draft_id: string
+          client_updated_at: string | null
+          created_at: string
+          farmer_user_id: string
+          geography_id: string | null
+          id: string
+          is_synthetic: boolean
+          label: string
+          plot_ref: string
+          primary_crop: string | null
+          sync_state: Database["public"]["Enums"]["farm_sync_state"]
+          updated_at: string
+          village_code: string | null
+        }
+        Insert: {
+          application_id?: string | null
+          area_acres?: number | null
+          baseline_profile?: Json
+          boundary?: Json
+          captured_by_user_id?: string | null
+          centroid_lat?: number | null
+          centroid_lng?: number | null
+          channel?: Database["public"]["Enums"]["onboarding_channel"]
+          client_draft_id: string
+          client_updated_at?: string | null
+          created_at?: string
+          farmer_user_id: string
+          geography_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          label: string
+          plot_ref: string
+          primary_crop?: string | null
+          sync_state?: Database["public"]["Enums"]["farm_sync_state"]
+          updated_at?: string
+          village_code?: string | null
+        }
+        Update: {
+          application_id?: string | null
+          area_acres?: number | null
+          baseline_profile?: Json
+          boundary?: Json
+          captured_by_user_id?: string | null
+          centroid_lat?: number | null
+          centroid_lng?: number | null
+          channel?: Database["public"]["Enums"]["onboarding_channel"]
+          client_draft_id?: string
+          client_updated_at?: string | null
+          created_at?: string
+          farmer_user_id?: string
+          geography_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          label?: string
+          plot_ref?: string
+          primary_crop?: string | null
+          sync_state?: Database["public"]["Enums"]["farm_sync_state"]
+          updated_at?: string
+          village_code?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "farm_records_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "onboarding_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "farm_records_geography_id_fkey"
+            columns: ["geography_id"]
+            isOneToOne: false
+            referencedRelation: "geographies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       feature_flags: {
         Row: {
           description: string | null
@@ -428,9 +554,73 @@ export type Database = {
           },
         ]
       }
+      identity_verification_checks: {
+        Row: {
+          adapter_name: string
+          application_id: string | null
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          evidence_ref: string | null
+          id: string
+          is_synthetic: boolean
+          jurisdiction_code: string
+          manual_review_note: string | null
+          reason_category: string | null
+          reference_hash: string | null
+          requested_by_user_id: string | null
+          status: Database["public"]["Enums"]["identity_check_status"]
+          subject_user_id: string
+        }
+        Insert: {
+          adapter_name: string
+          application_id?: string | null
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          evidence_ref?: string | null
+          id?: string
+          is_synthetic?: boolean
+          jurisdiction_code?: string
+          manual_review_note?: string | null
+          reason_category?: string | null
+          reference_hash?: string | null
+          requested_by_user_id?: string | null
+          status?: Database["public"]["Enums"]["identity_check_status"]
+          subject_user_id: string
+        }
+        Update: {
+          adapter_name?: string
+          application_id?: string | null
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          evidence_ref?: string | null
+          id?: string
+          is_synthetic?: boolean
+          jurisdiction_code?: string
+          manual_review_note?: string | null
+          reason_category?: string | null
+          reference_hash?: string | null
+          requested_by_user_id?: string | null
+          status?: Database["public"]["Enums"]["identity_check_status"]
+          subject_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "identity_verification_checks_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "onboarding_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       onboarding_applications: {
         Row: {
           applicant_user_id: string
+          assisted_by_user_id: string | null
+          channel: Database["public"]["Enums"]["onboarding_channel"]
           created_at: string
           current_step_key: string | null
           decided_at: string | null
@@ -448,6 +638,8 @@ export type Database = {
         }
         Insert: {
           applicant_user_id: string
+          assisted_by_user_id?: string | null
+          channel?: Database["public"]["Enums"]["onboarding_channel"]
           created_at?: string
           current_step_key?: string | null
           decided_at?: string | null
@@ -465,6 +657,8 @@ export type Database = {
         }
         Update: {
           applicant_user_id?: string
+          assisted_by_user_id?: string | null
+          channel?: Database["public"]["Enums"]["onboarding_channel"]
           created_at?: string
           current_step_key?: string | null
           decided_at?: string | null
@@ -501,6 +695,57 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "tenants"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      onboarding_funnel_events: {
+        Row: {
+          actor_user_id: string | null
+          application_id: string | null
+          channel: Database["public"]["Enums"]["onboarding_channel"]
+          created_at: string
+          event_code: string
+          id: string
+          metadata: Json
+          role_code: string | null
+          subject_user_id: string
+        }
+        Insert: {
+          actor_user_id?: string | null
+          application_id?: string | null
+          channel?: Database["public"]["Enums"]["onboarding_channel"]
+          created_at?: string
+          event_code: string
+          id?: string
+          metadata?: Json
+          role_code?: string | null
+          subject_user_id: string
+        }
+        Update: {
+          actor_user_id?: string | null
+          application_id?: string | null
+          channel?: Database["public"]["Enums"]["onboarding_channel"]
+          created_at?: string
+          event_code?: string
+          id?: string
+          metadata?: Json
+          role_code?: string | null
+          subject_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "onboarding_funnel_events_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "onboarding_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "onboarding_funnel_events_role_code_fkey"
+            columns: ["role_code"]
+            isOneToOne: false
+            referencedRelation: "role_definitions"
+            referencedColumns: ["code"]
           },
         ]
       }
@@ -1270,11 +1515,24 @@ export type Database = {
         | "consumer_api_manager"
         | "viewer"
       case_status: "open" | "in_review" | "approved" | "rejected" | "escalated"
+      consent_kind: "baseline_platform" | "optional_partner"
       consumer_tier: "sandbox" | "standard" | "premium"
       contact_channel: "email" | "sms" | "whatsapp"
       contact_verification_status: "pending" | "verified" | "failed" | "expired"
+      farm_sync_state: "local_draft" | "synced" | "conflict"
       geo_level: "country" | "state" | "district" | "block" | "village"
+      identity_check_status:
+        | "pending"
+        | "verified"
+        | "failed"
+        | "manual_review"
+        | "duplicate_hold"
       membership_status: "active" | "suspended" | "revoked"
+      onboarding_channel:
+        | "self_service"
+        | "fpo_assisted"
+        | "govt_camp_assisted"
+        | "field_agent_assisted"
       onboarding_status:
         | "draft"
         | "pending"
@@ -1440,11 +1698,26 @@ export const Constants = {
         "viewer",
       ],
       case_status: ["open", "in_review", "approved", "rejected", "escalated"],
+      consent_kind: ["baseline_platform", "optional_partner"],
       consumer_tier: ["sandbox", "standard", "premium"],
       contact_channel: ["email", "sms", "whatsapp"],
       contact_verification_status: ["pending", "verified", "failed", "expired"],
+      farm_sync_state: ["local_draft", "synced", "conflict"],
       geo_level: ["country", "state", "district", "block", "village"],
+      identity_check_status: [
+        "pending",
+        "verified",
+        "failed",
+        "manual_review",
+        "duplicate_hold",
+      ],
       membership_status: ["active", "suspended", "revoked"],
+      onboarding_channel: [
+        "self_service",
+        "fpo_assisted",
+        "govt_camp_assisted",
+        "field_agent_assisted",
+      ],
       onboarding_status: [
         "draft",
         "pending",
