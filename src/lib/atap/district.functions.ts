@@ -146,13 +146,19 @@ export interface SchemeDiscovery {
   prefillValues: FormValues;
 }
 
+export interface RolloutConfig {
+  delegated_purchasing?: boolean;
+  district_code?: string;
+  assisted_channels?: string[];
+}
+
 export interface RolloutRow {
   id: string;
   label: string;
   template_code: string;
   status: "planned" | "configuring" | "piloting" | "live" | "paused";
   checklist: RolloutChecklistItem[];
-  config: Record<string, unknown>;
+  config: RolloutConfig;
   geography: { code: string; name: string; level: string } | null;
   readiness: ReturnType<typeof rolloutReadiness>;
   memberCount: number;
@@ -222,7 +228,7 @@ export const getFpoWorkspace = createServerFn({ method: "GET" })
       tenants,
       invites: (invites ?? []) as InviteRow[],
       members: (members ?? []) as MemberRow[],
-      batches: (batches ?? []) as BatchRow[],
+      batches: (batches ?? []) as unknown as BatchRow[],
       training,
       // D-08 unvalidated: this is expected to stay false.
       delegatedPurchasingEnabled: delegatedPurchasingAllowed(flags, atapEnv()),
@@ -609,7 +615,7 @@ export const getGovtWorkspace = createServerFn({ method: "GET" })
       canPublish: actor.isPlatformAdmin || actor.schemePublisherOf.length > 0,
       canReview: actor.isPlatformAdmin || actor.schemeReviewerOf.length > 0,
       schemes: (schemes ?? []) as SchemeRow[],
-      versions: (versions ?? []) as SchemeVersionRow[],
+      versions: (versions ?? []) as unknown as SchemeVersionRow[],
       // RLS already restricts this to the publishing department's reviewers.
       queue: ((queue ?? []) as ApplicationRow[]).filter((a) => a.applicant_user_id !== userId),
       training,
@@ -880,7 +886,7 @@ export const getSchemeDiscovery = createServerFn({ method: "GET" })
     const version = await baselinePolicyVersion(supabase);
     const consentOk = baselineConsentActive((consents ?? []) as never, version);
     const prefill = prefillFromFarmProfile((farms ?? [])[0] ?? null, consentOk);
-    const versionRows = (versions ?? []) as SchemeVersionRow[];
+    const versionRows = (versions ?? []) as unknown as SchemeVersionRow[];
 
     return {
       userId,
@@ -933,7 +939,7 @@ export const submitSchemeApplication = createServerFn({ method: "POST" })
     if (data.usedPrefill && !consentOk) throw new Error("baseline_consent_missing");
 
     // Rule output is a recommendation. The reviewer decides.
-    const evaluation = evaluateSchemeRules((version.rules ?? []) as SchemeRule[], data.values);
+    const evaluation = evaluateSchemeRules((version.rules ?? []) as unknown as SchemeRule[], data.values);
 
     const { data: row, error } = await supabase
       .from("scheme_applications")
@@ -992,7 +998,7 @@ export const getDistrictRollouts = createServerFn({ method: "GET" })
         template_code: string;
         status: RolloutRow["status"];
         checklist: RolloutChecklistItem[];
-        config: Record<string, unknown>;
+        config: RolloutConfig;
         fpo_tenant_id: string | null;
         geographies: { code: string; name: string; level: string } | null;
       };
@@ -1044,7 +1050,7 @@ export const setRolloutChecklistItem = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!row) throw new Error("rollout_not_found");
 
-    const checklist = ((row.checklist ?? []) as RolloutChecklistItem[]).map((item) =>
+    const checklist = ((row.checklist ?? []) as unknown as RolloutChecklistItem[]).map((item) =>
       item.key === data.itemKey ? { ...item, done: data.done } : item,
     );
     const { error } = await supabase
