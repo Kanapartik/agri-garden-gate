@@ -131,7 +131,7 @@ export function syntheticSandboxSubject(subjectRef: string) {
     subject_ref: `synthetic:${subjectRef.slice(0, 8)}`,
     parcel_count: (seed % 3) + 1,
     total_area_ha: Math.round(((seed % 400) / 100 + 0.4) * 100) / 100,
-    repayment_band: bands[seed % 3],
+    repayment_band: bands[seed % 3] ?? "medium",
     seasons_observed: (seed % 5) + 1,
   };
 }
