@@ -63,6 +63,22 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-status-draft: var(--status-draft);
+  --color-status-draft-foreground: var(--status-draft-foreground);
+  --color-status-pending: var(--status-pending);
+  --color-status-pending-foreground: var(--status-pending-foreground);
+  --color-status-activated: var(--status-activated);
+  --color-status-activated-foreground: var(--status-activated-foreground);
+  --color-status-rejected: var(--status-rejected);
+  --color-status-rejected-foreground: var(--status-rejected-foreground);
+  --color-status-neutral: var(--status-neutral);
+  --color-status-neutral-foreground: var(--status-neutral-foreground);
+  --color-table-header: var(--table-header);
+  --color-field-invalid: var(--field-invalid);
+  --shadow-card: var(--shadow-card);
+  --shadow-raised: var(--shadow-raised);
+  --spacing-section: var(--space-section);
+  --spacing-gutter: var(--space-gutter);
 }
 
 :root {
@@ -103,6 +119,28 @@
   --sidebar-ring: oklch(0.46 0.11 148);
   --surface-deep: oklch(0.28 0.05 152);
   --surface-deep-foreground: oklch(0.96 0.02 110);
+
+  /* Status badge tokens — one per onboarding status. */
+  --status-draft: oklch(0.94 0.015 100);
+  --status-draft-foreground: oklch(0.42 0.02 140);
+  --status-pending: oklch(0.92 0.09 85);
+  --status-pending-foreground: oklch(0.36 0.08 65);
+  --status-activated: oklch(0.9 0.08 150);
+  --status-activated-foreground: oklch(0.34 0.09 152);
+  --status-rejected: oklch(0.93 0.06 25);
+  --status-rejected-foreground: oklch(0.44 0.16 27);
+  --status-neutral: oklch(0.93 0.01 240);
+  --status-neutral-foreground: oklch(0.42 0.02 240);
+
+  /* Form + table surfaces */
+  --field-invalid: oklch(0.55 0.19 27);
+  --table-header: oklch(0.96 0.02 105);
+
+  /* Elevation + rhythm */
+  --shadow-card: 0 1px 2px 0 color-mix(in oklab, var(--foreground) 8%, transparent);
+  --shadow-raised: 0 12px 32px -18px color-mix(in oklab, var(--foreground) 45%, transparent);
+  --space-gutter: 1.5rem;
+  --space-section: 4.5rem;
 }
 
 .dark {
@@ -140,6 +178,18 @@
   --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
+  --status-draft: oklch(0.3 0.02 150);
+  --status-draft-foreground: oklch(0.88 0.02 110);
+  --status-pending: oklch(0.4 0.08 75);
+  --status-pending-foreground: oklch(0.95 0.05 90);
+  --status-activated: oklch(0.36 0.09 152);
+  --status-activated-foreground: oklch(0.95 0.05 145);
+  --status-rejected: oklch(0.38 0.13 27);
+  --status-rejected-foreground: oklch(0.96 0.03 30);
+  --status-neutral: oklch(0.32 0.02 240);
+  --status-neutral-foreground: oklch(0.9 0.01 240);
+  --field-invalid: oklch(0.7 0.19 22);
+  --table-header: oklch(0.24 0.03 150);
 }
 
 @layer base {
@@ -157,4 +207,80 @@
     font-family: var(--font-display);
     letter-spacing: -0.015em;
   }
+}
+
+/* Form field states, used through @utility so components stay token-driven. */
+@utility field-base {
+  width: 100%;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-input);
+  background-color: var(--color-card);
+  color: var(--color-foreground);
+  padding: 0.55rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--color-ring);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-ring) 22%, transparent);
+  }
+
+  &:disabled {
+    background-color: var(--color-muted);
+    color: var(--color-muted-foreground);
+    cursor: not-allowed;
+  }
+
+  &[aria-invalid="true"] {
+    border-color: var(--color-field-invalid);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-field-invalid) 18%, transparent);
+  }
+}
+
+@utility field-hint {
+  margin-top: 0.35rem;
+  font-size: 0.75rem;
+  color: var(--color-muted-foreground);
+}
+
+@utility field-error {
+  margin-top: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-field-invalid);
+}
+
+@utility data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.875rem;
+
+  & thead th {
+    background-color: var(--color-table-header);
+    text-align: left;
+    font-weight: 600;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--color-border);
+    white-space: nowrap;
+  }
+
+  & tbody td {
+    padding: 0.65rem 0.75rem;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: top;
+  }
+
+  & tbody tr:last-child td {
+    border-bottom: 0;
+  }
+}
+
+@utility panel {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
 }
