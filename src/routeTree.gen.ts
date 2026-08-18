@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as ArchitectureRouteImport } from './routes/architecture'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as RolesRouteImport } from './routes/roles'
+import { Route as AuthenticatedAccessRouteImport } from './routes/_authenticated/access'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedConfigurationRouteImport } from './routes/_authenticated/configuration'
 import { Route as AuthenticatedConsentRouteImport } from './routes/_authenticated/consent'
@@ -50,6 +51,11 @@ const RolesRoute = RolesRouteImport.update({
   id: '/roles',
   path: '/roles',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAccessRoute = AuthenticatedAccessRouteImport.update({
+  id: '/access',
+  path: '/access',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
@@ -118,6 +124,7 @@ export interface FileRoutesByFullPath {
   '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
   '/roles': typeof RolesRoute
+  '/access': typeof AuthenticatedAccessRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/configuration': typeof AuthenticatedConfigurationRoute
   '/consent': typeof AuthenticatedConsentRoute
@@ -136,6 +143,7 @@ export interface FileRoutesByTo {
   '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
   '/roles': typeof RolesRoute
+  '/access': typeof AuthenticatedAccessRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/configuration': typeof AuthenticatedConfigurationRoute
   '/consent': typeof AuthenticatedConsentRoute
@@ -156,6 +164,7 @@ export interface FileRoutesById {
   '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
   '/roles': typeof RolesRoute
+  '/_authenticated/access': typeof AuthenticatedAccessRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/configuration': typeof AuthenticatedConfigurationRoute
   '/_authenticated/consent': typeof AuthenticatedConsentRoute
@@ -176,6 +185,7 @@ export interface FileRouteTypes {
     | '/architecture'
     | '/auth'
     | '/roles'
+    | '/access'
     | '/admin'
     | '/configuration'
     | '/consent'
@@ -194,6 +204,7 @@ export interface FileRouteTypes {
     | '/architecture'
     | '/auth'
     | '/roles'
+    | '/access'
     | '/admin'
     | '/configuration'
     | '/consent'
@@ -213,6 +224,7 @@ export interface FileRouteTypes {
     | '/architecture'
     | '/auth'
     | '/roles'
+    | '/_authenticated/access'
     | '/_authenticated/admin'
     | '/_authenticated/configuration'
     | '/_authenticated/consent'
@@ -271,6 +283,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/roles'
       preLoaderRoute: typeof RolesRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/access': {
+      id: '/_authenticated/access'
+      path: '/access'
+      fullPath: '/access'
+      preLoaderRoute: typeof AuthenticatedAccessRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
@@ -360,6 +379,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAccessRoute: typeof AuthenticatedAccessRoute
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedConfigurationRoute: typeof AuthenticatedConfigurationRoute
   AuthenticatedConsentRoute: typeof AuthenticatedConsentRoute
@@ -375,6 +395,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAccessRoute: AuthenticatedAccessRoute,
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedConfigurationRoute: AuthenticatedConfigurationRoute,
   AuthenticatedConsentRoute: AuthenticatedConsentRoute,

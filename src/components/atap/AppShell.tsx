@@ -49,9 +49,13 @@ export function navItemsForRoles(roles: AppRole[], signedIn: boolean): NavItem[]
     (r) => r === "onboarding_officer" || r === "tenant_admin" || r === "platform_admin",
   );
   if (isReviewer) items.push({ to: "/review", label: "Review queue" });
+  if (roles.includes("platform_admin") || roles.includes("tenant_admin")) {
+    items.push({ to: "/access", label: "Access & roles" });
+  }
   if (roles.includes("platform_admin") || roles.includes("auditor")) {
     items.push({ to: "/admin", label: "Admin" });
   }
+
   if (roles.includes("platform_admin")) items.push({ to: "/configuration", label: "Configuration" });
   items.push({ to: "/architecture", label: "Architecture" });
   return items;
