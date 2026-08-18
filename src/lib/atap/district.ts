@@ -618,3 +618,43 @@ export function delegatedPurchasingAllowed(flags: FlagDef[], env: AtapEnv): bool
   if (env === "production") return false;
   return isFlagActive(flags, DELEGATED_PURCHASING_FLAG, env);
 }
+
+/* -------------------------------------------------------- default configuration */
+
+/**
+ * Starter rule set and application form for a district scheme. This is seed
+ * configuration a publisher edits, not hard-coded policy.
+ */
+export const DEFAULT_SCHEME_RULES: SchemeRule[] = [
+  {
+    key: "min_area",
+    label: "Holding of at least 0.5 acre",
+    field: "land_area_acres",
+    operator: "gte",
+    value: 0.5,
+    severity: "blocking",
+  },
+  {
+    key: "max_area",
+    label: "Holding not larger than 5 acres",
+    field: "land_area_acres",
+    operator: "lte",
+    value: 5,
+    severity: "blocking",
+  },
+  {
+    key: "plot_reference",
+    label: "Plot reference provided",
+    field: "plot_ref",
+    operator: "exists",
+    value: true,
+    severity: "advisory",
+  },
+];
+
+export const DEFAULT_SCHEME_FORM_FIELDS: FieldDef[] = [
+  { key: "land_area_acres", label: "Land area (acres)", type: "number", required: true },
+  { key: "plot_ref", label: "Plot reference", type: "text", required: true },
+  { key: "primary_crop", label: "Primary crop", type: "text", required: false },
+  { key: "village_code", label: "Village code", type: "text", required: false },
+];
