@@ -119,10 +119,14 @@ export const mockJurisdictionIdentity: JurisdictionIdentityAdapter = {
   },
 };
 
+export * from "./farmIntelligence";
+import { farmIntelligenceAdapters } from "./farmIntelligence";
+
 export const adapters = {
   identityKyc: syntheticIdentityKyc,
   jurisdictionIdentity: mockJurisdictionIdentity,
   gis: syntheticGis,
   payments: syntheticPayments,
   govtRegistry: syntheticGovtRegistry,
+  ...farmIntelligenceAdapters,
 } as const;
