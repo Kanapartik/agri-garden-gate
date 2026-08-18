@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState, type ReactNode } from "react";
@@ -68,6 +68,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { signedIn, roles } = useSessionRoles();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
   const items = navItemsForRoles(roles, signedIn);
 
   async function signOut() {
@@ -101,7 +102,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               <Button variant="outline" size="sm" onClick={signOut}>
                 Sign out
               </Button>
-            ) : (
+            ) : pathname === "/auth" ? null : (
               <Button size="sm" asChild>
                 <Link to="/auth">Sign in</Link>
               </Button>
