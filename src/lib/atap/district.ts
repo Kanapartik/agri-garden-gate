@@ -11,7 +11,14 @@
  */
 import type { AppRole, TenantType } from "@/lib/atap/policy";
 import { PLATFORM_ONLY_ROLES, TENANT_SCOPED_ROLES } from "@/lib/atap/identity";
-import { isFlagActive, type AtapEnv, type FlagDef, type FormValue, type FormValues } from "@/lib/atap/onboarding";
+import {
+  isFlagActive,
+  type AtapEnv,
+  type FieldDef,
+  type FlagDef,
+  type FormValue,
+  type FormValues,
+} from "@/lib/atap/onboarding";
 
 /* ------------------------------------------------- staff invites / delegation */
 
@@ -653,8 +660,8 @@ export const DEFAULT_SCHEME_RULES: SchemeRule[] = [
 ];
 
 export const DEFAULT_SCHEME_FORM_FIELDS: FieldDef[] = [
-  { key: "land_area_acres", label: "Land area (acres)", type: "number", required: true },
-  { key: "plot_ref", label: "Plot reference", type: "text", required: true },
-  { key: "primary_crop", label: "Primary crop", type: "text", required: false },
-  { key: "village_code", label: "Village code", type: "text", required: false },
+  { name: "land_area_acres", label: "Land area (acres)", type: "number", required: true, min: 0 },
+  { name: "plot_ref", label: "Plot reference", type: "text", required: true, maxLength: 60 },
+  { name: "primary_crop", label: "Primary crop", type: "text", required: false, maxLength: 60 },
+  { name: "village_code", label: "Village code", type: "text", required: false, maxLength: 40 },
 ];
