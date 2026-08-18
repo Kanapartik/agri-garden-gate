@@ -113,7 +113,7 @@ function IntelligencePage() {
 
   const refresh = useMutation({
     mutationFn: useServerFn(refreshFarmObservations),
-    onSuccess: (res) => {
+    onSuccess: (res: { stored: number; soilBasis: string }) => {
       toast.success(`Stored ${res.stored} fresh observations (soil basis: ${res.soilBasis}).`);
       void queryClient.invalidateQueries({ queryKey: ["atap", "farm-intelligence"] });
     },
@@ -267,7 +267,7 @@ function WeatherSection({ data }: { data: FarmIntelligence }) {
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <Stat label="Temperature" value={`${w.current.temperatureC} °C`} />
           <Stat label="Humidity" value={`${w.current.humidityPct} %`} />
-          <Stat label="Rain (24h)" value={`${w.current.rainfallMm} mm`} />
+          <Stat label="Rain (24h)" value={`${w.current.rainfallMm24h} mm`} />
           <Stat label="Wind" value={`${w.current.windKph} kph`} />
         </div>
       </Card>
@@ -276,9 +276,9 @@ function WeatherSection({ data }: { data: FarmIntelligence }) {
           {w.forecast.map((f) => (
             <li key={f.date} className="flex flex-wrap gap-x-4 text-sm">
               <span className="font-medium">{f.date}</span>
-              <span>{f.summary}</span>
+              <span>{f.conditions}</span>
               <span className="text-muted-foreground">
-                {f.minTempC}–{f.maxTempC} °C · {f.rainfallMm} mm · {f.rainProbabilityPct}% chance
+                {f.minC}–{f.maxC} °C · {f.rainfallMm} mm
               </span>
             </li>
           ))}
@@ -372,7 +372,7 @@ function CropSection({ data }: { data: FarmIntelligence }) {
               <div key={f.key} className="flex items-center gap-2 text-xs">
                 <span className="w-52 shrink-0 text-muted-foreground">{f.label}</span>
                 <span className="h-1.5 w-40 overflow-hidden rounded bg-secondary">
-                  <span className="block h-full bg-primary" style={{ width: `${Math.round(f.value * 100)}%` }} />
+                  <span className="block h-full bg-primary" style={{ width: `${Math.round(f.score * 100)}%` }} />
                 </span>
                 <span className="text-muted-foreground">weight {Math.round(f.weight * 100)}%</span>
               </div>
