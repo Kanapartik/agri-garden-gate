@@ -14,6 +14,136 @@ export type Database = {
   }
   public: {
     Tables: {
+      advisory_escalations: {
+        Row: {
+          context: Json
+          created_at: string
+          facility_id: string | null
+          farm_id: string
+          handled_by: string | null
+          id: string
+          is_synthetic: boolean
+          kind: Database["public"]["Enums"]["escalation_kind"]
+          message: string | null
+          requester_user_id: string
+          resolution_note: string | null
+          status: Database["public"]["Enums"]["escalation_status"]
+          subject_user_id: string
+          updated_at: string
+        }
+        Insert: {
+          context?: Json
+          created_at?: string
+          facility_id?: string | null
+          farm_id: string
+          handled_by?: string | null
+          id?: string
+          is_synthetic?: boolean
+          kind: Database["public"]["Enums"]["escalation_kind"]
+          message?: string | null
+          requester_user_id: string
+          resolution_note?: string | null
+          status?: Database["public"]["Enums"]["escalation_status"]
+          subject_user_id: string
+          updated_at?: string
+        }
+        Update: {
+          context?: Json
+          created_at?: string
+          facility_id?: string | null
+          farm_id?: string
+          handled_by?: string | null
+          id?: string
+          is_synthetic?: boolean
+          kind?: Database["public"]["Enums"]["escalation_kind"]
+          message?: string | null
+          requester_user_id?: string
+          resolution_note?: string | null
+          status?: Database["public"]["Enums"]["escalation_status"]
+          subject_user_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "advisory_escalations_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "nearby_service_facilities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "advisory_escalations_farm_id_fkey"
+            columns: ["farm_id"]
+            isOneToOne: false
+            referencedRelation: "farm_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      advisory_evidence: {
+        Row: {
+          advisory_kind: string
+          advisory_ref: string | null
+          confidence: number | null
+          created_at: string
+          farm_id: string
+          freshness_seconds: number | null
+          id: string
+          knowledge_contribution_id: string | null
+          note: string | null
+          observation_id: string | null
+          source_key: string
+        }
+        Insert: {
+          advisory_kind: string
+          advisory_ref?: string | null
+          confidence?: number | null
+          created_at?: string
+          farm_id: string
+          freshness_seconds?: number | null
+          id?: string
+          knowledge_contribution_id?: string | null
+          note?: string | null
+          observation_id?: string | null
+          source_key: string
+        }
+        Update: {
+          advisory_kind?: string
+          advisory_ref?: string | null
+          confidence?: number | null
+          created_at?: string
+          farm_id?: string
+          freshness_seconds?: number | null
+          id?: string
+          knowledge_contribution_id?: string | null
+          note?: string | null
+          observation_id?: string | null
+          source_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "advisory_evidence_farm_id_fkey"
+            columns: ["farm_id"]
+            isOneToOne: false
+            referencedRelation: "farm_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "advisory_evidence_knowledge_contribution_id_fkey"
+            columns: ["knowledge_contribution_id"]
+            isOneToOne: false
+            referencedRelation: "knowledge_contributions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "advisory_evidence_observation_id_fkey"
+            columns: ["observation_id"]
+            isOneToOne: false
+            referencedRelation: "external_data_observations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agreement_records: {
         Row: {
           agreement_code: string
@@ -462,6 +592,145 @@ export type Database = {
         }
         Relationships: []
       }
+      crop_outcome_scenarios: {
+        Row: {
+          assumptions: Json
+          break_even_price: number
+          break_even_yield: number
+          created_at: string
+          created_by: string | null
+          crop: string
+          expected_yield_quintal: number
+          farm_id: string
+          gross_realization: number
+          harvest_window: string | null
+          id: string
+          label: Database["public"]["Enums"]["price_label"]
+          net_contribution: number
+          risks: Json
+          scenario: string
+          season_code: string
+          selling_price: number
+          selling_price_label: Database["public"]["Enums"]["price_label"]
+          target_market: string | null
+          total_cost: number
+          value_add_alternative: string | null
+        }
+        Insert: {
+          assumptions?: Json
+          break_even_price: number
+          break_even_yield: number
+          created_at?: string
+          created_by?: string | null
+          crop: string
+          expected_yield_quintal: number
+          farm_id: string
+          gross_realization: number
+          harvest_window?: string | null
+          id?: string
+          label?: Database["public"]["Enums"]["price_label"]
+          net_contribution: number
+          risks?: Json
+          scenario: string
+          season_code: string
+          selling_price: number
+          selling_price_label?: Database["public"]["Enums"]["price_label"]
+          target_market?: string | null
+          total_cost: number
+          value_add_alternative?: string | null
+        }
+        Update: {
+          assumptions?: Json
+          break_even_price?: number
+          break_even_yield?: number
+          created_at?: string
+          created_by?: string | null
+          crop?: string
+          expected_yield_quintal?: number
+          farm_id?: string
+          gross_realization?: number
+          harvest_window?: string | null
+          id?: string
+          label?: Database["public"]["Enums"]["price_label"]
+          net_contribution?: number
+          risks?: Json
+          scenario?: string
+          season_code?: string
+          selling_price?: number
+          selling_price_label?: Database["public"]["Enums"]["price_label"]
+          target_market?: string | null
+          total_cost?: number
+          value_add_alternative?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crop_outcome_scenarios_farm_id_fkey"
+            columns: ["farm_id"]
+            isOneToOne: false
+            referencedRelation: "farm_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crop_suitability_assessments: {
+        Row: {
+          change_factors: Json
+          confidence: number
+          created_at: string
+          crop: string
+          factors: Json
+          farm_id: string
+          id: string
+          is_synthetic: boolean
+          score: number
+          season_code: string
+          soil_basis: Database["public"]["Enums"]["soil_basis"]
+          sources: Json
+          sowing_window: string | null
+          variety: string | null
+        }
+        Insert: {
+          change_factors?: Json
+          confidence?: number
+          created_at?: string
+          crop: string
+          factors?: Json
+          farm_id: string
+          id?: string
+          is_synthetic?: boolean
+          score: number
+          season_code: string
+          soil_basis?: Database["public"]["Enums"]["soil_basis"]
+          sources?: Json
+          sowing_window?: string | null
+          variety?: string | null
+        }
+        Update: {
+          change_factors?: Json
+          confidence?: number
+          created_at?: string
+          crop?: string
+          factors?: Json
+          farm_id?: string
+          id?: string
+          is_synthetic?: boolean
+          score?: number
+          season_code?: string
+          soil_basis?: Database["public"]["Enums"]["soil_basis"]
+          sources?: Json
+          sowing_window?: string | null
+          variety?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crop_suitability_assessments_farm_id_fkey"
+            columns: ["farm_id"]
+            isOneToOne: false
+            referencedRelation: "farm_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       data_purposes: {
         Row: {
           code: string
@@ -738,6 +1007,69 @@ export type Database = {
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      external_data_observations: {
+        Row: {
+          adapter_name: string
+          confidence: number | null
+          created_at: string
+          farm_id: string | null
+          fetched_at: string
+          freshness_seconds: number | null
+          geography_id: string | null
+          id: string
+          is_synthetic: boolean
+          kind: Database["public"]["Enums"]["observation_kind"]
+          observed_at: string
+          payload: Json
+          source_key: string
+        }
+        Insert: {
+          adapter_name: string
+          confidence?: number | null
+          created_at?: string
+          farm_id?: string | null
+          fetched_at?: string
+          freshness_seconds?: number | null
+          geography_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          kind: Database["public"]["Enums"]["observation_kind"]
+          observed_at?: string
+          payload?: Json
+          source_key: string
+        }
+        Update: {
+          adapter_name?: string
+          confidence?: number | null
+          created_at?: string
+          farm_id?: string | null
+          fetched_at?: string
+          freshness_seconds?: number | null
+          geography_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          kind?: Database["public"]["Enums"]["observation_kind"]
+          observed_at?: string
+          payload?: Json
+          source_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "external_data_observations_farm_id_fkey"
+            columns: ["farm_id"]
+            isOneToOne: false
+            referencedRelation: "farm_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "external_data_observations_geography_id_fkey"
+            columns: ["geography_id"]
+            isOneToOne: false
+            referencedRelation: "geographies"
             referencedColumns: ["id"]
           },
         ]
@@ -1206,6 +1538,159 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      location_context_snapshots: {
+        Row: {
+          agro_climatic_zone: string | null
+          block_name: string | null
+          centroid_lat: number | null
+          centroid_lng: number | null
+          created_at: string
+          district_name: string | null
+          farm_id: string
+          geography_id: string | null
+          id: string
+          is_synthetic: boolean
+          resolved_at: string
+          season_code: string | null
+          season_label: string | null
+          source_key: string
+          state_name: string | null
+          subject_user_id: string
+          village_code: string | null
+          village_name: string | null
+        }
+        Insert: {
+          agro_climatic_zone?: string | null
+          block_name?: string | null
+          centroid_lat?: number | null
+          centroid_lng?: number | null
+          created_at?: string
+          district_name?: string | null
+          farm_id: string
+          geography_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          resolved_at?: string
+          season_code?: string | null
+          season_label?: string | null
+          source_key?: string
+          state_name?: string | null
+          subject_user_id: string
+          village_code?: string | null
+          village_name?: string | null
+        }
+        Update: {
+          agro_climatic_zone?: string | null
+          block_name?: string | null
+          centroid_lat?: number | null
+          centroid_lng?: number | null
+          created_at?: string
+          district_name?: string | null
+          farm_id?: string
+          geography_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          resolved_at?: string
+          season_code?: string | null
+          season_label?: string | null
+          source_key?: string
+          state_name?: string | null
+          subject_user_id?: string
+          village_code?: string | null
+          village_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "location_context_snapshots_farm_id_fkey"
+            columns: ["farm_id"]
+            isOneToOne: false
+            referencedRelation: "farm_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "location_context_snapshots_geography_id_fkey"
+            columns: ["geography_id"]
+            isOneToOne: false
+            referencedRelation: "geographies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      market_price_observations: {
+        Row: {
+          adapter_name: string
+          arrivals_quantity: number | null
+          arrivals_unit: string | null
+          commodity: string
+          created_at: string
+          district_name: string | null
+          grade: string | null
+          id: string
+          is_synthetic: boolean
+          label: Database["public"]["Enums"]["price_label"]
+          latitude: number | null
+          longitude: number | null
+          market_code: string | null
+          market_name: string
+          max_price: number | null
+          min_price: number | null
+          modal_price: number | null
+          price_date: string
+          source_key: string
+          state_name: string | null
+          unit: string
+          variety: string | null
+        }
+        Insert: {
+          adapter_name: string
+          arrivals_quantity?: number | null
+          arrivals_unit?: string | null
+          commodity: string
+          created_at?: string
+          district_name?: string | null
+          grade?: string | null
+          id?: string
+          is_synthetic?: boolean
+          label?: Database["public"]["Enums"]["price_label"]
+          latitude?: number | null
+          longitude?: number | null
+          market_code?: string | null
+          market_name: string
+          max_price?: number | null
+          min_price?: number | null
+          modal_price?: number | null
+          price_date: string
+          source_key: string
+          state_name?: string | null
+          unit?: string
+          variety?: string | null
+        }
+        Update: {
+          adapter_name?: string
+          arrivals_quantity?: number | null
+          arrivals_unit?: string | null
+          commodity?: string
+          created_at?: string
+          district_name?: string | null
+          grade?: string | null
+          id?: string
+          is_synthetic?: boolean
+          label?: Database["public"]["Enums"]["price_label"]
+          latitude?: number | null
+          longitude?: number | null
+          market_code?: string | null
+          market_name?: string
+          max_price?: number | null
+          min_price?: number | null
+          modal_price?: number | null
+          price_date?: string
+          source_key?: string
+          state_name?: string | null
+          unit?: string
+          variety?: string | null
+        }
+        Relationships: []
       }
       marketplace_disputes: {
         Row: {
@@ -1699,6 +2184,82 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "member_import_batches_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nearby_service_facilities: {
+        Row: {
+          contact_label: string | null
+          created_at: string
+          district_name: string | null
+          geography_id: string | null
+          id: string
+          is_synthetic: boolean
+          kind: Database["public"]["Enums"]["facility_kind"]
+          latitude: number
+          longitude: number
+          name: string
+          organization_id: string | null
+          soil_lab_kind: Database["public"]["Enums"]["soil_lab_kind"] | null
+          source_key: string
+          state_name: string | null
+          tenant_id: string | null
+        }
+        Insert: {
+          contact_label?: string | null
+          created_at?: string
+          district_name?: string | null
+          geography_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          kind: Database["public"]["Enums"]["facility_kind"]
+          latitude: number
+          longitude: number
+          name: string
+          organization_id?: string | null
+          soil_lab_kind?: Database["public"]["Enums"]["soil_lab_kind"] | null
+          source_key: string
+          state_name?: string | null
+          tenant_id?: string | null
+        }
+        Update: {
+          contact_label?: string | null
+          created_at?: string
+          district_name?: string | null
+          geography_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          kind?: Database["public"]["Enums"]["facility_kind"]
+          latitude?: number
+          longitude?: number
+          name?: string
+          organization_id?: string | null
+          soil_lab_kind?: Database["public"]["Enums"]["soil_lab_kind"] | null
+          source_key?: string
+          state_name?: string | null
+          tenant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nearby_service_facilities_geography_id_fkey"
+            columns: ["geography_id"]
+            isOneToOne: false
+            referencedRelation: "geographies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nearby_service_facilities_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nearby_service_facilities_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -2900,6 +3461,122 @@ export type Database = {
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      processing_path_definitions: {
+        Row: {
+          assumption_source: string
+          code: string
+          commodity: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean
+          is_synthetic: boolean
+          label: string
+          notes: string | null
+          organization_id: string | null
+          owner_scope: string
+          tenant_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          assumption_source?: string
+          code: string
+          commodity: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          is_synthetic?: boolean
+          label: string
+          notes?: string | null
+          organization_id?: string | null
+          owner_scope?: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          assumption_source?: string
+          code?: string
+          commodity?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          is_synthetic?: boolean
+          label?: string
+          notes?: string | null
+          organization_id?: string | null
+          owner_scope?: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "processing_path_definitions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "processing_path_definitions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      processing_path_steps: {
+        Row: {
+          assumption_note: string | null
+          byproducts: Json
+          cost_breakdown: Json
+          cost_per_quintal: number
+          created_at: string
+          from_product: string
+          id: string
+          path_id: string
+          recovery_pct: number
+          step_order: number
+          to_product: string
+        }
+        Insert: {
+          assumption_note?: string | null
+          byproducts?: Json
+          cost_breakdown?: Json
+          cost_per_quintal?: number
+          created_at?: string
+          from_product: string
+          id?: string
+          path_id: string
+          recovery_pct: number
+          step_order: number
+          to_product: string
+        }
+        Update: {
+          assumption_note?: string | null
+          byproducts?: Json
+          cost_breakdown?: Json
+          cost_per_quintal?: number
+          created_at?: string
+          from_product?: string
+          id?: string
+          path_id?: string
+          recovery_pct?: number
+          step_order?: number
+          to_product?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "processing_path_steps_path_id_fkey"
+            columns: ["path_id"]
+            isOneToOne: false
+            referencedRelation: "processing_path_definitions"
             referencedColumns: ["id"]
           },
         ]
@@ -4940,6 +5617,75 @@ export type Database = {
           },
         ]
       }
+      value_add_scenarios: {
+        Row: {
+          assumptions: Json
+          byproduct_value: number
+          commodity: string
+          created_at: string
+          created_by: string | null
+          estimated_realization: number | null
+          farm_id: string
+          id: string
+          label: Database["public"]["Enums"]["price_label"]
+          path_id: string | null
+          processing_cost: number
+          raw_price_label: Database["public"]["Enums"]["price_label"] | null
+          raw_price_per_quintal: number | null
+          raw_price_source: string | null
+          steps_result: Json
+        }
+        Insert: {
+          assumptions?: Json
+          byproduct_value?: number
+          commodity: string
+          created_at?: string
+          created_by?: string | null
+          estimated_realization?: number | null
+          farm_id: string
+          id?: string
+          label?: Database["public"]["Enums"]["price_label"]
+          path_id?: string | null
+          processing_cost?: number
+          raw_price_label?: Database["public"]["Enums"]["price_label"] | null
+          raw_price_per_quintal?: number | null
+          raw_price_source?: string | null
+          steps_result?: Json
+        }
+        Update: {
+          assumptions?: Json
+          byproduct_value?: number
+          commodity?: string
+          created_at?: string
+          created_by?: string | null
+          estimated_realization?: number | null
+          farm_id?: string
+          id?: string
+          label?: Database["public"]["Enums"]["price_label"]
+          path_id?: string | null
+          processing_cost?: number
+          raw_price_label?: Database["public"]["Enums"]["price_label"] | null
+          raw_price_per_quintal?: number | null
+          raw_price_source?: string | null
+          steps_result?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "value_add_scenarios_farm_id_fkey"
+            columns: ["farm_id"]
+            isOneToOne: false
+            referencedRelation: "farm_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "value_add_scenarios_path_id_fkey"
+            columns: ["path_id"]
+            isOneToOne: false
+            referencedRelation: "processing_path_definitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       verification_cases: {
         Row: {
           assigned_to: string | null
@@ -5007,6 +5753,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_read_farm: { Args: { _farm_id: string }; Returns: boolean }
       has_consent: {
         Args: {
           _consumer_id: string
@@ -5094,11 +5841,33 @@ export type Database = {
         | "completed"
         | "dropped"
         | "cancelled"
+      escalation_kind:
+        | "talk_to_fpo"
+        | "talk_to_kvk"
+        | "talk_to_agronomist"
+        | "book_soil_test"
+        | "request_processor_quote"
+      escalation_status:
+        | "requested"
+        | "acknowledged"
+        | "in_progress"
+        | "closed"
+        | "cancelled"
       evidence_gate_state:
         | "not_evaluated"
         | "evidence_pending"
         | "approved"
         | "rejected"
+      facility_kind:
+        | "fpo"
+        | "kvk"
+        | "soil_lab"
+        | "chc"
+        | "warehouse"
+        | "cold_storage"
+        | "processor"
+        | "logistics"
+        | "extension_centre"
       farm_sync_state: "local_draft" | "synced" | "conflict"
       gate_status: "pending" | "approved" | "rejected"
       geo_level: "country" | "state" | "district" | "block" | "village"
@@ -5146,6 +5915,14 @@ export type Database = {
       market_side: "seller" | "buyer"
       member_status: "invited" | "active" | "suspended" | "removed"
       membership_status: "active" | "suspended" | "revoked"
+      observation_kind:
+        | "weather"
+        | "agromet"
+        | "soil_general"
+        | "soil_health_card"
+        | "price"
+        | "facility"
+        | "district_profile"
       onboarding_channel:
         | "self_service"
         | "fpo_assisted"
@@ -5177,6 +5954,7 @@ export type Database = {
         | "rejected"
         | "suspended"
       postharvest_kind: "warehouse" | "cold_storage" | "processor"
+      price_label: "observed" | "forecast" | "derived_scenario"
       privilege_request_status:
         | "pending"
         | "approved"
@@ -5222,6 +6000,14 @@ export type Database = {
         | "approved"
         | "rejected"
         | "suspended"
+      soil_basis: "inferred_from_location" | "lab_tested"
+      soil_lab_kind:
+        | "government"
+        | "mobile"
+        | "mini"
+        | "village"
+        | "registered_private"
+        | "icar_kvk"
       step_status: "not_started" | "in_progress" | "complete"
       support_case_status:
         | "new"
@@ -5437,11 +6223,36 @@ export const Constants = {
         "dropped",
         "cancelled",
       ],
+      escalation_kind: [
+        "talk_to_fpo",
+        "talk_to_kvk",
+        "talk_to_agronomist",
+        "book_soil_test",
+        "request_processor_quote",
+      ],
+      escalation_status: [
+        "requested",
+        "acknowledged",
+        "in_progress",
+        "closed",
+        "cancelled",
+      ],
       evidence_gate_state: [
         "not_evaluated",
         "evidence_pending",
         "approved",
         "rejected",
+      ],
+      facility_kind: [
+        "fpo",
+        "kvk",
+        "soil_lab",
+        "chc",
+        "warehouse",
+        "cold_storage",
+        "processor",
+        "logistics",
+        "extension_centre",
       ],
       farm_sync_state: ["local_draft", "synced", "conflict"],
       gate_status: ["pending", "approved", "rejected"],
@@ -5496,6 +6307,15 @@ export const Constants = {
       market_side: ["seller", "buyer"],
       member_status: ["invited", "active", "suspended", "removed"],
       membership_status: ["active", "suspended", "revoked"],
+      observation_kind: [
+        "weather",
+        "agromet",
+        "soil_general",
+        "soil_health_card",
+        "price",
+        "facility",
+        "district_profile",
+      ],
       onboarding_channel: [
         "self_service",
         "fpo_assisted",
@@ -5531,6 +6351,7 @@ export const Constants = {
         "suspended",
       ],
       postharvest_kind: ["warehouse", "cold_storage", "processor"],
+      price_label: ["observed", "forecast", "derived_scenario"],
       privilege_request_status: [
         "pending",
         "approved",
@@ -5581,6 +6402,15 @@ export const Constants = {
         "approved",
         "rejected",
         "suspended",
+      ],
+      soil_basis: ["inferred_from_location", "lab_tested"],
+      soil_lab_kind: [
+        "government",
+        "mobile",
+        "mini",
+        "village",
+        "registered_private",
+        "icar_kvk",
       ],
       step_status: ["not_started", "in_progress", "complete"],
       support_case_status: [
