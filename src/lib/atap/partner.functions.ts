@@ -38,6 +38,9 @@ import type { ConsumerTier } from "@/lib/atap/policy";
 
 /* ------------------------------------------------------------------ types */
 
+/** Server-fn return values must be plainly serializable. */
+export type JsonPrimitive = string | number | boolean | null;
+
 export interface RegistrationRow {
   id: string;
   partner_kind: PartnerKind;
@@ -114,9 +117,9 @@ export interface CaseRow {
   subject_user_id: string | null;
   purpose_code: string | null;
   status: PartnerCaseStatus;
-  payload: Record<string, unknown>;
-  signals: Record<string, unknown>;
-  evidence: unknown[];
+  payload: Record<string, JsonPrimitive>;
+  signals: Record<string, JsonPrimitive>;
+  evidence: string[];
   requires_human_decision: boolean;
   decision_note: string | null;
   decided_at: string | null;
@@ -1037,7 +1040,7 @@ export interface ApiCallResult {
   purposeCode: string | null;
   humanDecisionRequired: boolean;
   /** Present only when consent allowed a farmer-data read. */
-  payload: Record<string, unknown> | null;
+  payload: Record<string, JsonPrimitive> | null;
 }
 
 /**
@@ -1135,7 +1138,7 @@ export const callGovernedApi = createServerFn({ method: "POST" })
 
     // Sandbox always answers from the synthetic dataset; production farmer data
     // is only ever reachable through an allowed, consented production call.
-    let payload: Record<string, unknown> | null = null;
+    let payload: Record<string, JsonPrimitive> | null = null;
     if (result.decision === "allow") {
       payload = result.returnsFarmerData
         ? {
@@ -1144,7 +1147,7 @@ export const callGovernedApi = createServerFn({ method: "POST" })
             purpose_code: result.purposeCode,
             advisory_only: true,
           }
-        : { scope: data.scope, environment: data.targetEnvironment, records: [] };
+        : { scope: data.scope, environment: data.targetEnvironment, record_count: 0 };
     }
 
     const latencyMs = Date.now() - started;
