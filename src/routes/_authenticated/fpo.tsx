@@ -82,8 +82,8 @@ function FpoPage() {
         },
       }),
     onSuccess: async (res) => {
-      toast.success("Invitation created — share the token out of band");
-      setToken(res.token);
+      toast.success("Invitation created — share the reference with the invitee");
+      setToken(res.id);
       setEmail("");
       setNote("");
       await refresh();
@@ -92,7 +92,7 @@ function FpoPage() {
   });
 
   const acceptMutation = useMutation({
-    mutationFn: () => accept({ data: { token } }),
+    mutationFn: () => accept({ data: { inviteId: token } }),
     onSuccess: async () => {
       toast.success("Invitation accepted — scoped role granted and audited");
       setToken("");
@@ -133,7 +133,7 @@ function FpoPage() {
           <h2 className="font-display text-sm font-semibold">Accept a staff invitation</h2>
           <input
             className="field-base"
-            placeholder="Invitation token"
+            placeholder="Invitation reference"
             value={token}
             onChange={(e) => setToken(e.target.value)}
           />
@@ -226,7 +226,7 @@ function FpoPage() {
               </Button>
               {token ? (
                 <p className="field-hint break-all">
-                  Token (shown once): <code>{token}</code>
+                  Invitation reference: <code>{token}</code>
                 </p>
               ) : null}
               <p className="field-hint">
@@ -269,7 +269,7 @@ function FpoPage() {
                           variant="outline"
                           size="sm"
                           onClick={async () => {
-                            await revoke({ data: { invitationId: i.id } });
+                            await revoke({ data: { inviteId: i.id } });
                             toast.success("Invitation revoked and audited");
                             await refresh();
                           }}
@@ -286,7 +286,7 @@ function FpoPage() {
           <div className="space-y-2 border-t border-border pt-3">
             <input
               className="field-base"
-              placeholder="Accept an invitation token"
+              placeholder="Accept an invitation reference"
               value={token}
               onChange={(e) => setToken(e.target.value)}
             />
@@ -416,9 +416,9 @@ function FpoPage() {
           onClick={async () => {
             const res = await probe({ data: { tenantId: activeTenant?.id ?? "" } });
             setProbeResult(
-              `roster readable: ${res.rosterReadable} · farmer-data purposes granted: ${
-                res.grantedPurposes.length === 0 ? "none" : res.grantedPurposes.join(", ")
-              } · farm rows visible: ${res.farmRowsVisible}`,
+              `roster readable: ${res.canReadRoster} · farmer-data purposes granted: ${
+                res.grantedFarmerPurposes.length === 0 ? "none" : res.grantedFarmerPurposes.join(", ")
+              } · other farmers' farm rows visible: ${res.otherFarmRowsVisible}`,
             );
           }}
         >

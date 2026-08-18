@@ -11,6 +11,7 @@ import {
   checkStaffInvite,
   canManageRoster,
   canReadRoster,
+  rosterGrantedPurposes,
   checklistsForRoles,
   delegatedPurchasingAllowed,
   evaluateSchemeRules,
