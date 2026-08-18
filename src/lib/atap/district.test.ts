@@ -416,13 +416,13 @@ describe("district rollout scope and D-08 guard", () => {
 
   it("keeps FPO delegated purchasing disabled until D-08 is validated", () => {
     const off: FlagDef[] = [
-      { key: "fpo.delegated_purchasing", label: "x", description: null, enabled: false, environments: [] },
+      { key: "fpo.delegated_purchasing", label: "x", enabled: false, environments: [] },
     ];
     const forcedOn: FlagDef[] = [
       {
         key: "fpo.delegated_purchasing",
         label: "x",
-        description: null,
+
         enabled: true,
         environments: ["development", "sandbox", "production"],
       },
