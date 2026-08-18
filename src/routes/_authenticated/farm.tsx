@@ -205,10 +205,10 @@ function FarmPage() {
           never delegated — the farmer accepts it themselves in the consent centre.
         </p>
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
-          <label className="atap-field">
-            <span className="atap-label">Channel</span>
+          <label className="block">
+            <span className="mb-1 block text-sm font-medium">Channel</span>
             <select
-              className="atap-input"
+              className="field-base"
               value={channel}
               onChange={(e) => setChannel(e.target.value as OnboardingChannel)}
             >
@@ -220,15 +220,15 @@ function FarmPage() {
             </select>
           </label>
           {isAssistedChannel(channel) && (
-            <label className="atap-field">
-              <span className="atap-label">Farmer user id (data subject)</span>
+            <label className="block">
+              <span className="mb-1 block text-sm font-medium">Farmer user id (data subject)</span>
               <input
-                className="atap-input"
+                className="field-base"
                 value={subjectUserId}
                 onChange={(e) => setSubjectUserId(e.target.value)}
                 placeholder="uuid of the farmer you are assisting"
               />
-              <span className="atap-hint">
+              <span className="field-hint block">
                 {data?.canAssist
                   ? "Your role allows assisted capture. Every write is audited as actor vs subject."
                   : "You do not hold an assisting role, so the server will deny assisted writes."}
@@ -245,10 +245,10 @@ function FarmPage() {
           another subject, routes to human manual review instead of failing the farmer.
         </p>
         <div className="mt-4 flex flex-wrap items-end gap-3">
-          <label className="atap-field min-w-64 flex-1">
-            <span className="atap-label">Identity reference (synthetic)</span>
+          <label className="block min-w-64 flex-1">
+            <span className="mb-1 block text-sm font-medium">Identity reference (synthetic)</span>
             <input
-              className="atap-input"
+              className="field-base"
               value={reference}
               onChange={(e) => setReference(e.target.value)}
               placeholder="e.g. SYN-FARMER-0001"
@@ -293,48 +293,48 @@ function FarmPage() {
         </div>
         <div className="mt-4 grid gap-4 lg:grid-cols-2">
           <div className="space-y-3">
-            <label className="atap-field">
-              <span className="atap-label">Parcel label</span>
+            <label className="block">
+              <span className="mb-1 block text-sm font-medium">Parcel label</span>
               <input
-                className="atap-input"
+                className="field-base"
                 value={form.label}
                 onChange={(e) => setForm({ ...form, label: e.target.value })}
                 placeholder="North field"
               />
             </label>
-            <label className="atap-field">
-              <span className="atap-label">Plot reference</span>
+            <label className="block">
+              <span className="mb-1 block text-sm font-medium">Plot reference</span>
               <input
-                className="atap-input"
+                className="field-base"
                 value={form.plotRef}
                 onChange={(e) => setForm({ ...form, plotRef: e.target.value })}
                 placeholder="TG-KHM-114/2"
               />
-              <span className="atap-hint">Used as the duplicate guard for a farmer's parcels.</span>
+              <span className="field-hint block">Used as the duplicate guard for a farmer's parcels.</span>
             </label>
-            <label className="atap-field">
-              <span className="atap-label">Village code</span>
+            <label className="block">
+              <span className="mb-1 block text-sm font-medium">Village code</span>
               <input
-                className="atap-input"
+                className="field-base"
                 value={form.villageCode}
                 onChange={(e) => setForm({ ...form, villageCode: e.target.value })}
                 placeholder="TG-KHM-V001"
               />
             </label>
             <div className="grid gap-3 sm:grid-cols-2">
-              <label className="atap-field">
-                <span className="atap-label">Primary crop</span>
+              <label className="block">
+                <span className="mb-1 block text-sm font-medium">Primary crop</span>
                 <input
-                  className="atap-input"
+                  className="field-base"
                   value={form.primaryCrop}
                   onChange={(e) => setForm({ ...form, primaryCrop: e.target.value })}
                   placeholder="Cotton"
                 />
               </label>
-              <label className="atap-field">
-                <span className="atap-label">Irrigation (baseline profile)</span>
+              <label className="block">
+                <span className="mb-1 block text-sm font-medium">Irrigation (baseline profile)</span>
                 <select
-                  className="atap-input"
+                  className="field-base"
                   value={form.irrigation}
                   onChange={(e) => setForm({ ...form, irrigation: e.target.value })}
                 >
@@ -391,7 +391,7 @@ function FarmPage() {
       <section className="rounded-xl border border-border bg-card p-5">
         <h2 className="font-display text-lg font-semibold">Synced farm records</h2>
         <div className="mt-3 overflow-x-auto">
-          <table className="atap-table">
+          <table className="data-table">
             <thead>
               <tr>
                 <th>Parcel</th>
@@ -459,7 +459,7 @@ function FarmPage() {
             {data.metrics.assisted} assisted vs {data.metrics.selfService} self-service events.
           </p>
           <div className="mt-3 overflow-x-auto">
-            <table className="atap-table">
+            <table className="data-table">
               <thead>
                 <tr>
                   <th>Stage</th>
