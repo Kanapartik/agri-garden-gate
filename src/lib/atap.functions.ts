@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { Json } from "@/integrations/supabase/types";
 import {
   evaluateDataAccess,
   requiresHumanDecision,
@@ -17,7 +18,7 @@ export interface MyContext {
     membership_status: string;
   }>;
   roles: Array<{ role: AppRole; tenant_id: string | null }>;
-  config: Array<{ config_key: string; config_value: unknown }>;
+  config: Array<{ config_key: string; config_value: Json }>;
   canReadAudit: boolean;
 }
 
@@ -55,7 +56,7 @@ export const getMyContext = createServerFn({ method: "GET" })
       profile: profileRes.data ?? null,
       tenants,
       roles,
-      config: (configRes.data ?? []) as Array<{ config_key: string; config_value: unknown }>,
+      config: (configRes.data ?? []) as Array<{ config_key: string; config_value: Json }>,
       canReadAudit: roles.some(
         (r) => r.tenant_id === null && (r.role === "auditor" || r.role === "platform_admin"),
       ),
