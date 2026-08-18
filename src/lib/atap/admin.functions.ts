@@ -4,6 +4,7 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { Json } from "@/integrations/supabase/types";
 import type { AppRole } from "@/lib/atap/policy";
 import {
   advanceWorkflow,
@@ -87,7 +88,7 @@ export interface AdminConsole {
     tenant_id: string;
     plan_code: string;
     status: string;
-    features: unknown;
+    features: Json;
   }>;
   consentPolicies: Array<{
     code: string;
@@ -102,7 +103,7 @@ export interface AdminConsole {
     decision: string;
     subject_type: string | null;
     subject_id: string | null;
-    metadata: unknown;
+    metadata: Json;
     created_at: string;
   }>;
 }
