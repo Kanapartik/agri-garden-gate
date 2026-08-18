@@ -360,13 +360,13 @@ const FIRST_VALUE_CATALOG: ReadonlyArray<Omit<FirstValueAction, "available">> = 
     key: "advisory_intro",
     label: "Read your first plain-language advisory",
     description: "Human-curated context. No autonomous advisory is generated in this slice.",
-    flagKey: "advisory.baseline",
+    flagKey: "advisory.baseline_cards",
   },
   {
     key: "marketplace_intro",
     label: "Browse market activity",
     description: "Marketplace transactions stay deactivated until a later slice.",
-    flagKey: "marketplace.core",
+    flagKey: "domain.marketplace",
   },
 ];
 

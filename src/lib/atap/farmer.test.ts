@@ -233,8 +233,8 @@ describe("first-value launcher and funnel metrics", () => {
   it("keeps deactivated domains unavailable", () => {
     const actions = firstValueActions(
       [
-        { key: "advisory.baseline", label: "Advisory", enabled: true, environments: ["development"] },
-        { key: "marketplace.core", label: "Marketplace", enabled: false, environments: ["development"] },
+        { key: "advisory.baseline_cards", label: "Advisory", enabled: true, environments: ["development"] },
+        { key: "domain.marketplace", label: "Marketplace", enabled: false, environments: ["development"] },
       ],
       "development",
     );
