@@ -1026,6 +1026,187 @@ export type Database = {
           },
         ]
       }
+      knowledge_contributions: {
+        Row: {
+          ai_grounding_enabled: boolean
+          author_user_id: string
+          body: string
+          citations: string[]
+          created_at: string
+          id: string
+          institution_id: string | null
+          is_synthetic: boolean
+          is_training_content: boolean
+          language: string
+          published_at: string | null
+          review_note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["knowledge_status"]
+          summary: string
+          title: string
+          topic: string
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          ai_grounding_enabled?: boolean
+          author_user_id: string
+          body?: string
+          citations?: string[]
+          created_at?: string
+          id?: string
+          institution_id?: string | null
+          is_synthetic?: boolean
+          is_training_content?: boolean
+          language?: string
+          published_at?: string | null
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["knowledge_status"]
+          summary?: string
+          title: string
+          topic?: string
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          ai_grounding_enabled?: boolean
+          author_user_id?: string
+          body?: string
+          citations?: string[]
+          created_at?: string
+          id?: string
+          institution_id?: string | null
+          is_synthetic?: boolean
+          is_training_content?: boolean
+          language?: string
+          published_at?: string | null
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["knowledge_status"]
+          summary?: string
+          title?: string
+          topic?: string
+          updated_at?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "knowledge_contributions_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "knowledge_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      knowledge_institutions: {
+        Row: {
+          contact_email: string
+          created_at: string
+          created_by: string | null
+          decided_at: string | null
+          decided_by: string | null
+          decision_note: string | null
+          geography_id: string | null
+          id: string
+          is_synthetic: boolean
+          kind: Database["public"]["Enums"]["knowledge_kind"]
+          name: string
+          state: Database["public"]["Enums"]["service_provider_state"]
+          tenant_id: string | null
+          topics: string[]
+          updated_at: string
+        }
+        Insert: {
+          contact_email: string
+          created_at?: string
+          created_by?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          geography_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          kind: Database["public"]["Enums"]["knowledge_kind"]
+          name: string
+          state?: Database["public"]["Enums"]["service_provider_state"]
+          tenant_id?: string | null
+          topics?: string[]
+          updated_at?: string
+        }
+        Update: {
+          contact_email?: string
+          created_at?: string
+          created_by?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          geography_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          kind?: Database["public"]["Enums"]["knowledge_kind"]
+          name?: string
+          state?: Database["public"]["Enums"]["service_provider_state"]
+          tenant_id?: string | null
+          topics?: string[]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "knowledge_institutions_geography_id_fkey"
+            columns: ["geography_id"]
+            isOneToOne: false
+            referencedRelation: "geographies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "knowledge_institutions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      knowledge_reviews: {
+        Row: {
+          contribution_id: string
+          created_at: string
+          decision: string
+          id: string
+          note: string
+          reviewer_user_id: string
+        }
+        Insert: {
+          contribution_id: string
+          created_at?: string
+          decision: string
+          id?: string
+          note?: string
+          reviewer_user_id: string
+        }
+        Update: {
+          contribution_id?: string
+          created_at?: string
+          decision?: string
+          id?: string
+          note?: string
+          reviewer_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "knowledge_reviews_contribution_id_fkey"
+            columns: ["contribution_id"]
+            isOneToOne: false
+            referencedRelation: "knowledge_contributions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       marketplace_disputes: {
         Row: {
           assigned_to: string | null
@@ -2537,6 +2718,139 @@ export type Database = {
           },
         ]
       }
+      policy_metric_snapshots: {
+        Row: {
+          cohort_size: number
+          created_at: string
+          geography_id: string | null
+          id: string
+          is_deidentified: boolean
+          is_synthetic: boolean
+          metric_code: string
+          period: string
+          tenant_id: string | null
+          value: number
+        }
+        Insert: {
+          cohort_size?: number
+          created_at?: string
+          geography_id?: string | null
+          id?: string
+          is_deidentified?: boolean
+          is_synthetic?: boolean
+          metric_code: string
+          period: string
+          tenant_id?: string | null
+          value?: number
+        }
+        Update: {
+          cohort_size?: number
+          created_at?: string
+          geography_id?: string | null
+          id?: string
+          is_deidentified?: boolean
+          is_synthetic?: boolean
+          metric_code?: string
+          period?: string
+          tenant_id?: string | null
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "policy_metric_snapshots_geography_id_fkey"
+            columns: ["geography_id"]
+            isOneToOne: false
+            referencedRelation: "geographies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "policy_metric_snapshots_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      postharvest_providers: {
+        Row: {
+          contact_email: string
+          created_at: string
+          created_by: string | null
+          decided_at: string | null
+          decided_by: string | null
+          decision_note: string | null
+          display_name: string
+          geography_id: string | null
+          id: string
+          is_synthetic: boolean
+          kind: Database["public"]["Enums"]["postharvest_kind"]
+          service_regions: string[]
+          state: Database["public"]["Enums"]["service_provider_state"]
+          subtype_code: string | null
+          tenant_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          contact_email: string
+          created_at?: string
+          created_by?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          display_name: string
+          geography_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          kind: Database["public"]["Enums"]["postharvest_kind"]
+          service_regions?: string[]
+          state?: Database["public"]["Enums"]["service_provider_state"]
+          subtype_code?: string | null
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          contact_email?: string
+          created_at?: string
+          created_by?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          display_name?: string
+          geography_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          kind?: Database["public"]["Enums"]["postharvest_kind"]
+          service_regions?: string[]
+          state?: Database["public"]["Enums"]["service_provider_state"]
+          subtype_code?: string | null
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "postharvest_providers_geography_id_fkey"
+            columns: ["geography_id"]
+            isOneToOne: false
+            referencedRelation: "geographies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "postharvest_providers_subtype_code_fkey"
+            columns: ["subtype_code"]
+            isOneToOne: false
+            referencedRelation: "service_subtypes"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "postharvest_providers_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       privileged_access_requests: {
         Row: {
           approved_at: string | null
@@ -2590,6 +2904,84 @@ export type Database = {
           },
         ]
       }
+      processor_contracts: {
+        Row: {
+          commodity: string
+          counterparty_profile_id: string | null
+          created_at: string
+          created_by: string | null
+          currency: string
+          decided_at: string | null
+          decided_by: string | null
+          decision_note: string | null
+          delivery_window: string
+          id: string
+          is_synthetic: boolean
+          price_per_tonne: number
+          provider_id: string
+          quantity_tonnes: number
+          requires_human_decision: boolean
+          status: Database["public"]["Enums"]["contract_status"]
+          terms: Json
+          updated_at: string
+        }
+        Insert: {
+          commodity: string
+          counterparty_profile_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          delivery_window?: string
+          id?: string
+          is_synthetic?: boolean
+          price_per_tonne: number
+          provider_id: string
+          quantity_tonnes: number
+          requires_human_decision?: boolean
+          status?: Database["public"]["Enums"]["contract_status"]
+          terms?: Json
+          updated_at?: string
+        }
+        Update: {
+          commodity?: string
+          counterparty_profile_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          delivery_window?: string
+          id?: string
+          is_synthetic?: boolean
+          price_per_tonne?: number
+          provider_id?: string
+          quantity_tonnes?: number
+          requires_human_decision?: boolean
+          status?: Database["public"]["Enums"]["contract_status"]
+          terms?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "processor_contracts_counterparty_profile_id_fkey"
+            columns: ["counterparty_profile_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "processor_contracts_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "postharvest_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -2616,6 +3008,144 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      research_exports: {
+        Row: {
+          aggregation_min_applied: number
+          allowed: boolean
+          cohort_size: number
+          created_at: string
+          dataset_code: string
+          denial_reason: string | null
+          geography_id: string | null
+          id: string
+          payload: Json
+          request_id: string
+          requested_by: string
+        }
+        Insert: {
+          aggregation_min_applied?: number
+          allowed?: boolean
+          cohort_size?: number
+          created_at?: string
+          dataset_code: string
+          denial_reason?: string | null
+          geography_id?: string | null
+          id?: string
+          payload?: Json
+          request_id: string
+          requested_by: string
+        }
+        Update: {
+          aggregation_min_applied?: number
+          allowed?: boolean
+          cohort_size?: number
+          created_at?: string
+          dataset_code?: string
+          denial_reason?: string | null
+          geography_id?: string | null
+          id?: string
+          payload?: Json
+          request_id?: string
+          requested_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "research_exports_geography_id_fkey"
+            columns: ["geography_id"]
+            isOneToOne: false
+            referencedRelation: "geographies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "research_exports_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "research_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      research_requests: {
+        Row: {
+          abstract: string
+          aggregation_min_cohort: number
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          decision_note: string | null
+          dua_reference: string | null
+          ethics_reference: string | null
+          expires_at: string | null
+          id: string
+          institution_id: string | null
+          is_synthetic: boolean
+          purpose_code: string | null
+          raw_row_access: boolean
+          requested_datasets: string[]
+          researcher_user_id: string
+          status: Database["public"]["Enums"]["research_request_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          abstract?: string
+          aggregation_min_cohort?: number
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          dua_reference?: string | null
+          ethics_reference?: string | null
+          expires_at?: string | null
+          id?: string
+          institution_id?: string | null
+          is_synthetic?: boolean
+          purpose_code?: string | null
+          raw_row_access?: boolean
+          requested_datasets?: string[]
+          researcher_user_id: string
+          status?: Database["public"]["Enums"]["research_request_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          abstract?: string
+          aggregation_min_cohort?: number
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          dua_reference?: string | null
+          ethics_reference?: string | null
+          expires_at?: string | null
+          id?: string
+          institution_id?: string | null
+          is_synthetic?: boolean
+          purpose_code?: string | null
+          raw_row_access?: boolean
+          requested_datasets?: string[]
+          researcher_user_id?: string
+          status?: Database["public"]["Enums"]["research_request_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "research_requests_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "knowledge_institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "research_requests_purpose_code_fkey"
+            columns: ["purpose_code"]
+            isOneToOne: false
+            referencedRelation: "data_purposes"
+            referencedColumns: ["code"]
+          },
+        ]
       }
       role_definitions: {
         Row: {
@@ -3209,6 +3739,150 @@ export type Database = {
           },
         ]
       }
+      state_configurations: {
+        Row: {
+          aggregation_min_cohort: number
+          allows_raw_farmer_access: boolean
+          created_at: string
+          created_by: string | null
+          default_locale: string
+          enabled_flags: string[]
+          geography_id: string | null
+          governance: Json
+          id: string
+          is_synthetic: boolean
+          label: string
+          locales: string[]
+          status: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          aggregation_min_cohort?: number
+          allows_raw_farmer_access?: boolean
+          created_at?: string
+          created_by?: string | null
+          default_locale?: string
+          enabled_flags?: string[]
+          geography_id?: string | null
+          governance?: Json
+          id?: string
+          is_synthetic?: boolean
+          label: string
+          locales?: string[]
+          status?: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          aggregation_min_cohort?: number
+          allows_raw_farmer_access?: boolean
+          created_at?: string
+          created_by?: string | null
+          default_locale?: string
+          enabled_flags?: string[]
+          geography_id?: string | null
+          governance?: Json
+          id?: string
+          is_synthetic?: boolean
+          label?: string
+          locales?: string[]
+          status?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "state_configurations_geography_id_fkey"
+            columns: ["geography_id"]
+            isOneToOne: false
+            referencedRelation: "geographies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "state_configurations_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      storage_capacity_listings: {
+        Row: {
+          available_tonnes: number
+          capacity_tonnes: number
+          commodity: string
+          created_at: string
+          created_by: string | null
+          currency: string
+          geography_id: string | null
+          id: string
+          is_synthetic: boolean
+          price_per_tonne_month: number | null
+          provider_id: string
+          quality_score: number
+          review_note: string | null
+          status: Database["public"]["Enums"]["listing_status"]
+          temperature_max_c: number | null
+          temperature_min_c: number | null
+          updated_at: string
+        }
+        Insert: {
+          available_tonnes?: number
+          capacity_tonnes: number
+          commodity: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          geography_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          price_per_tonne_month?: number | null
+          provider_id: string
+          quality_score?: number
+          review_note?: string | null
+          status?: Database["public"]["Enums"]["listing_status"]
+          temperature_max_c?: number | null
+          temperature_min_c?: number | null
+          updated_at?: string
+        }
+        Update: {
+          available_tonnes?: number
+          capacity_tonnes?: number
+          commodity?: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          geography_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          price_per_tonne_month?: number | null
+          provider_id?: string
+          quality_score?: number
+          review_note?: string | null
+          status?: Database["public"]["Enums"]["listing_status"]
+          temperature_max_c?: number | null
+          temperature_min_c?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "storage_capacity_listings_geography_id_fkey"
+            columns: ["geography_id"]
+            isOneToOne: false
+            referencedRelation: "geographies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "storage_capacity_listings_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "postharvest_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       support_cases: {
         Row: {
           assigned_to: string | null
@@ -3742,6 +4416,12 @@ export type Database = {
         | "expansion_manager"
         | "support_agent"
         | "service_provider_admin"
+        | "state_admin"
+        | "knowledge_contributor"
+        | "knowledge_reviewer"
+        | "researcher"
+        | "policymaker"
+        | "postharvest_provider_admin"
       case_status: "open" | "in_review" | "approved" | "rejected" | "escalated"
       certification_state:
         | "draft"
@@ -3754,6 +4434,14 @@ export type Database = {
       consumer_tier: "sandbox" | "standard" | "premium"
       contact_channel: "email" | "sms" | "whatsapp"
       contact_verification_status: "pending" | "verified" | "failed" | "expired"
+      contract_status:
+        | "draft"
+        | "proposed"
+        | "accepted"
+        | "active"
+        | "completed"
+        | "cancelled"
+        | "disputed"
       dispute_status: "open" | "human_review" | "resolved" | "rejected"
       evidence_gate_state:
         | "not_evaluated"
@@ -3770,6 +4458,19 @@ export type Database = {
         | "manual_review"
         | "duplicate_hold"
       invitation_status: "pending" | "accepted" | "revoked" | "expired"
+      knowledge_kind:
+        | "university"
+        | "kvk"
+        | "extension_centre"
+        | "state_training_cell"
+      knowledge_status:
+        | "draft"
+        | "submitted"
+        | "in_review"
+        | "approved"
+        | "published"
+        | "rejected"
+        | "withdrawn"
       listing_status: "draft" | "pending_review" | "published" | "delisted"
       market_order_status:
         | "created"
@@ -3823,6 +4524,7 @@ export type Database = {
         | "approved"
         | "rejected"
         | "suspended"
+      postharvest_kind: "warehouse" | "cold_storage" | "processor"
       privilege_request_status:
         | "pending"
         | "approved"
@@ -3830,6 +4532,14 @@ export type Database = {
         | "expired"
         | "revoked"
       record_status: "pending" | "active" | "verified" | "rejected" | "revoked"
+      research_request_status:
+        | "draft"
+        | "submitted"
+        | "ethics_review"
+        | "approved"
+        | "rejected"
+        | "expired"
+        | "revoked"
       rfq_status: "draft" | "open" | "quoted" | "ordered" | "cancelled"
       rollout_status: "planned" | "configuring" | "piloting" | "live" | "paused"
       scheme_application_status:
@@ -4016,6 +4726,12 @@ export const Constants = {
         "expansion_manager",
         "support_agent",
         "service_provider_admin",
+        "state_admin",
+        "knowledge_contributor",
+        "knowledge_reviewer",
+        "researcher",
+        "policymaker",
+        "postharvest_provider_admin",
       ],
       case_status: ["open", "in_review", "approved", "rejected", "escalated"],
       certification_state: [
@@ -4030,6 +4746,15 @@ export const Constants = {
       consumer_tier: ["sandbox", "standard", "premium"],
       contact_channel: ["email", "sms", "whatsapp"],
       contact_verification_status: ["pending", "verified", "failed", "expired"],
+      contract_status: [
+        "draft",
+        "proposed",
+        "accepted",
+        "active",
+        "completed",
+        "cancelled",
+        "disputed",
+      ],
       dispute_status: ["open", "human_review", "resolved", "rejected"],
       evidence_gate_state: [
         "not_evaluated",
@@ -4048,6 +4773,21 @@ export const Constants = {
         "duplicate_hold",
       ],
       invitation_status: ["pending", "accepted", "revoked", "expired"],
+      knowledge_kind: [
+        "university",
+        "kvk",
+        "extension_centre",
+        "state_training_cell",
+      ],
+      knowledge_status: [
+        "draft",
+        "submitted",
+        "in_review",
+        "approved",
+        "published",
+        "rejected",
+        "withdrawn",
+      ],
       listing_status: ["draft", "pending_review", "published", "delisted"],
       market_order_status: [
         "created",
@@ -4108,6 +4848,7 @@ export const Constants = {
         "rejected",
         "suspended",
       ],
+      postharvest_kind: ["warehouse", "cold_storage", "processor"],
       privilege_request_status: [
         "pending",
         "approved",
@@ -4116,6 +4857,15 @@ export const Constants = {
         "revoked",
       ],
       record_status: ["pending", "active", "verified", "rejected", "revoked"],
+      research_request_status: [
+        "draft",
+        "submitted",
+        "ethics_review",
+        "approved",
+        "rejected",
+        "expired",
+        "revoked",
+      ],
       rfq_status: ["draft", "open", "quoted", "ordered", "cancelled"],
       rollout_status: ["planned", "configuring", "piloting", "live", "paused"],
       scheme_application_status: [
