@@ -14,6 +14,59 @@ export type Database = {
   }
   public: {
     Tables: {
+      agreement_records: {
+        Row: {
+          agreement_code: string
+          created_at: string
+          document_id: string | null
+          id: string
+          is_synthetic: boolean
+          party_id: string
+          party_type: string
+          signed_at: string | null
+          signed_by: string | null
+          status: Database["public"]["Enums"]["record_status"]
+          tenant_id: string | null
+          version: string
+        }
+        Insert: {
+          agreement_code: string
+          created_at?: string
+          document_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          party_id: string
+          party_type: string
+          signed_at?: string | null
+          signed_by?: string | null
+          status?: Database["public"]["Enums"]["record_status"]
+          tenant_id?: string | null
+          version: string
+        }
+        Update: {
+          agreement_code?: string
+          created_at?: string
+          document_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          party_id?: string
+          party_type?: string
+          signed_at?: string | null
+          signed_by?: string | null
+          status?: Database["public"]["Enums"]["record_status"]
+          tenant_id?: string | null
+          version?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agreement_records_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       api_consumers: {
         Row: {
           created_at: string
@@ -144,6 +197,95 @@ export type Database = {
           },
         ]
       }
+      consent_policies: {
+        Row: {
+          code: string
+          description: string
+          is_active: boolean
+          max_duration_days: number
+          purpose_code: string
+          requires_explicit_consent: boolean
+          scope_template: Json
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          description?: string
+          is_active?: boolean
+          max_duration_days?: number
+          purpose_code: string
+          requires_explicit_consent?: boolean
+          scope_template?: Json
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          description?: string
+          is_active?: boolean
+          max_duration_days?: number
+          purpose_code?: string
+          requires_explicit_consent?: boolean
+          scope_template?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consent_policies_purpose_code_fkey"
+            columns: ["purpose_code"]
+            isOneToOne: false
+            referencedRelation: "data_purposes"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      contact_verifications: {
+        Row: {
+          attempts: number
+          channel: Database["public"]["Enums"]["contact_channel"]
+          code_hash: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          is_synthetic: boolean
+          provider: string
+          provider_ref: string | null
+          status: Database["public"]["Enums"]["contact_verification_status"]
+          target: string
+          user_id: string | null
+          verified_at: string | null
+        }
+        Insert: {
+          attempts?: number
+          channel: Database["public"]["Enums"]["contact_channel"]
+          code_hash?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_synthetic?: boolean
+          provider?: string
+          provider_ref?: string | null
+          status?: Database["public"]["Enums"]["contact_verification_status"]
+          target: string
+          user_id?: string | null
+          verified_at?: string | null
+        }
+        Update: {
+          attempts?: number
+          channel?: Database["public"]["Enums"]["contact_channel"]
+          code_hash?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_synthetic?: boolean
+          provider?: string
+          provider_ref?: string | null
+          status?: Database["public"]["Enums"]["contact_verification_status"]
+          target?: string
+          user_id?: string | null
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
       data_purposes: {
         Row: {
           code: string
@@ -167,6 +309,62 @@ export type Database = {
           requires_explicit_consent?: boolean
         }
         Relationships: []
+      }
+      document_records: {
+        Row: {
+          checksum: string | null
+          created_at: string
+          doc_type: string
+          id: string
+          is_synthetic: boolean
+          owner_id: string
+          owner_type: string
+          provider: string
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["record_status"]
+          storage_path: string | null
+          tenant_id: string | null
+          uploaded_by: string | null
+        }
+        Insert: {
+          checksum?: string | null
+          created_at?: string
+          doc_type: string
+          id?: string
+          is_synthetic?: boolean
+          owner_id: string
+          owner_type: string
+          provider?: string
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["record_status"]
+          storage_path?: string | null
+          tenant_id?: string | null
+          uploaded_by?: string | null
+        }
+        Update: {
+          checksum?: string | null
+          created_at?: string
+          doc_type?: string
+          id?: string
+          is_synthetic?: boolean
+          owner_id?: string
+          owner_type?: string
+          provider?: string
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["record_status"]
+          storage_path?: string | null
+          tenant_id?: string | null
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_records_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       feature_flags: {
         Row: {
@@ -388,6 +586,177 @@ export type Database = {
           },
         ]
       }
+      onboarding_workflows: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          current_state: string
+          id: string
+          is_synthetic: boolean
+          state_history: Json
+          status: Database["public"]["Enums"]["workflow_status"]
+          subject_id: string
+          subject_type: string
+          tenant_id: string | null
+          updated_at: string
+          workflow_key: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          current_state: string
+          id?: string
+          is_synthetic?: boolean
+          state_history?: Json
+          status?: Database["public"]["Enums"]["workflow_status"]
+          subject_id: string
+          subject_type: string
+          tenant_id?: string | null
+          updated_at?: string
+          workflow_key: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          current_state?: string
+          id?: string
+          is_synthetic?: boolean
+          state_history?: Json
+          status?: Database["public"]["Enums"]["workflow_status"]
+          subject_id?: string
+          subject_type?: string
+          tenant_id?: string | null
+          updated_at?: string
+          workflow_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "onboarding_workflows_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organization_subtypes: {
+        Row: {
+          code: string
+          description: string
+          evidence_required: Json
+          is_active: boolean
+          label: string
+          requires_approval: boolean
+          sort_order: number
+          tenant_type: Database["public"]["Enums"]["tenant_type"]
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          description?: string
+          evidence_required?: Json
+          is_active?: boolean
+          label: string
+          requires_approval?: boolean
+          sort_order?: number
+          tenant_type: Database["public"]["Enums"]["tenant_type"]
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          description?: string
+          evidence_required?: Json
+          is_active?: boolean
+          label?: string
+          requires_approval?: boolean
+          sort_order?: number
+          tenant_type?: Database["public"]["Enums"]["tenant_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      organizations: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          decided_at: string | null
+          decided_by: string | null
+          decision_note: string | null
+          display_name: string
+          geography_id: string | null
+          id: string
+          is_synthetic: boolean
+          legal_name: string
+          metadata: Json
+          region_code: string | null
+          registration_number: string | null
+          status: Database["public"]["Enums"]["org_status"]
+          subtype_code: string
+          tenant_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          display_name: string
+          geography_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          legal_name: string
+          metadata?: Json
+          region_code?: string | null
+          registration_number?: string | null
+          status?: Database["public"]["Enums"]["org_status"]
+          subtype_code: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          display_name?: string
+          geography_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          legal_name?: string
+          metadata?: Json
+          region_code?: string | null
+          registration_number?: string | null
+          status?: Database["public"]["Enums"]["org_status"]
+          subtype_code?: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organizations_geography_id_fkey"
+            columns: ["geography_id"]
+            isOneToOne: false
+            referencedRelation: "geographies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organizations_subtype_code_fkey"
+            columns: ["subtype_code"]
+            isOneToOne: false
+            referencedRelation: "organization_subtypes"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "organizations_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       platform_config: {
         Row: {
           config_key: string
@@ -416,6 +785,59 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "platform_config_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      privileged_access_requests: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          justification: string
+          mfa_provider: string | null
+          mfa_verified: boolean
+          requested_role: Database["public"]["Enums"]["app_role"]
+          requester_user_id: string
+          status: Database["public"]["Enums"]["privilege_request_status"]
+          tenant_id: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          justification: string
+          mfa_provider?: string | null
+          mfa_verified?: boolean
+          requested_role: Database["public"]["Enums"]["app_role"]
+          requester_user_id: string
+          status?: Database["public"]["Enums"]["privilege_request_status"]
+          tenant_id?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          justification?: string
+          mfa_provider?: string | null
+          mfa_verified?: boolean
+          requested_role?: Database["public"]["Enums"]["app_role"]
+          requester_user_id?: string
+          status?: Database["public"]["Enums"]["privilege_request_status"]
+          tenant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "privileged_access_requests_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -524,6 +946,47 @@ export type Database = {
         }
         Relationships: []
       }
+      tenant_entitlements: {
+        Row: {
+          ends_at: string | null
+          features: Json
+          id: string
+          plan_code: string
+          starts_at: string
+          status: Database["public"]["Enums"]["membership_status"]
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          ends_at?: string | null
+          features?: Json
+          id?: string
+          plan_code: string
+          starts_at?: string
+          status?: Database["public"]["Enums"]["membership_status"]
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          ends_at?: string | null
+          features?: Json
+          id?: string
+          plan_code?: string
+          starts_at?: string
+          status?: Database["public"]["Enums"]["membership_status"]
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_entitlements_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tenant_members: {
         Row: {
           created_at: string
@@ -550,6 +1013,57 @@ export type Database = {
           {
             foreignKeyName: "tenant_members_tenant_id_fkey"
             columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenant_relationships: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          from_tenant_id: string
+          id: string
+          note: string | null
+          relationship_type: Database["public"]["Enums"]["tenant_relationship_type"]
+          status: Database["public"]["Enums"]["membership_status"]
+          to_tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          from_tenant_id: string
+          id?: string
+          note?: string | null
+          relationship_type: Database["public"]["Enums"]["tenant_relationship_type"]
+          status?: Database["public"]["Enums"]["membership_status"]
+          to_tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          from_tenant_id?: string
+          id?: string
+          note?: string | null
+          relationship_type?: Database["public"]["Enums"]["tenant_relationship_type"]
+          status?: Database["public"]["Enums"]["membership_status"]
+          to_tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_relationships_from_tenant_id_fkey"
+            columns: ["from_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tenant_relationships_to_tenant_id_fkey"
+            columns: ["to_tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
             referencedColumns: ["id"]
@@ -589,6 +1103,33 @@ export type Database = {
         }
         Relationships: []
       }
+      terms_acceptances: {
+        Row: {
+          accepted_at: string
+          context: Json
+          id: string
+          terms_code: string
+          user_id: string
+          version: string
+        }
+        Insert: {
+          accepted_at?: string
+          context?: Json
+          id?: string
+          terms_code: string
+          user_id: string
+          version: string
+        }
+        Update: {
+          accepted_at?: string
+          context?: Json
+          id?: string
+          terms_code?: string
+          user_id?: string
+          version?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -617,6 +1158,68 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "user_roles_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      verification_cases: {
+        Row: {
+          assigned_to: string | null
+          case_type: string
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          decision_note: string | null
+          evidence: Json
+          id: string
+          is_synthetic: boolean
+          opened_by: string | null
+          status: Database["public"]["Enums"]["case_status"]
+          subject_id: string
+          subject_type: string
+          tenant_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          case_type: string
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          evidence?: Json
+          id?: string
+          is_synthetic?: boolean
+          opened_by?: string | null
+          status?: Database["public"]["Enums"]["case_status"]
+          subject_id: string
+          subject_type: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          case_type?: string
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          evidence?: Json
+          id?: string
+          is_synthetic?: boolean
+          opened_by?: string | null
+          status?: Database["public"]["Enums"]["case_status"]
+          subject_id?: string
+          subject_type?: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "verification_cases_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -666,7 +1269,10 @@ export type Database = {
         | "field_agent"
         | "consumer_api_manager"
         | "viewer"
+      case_status: "open" | "in_review" | "approved" | "rejected" | "escalated"
       consumer_tier: "sandbox" | "standard" | "premium"
+      contact_channel: "email" | "sms" | "whatsapp"
+      contact_verification_status: "pending" | "verified" | "failed" | "expired"
       geo_level: "country" | "state" | "district" | "block" | "village"
       membership_status: "active" | "suspended" | "revoked"
       onboarding_status:
@@ -675,7 +1281,20 @@ export type Database = {
         | "activated"
         | "rejected"
         | "withdrawn"
+      org_status: "draft" | "pending" | "approved" | "rejected" | "suspended"
+      privilege_request_status:
+        | "pending"
+        | "approved"
+        | "denied"
+        | "expired"
+        | "revoked"
+      record_status: "pending" | "active" | "verified" | "rejected" | "revoked"
       step_status: "not_started" | "in_progress" | "complete"
+      tenant_relationship_type:
+        | "parent"
+        | "affiliation"
+        | "service_provider"
+        | "data_partner"
       tenant_type:
         | "fpo"
         | "govt_dept"
@@ -683,6 +1302,7 @@ export type Database = {
         | "insurer"
         | "agri_business"
         | "platform_ops"
+      workflow_status: "active" | "completed" | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -819,7 +1439,10 @@ export const Constants = {
         "consumer_api_manager",
         "viewer",
       ],
+      case_status: ["open", "in_review", "approved", "rejected", "escalated"],
       consumer_tier: ["sandbox", "standard", "premium"],
+      contact_channel: ["email", "sms", "whatsapp"],
+      contact_verification_status: ["pending", "verified", "failed", "expired"],
       geo_level: ["country", "state", "district", "block", "village"],
       membership_status: ["active", "suspended", "revoked"],
       onboarding_status: [
@@ -829,7 +1452,22 @@ export const Constants = {
         "rejected",
         "withdrawn",
       ],
+      org_status: ["draft", "pending", "approved", "rejected", "suspended"],
+      privilege_request_status: [
+        "pending",
+        "approved",
+        "denied",
+        "expired",
+        "revoked",
+      ],
+      record_status: ["pending", "active", "verified", "rejected", "revoked"],
       step_status: ["not_started", "in_progress", "complete"],
+      tenant_relationship_type: [
+        "parent",
+        "affiliation",
+        "service_provider",
+        "data_partner",
+      ],
       tenant_type: [
         "fpo",
         "govt_dept",
@@ -838,6 +1476,7 @@ export const Constants = {
         "agri_business",
         "platform_ops",
       ],
+      workflow_status: ["active", "completed", "cancelled"],
     },
   },
 } as const
