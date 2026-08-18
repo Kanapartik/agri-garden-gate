@@ -18,6 +18,7 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedConfigurationRouteImport } from './routes/_authenticated/configuration'
 import { Route as AuthenticatedConsentRouteImport } from './routes/_authenticated/consent'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedDiscoveryRouteImport } from './routes/_authenticated/discovery'
 import { Route as AuthenticatedFarmRouteImport } from './routes/_authenticated/farm'
 import { Route as AuthenticatedFpoRouteImport } from './routes/_authenticated/fpo'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
@@ -69,6 +70,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDiscoveryRoute = AuthenticatedDiscoveryRouteImport.update({
+  id: '/discovery',
+  path: '/discovery',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedFarmRoute = AuthenticatedFarmRouteImport.update({
   id: '/farm',
   path: '/farm',
@@ -104,6 +110,7 @@ export interface FileRoutesByFullPath {
   '/configuration': typeof AuthenticatedConfigurationRoute
   '/consent': typeof AuthenticatedConsentRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/discovery': typeof AuthenticatedDiscoveryRoute
   '/farm': typeof AuthenticatedFarmRoute
   '/fpo': typeof AuthenticatedFpoRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
@@ -119,6 +126,7 @@ export interface FileRoutesByTo {
   '/configuration': typeof AuthenticatedConfigurationRoute
   '/consent': typeof AuthenticatedConsentRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/discovery': typeof AuthenticatedDiscoveryRoute
   '/farm': typeof AuthenticatedFarmRoute
   '/fpo': typeof AuthenticatedFpoRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
@@ -136,6 +144,7 @@ export interface FileRoutesById {
   '/_authenticated/configuration': typeof AuthenticatedConfigurationRoute
   '/_authenticated/consent': typeof AuthenticatedConsentRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/discovery': typeof AuthenticatedDiscoveryRoute
   '/_authenticated/farm': typeof AuthenticatedFarmRoute
   '/_authenticated/fpo': typeof AuthenticatedFpoRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
@@ -153,6 +162,7 @@ export interface FileRouteTypes {
     | '/configuration'
     | '/consent'
     | '/dashboard'
+    | '/discovery'
     | '/farm'
     | '/fpo'
     | '/onboarding'
@@ -168,6 +178,7 @@ export interface FileRouteTypes {
     | '/configuration'
     | '/consent'
     | '/dashboard'
+    | '/discovery'
     | '/farm'
     | '/fpo'
     | '/onboarding'
@@ -184,6 +195,7 @@ export interface FileRouteTypes {
     | '/_authenticated/configuration'
     | '/_authenticated/consent'
     | '/_authenticated/dashboard'
+    | '/_authenticated/discovery'
     | '/_authenticated/farm'
     | '/_authenticated/fpo'
     | '/_authenticated/onboarding'
@@ -264,6 +276,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/discovery': {
+      id: '/_authenticated/discovery'
+      path: '/discovery'
+      fullPath: '/discovery'
+      preLoaderRoute: typeof AuthenticatedDiscoveryRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/farm': {
       id: '/_authenticated/farm'
       path: '/farm'
@@ -307,6 +326,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedConfigurationRoute: typeof AuthenticatedConfigurationRoute
   AuthenticatedConsentRoute: typeof AuthenticatedConsentRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDiscoveryRoute: typeof AuthenticatedDiscoveryRoute
   AuthenticatedFarmRoute: typeof AuthenticatedFarmRoute
   AuthenticatedFpoRoute: typeof AuthenticatedFpoRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
@@ -319,6 +339,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedConfigurationRoute: AuthenticatedConfigurationRoute,
   AuthenticatedConsentRoute: AuthenticatedConsentRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDiscoveryRoute: AuthenticatedDiscoveryRoute,
   AuthenticatedFarmRoute: AuthenticatedFarmRoute,
   AuthenticatedFpoRoute: AuthenticatedFpoRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
