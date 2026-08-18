@@ -26,5 +26,12 @@ describe("role-aware navigation", () => {
     const items = labels(["platform_admin"]);
     expect(items).toContain("Review queue");
     expect(items).toContain("Configuration");
+    expect(items).toContain("Admin");
+  });
+
+  it("gives an auditor the admin timeline but not configuration", () => {
+    const items = labels(["auditor"]);
+    expect(items).toContain("Admin");
+    expect(items).not.toContain("Configuration");
   });
 });
