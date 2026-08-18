@@ -53,9 +53,26 @@ const assumptions: Array<{ heading: string; points: string[] }> = [
       "Government, bank, insurer and employment systems have no implementation yet and are intentionally absent rather than stubbed in UI.",
     ],
   },
+  {
+    heading: "Farmer & assisted onboarding (B2)",
+    points: [
+      "A farmer is never forced into an organisation tenant: farm_records and baseline_consents key off the farmer's own user id.",
+      "Assisted mode records actor and subject separately (assisted_by_user_id / captured_by_user_id) and only field agents, onboarding officers, tenant admins or platform admins may write for another subject.",
+      "Consent is never delegated. baseline_consents and consent_grants are writable only where subject_user_id = auth.uid(), enforced by RLS as well as by server checks.",
+      "Offline parcel drafts live in device storage keyed by client_draft_id, which is also the server-side idempotency key, so a reconnect replay updates the same farm record instead of duplicating it. A different draft claiming a registered plot reference is held as a conflict for a human.",
+      "The jurisdiction identity adapter can only recommend: anything short of 'verified', and any duplicate reference, routes to a manual-review queue that only a platform admin resolves. Captured data is never discarded.",
+      "Baseline platform consent and optional partner consent are separate surfaces; partner cards are identical for first-party and third-party consumers at the same tier.",
+      "Funnel events (onboarding_funnel_events) are analytics only; audit_events remains the security record for consent, role and access decisions.",
+    ],
+  },
 ];
 
 const validateItems = [
+  "Jurisdiction identity verification provider and its duplicate-detection semantics — unresolved; the mock adapter routes everything unverified to human review.",
+  "Authoritative parcel geometry source and area of record (the capture pad's area is a local estimate only) — unresolved.",
+  "Offline conflict-resolution owner: whether a plot-reference clash is resolved by the farmer, the assisting agent or an onboarding officer — unresolved.",
+  "Baseline consent policy version cadence and re-consent triggers (platform_config: consent.baseline_policy_version) — unresolved.",
+  "Partner consent default duration (currently 180 days) and per-purpose overrides — unresolved.",
   "Identity/KYC provider for production onboarding (Aadhaar-based eKYC vs. partner-mediated verification) — unresolved.",
   "GIS/land-record source per state and the authoritative parcel identifier — unresolved.",
   "Payment/settlement rails and who holds the merchant relationship per tenant type — unresolved.",
