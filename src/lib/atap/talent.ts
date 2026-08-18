@@ -169,11 +169,13 @@ export function candidateDiscoverableByEmployers(p: CandidateProfile): boolean {
 
 export const CANDIDATE_SHAREABLE_FIELDS = ["full_name", "headline", "skills"] as const;
 
+export type TalentFieldMap = Record<string, string | number | boolean | null | string[]>;
+
 export interface ReferralSummary {
   candidateId: string;
   status: ReferralStatus;
   /** Redacted unless the candidate has consented to this specific referral. */
-  fields: Record<string, unknown> | null;
+  fields: TalentFieldMap | null;
   redactionReason: string | null;
 }
 
@@ -205,7 +207,7 @@ export function buildReferralSummary(input: {
   const allowed = input.sharedFields.filter((f) =>
     (CANDIDATE_SHAREABLE_FIELDS as readonly string[]).includes(f),
   );
-  const fields: Record<string, unknown> = {};
+  const fields: TalentFieldMap = {};
   for (const f of allowed) {
     if (f === "full_name") fields["full_name"] = input.profile.full_name;
     if (f === "headline") fields["headline"] = input.profile.headline;
@@ -344,7 +346,7 @@ export interface CertificationView {
   issuer_name: string;
   credential_ref: string;
   verification_status: CertificationVerification;
-  provenance: Record<string, unknown>;
+  provenance: TalentFieldMap;
 }
 
 export function certificationIsTrustworthy(c: CertificationView): boolean {

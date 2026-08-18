@@ -763,7 +763,7 @@ export const issueCertification = createServerFn({ method: "POST" })
         issuer_partner_id: c.partner_id,
         issuer_name: c.certification_issuer_name,
         credential_ref: provenance.credentialRef,
-        provenance: provenance as unknown as Record<string, unknown>,
+        provenance: provenance as unknown as Record<string, string | number | boolean | null>,
       } as never)
       .select("id")
       .single();
