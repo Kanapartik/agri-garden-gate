@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as ArchitectureRouteImport } from './routes/architecture'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as RolesRouteImport } from './routes/roles'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArchitectureRoute = ArchitectureRouteImport.update({
+  id: '/architecture',
+  path: '/architecture',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -42,12 +48,14 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
   '/roles': typeof RolesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
   '/roles': typeof RolesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -56,19 +64,21 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
   '/roles': typeof RolesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/roles' | '/dashboard'
+  fullPaths: '/' | '/architecture' | '/auth' | '/roles' | '/dashboard'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/roles' | '/dashboard'
+  to: '/' | '/architecture' | '/auth' | '/roles' | '/dashboard'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/architecture'
     | '/auth'
     | '/roles'
     | '/_authenticated/dashboard'
@@ -77,6 +87,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  ArchitectureRoute: typeof ArchitectureRoute
   AuthRoute: typeof AuthRoute
   RolesRoute: typeof RolesRoute
 }
@@ -95,6 +106,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/architecture': {
+      id: '/architecture'
+      path: '/architecture'
+      fullPath: '/architecture'
+      preLoaderRoute: typeof ArchitectureRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -135,6 +153,7 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  ArchitectureRoute: ArchitectureRoute,
   AuthRoute: AuthRoute,
   RolesRoute: RolesRoute,
 }
