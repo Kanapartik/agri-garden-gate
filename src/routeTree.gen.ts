@@ -16,7 +16,9 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as RolesRouteImport } from './routes/roles'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedConfigurationRouteImport } from './routes/_authenticated/configuration'
+import { Route as AuthenticatedConsentRouteImport } from './routes/_authenticated/consent'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedFarmRouteImport } from './routes/_authenticated/farm'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedReviewRouteImport } from './routes/_authenticated/review'
 
@@ -55,9 +57,19 @@ const AuthenticatedConfigurationRoute =
     path: '/configuration',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedConsentRoute = AuthenticatedConsentRouteImport.update({
+  id: '/consent',
+  path: '/consent',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedFarmRoute = AuthenticatedFarmRouteImport.update({
+  id: '/farm',
+  path: '/farm',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
@@ -78,7 +90,9 @@ export interface FileRoutesByFullPath {
   '/roles': typeof RolesRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/configuration': typeof AuthenticatedConfigurationRoute
+  '/consent': typeof AuthenticatedConsentRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/farm': typeof AuthenticatedFarmRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/review': typeof AuthenticatedReviewRoute
 }
@@ -89,7 +103,9 @@ export interface FileRoutesByTo {
   '/roles': typeof RolesRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/configuration': typeof AuthenticatedConfigurationRoute
+  '/consent': typeof AuthenticatedConsentRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/farm': typeof AuthenticatedFarmRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/review': typeof AuthenticatedReviewRoute
 }
@@ -102,7 +118,9 @@ export interface FileRoutesById {
   '/roles': typeof RolesRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/configuration': typeof AuthenticatedConfigurationRoute
+  '/_authenticated/consent': typeof AuthenticatedConsentRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/farm': typeof AuthenticatedFarmRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/review': typeof AuthenticatedReviewRoute
 }
@@ -115,7 +133,9 @@ export interface FileRouteTypes {
     | '/roles'
     | '/admin'
     | '/configuration'
+    | '/consent'
     | '/dashboard'
+    | '/farm'
     | '/onboarding'
     | '/review'
   fileRoutesByTo: FileRoutesByTo
@@ -126,7 +146,9 @@ export interface FileRouteTypes {
     | '/roles'
     | '/admin'
     | '/configuration'
+    | '/consent'
     | '/dashboard'
+    | '/farm'
     | '/onboarding'
     | '/review'
   id:
@@ -138,7 +160,9 @@ export interface FileRouteTypes {
     | '/roles'
     | '/_authenticated/admin'
     | '/_authenticated/configuration'
+    | '/_authenticated/consent'
     | '/_authenticated/dashboard'
+    | '/_authenticated/farm'
     | '/_authenticated/onboarding'
     | '/_authenticated/review'
   fileRoutesById: FileRoutesById
@@ -202,11 +226,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConfigurationRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/consent': {
+      id: '/_authenticated/consent'
+      path: '/consent'
+      fullPath: '/consent'
+      preLoaderRoute: typeof AuthenticatedConsentRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/farm': {
+      id: '/_authenticated/farm'
+      path: '/farm'
+      fullPath: '/farm'
+      preLoaderRoute: typeof AuthenticatedFarmRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/onboarding': {
@@ -229,7 +267,9 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedConfigurationRoute: typeof AuthenticatedConfigurationRoute
+  AuthenticatedConsentRoute: typeof AuthenticatedConsentRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedFarmRoute: typeof AuthenticatedFarmRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedReviewRoute: typeof AuthenticatedReviewRoute
 }
@@ -237,7 +277,9 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedConfigurationRoute: AuthenticatedConfigurationRoute,
+  AuthenticatedConsentRoute: AuthenticatedConsentRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedFarmRoute: AuthenticatedFarmRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedReviewRoute: AuthenticatedReviewRoute,
 }

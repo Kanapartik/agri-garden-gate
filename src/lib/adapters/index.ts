@@ -83,8 +83,45 @@ export const syntheticGovtRegistry: GovtRegistryAdapter = {
   },
 };
 
+/**
+ * Jurisdiction-configured identity verification (B2). The adapter never
+ * activates anyone: it returns evidence and a provider status, and the platform
+ * routes anything short of `verified` to a human manual-review queue.
+ * Real jurisdiction providers plug in here — [VALIDATE provider].
+ */
+export interface JurisdictionIdentityAdapter {
+  readonly name: string;
+  verify(input: { jurisdictionCode: string; referenceHash: string }): Promise<{
+    status: "verified" | "unverified" | "pending";
+    evidenceRef: string;
+    reasonCategory?: string;
+    synthetic: boolean;
+  }>;
+}
+
+/**
+ * Mock jurisdiction adapter with deterministic, testable outcomes:
+ *  - hash ending in `0` → pending  → manual review
+ *  - hash ending in `f` → unverified → manual review
+ *  - anything else      → verified
+ */
+export const mockJurisdictionIdentity: JurisdictionIdentityAdapter = {
+  name: "mock-jurisdiction-identity",
+  async verify({ jurisdictionCode, referenceHash }) {
+    const last = referenceHash.slice(-1).toLowerCase();
+    const status = last === "0" ? "pending" : last === "f" ? "unverified" : "verified";
+    return {
+      status,
+      evidenceRef: `synthetic:${jurisdictionCode}:${referenceHash.slice(0, 12)}`,
+      ...(status === "verified" ? {} : { reasonCategory: status === "pending" ? "provider_pending" : "reference_not_matched" }),
+      synthetic: true,
+    };
+  },
+};
+
 export const adapters = {
   identityKyc: syntheticIdentityKyc,
+  jurisdictionIdentity: mockJurisdictionIdentity,
   gis: syntheticGis,
   payments: syntheticPayments,
   govtRegistry: syntheticGovtRegistry,
