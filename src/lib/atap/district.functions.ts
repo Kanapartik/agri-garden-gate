@@ -1111,9 +1111,17 @@ export const rosterVisibilityProbe = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const { resolveDistrictActor } = await import("@/lib/atap/district.server");
     const actor = await resolveDistrictActor(supabase, userId);
+    // Real read attempt through the caller's own RLS context: roster authority
+    // must never surface another member's farm rows.
+    const { data: farmRows } = await supabase
+      .from("farm_records")
+      .select("id")
+      .neq("farmer_user_id", userId)
+      .limit(5);
     return {
       canReadRoster: canReadRoster(actor, data.tenantId),
       canManageRoster: canManageRoster(actor, data.tenantId),
-      grantedFarmerPurposes: [] as string[],
+      grantedFarmerPurposes: rosterGrantedPurposes(actor, data.tenantId),
+      otherFarmRowsVisible: (farmRows ?? []).length,
     };
   });
