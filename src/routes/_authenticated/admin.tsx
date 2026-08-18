@@ -77,7 +77,8 @@ function AdminPage() {
   const decidePriv = useServerFn(decidePrivilegedAccess);
   const setPlan = useServerFn(setTenantEntitlement);
 
-  const run = <T,>(fn: (input: { data: T }) => Promise<unknown>, message: string) =>
+  // Custom hook: called unconditionally, in a fixed order, before any early return.
+  const useAction = <T,>(fn: (input: { data: T }) => Promise<unknown>, message: string) =>
     useMutation({
       mutationFn: (data: T) => fn({ data }),
       onSuccess: async () => {
@@ -87,52 +88,52 @@ function AdminPage() {
       onError: onErr,
     });
 
-  const mCreateOrg = run<{ legalName: string; displayName: string; subtypeCode: string; evidence: string[] }>(
+  const mCreateOrg = useAction<{ legalName: string; displayName: string; subtypeCode: string; evidence: string[] }>(
     createOrg as never,
     "Organisation draft created and audited",
   );
-  const mDecideOrg = run<{ organizationId: string; next: OrgStatus; note?: string }>(
+  const mDecideOrg = useAction<{ organizationId: string; next: OrgStatus; note?: string }>(
     decideOrg as never,
     "Organisation decision recorded",
   );
-  const mProvision = run<{ organizationId: string; slug: string }>(
+  const mProvision = useAction<{ organizationId: string; slug: string }>(
     provision as never,
     "Tenant provisioned (tenancy grants no authority)",
   );
-  const mRelate = run<{
+  const mRelate = useAction<{
     fromTenantId: string;
     toTenantId: string;
     relationshipType: TenantRelationshipType;
   }>(relate as never, "Tenant relationship recorded");
-  const mGrant = run<{ tenantId: string; targetUserId: string; role: AppRole }>(
+  const mGrant = useAction<{ tenantId: string; targetUserId: string; role: AppRole }>(
     grant as never,
     "Scoped role granted and audited",
   );
-  const mSuspend = run<{ tenantId: string; targetUserId: string }>(
+  const mSuspend = useAction<{ tenantId: string; targetUserId: string }>(
     suspend as never,
     "Membership suspended and roles revoked",
   );
-  const mOpenCase = run<{ caseType: string; subjectType: string; subjectId: string; tenantId?: string | null }>(
+  const mOpenCase = useAction<{ caseType: string; subjectType: string; subjectId: string; tenantId?: string | null }>(
     openCase as never,
     "Verification case opened",
   );
-  const mDecideCase = run<{ caseId: string; decision: "approved" | "rejected" | "escalated" }>(
+  const mDecideCase = useAction<{ caseId: string; decision: "approved" | "rejected" | "escalated" }>(
     decideCase as never,
     "Case decided by a human reviewer",
   );
-  const mAdvance = run<{ workflowId: string; next: WorkflowState }>(
+  const mAdvance = useAction<{ workflowId: string; next: WorkflowState }>(
     advance as never,
     "Workflow advanced",
   );
-  const mRequestPriv = run<{ requestedRole: AppRole; justification: string }>(
+  const mRequestPriv = useAction<{ requestedRole: AppRole; justification: string }>(
     requestPriv as never,
     "Privileged access requested",
   );
-  const mDecidePriv = run<{ requestId: string; approve: boolean; mfaVerified: boolean }>(
+  const mDecidePriv = useAction<{ requestId: string; approve: boolean; mfaVerified: boolean }>(
     decidePriv as never,
     "Privileged access decision recorded",
   );
-  const mSetPlan = run<{ tenantId: string; planCode: string }>(
+  const mSetPlan = useAction<{ tenantId: string; planCode: string }>(
     setPlan as never,
     "Commercial plan updated — roles and consent unchanged",
   );
