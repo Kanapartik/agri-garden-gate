@@ -1,0 +1,91 @@
+/**
+ * External-system adapter seams.
+ *
+ * Slice 1 ships interfaces plus synthetic implementations only. No real KYC,
+ * GIS, payment, government, bank, insurer or employment calls exist yet; later
+ * slices swap the implementation behind these interfaces without touching
+ * callers.
+ */
+
+export interface IdentityKycAdapter {
+  readonly name: string;
+  verify(input: { referenceId: string }): Promise<{
+    status: "verified" | "unverified" | "pending";
+    evidenceRef: string;
+    synthetic: boolean;
+  }>;
+}
+
+export interface GisAdapter {
+  readonly name: string;
+  resolvePlot(input: { plotRef: string }): Promise<{
+    plotRef: string;
+    areaHectares: number;
+    centroid: { lat: number; lng: number };
+    synthetic: boolean;
+  }>;
+}
+
+export interface PaymentsAdapter {
+  readonly name: string;
+  quote(input: { amountMinor: number; currency: string }): Promise<{
+    amountMinor: number;
+    currency: string;
+    feeMinor: number;
+    synthetic: boolean;
+  }>;
+}
+
+export interface GovtRegistryAdapter {
+  readonly name: string;
+  lookupScheme(input: { schemeCode: string }): Promise<{
+    schemeCode: string;
+    /** Adapters never decide eligibility; an authorized role does. */
+    decision: "requires_human_review";
+    synthetic: boolean;
+  }>;
+}
+
+export const syntheticIdentityKyc: IdentityKycAdapter = {
+  name: "synthetic-identity-kyc",
+  async verify({ referenceId }) {
+    return {
+      status: referenceId.endsWith("0") ? "pending" : "verified",
+      evidenceRef: `synthetic:kyc:${referenceId}`,
+      synthetic: true,
+    };
+  },
+};
+
+export const syntheticGis: GisAdapter = {
+  name: "synthetic-gis",
+  async resolvePlot({ plotRef }) {
+    return {
+      plotRef,
+      areaHectares: 1.25,
+      centroid: { lat: 19.7515, lng: 75.7139 },
+      synthetic: true,
+    };
+  },
+};
+
+export const syntheticPayments: PaymentsAdapter = {
+  name: "synthetic-payments",
+  async quote({ amountMinor, currency }) {
+    return { amountMinor, currency, feeMinor: Math.round(amountMinor * 0.01), synthetic: true };
+  },
+};
+
+export const syntheticGovtRegistry: GovtRegistryAdapter = {
+  name: "synthetic-govt-registry",
+  async lookupScheme({ schemeCode }) {
+    return { schemeCode, decision: "requires_human_review", synthetic: true };
+  },
+};
+
+export const adapters = {
+  identityKyc: syntheticIdentityKyc,
+  gis: syntheticGis,
+  payments: syntheticPayments,
+  govtRegistry: syntheticGovtRegistry,
+} as const;
