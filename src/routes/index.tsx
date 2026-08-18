@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ShieldCheck, Layers, FileClock, Network } from "lucide-react";
+import { PageHeader } from "@/components/atap/AppShell";
+import { Button } from "@/components/ui/button";
 
 const TITLE = "AgriGhar ATAP — Neutral Agriculture Aggregation Platform";
 const DESCRIPTION =
@@ -44,27 +46,13 @@ const pillars = [
 
 function Landing() {
   return (
-    <main className="min-h-screen bg-background">
-      <header className="border-b border-border">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-          <span className="font-display text-lg font-semibold tracking-tight">
-            AgriGhar <span className="text-primary">ATAP</span>
-          </span>
-          <Link
-            to="/auth"
-            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Sign in
-          </Link>
-        </div>
-      </header>
-
+    <main>
       <section className="bg-surface-deep text-surface-deep-foreground">
         <div className="mx-auto max-w-6xl px-6 py-20">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
-            Slice 1 · Identity, tenancy, roles &amp; audit
+            B0 · Baseline, design system &amp; PRD scaffold
           </p>
-          <h1 className="mt-5 max-w-3xl text-4xl leading-tight font-semibold sm:text-5xl">
+          <h1 className="mt-5 max-w-3xl text-4xl leading-tight font-bold sm:text-5xl">
             A neutral aggregation spine for agriculture data
           </h1>
           <p className="mt-5 max-w-2xl text-base opacity-80">
@@ -72,27 +60,30 @@ function Landing() {
             no blanket farmer-data access.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              to="/auth"
-              className="rounded-md bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90"
+            <Button size="lg" variant="secondary" asChild>
+              <Link to="/roles">Choose a role journey</Link>
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-current/40 bg-transparent text-current hover:bg-surface-deep-foreground/10"
+              asChild
             >
-              Enter the console
-            </Link>
-            <a
-              href="#pillars"
-              className="rounded-md border border-current/30 px-5 py-2.5 text-sm font-medium transition-colors hover:bg-white/10"
-            >
-              How access works
-            </a>
+              <Link to="/architecture">Architecture assumptions</Link>
+            </Button>
           </div>
         </div>
       </section>
 
-      <section id="pillars" className="mx-auto max-w-6xl px-6 py-16">
-        <h2 className="text-2xl font-semibold">Platform non-negotiables, enforced server-side</h2>
+      <section className="mx-auto max-w-6xl px-6 py-16">
+        <PageHeader
+          eyebrow="Non-negotiables"
+          title="Platform guarantees, enforced server-side"
+          description="Route hiding is presentation only. Authority, consent and audit are checked in server functions and database policy."
+        />
         <div className="mt-8 grid gap-5 sm:grid-cols-2">
           {pillars.map((p) => (
-            <article key={p.title} className="rounded-lg border border-border bg-card p-6">
+            <article key={p.title} className="panel p-6">
               <p.icon className="h-5 w-5 text-primary" aria-hidden />
               <h3 className="mt-4 text-base font-semibold">{p.title}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{p.body}</p>
@@ -102,15 +93,10 @@ function Landing() {
         <p className="mt-10 max-w-3xl rounded-lg border border-border bg-secondary p-5 text-sm text-secondary-foreground">
           Development and sandbox environments run on synthetic organisations, consumers and
           purposes. External KYC, GIS, payment, government, bank and insurer systems sit behind
-          adapters and are inactive in this slice.
+          adapters and are inactive in this slice. Production registration and identity
+          verification are not activated.
         </p>
       </section>
-
-      <footer className="border-t border-border">
-        <div className="mx-auto max-w-6xl px-6 py-8 text-sm text-muted-foreground">
-          AgriGhar ATAP · marketplace, advertising and talent domains are deactivated.
-        </div>
-      </footer>
     </main>
   );
 }
