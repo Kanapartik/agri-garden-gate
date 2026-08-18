@@ -3988,6 +3988,630 @@ export type Database = {
         }
         Relationships: []
       }
+      talent_candidate_profiles: {
+        Row: {
+          created_at: string
+          district_geo_id: string | null
+          full_name: string
+          headline: string
+          id: string
+          is_synthetic: boolean
+          qualifications: Json
+          seeking: boolean
+          skills: string[]
+          updated_at: string
+          user_id: string
+          visibility: Database["public"]["Enums"]["talent_visibility"]
+          visibility_consent_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          district_geo_id?: string | null
+          full_name: string
+          headline?: string
+          id?: string
+          is_synthetic?: boolean
+          qualifications?: Json
+          seeking?: boolean
+          skills?: string[]
+          updated_at?: string
+          user_id: string
+          visibility?: Database["public"]["Enums"]["talent_visibility"]
+          visibility_consent_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          district_geo_id?: string | null
+          full_name?: string
+          headline?: string
+          id?: string
+          is_synthetic?: boolean
+          qualifications?: Json
+          seeking?: boolean
+          skills?: string[]
+          updated_at?: string
+          user_id?: string
+          visibility?: Database["public"]["Enums"]["talent_visibility"]
+          visibility_consent_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "talent_candidate_profiles_district_geo_id_fkey"
+            columns: ["district_geo_id"]
+            isOneToOne: false
+            referencedRelation: "geographies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "talent_candidate_profiles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      talent_certifications: {
+        Row: {
+          candidate_id: string
+          credential_ref: string
+          enrollment_id: string
+          id: string
+          issued_at: string
+          issuer_name: string
+          issuer_partner_id: string
+          provenance: Json
+          updated_at: string
+          verification_status: Database["public"]["Enums"]["certification_verification"]
+          verified_by: string | null
+        }
+        Insert: {
+          candidate_id: string
+          credential_ref: string
+          enrollment_id: string
+          id?: string
+          issued_at?: string
+          issuer_name: string
+          issuer_partner_id: string
+          provenance?: Json
+          updated_at?: string
+          verification_status?: Database["public"]["Enums"]["certification_verification"]
+          verified_by?: string | null
+        }
+        Update: {
+          candidate_id?: string
+          credential_ref?: string
+          enrollment_id?: string
+          id?: string
+          issued_at?: string
+          issuer_name?: string
+          issuer_partner_id?: string
+          provenance?: Json
+          updated_at?: string
+          verification_status?: Database["public"]["Enums"]["certification_verification"]
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "talent_certifications_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "talent_candidate_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "talent_certifications_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: true
+            referencedRelation: "talent_enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "talent_certifications_issuer_partner_id_fkey"
+            columns: ["issuer_partner_id"]
+            isOneToOne: false
+            referencedRelation: "talent_training_partners"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "talent_certifications_verified_by_fkey"
+            columns: ["verified_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      talent_courses: {
+        Row: {
+          certification_issuer_name: string
+          code: string
+          created_at: string
+          created_by: string | null
+          currency: string
+          description: string
+          fee_amount: number
+          hours: number
+          id: string
+          is_published: boolean
+          partner_id: string
+          skills: string[]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          certification_issuer_name: string
+          code: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          description?: string
+          fee_amount?: number
+          hours?: number
+          id?: string
+          is_published?: boolean
+          partner_id: string
+          skills?: string[]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          certification_issuer_name?: string
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          description?: string
+          fee_amount?: number
+          hours?: number
+          id?: string
+          is_published?: boolean
+          partner_id?: string
+          skills?: string[]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "talent_courses_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "talent_courses_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "talent_training_partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      talent_employers: {
+        Row: {
+          agreement_ref: string
+          contact_email: string
+          created_at: string
+          created_by: string | null
+          data_scope: string[]
+          data_scope_approved: boolean
+          decision_note: string
+          id: string
+          kind: Database["public"]["Enums"]["talent_employer_kind"]
+          name: string
+          organization_id: string | null
+          state: Database["public"]["Enums"]["talent_entity_state"]
+          tenant_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          agreement_ref?: string
+          contact_email: string
+          created_at?: string
+          created_by?: string | null
+          data_scope?: string[]
+          data_scope_approved?: boolean
+          decision_note?: string
+          id?: string
+          kind: Database["public"]["Enums"]["talent_employer_kind"]
+          name: string
+          organization_id?: string | null
+          state?: Database["public"]["Enums"]["talent_entity_state"]
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          agreement_ref?: string
+          contact_email?: string
+          created_at?: string
+          created_by?: string | null
+          data_scope?: string[]
+          data_scope_approved?: boolean
+          decision_note?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["talent_employer_kind"]
+          name?: string
+          organization_id?: string | null
+          state?: Database["public"]["Enums"]["talent_entity_state"]
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "talent_employers_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "talent_employers_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "talent_employers_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      talent_enrollments: {
+        Row: {
+          candidate_id: string
+          completed_at: string | null
+          course_id: string
+          enrolled_at: string
+          fee_paid: boolean
+          id: string
+          status: Database["public"]["Enums"]["enrollment_status"]
+          updated_at: string
+        }
+        Insert: {
+          candidate_id: string
+          completed_at?: string | null
+          course_id: string
+          enrolled_at?: string
+          fee_paid?: boolean
+          id?: string
+          status?: Database["public"]["Enums"]["enrollment_status"]
+          updated_at?: string
+        }
+        Update: {
+          candidate_id?: string
+          completed_at?: string | null
+          course_id?: string
+          enrolled_at?: string
+          fee_paid?: boolean
+          id?: string
+          status?: Database["public"]["Enums"]["enrollment_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "talent_enrollments_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "talent_candidate_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "talent_enrollments_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "talent_courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      talent_entitlements: {
+        Row: {
+          approved_by: string | null
+          created_at: string
+          currency: string
+          ends_at: string | null
+          fee_amount: number
+          grants_ranking_advantage: boolean
+          id: string
+          plan_code: string
+          starts_at: string
+          status: Database["public"]["Enums"]["membership_status"]
+          subject_id: string
+          subject_kind: string
+          updated_at: string
+        }
+        Insert: {
+          approved_by?: string | null
+          created_at?: string
+          currency?: string
+          ends_at?: string | null
+          fee_amount?: number
+          grants_ranking_advantage?: boolean
+          id?: string
+          plan_code?: string
+          starts_at?: string
+          status?: Database["public"]["Enums"]["membership_status"]
+          subject_id: string
+          subject_kind: string
+          updated_at?: string
+        }
+        Update: {
+          approved_by?: string | null
+          created_at?: string
+          currency?: string
+          ends_at?: string | null
+          fee_amount?: number
+          grants_ranking_advantage?: boolean
+          id?: string
+          plan_code?: string
+          starts_at?: string
+          status?: Database["public"]["Enums"]["membership_status"]
+          subject_id?: string
+          subject_kind?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "talent_entitlements_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      talent_evidence_gates: {
+        Row: {
+          code: string
+          commercial_validated: boolean
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          demand_validated: boolean
+          label: string
+          notes: string
+          policy_validated: boolean
+          status: Database["public"]["Enums"]["gate_status"]
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          commercial_validated?: boolean
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          demand_validated?: boolean
+          label: string
+          notes?: string
+          policy_validated?: boolean
+          status?: Database["public"]["Enums"]["gate_status"]
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          commercial_validated?: boolean
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          demand_validated?: boolean
+          label?: string
+          notes?: string
+          policy_validated?: boolean
+          status?: Database["public"]["Enums"]["gate_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "talent_evidence_gates_decided_by_fkey"
+            columns: ["decided_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      talent_job_listings: {
+        Row: {
+          compensation_max: number | null
+          compensation_min: number | null
+          created_at: string
+          created_by: string | null
+          description: string
+          employer_id: string
+          id: string
+          is_sponsored: boolean
+          location_geo_id: string | null
+          no_placement_guarantee: boolean
+          positions: number
+          skills: string[]
+          sponsored_label: string
+          status: Database["public"]["Enums"]["job_listing_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          compensation_max?: number | null
+          compensation_min?: number | null
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          employer_id: string
+          id?: string
+          is_sponsored?: boolean
+          location_geo_id?: string | null
+          no_placement_guarantee?: boolean
+          positions?: number
+          skills?: string[]
+          sponsored_label?: string
+          status?: Database["public"]["Enums"]["job_listing_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          compensation_max?: number | null
+          compensation_min?: number | null
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          employer_id?: string
+          id?: string
+          is_sponsored?: boolean
+          location_geo_id?: string | null
+          no_placement_guarantee?: boolean
+          positions?: number
+          skills?: string[]
+          sponsored_label?: string
+          status?: Database["public"]["Enums"]["job_listing_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "talent_job_listings_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "talent_job_listings_employer_id_fkey"
+            columns: ["employer_id"]
+            isOneToOne: false
+            referencedRelation: "talent_employers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "talent_job_listings_location_geo_id_fkey"
+            columns: ["location_geo_id"]
+            isOneToOne: false
+            referencedRelation: "geographies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      talent_referrals: {
+        Row: {
+          candidate_decision_at: string | null
+          candidate_id: string
+          created_at: string
+          id: string
+          job_id: string
+          match_reason: string
+          requested_by: string | null
+          shared_fields: string[]
+          status: Database["public"]["Enums"]["referral_status"]
+          updated_at: string
+        }
+        Insert: {
+          candidate_decision_at?: string | null
+          candidate_id: string
+          created_at?: string
+          id?: string
+          job_id: string
+          match_reason?: string
+          requested_by?: string | null
+          shared_fields?: string[]
+          status?: Database["public"]["Enums"]["referral_status"]
+          updated_at?: string
+        }
+        Update: {
+          candidate_decision_at?: string | null
+          candidate_id?: string
+          created_at?: string
+          id?: string
+          job_id?: string
+          match_reason?: string
+          requested_by?: string | null
+          shared_fields?: string[]
+          status?: Database["public"]["Enums"]["referral_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "talent_referrals_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "talent_candidate_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "talent_referrals_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "talent_job_listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "talent_referrals_requested_by_fkey"
+            columns: ["requested_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      talent_training_partners: {
+        Row: {
+          accreditation_ref: string
+          certification_issuer_name: string
+          contact_email: string
+          created_at: string
+          created_by: string | null
+          decision_note: string
+          id: string
+          name: string
+          state: Database["public"]["Enums"]["talent_entity_state"]
+          tenant_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          accreditation_ref?: string
+          certification_issuer_name: string
+          contact_email: string
+          created_at?: string
+          created_by?: string | null
+          decision_note?: string
+          id?: string
+          name: string
+          state?: Database["public"]["Enums"]["talent_entity_state"]
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          accreditation_ref?: string
+          certification_issuer_name?: string
+          contact_email?: string
+          created_at?: string
+          created_by?: string | null
+          decision_note?: string
+          id?: string
+          name?: string
+          state?: Database["public"]["Enums"]["talent_entity_state"]
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "talent_training_partners_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "talent_training_partners_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tenant_entitlements: {
         Row: {
           ends_at: string | null
@@ -4435,6 +5059,7 @@ export type Database = {
         | "certified"
         | "declined"
         | "revoked"
+      certification_verification: "pending" | "verified" | "failed" | "revoked"
       consent_kind: "baseline_platform" | "optional_partner"
       consumer_tier: "sandbox" | "standard" | "premium"
       contact_channel: "email" | "sms" | "whatsapp"
@@ -4448,6 +5073,12 @@ export type Database = {
         | "cancelled"
         | "disputed"
       dispute_status: "open" | "human_review" | "resolved" | "rejected"
+      enrollment_status:
+        | "enrolled"
+        | "in_progress"
+        | "completed"
+        | "dropped"
+        | "cancelled"
       evidence_gate_state:
         | "not_evaluated"
         | "evidence_pending"
@@ -4463,6 +5094,7 @@ export type Database = {
         | "manual_review"
         | "duplicate_hold"
       invitation_status: "pending" | "accepted" | "revoked" | "expired"
+      job_listing_status: "draft" | "open" | "closed" | "filled" | "withdrawn"
       knowledge_kind:
         | "university"
         | "kvk"
@@ -4537,6 +5169,13 @@ export type Database = {
         | "expired"
         | "revoked"
       record_status: "pending" | "active" | "verified" | "rejected" | "revoked"
+      referral_status:
+        | "proposed"
+        | "candidate_consent_pending"
+        | "shared"
+        | "declined_by_candidate"
+        | "withdrawn"
+        | "closed"
       research_request_status:
         | "draft"
         | "submitted"
@@ -4576,6 +5215,15 @@ export type Database = {
         | "waiting_customer"
         | "resolved"
         | "closed"
+      talent_employer_kind: "employer" | "recruiter" | "government_exchange"
+      talent_entity_state:
+        | "draft"
+        | "submitted"
+        | "in_review"
+        | "approved"
+        | "rejected"
+        | "suspended"
+      talent_visibility: "hidden" | "platform_only" | "employers_optin"
       tenant_relationship_type:
         | "parent"
         | "affiliation"
@@ -4752,6 +5400,7 @@ export const Constants = {
         "declined",
         "revoked",
       ],
+      certification_verification: ["pending", "verified", "failed", "revoked"],
       consent_kind: ["baseline_platform", "optional_partner"],
       consumer_tier: ["sandbox", "standard", "premium"],
       contact_channel: ["email", "sms", "whatsapp"],
@@ -4766,6 +5415,13 @@ export const Constants = {
         "disputed",
       ],
       dispute_status: ["open", "human_review", "resolved", "rejected"],
+      enrollment_status: [
+        "enrolled",
+        "in_progress",
+        "completed",
+        "dropped",
+        "cancelled",
+      ],
       evidence_gate_state: [
         "not_evaluated",
         "evidence_pending",
@@ -4783,6 +5439,7 @@ export const Constants = {
         "duplicate_hold",
       ],
       invitation_status: ["pending", "accepted", "revoked", "expired"],
+      job_listing_status: ["draft", "open", "closed", "filled", "withdrawn"],
       knowledge_kind: [
         "university",
         "kvk",
@@ -4867,6 +5524,14 @@ export const Constants = {
         "revoked",
       ],
       record_status: ["pending", "active", "verified", "rejected", "revoked"],
+      referral_status: [
+        "proposed",
+        "candidate_consent_pending",
+        "shared",
+        "declined_by_candidate",
+        "withdrawn",
+        "closed",
+      ],
       research_request_status: [
         "draft",
         "submitted",
@@ -4911,6 +5576,16 @@ export const Constants = {
         "resolved",
         "closed",
       ],
+      talent_employer_kind: ["employer", "recruiter", "government_exchange"],
+      talent_entity_state: [
+        "draft",
+        "submitted",
+        "in_review",
+        "approved",
+        "rejected",
+        "suspended",
+      ],
+      talent_visibility: ["hidden", "platform_only", "employers_optin"],
       tenant_relationship_type: [
         "parent",
         "affiliation",
