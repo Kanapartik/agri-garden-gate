@@ -21,6 +21,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedDiscoveryRouteImport } from './routes/_authenticated/discovery'
 import { Route as AuthenticatedFarmRouteImport } from './routes/_authenticated/farm'
 import { Route as AuthenticatedFpoRouteImport } from './routes/_authenticated/fpo'
+import { Route as AuthenticatedMarketRouteImport } from './routes/_authenticated/market'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedReviewRouteImport } from './routes/_authenticated/review'
 import { Route as AuthenticatedRolloutRouteImport } from './routes/_authenticated/rollout'
@@ -86,6 +87,11 @@ const AuthenticatedFpoRoute = AuthenticatedFpoRouteImport.update({
   path: '/fpo',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedMarketRoute = AuthenticatedMarketRouteImport.update({
+  id: '/market',
+  path: '/market',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
@@ -119,6 +125,7 @@ export interface FileRoutesByFullPath {
   '/discovery': typeof AuthenticatedDiscoveryRoute
   '/farm': typeof AuthenticatedFarmRoute
   '/fpo': typeof AuthenticatedFpoRoute
+  '/market': typeof AuthenticatedMarketRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/review': typeof AuthenticatedReviewRoute
   '/rollout': typeof AuthenticatedRolloutRoute
@@ -136,6 +143,7 @@ export interface FileRoutesByTo {
   '/discovery': typeof AuthenticatedDiscoveryRoute
   '/farm': typeof AuthenticatedFarmRoute
   '/fpo': typeof AuthenticatedFpoRoute
+  '/market': typeof AuthenticatedMarketRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/review': typeof AuthenticatedReviewRoute
   '/rollout': typeof AuthenticatedRolloutRoute
@@ -155,6 +163,7 @@ export interface FileRoutesById {
   '/_authenticated/discovery': typeof AuthenticatedDiscoveryRoute
   '/_authenticated/farm': typeof AuthenticatedFarmRoute
   '/_authenticated/fpo': typeof AuthenticatedFpoRoute
+  '/_authenticated/market': typeof AuthenticatedMarketRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/review': typeof AuthenticatedReviewRoute
   '/_authenticated/rollout': typeof AuthenticatedRolloutRoute
@@ -174,6 +183,7 @@ export interface FileRouteTypes {
     | '/discovery'
     | '/farm'
     | '/fpo'
+    | '/market'
     | '/onboarding'
     | '/review'
     | '/rollout'
@@ -191,6 +201,7 @@ export interface FileRouteTypes {
     | '/discovery'
     | '/farm'
     | '/fpo'
+    | '/market'
     | '/onboarding'
     | '/review'
     | '/rollout'
@@ -209,6 +220,7 @@ export interface FileRouteTypes {
     | '/_authenticated/discovery'
     | '/_authenticated/farm'
     | '/_authenticated/fpo'
+    | '/_authenticated/market'
     | '/_authenticated/onboarding'
     | '/_authenticated/review'
     | '/_authenticated/rollout'
@@ -309,6 +321,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedFpoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/market': {
+      id: '/_authenticated/market'
+      path: '/market'
+      fullPath: '/market'
+      preLoaderRoute: typeof AuthenticatedMarketRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/onboarding': {
       id: '/_authenticated/onboarding'
       path: '/onboarding'
@@ -348,6 +367,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDiscoveryRoute: typeof AuthenticatedDiscoveryRoute
   AuthenticatedFarmRoute: typeof AuthenticatedFarmRoute
   AuthenticatedFpoRoute: typeof AuthenticatedFpoRoute
+  AuthenticatedMarketRoute: typeof AuthenticatedMarketRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedReviewRoute: typeof AuthenticatedReviewRoute
   AuthenticatedRolloutRoute: typeof AuthenticatedRolloutRoute
@@ -362,6 +382,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDiscoveryRoute: AuthenticatedDiscoveryRoute,
   AuthenticatedFarmRoute: AuthenticatedFarmRoute,
   AuthenticatedFpoRoute: AuthenticatedFpoRoute,
+  AuthenticatedMarketRoute: AuthenticatedMarketRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedReviewRoute: AuthenticatedReviewRoute,
   AuthenticatedRolloutRoute: AuthenticatedRolloutRoute,

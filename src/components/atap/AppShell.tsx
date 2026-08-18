@@ -28,6 +28,7 @@ export function navItemsForRoles(roles: AppRole[], signedIn: boolean): NavItem[]
     { to: "/farm", label: "My farm" },
     { to: "/consent", label: "Consent" },
     { to: "/discovery", label: "Schemes" },
+    { to: "/market", label: "Marketplace" },
   ];
 
   if (roles.some((r) => r === "tenant_admin" || r === "onboarding_officer" || r === "field_agent")) {
