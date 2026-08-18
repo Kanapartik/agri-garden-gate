@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { getMyContext } from "@/lib/atap.functions";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import type { AppRole } from "@/lib/atap/policy";
 
 type NavItem = { to: string; label: string };
@@ -103,9 +103,11 @@ export function AppShell({ children }: { children: ReactNode }) {
                 Sign out
               </Button>
             ) : pathname === "/auth" ? null : (
-              <Button size="sm" asChild>
-                <Link to="/auth">Sign in</Link>
-              </Button>
+              /* Plain anchor: protected-route redirects resolve on the client, so a
+                 router-aware Link here would hydrate with a different active state. */
+              <a href="/auth" className={buttonVariants({ size: "sm" })}>
+                Sign in
+              </a>
             )}
           </div>
         </div>
