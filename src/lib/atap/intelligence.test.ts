@@ -86,12 +86,12 @@ describe("location and season basis", () => {
 
 describe("soil basis separation", () => {
   const general = {
-    soilType: "Black cotton",
+    majorSoils: ["Black cotton", "Red loamy"],
     texture: "Clayey",
-    typicalPhRange: "7.5-8.3",
-    organicCarbonBand: "medium" as const,
-    drainage: "moderate",
+    phRange: "7.5-8.3",
+    organicCarbonRange: "0.5-0.75%",
     sourceKey: "syn:district",
+    observedAt: "2026-08-01T00:00:00.000Z",
   };
 
   it("labels location-inferred soil as not farm-specific", () => {
@@ -103,14 +103,15 @@ describe("soil basis separation", () => {
 
   it("labels an actual lab result and keeps general context separate", () => {
     const soil = classifySoil(general, {
+      cardRef: "SHC-SYN-001",
       labName: "Guntur Soil Testing Lab",
+      labKind: "state_soil_lab",
       testedOn: "2026-05-04",
       ph: 7.8,
       organicCarbonPct: 0.62,
-      nitrogenKgHa: 240,
-      phosphorusKgHa: 22,
-      potassiumKgHa: 310,
-      micronutrientNotes: ["Zinc deficient"],
+      nitrogen: "Medium",
+      phosphorus: "Low",
+      potassium: "High",
       sourceKey: "syn:shc",
     });
     expect(soil.basis).toBe("lab_tested");
@@ -289,19 +290,19 @@ describe("data provenance and adapters", () => {
       districtName: "Guntur",
       blockName: null,
     });
-    expect(weather.envelope.isSynthetic).toBe(true);
+    expect(weather.envelope.synthetic).toBe(true);
     expect(weather.envelope.sourceKey).toContain("synthetic");
     expect(weather.envelope.freshnessSeconds).toBeGreaterThanOrEqual(0);
 
     const soil = await farmIntelligenceAdapters.soilHealth.read({ plotRef: "SYN-PLOT-1", districtName: "Guntur" });
-    expect(soil.envelope.isSynthetic).toBe(true);
+    expect(soil.envelope.synthetic).toBe(true);
 
     const profile = await farmIntelligenceAdapters.districtProfile.read({
       districtName: "Guntur",
       stateName: "Andhra Pradesh",
     });
     expect(profile.majorCrops.length).toBeGreaterThan(0);
-    expect(profile.envelope.isSynthetic).toBe(true);
+    expect(profile.envelope.synthetic).toBe(true);
   });
 
   it("describes freshness and confidence in plain language", () => {
