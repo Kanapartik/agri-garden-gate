@@ -3149,36 +3149,51 @@ export type Database = {
       }
       role_definitions: {
         Row: {
+          app_role_binding: Database["public"]["Enums"]["app_role"] | null
           authority_note: string | null
           code: string
+          created_by: string | null
           description: string
           feature_flag_key: string | null
+          is_active: boolean
+          is_custom: boolean
           is_public_selectable: boolean
           journey_kind: string
           label: string
           sort_order: number
+          tenant_type_scope: Database["public"]["Enums"]["tenant_type"] | null
           updated_at: string
         }
         Insert: {
+          app_role_binding?: Database["public"]["Enums"]["app_role"] | null
           authority_note?: string | null
           code: string
+          created_by?: string | null
           description: string
           feature_flag_key?: string | null
+          is_active?: boolean
+          is_custom?: boolean
           is_public_selectable?: boolean
           journey_kind?: string
           label: string
           sort_order?: number
+          tenant_type_scope?: Database["public"]["Enums"]["tenant_type"] | null
           updated_at?: string
         }
         Update: {
+          app_role_binding?: Database["public"]["Enums"]["app_role"] | null
           authority_note?: string | null
           code?: string
+          created_by?: string | null
           description?: string
           feature_flag_key?: string | null
+          is_active?: boolean
+          is_custom?: boolean
           is_public_selectable?: boolean
           journey_kind?: string
           label?: string
           sort_order?: number
+          tenant_type_scope?: Database["public"]["Enums"]["tenant_type"] | null
           updated_at?: string
         }
         Relationships: [
