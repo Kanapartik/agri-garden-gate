@@ -168,6 +168,226 @@ export type Database = {
         }
         Relationships: []
       }
+      feature_flags: {
+        Row: {
+          description: string | null
+          enabled: boolean
+          environments: Json
+          key: string
+          label: string
+          updated_at: string
+        }
+        Insert: {
+          description?: string | null
+          enabled?: boolean
+          environments?: Json
+          key: string
+          label: string
+          updated_at?: string
+        }
+        Update: {
+          description?: string | null
+          enabled?: boolean
+          environments?: Json
+          key?: string
+          label?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      geographies: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          level: Database["public"]["Enums"]["geo_level"]
+          name: string
+          parent_id: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          level: Database["public"]["Enums"]["geo_level"]
+          name: string
+          parent_id?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          level?: Database["public"]["Enums"]["geo_level"]
+          name?: string
+          parent_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "geographies_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "geographies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      onboarding_applications: {
+        Row: {
+          applicant_user_id: string
+          created_at: string
+          current_step_key: string | null
+          decided_at: string | null
+          decided_by: string | null
+          decision_note: string | null
+          form_data: Json
+          geography_id: string | null
+          id: string
+          is_synthetic: boolean
+          role_code: string
+          status: Database["public"]["Enums"]["onboarding_status"]
+          submitted_at: string | null
+          tenant_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          applicant_user_id: string
+          created_at?: string
+          current_step_key?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          form_data?: Json
+          geography_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          role_code: string
+          status?: Database["public"]["Enums"]["onboarding_status"]
+          submitted_at?: string | null
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          applicant_user_id?: string
+          created_at?: string
+          current_step_key?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          form_data?: Json
+          geography_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          role_code?: string
+          status?: Database["public"]["Enums"]["onboarding_status"]
+          submitted_at?: string | null
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "onboarding_applications_geography_id_fkey"
+            columns: ["geography_id"]
+            isOneToOne: false
+            referencedRelation: "geographies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "onboarding_applications_role_code_fkey"
+            columns: ["role_code"]
+            isOneToOne: false
+            referencedRelation: "role_definitions"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "onboarding_applications_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      onboarding_step_definitions: {
+        Row: {
+          evidence_required: Json
+          fields: Json
+          help_text: string | null
+          id: string
+          is_required: boolean
+          label: string
+          role_code: string
+          sort_order: number
+          step_key: string
+          updated_at: string
+        }
+        Insert: {
+          evidence_required?: Json
+          fields?: Json
+          help_text?: string | null
+          id?: string
+          is_required?: boolean
+          label: string
+          role_code: string
+          sort_order?: number
+          step_key: string
+          updated_at?: string
+        }
+        Update: {
+          evidence_required?: Json
+          fields?: Json
+          help_text?: string | null
+          id?: string
+          is_required?: boolean
+          label?: string
+          role_code?: string
+          sort_order?: number
+          step_key?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "onboarding_step_definitions_role_code_fkey"
+            columns: ["role_code"]
+            isOneToOne: false
+            referencedRelation: "role_definitions"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      onboarding_step_progress: {
+        Row: {
+          application_id: string
+          data: Json
+          id: string
+          status: Database["public"]["Enums"]["step_status"]
+          step_key: string
+          updated_at: string
+        }
+        Insert: {
+          application_id: string
+          data?: Json
+          id?: string
+          status?: Database["public"]["Enums"]["step_status"]
+          step_key: string
+          updated_at?: string
+        }
+        Update: {
+          application_id?: string
+          data?: Json
+          id?: string
+          status?: Database["public"]["Enums"]["step_status"]
+          step_key?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "onboarding_step_progress_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "onboarding_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       platform_config: {
         Row: {
           config_key: string
@@ -227,6 +447,80 @@ export type Database = {
           locale?: string
           phone?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      role_definitions: {
+        Row: {
+          authority_note: string | null
+          code: string
+          description: string
+          feature_flag_key: string | null
+          is_public_selectable: boolean
+          journey_kind: string
+          label: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          authority_note?: string | null
+          code: string
+          description: string
+          feature_flag_key?: string | null
+          is_public_selectable?: boolean
+          journey_kind?: string
+          label: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          authority_note?: string | null
+          code?: string
+          description?: string
+          feature_flag_key?: string | null
+          is_public_selectable?: boolean
+          journey_kind?: string
+          label?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "role_definitions_feature_flag_key_fkey"
+            columns: ["feature_flag_key"]
+            isOneToOne: false
+            referencedRelation: "feature_flags"
+            referencedColumns: ["key"]
+          },
+        ]
+      }
+      synthetic_actors: {
+        Row: {
+          created_at: string
+          display_name: string
+          id: string
+          notes: string | null
+          persona_key: string
+          role_code: string
+          tenant_slug: string | null
+        }
+        Insert: {
+          created_at?: string
+          display_name: string
+          id?: string
+          notes?: string | null
+          persona_key: string
+          role_code: string
+          tenant_slug?: string | null
+        }
+        Update: {
+          created_at?: string
+          display_name?: string
+          id?: string
+          notes?: string | null
+          persona_key?: string
+          role_code?: string
+          tenant_slug?: string | null
         }
         Relationships: []
       }
@@ -373,7 +667,15 @@ export type Database = {
         | "consumer_api_manager"
         | "viewer"
       consumer_tier: "sandbox" | "standard" | "premium"
+      geo_level: "country" | "state" | "district" | "block" | "village"
       membership_status: "active" | "suspended" | "revoked"
+      onboarding_status:
+        | "draft"
+        | "pending"
+        | "activated"
+        | "rejected"
+        | "withdrawn"
+      step_status: "not_started" | "in_progress" | "complete"
       tenant_type:
         | "fpo"
         | "govt_dept"
@@ -518,7 +820,16 @@ export const Constants = {
         "viewer",
       ],
       consumer_tier: ["sandbox", "standard", "premium"],
+      geo_level: ["country", "state", "district", "block", "village"],
       membership_status: ["active", "suspended", "revoked"],
+      onboarding_status: [
+        "draft",
+        "pending",
+        "activated",
+        "rejected",
+        "withdrawn",
+      ],
+      step_status: ["not_started", "in_progress", "complete"],
       tenant_type: [
         "fpo",
         "govt_dept",
