@@ -42,7 +42,7 @@ export interface DistrictTemplate {
   scheme_codes: string[];
   local_roles: string[];
   checklist: Array<{ key: string; label: string; required: boolean }>;
-  config: Record<string, unknown>;
+  config: Record<string, string | number | boolean>;
   is_active: boolean;
 }
 
@@ -53,14 +53,14 @@ export interface CloneRequest {
   locale: string;
   schemeCodes?: string[];
   localRoles?: string[];
-  configOverrides?: Record<string, unknown>;
+  configOverrides?: Record<string, string | number | boolean>;
 }
 
 export interface ClonePlan {
   ok: boolean;
   errors: string[];
   /** Configuration actually written for the new district. */
-  appliedConfig: Record<string, unknown>;
+  appliedConfig: Record<string, string | number | boolean>;
   locale: string;
   schemeCodes: string[];
   localRoles: string[];
@@ -104,7 +104,7 @@ export function planDistrictClone(req: CloneRequest): ClonePlan {
   );
   if (badRoles.length > 0) errors.push(`role_not_cloneable:${badRoles.join(",")}`);
 
-  const appliedConfig: Record<string, unknown> = { ...t.config, ...(req.configOverrides ?? {}) };
+  const appliedConfig: Record<string, string | number | boolean> = { ...t.config, ...(req.configOverrides ?? {}) };
 
   return {
     ok: errors.length === 0,
