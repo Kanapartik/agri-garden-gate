@@ -27,7 +27,25 @@ export type AppRole =
   | "consumer_api_manager"
   | "scheme_publisher"
   | "scheme_reviewer"
-  | "viewer";
+  | "viewer"
+  // domain roles added by later slices (mirror of the database app_role enum)
+  | "partner_developer"
+  | "market_operator"
+  | "expansion_manager"
+  | "support_agent"
+  | "service_provider_admin"
+  | "state_admin"
+  | "knowledge_contributor"
+  | "knowledge_reviewer"
+  | "researcher"
+  | "policymaker"
+  | "postharvest_provider_admin"
+  | "talent_candidate"
+  | "training_partner_admin"
+  | "employer_recruiter"
+  | "employment_exchange_admin"
+  | "talent_operator";
+
 
 export interface TierPolicy {
   tier: ConsumerTier;
