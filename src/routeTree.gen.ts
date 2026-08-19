@@ -25,6 +25,7 @@ import { Route as AuthenticatedFpoRouteImport } from './routes/_authenticated/fp
 import { Route as AuthenticatedIntelligenceRouteImport } from './routes/_authenticated/intelligence'
 import { Route as AuthenticatedMarketRouteImport } from './routes/_authenticated/market'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
+import { Route as AuthenticatedPracticesRouteImport } from './routes/_authenticated/practices'
 import { Route as AuthenticatedReviewRouteImport } from './routes/_authenticated/review'
 import { Route as AuthenticatedRolloutRouteImport } from './routes/_authenticated/rollout'
 import { Route as AuthenticatedSchemesRouteImport } from './routes/_authenticated/schemes'
@@ -110,6 +111,11 @@ const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
   path: '/onboarding',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPracticesRoute = AuthenticatedPracticesRouteImport.update({
+  id: '/practices',
+  path: '/practices',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedReviewRoute = AuthenticatedReviewRouteImport.update({
   id: '/review',
   path: '/review',
@@ -142,6 +148,7 @@ export interface FileRoutesByFullPath {
   '/intelligence': typeof AuthenticatedIntelligenceRoute
   '/market': typeof AuthenticatedMarketRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/practices': typeof AuthenticatedPracticesRoute
   '/review': typeof AuthenticatedReviewRoute
   '/rollout': typeof AuthenticatedRolloutRoute
   '/schemes': typeof AuthenticatedSchemesRoute
@@ -162,6 +169,7 @@ export interface FileRoutesByTo {
   '/intelligence': typeof AuthenticatedIntelligenceRoute
   '/market': typeof AuthenticatedMarketRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/practices': typeof AuthenticatedPracticesRoute
   '/review': typeof AuthenticatedReviewRoute
   '/rollout': typeof AuthenticatedRolloutRoute
   '/schemes': typeof AuthenticatedSchemesRoute
@@ -184,6 +192,7 @@ export interface FileRoutesById {
   '/_authenticated/intelligence': typeof AuthenticatedIntelligenceRoute
   '/_authenticated/market': typeof AuthenticatedMarketRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/_authenticated/practices': typeof AuthenticatedPracticesRoute
   '/_authenticated/review': typeof AuthenticatedReviewRoute
   '/_authenticated/rollout': typeof AuthenticatedRolloutRoute
   '/_authenticated/schemes': typeof AuthenticatedSchemesRoute
@@ -206,6 +215,7 @@ export interface FileRouteTypes {
     | '/intelligence'
     | '/market'
     | '/onboarding'
+    | '/practices'
     | '/review'
     | '/rollout'
     | '/schemes'
@@ -226,6 +236,7 @@ export interface FileRouteTypes {
     | '/intelligence'
     | '/market'
     | '/onboarding'
+    | '/practices'
     | '/review'
     | '/rollout'
     | '/schemes'
@@ -247,6 +258,7 @@ export interface FileRouteTypes {
     | '/_authenticated/intelligence'
     | '/_authenticated/market'
     | '/_authenticated/onboarding'
+    | '/_authenticated/practices'
     | '/_authenticated/review'
     | '/_authenticated/rollout'
     | '/_authenticated/schemes'
@@ -374,6 +386,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/practices': {
+      id: '/_authenticated/practices'
+      path: '/practices'
+      fullPath: '/practices'
+      preLoaderRoute: typeof AuthenticatedPracticesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/review': {
       id: '/_authenticated/review'
       path: '/review'
@@ -410,6 +429,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedIntelligenceRoute: typeof AuthenticatedIntelligenceRoute
   AuthenticatedMarketRoute: typeof AuthenticatedMarketRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedPracticesRoute: typeof AuthenticatedPracticesRoute
   AuthenticatedReviewRoute: typeof AuthenticatedReviewRoute
   AuthenticatedRolloutRoute: typeof AuthenticatedRolloutRoute
   AuthenticatedSchemesRoute: typeof AuthenticatedSchemesRoute
@@ -427,6 +447,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedIntelligenceRoute: AuthenticatedIntelligenceRoute,
   AuthenticatedMarketRoute: AuthenticatedMarketRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedPracticesRoute: AuthenticatedPracticesRoute,
   AuthenticatedReviewRoute: AuthenticatedReviewRoute,
   AuthenticatedRolloutRoute: AuthenticatedRolloutRoute,
   AuthenticatedSchemesRoute: AuthenticatedSchemesRoute,
