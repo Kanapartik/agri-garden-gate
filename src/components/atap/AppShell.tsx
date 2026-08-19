@@ -5,10 +5,10 @@ import { useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { getMyContext } from "@/lib/atap.functions";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { LanguageSwitcher } from "@/components/atap/LanguageProvider";
+import { LanguageSwitcher, useLanguage } from "@/components/atap/LanguageProvider";
 import type { AppRole } from "@/lib/atap/policy";
 
-type NavItem = { to: string; label: string };
+type NavItem = { to: string; label: string; labelKey: string };
 
 /**
  * Navigation is derived from role context, never hardcoded per page. Hiding a
@@ -17,9 +17,9 @@ type NavItem = { to: string; label: string };
 export function navItemsForRoles(roles: AppRole[], signedIn: boolean): NavItem[] {
   if (!signedIn) {
     return [
-      { to: "/", label: "Overview" },
-      { to: "/roles", label: "Roles" },
-      { to: "/architecture", label: "Architecture" },
+      { to: "/", label: "Overview", labelKey: "nav.overview" },
+      { to: "/roles", label: "Roles", labelKey: "nav.roles" },
+      { to: "/architecture", label: "Architecture", labelKey: "nav.architecture" },
     ];
   }
 
@@ -29,47 +29,47 @@ export function navItemsForRoles(roles: AppRole[], signedIn: boolean): NavItem[]
   const isStaff = roles.some((r) => r !== "viewer" && r !== "talent_candidate");
 
   const items: NavItem[] = [
-    { to: "/profile", label: "My profile" },
-    { to: "/onboarding", label: "My onboarding" },
-    { to: "/farm", label: "My farm" },
-    { to: "/intelligence", label: "Farm intelligence" },
-    { to: "/practices", label: "Training" },
-    { to: "/inputs", label: "Inputs & protection" },
-    { to: "/soil-care", label: "Soil care" },
-    { to: "/consent", label: "Consent" },
-    { to: "/discovery", label: "Schemes" },
-    { to: "/market", label: "Marketplace" },
+    { to: "/profile", label: "My profile", labelKey: "nav.profile" },
+    { to: "/onboarding", label: "My onboarding", labelKey: "nav.onboarding" },
+    { to: "/farm", label: "My farm", labelKey: "nav.farm" },
+    { to: "/intelligence", label: "Farm intelligence", labelKey: "nav.intelligence" },
+    { to: "/practices", label: "Training", labelKey: "nav.practices" },
+    { to: "/inputs", label: "Inputs & protection", labelKey: "nav.inputs" },
+    { to: "/soil-care", label: "Soil care", labelKey: "nav.soilCare" },
+    { to: "/consent", label: "Consent", labelKey: "nav.consent" },
+    { to: "/discovery", label: "Schemes", labelKey: "nav.schemes" },
+    { to: "/market", label: "Marketplace", labelKey: "nav.market" },
   ];
 
-  if (isStaff) items.push({ to: "/dashboard", label: "Access console" });
+  if (isStaff) items.push({ to: "/dashboard", label: "Access console", labelKey: "nav.dashboard" });
 
   if (roles.some((r) => r === "tenant_admin" || r === "onboarding_officer" || r === "field_agent")) {
-    items.push({ to: "/fpo", label: "FPO workspace" });
+    items.push({ to: "/fpo", label: "FPO workspace", labelKey: "nav.fpo" });
   }
   if (
     roles.some(
       (r) => r === "scheme_publisher" || r === "scheme_reviewer" || r === "platform_admin",
     )
   ) {
-    items.push({ to: "/schemes", label: "Government" });
+    items.push({ to: "/schemes", label: "Government", labelKey: "nav.government" });
   }
   if (roles.includes("platform_admin") || roles.includes("auditor")) {
-    items.push({ to: "/rollout", label: "District" });
+    items.push({ to: "/rollout", label: "District", labelKey: "nav.district" });
   }
 
   const isReviewer = roles.some(
     (r) => r === "onboarding_officer" || r === "tenant_admin" || r === "platform_admin",
   );
-  if (isReviewer) items.push({ to: "/review", label: "Review queue" });
+  if (isReviewer) items.push({ to: "/review", label: "Review queue", labelKey: "nav.review" });
   if (roles.includes("platform_admin") || roles.includes("tenant_admin")) {
-    items.push({ to: "/access", label: "Access & roles" });
+    items.push({ to: "/access", label: "Access & roles", labelKey: "nav.access" });
   }
   if (roles.includes("platform_admin") || roles.includes("auditor")) {
-    items.push({ to: "/admin", label: "Admin" });
+    items.push({ to: "/admin", label: "Admin", labelKey: "nav.admin" });
   }
 
-  if (roles.includes("platform_admin")) items.push({ to: "/configuration", label: "Configuration" });
-  if (isEngineering) items.push({ to: "/architecture", label: "Architecture" });
+  if (roles.includes("platform_admin")) items.push({ to: "/configuration", label: "Configuration", labelKey: "nav.configuration" });
+  if (isEngineering) items.push({ to: "/architecture", label: "Architecture", labelKey: "nav.architecture" });
   return items;
 }
 
@@ -107,6 +107,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const items = navItemsForRoles(roles, signedIn);
+  const { t } = useLanguage();
 
   async function signOut() {
     await queryClient.cancelQueries();
@@ -130,7 +131,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 activeProps={{ className: "bg-secondary text-secondary-foreground" }}
                 className="rounded-md px-2.5 py-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-secondary-foreground"
               >
-                {item.label}
+                {t(item.labelKey)}
               </Link>
             ))}
           </nav>
@@ -138,13 +139,13 @@ export function AppShell({ children }: { children: ReactNode }) {
             <LanguageSwitcher />
             {signedIn ? (
               <Button variant="outline" size="sm" onClick={signOut}>
-                Sign out
+                {t("shell.signOut")}
               </Button>
             ) : pathname === "/auth" ? null : (
               /* Plain anchor: protected-route redirects resolve on the client, so a
                  router-aware Link here would hydrate with a different active state. */
               <a href="/auth" className={buttonVariants({ size: "sm" })}>
-                Sign in
+                {t("shell.signIn")}
               </a>
             )}
           </div>
@@ -153,8 +154,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="flex-1">{children}</div>
       <footer className="border-t border-border px-6 py-6 text-xs text-muted-foreground">
         <div className="mx-auto max-w-6xl">
-          AgriGhar ATAP · B0 baseline · synthetic data only · marketplace, advertising and talent
-          domains are deactivated.
+          {t("shell.footer")}
         </div>
       </footer>
     </div>
