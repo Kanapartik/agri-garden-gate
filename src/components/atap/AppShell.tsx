@@ -127,6 +127,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             ))}
           </nav>
           <div className="ml-auto flex items-center gap-2">
+            <LanguageSwitcher />
             {signedIn ? (
               <Button variant="outline" size="sm" onClick={signOut}>
                 Sign out
