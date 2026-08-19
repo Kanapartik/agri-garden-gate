@@ -140,6 +140,38 @@ const en: Dict = {
 };
 
 const te: Dict = {
+  "nav.overview": "ముఖ్య పేజీ",
+  "nav.profile": "నా వివరాలు",
+  "nav.onboarding": "నా నమోదు",
+  "nav.consent": "సమ్మతి",
+  "nav.schemes": "పథకాలు",
+  "nav.market": "మార్కెట్",
+  "nav.dashboard": "యాక్సెస్ కన్సోల్",
+  "shell.signIn": "సైన్ ఇన్",
+  "shell.signOut": "సైన్ అవుట్",
+  "discovery.title": "పథకాల అన్వేషణ",
+  "discovery.description":
+    "మీ జిల్లాలో ప్రచురించిన పథకాలు. దరఖాస్తు చేసినప్పుడు ఫారంలో ఉన్న వివరాలు మాత్రమే శాఖకు వెళ్తాయి.",
+  "discovery.prefillTitle": "మీ క్షేత్ర వివరాల నుండి ముందస్తు నింపడం",
+  "discovery.prefillBlocked": "ముందస్తు నింపడం అందుబాటులో లేదు",
+  "discovery.prefillBlockedHelp": "మీరు వివరాలు స్వయంగా టైప్ చేసి దరఖాస్తు చేయవచ్చు.",
+  "discovery.reviewConsent": "సమ్మతిని చూడండి",
+  "discovery.addParcel": "క్షేత్రం జోడించండి",
+  "discovery.empty": "మీ జిల్లాలో ప్రచురించిన పథకాలు ఇంకా లేవు.",
+  "discovery.apply": "దరఖాస్తు",
+  "discovery.applyPrefill": "ముందస్తు నింపి దరఖాస్తు",
+  "discovery.cancel": "రద్దు",
+  "discovery.continueReview": "సమర్పించే ముందు పరిశీలించండి",
+  "discovery.reviewTitle": "మీ దరఖాస్తును పరిశీలించండి",
+  "discovery.reviewHelp":
+    "సమర్పించే ముందు ప్రతి వివరాన్ని మీ భాషలో చదవండి. మీరు నిర్ధారించే వరకు ఏమీ పంపబడదు.",
+  "discovery.backToEdit": "సవరించడానికి వెనక్కి",
+  "discovery.confirmSubmit": "నిర్ధారించి సమర్పించండి",
+  "discovery.notProvided": "ఇవ్వలేదు",
+  "discovery.note": "గమనిక",
+  "discovery.humanReview": "ఈ దరఖాస్తుపై ప్రభుత్వ అధికారి నిర్ణయం తీసుకుంటారు.",
+  "discovery.appliedOn": "మీరు దరఖాస్తు చేసిన తేదీ",
+
   "nav.practices": "శిక్షణ",
   "nav.inputs": "ఎరువులు & రక్షణ",
   "nav.soilCare": "నేల సంరక్షణ",
