@@ -887,6 +887,29 @@ export const getSchemeDiscovery = createServerFn({ method: "GET" })
     const version = await baselinePolicyVersion(supabase);
     const consentOk = baselineConsentActive((consents ?? []) as never, version);
     const prefill = prefillFromFarmProfile((farms ?? [])[0] ?? null, consentOk);
+
+    // Scheme rules read profile facts (age, social category, ownership, extent,
+    // state/district, bank linkage). Reading them is still a farmer-data read, so
+    // it stays behind the same baseline consent gate as farm prefill.
+    let profileValues: Record<string, unknown> = {};
+    if (consentOk) {
+      const { schemeContextValues } = await import("@/lib/atap/profile");
+      const [{ data: profileRow }, { data: geoRows }] = await Promise.all([
+        supabase
+          .from("farmer_profiles")
+          .select(
+            "full_name, date_of_birth, social_category, ownership_type, total_extent_acres, state_geography_id, district_geography_id, village_code, bank_ifsc, bank_account_last4",
+          )
+          .eq("farmer_user_id", userId)
+          .maybeSingle(),
+        supabase.from("geographies").select("id, code, name, level").in("level", ["state", "district"]),
+      ]);
+      profileValues = schemeContextValues({
+        profile: (profileRow ?? null) as never,
+        farm: null,
+        geographies: (geoRows ?? []) as never,
+      });
+    }
     const versionRows = (versions ?? []) as unknown as SchemeVersionRow[];
 
     return {
