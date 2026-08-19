@@ -266,6 +266,38 @@ const hi: Dict = {
 };
 
 const ta: Dict = {
+  "nav.overview": "முதன்மைப் பக்கம்",
+  "nav.profile": "எனது விவரம்",
+  "nav.onboarding": "எனது பதிவு",
+  "nav.consent": "ஒப்புதல்",
+  "nav.schemes": "திட்டங்கள்",
+  "nav.market": "சந்தை",
+  "nav.dashboard": "அணுகல் கன்சோல்",
+  "shell.signIn": "உள்நுழை",
+  "shell.signOut": "வெளியேறு",
+  "discovery.title": "திட்டங்கள் தேடல்",
+  "discovery.description":
+    "உங்கள் மாவட்டத்தில் வெளியிடப்பட்ட திட்டங்கள். விண்ணப்பிக்கும்போது படிவத்தில் உள்ள விவரங்கள் மட்டுமே துறைக்குச் செல்லும்.",
+  "discovery.prefillTitle": "உங்கள் நில விவரங்களில் இருந்து முன்நிரப்புதல்",
+  "discovery.prefillBlocked": "முன்நிரப்புதல் கிடைக்கவில்லை",
+  "discovery.prefillBlockedHelp": "நீங்களே விவரங்களை உள்ளிட்டு விண்ணப்பிக்கலாம்.",
+  "discovery.reviewConsent": "ஒப்புதலைப் பார்க்க",
+  "discovery.addParcel": "நிலம் சேர்க்க",
+  "discovery.empty": "உங்கள் மாவட்டத்தில் இன்னும் திட்டங்கள் வெளியிடப்படவில்லை.",
+  "discovery.apply": "விண்ணப்பிக்க",
+  "discovery.applyPrefill": "முன்நிரப்பி விண்ணப்பிக்க",
+  "discovery.cancel": "ரத்து",
+  "discovery.continueReview": "சமர்ப்பிக்கும் முன் சரிபார்க்க",
+  "discovery.reviewTitle": "உங்கள் விண்ணப்பத்தை சரிபார்க்கவும்",
+  "discovery.reviewHelp":
+    "சமர்ப்பிக்கும் முன் ஒவ்வொரு விவரத்தையும் உங்கள் மொழியில் படியுங்கள். உறுதிப்படுத்தும் வரை எதுவும் அனுப்பப்படாது.",
+  "discovery.backToEdit": "திருத்த திரும்பு",
+  "discovery.confirmSubmit": "உறுதிப்படுத்தி சமர்ப்பி",
+  "discovery.notProvided": "தரப்படவில்லை",
+  "discovery.note": "குறிப்பு",
+  "discovery.humanReview": "இந்த விண்ணப்பத்தை அரசு அதிகாரி முடிவு செய்வார்.",
+  "discovery.appliedOn": "நீங்கள் விண்ணப்பித்த நாள்",
+
   "nav.practices": "பயிற்சி",
   "nav.inputs": "உரங்கள் & பாதுகாப்பு",
   "nav.soilCare": "மண் பரிபாலனம்",
