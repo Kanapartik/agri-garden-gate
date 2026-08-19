@@ -52,4 +52,18 @@ describe("role-aware navigation", () => {
     expect(items).toContain("Admin");
     expect(items).not.toContain("Configuration");
   });
+
+  it("keeps engineering surfaces away from a plain farmer", () => {
+    const items = labels(["viewer"]);
+    expect(items).toContain("My profile");
+    expect(items).not.toContain("Architecture");
+    expect(items).not.toContain("Access console");
+    expect(items).not.toContain("Configuration");
+  });
+
+  it("keeps engineering surfaces for operators", () => {
+    expect(labels(["platform_admin"])).toContain("Architecture");
+    expect(labels(["auditor"])).toContain("Architecture");
+    expect(labels(["onboarding_officer"])).toContain("Access console");
+  });
 });
