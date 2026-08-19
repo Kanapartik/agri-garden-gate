@@ -131,24 +131,28 @@ function Dashboard() {
           </div>
         </section>
 
-        <section>
-          <h2 className="text-base font-semibold">Active configuration</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Roles, geography and feature activation are configuration, not code forks.
-          </p>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            {ctx?.config.map((c) => (
-              <div key={c.config_key} className="rounded-lg border border-border bg-card p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  {c.config_key}
-                </p>
-                <pre className="mt-2 overflow-x-auto text-xs text-foreground">
-                  {JSON.stringify(c.config_value, null, 2)}
-                </pre>
-              </div>
-            ))}
-          </div>
-        </section>
+        {/* Platform configuration is an operator surface — it means nothing to a
+            farmer, so it is shown only to roles that can act on it. */}
+        {canReadAudit ? (
+          <section>
+            <h2 className="text-base font-semibold">Active configuration</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Roles, geography and feature activation are configuration, not code forks.
+            </p>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {ctx?.config.map((c) => (
+                <div key={c.config_key} className="rounded-lg border border-border bg-card p-4">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    {c.config_key}
+                  </p>
+                  <pre className="mt-2 overflow-x-auto text-xs text-foreground">
+                    {JSON.stringify(c.config_value, null, 2)}
+                  </pre>
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         <section>
           <h2 className="text-base font-semibold">Audit trail</h2>
