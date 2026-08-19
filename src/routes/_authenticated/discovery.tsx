@@ -7,6 +7,7 @@ import { Link } from "@tanstack/react-router";
 import { PageHeader } from "@/components/atap/AppShell";
 import { StateBadge } from "@/components/atap/StatusBadge";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import { getSchemeDiscovery, submitSchemeApplication } from "@/lib/atap/district.functions";
 import type { FormValues } from "@/lib/atap/onboarding";
 
@@ -31,10 +32,13 @@ export const Route = createFileRoute("/_authenticated/discovery")({
 
 function DiscoveryPage() {
   const queryClient = useQueryClient();
+  const { t } = useLanguage();
   const fetchDiscovery = useServerFn(getSchemeDiscovery);
   const submit = useServerFn(submitSchemeApplication);
 
   const [openScheme, setOpenScheme] = useState<string | null>(null);
+  /** Applications are never one-click: the farmer reads a translated summary first. */
+  const [step, setStep] = useState<"form" | "review">("form");
   const [values, setValues] = useState<FormValues>({});
   const [usedPrefill, setUsedPrefill] = useState(false);
 
@@ -48,8 +52,9 @@ function DiscoveryPage() {
   const submitMutation = useMutation({
     mutationFn: (schemeId: string) => submit({ data: { schemeId, values, usedPrefill } }),
     onSuccess: async () => {
-      toast.success("Application submitted for human government review");
+      toast.success(t("discovery.submitted"));
       setOpenScheme(null);
+      setStep("form");
       setValues({});
       await queryClient.invalidateQueries({ queryKey: ["atap", "scheme-discovery"] });
     },
@@ -57,48 +62,48 @@ function DiscoveryPage() {
   });
 
   if (discovery.isLoading) {
-    return <main className="mx-auto max-w-5xl px-6 py-12 text-sm text-muted-foreground">Loading…</main>;
+    return (
+      <main className="mx-auto max-w-5xl px-6 py-12 text-sm text-muted-foreground">
+        {t("common.loading")}
+      </main>
+    );
   }
 
   return (
     <main className="mx-auto max-w-5xl space-y-10 px-6 py-12">
-      <PageHeader
-        title="Scheme discovery"
-        description="Published district schemes you can apply to. Applying shares only the fields on the form with the publishing department — nothing else from your farm profile."
-      />
+      <PageHeader title={t("discovery.title")} description={t("discovery.description")} />
 
       <section className="panel space-y-2 p-5">
-        <h2 className="font-display text-sm font-semibold">Prefill from your farm profile</h2>
+        <h2 className="font-display text-sm font-semibold">{t("discovery.prefillTitle")}</h2>
         {data?.prefillAvailable ? (
-          <p className="text-sm text-muted-foreground">
-            Your baseline consent is active, so we can prefill land area, plot reference and village
-            from your own farm record. You can edit every field before submitting.
-          </p>
+          <p className="text-sm text-muted-foreground">{t("discovery.prefillAvailable")}</p>
         ) : (
           <p className="text-sm text-muted-foreground">
-            Prefill unavailable ({(data?.prefillBlockedReason ?? "unknown").replaceAll("_", " ")}).
-            You can still apply and type the values yourself.{" "}
+            {t("discovery.prefillBlocked")} (
+            {(data?.prefillBlockedReason ?? "unknown").replaceAll("_", " ")}).{" "}
+            {t("discovery.prefillBlockedHelp")}{" "}
             <Link to="/consent" className="underline">
-              Review consent
+              {t("discovery.reviewConsent")}
             </Link>{" "}
-            or{" "}
+            ·{" "}
             <Link to="/farm" className="underline">
-              add a farm parcel
+              {t("discovery.addParcel")}
             </Link>
-            .
           </p>
         )}
       </section>
 
       <section className="space-y-4">
         {(data?.schemes ?? []).length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            No published schemes are open in your district yet.
-          </p>
+          <p className="text-sm text-muted-foreground">{t("discovery.empty")}</p>
         ) : (
           data?.schemes.map((s) => {
             const existing = data.applications.find((a) => a.scheme_id === s.id);
             const fields = s.version?.form_fields ?? [];
+            const isOpen = openScheme === s.id;
+            const missingRequired = fields.filter(
+              (f) => f.required && String(values[f.name] ?? "").trim() === "",
+            );
             return (
               <article key={s.id} className="panel space-y-3 p-5">
                 <header className="flex flex-wrap items-center gap-3">
@@ -114,7 +119,7 @@ function DiscoveryPage() {
                     {s.version.rules.map((r) => (
                       <li key={r.key}>
                         {r.label}
-                        {r.severity === "advisory" ? " (helps, not required)" : ""}
+                        {r.severity === "advisory" ? ` ${t("discovery.advisorySuffix")}` : ""}
                       </li>
                     ))}
                   </ul>
@@ -122,11 +127,13 @@ function DiscoveryPage() {
 
                 {existing ? (
                   <p className="text-sm">
-                    You applied on {new Date(existing.created_at).toLocaleDateString()}. A government
-                    reviewer decides this application.
-                    {existing.decision_note ? ` Note: ${existing.decision_note}` : ""}
+                    {t("discovery.appliedOn")}{" "}
+                    {new Date(existing.created_at).toLocaleDateString()}. {t("discovery.humanReview")}
+                    {existing.decision_note
+                      ? ` ${t("discovery.note")}: ${existing.decision_note}`
+                      : ""}
                   </p>
-                ) : openScheme === s.id ? (
+                ) : isOpen && step === "form" ? (
                   <div className="space-y-3">
                     {fields.map((f) => (
                       <div key={f.name} className="space-y-1">
@@ -155,30 +162,68 @@ function DiscoveryPage() {
                     ))}
                     <div className="flex flex-wrap gap-2">
                       <Button
+                        onClick={() => setStep("review")}
+                        disabled={missingRequired.length > 0}
+                      >
+                        {t("discovery.continueReview")}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setOpenScheme(null);
+                          setStep("form");
+                        }}
+                      >
+                        {t("discovery.cancel")}
+                      </Button>
+                    </div>
+                    <p className="field-hint">{t("discovery.submitHint")}</p>
+                  </div>
+                ) : isOpen ? (
+                  <div className="space-y-3">
+                    <h4 className="font-display text-sm font-semibold">
+                      {t("discovery.reviewTitle")}
+                    </h4>
+                    <p className="text-sm text-muted-foreground">{t("discovery.reviewHelp")}</p>
+                    <dl className="divide-y divide-border rounded-md border border-border">
+                      {fields.map((f) => (
+                        <div
+                          key={f.name}
+                          className="flex flex-wrap items-baseline justify-between gap-2 px-3 py-2"
+                        >
+                          <dt className="text-sm text-muted-foreground">{f.label}</dt>
+                          <dd className="text-sm font-medium">
+                            {String(values[f.name] ?? "").trim() === ""
+                              ? t("discovery.notProvided")
+                              : String(values[f.name])}
+                          </dd>
+                        </div>
+                      ))}
+                    </dl>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
                         onClick={() => submitMutation.mutate(s.id)}
                         disabled={submitMutation.isPending}
                       >
-                        Submit application
+                        {t("discovery.confirmSubmit")}
                       </Button>
-                      <Button variant="outline" onClick={() => setOpenScheme(null)}>
-                        Cancel
+                      <Button variant="outline" onClick={() => setStep("form")}>
+                        {t("discovery.backToEdit")}
                       </Button>
                     </div>
-                    <p className="field-hint">
-                      Submitting records the scheme version your application was checked against.
-                      Eligibility hints never decide the outcome.
-                    </p>
+                    <p className="field-hint">{t("discovery.submitHint")}</p>
                   </div>
                 ) : (
                   <Button
                     onClick={() => {
                       setOpenScheme(s.id);
+                      setStep("form");
                       const prefill = data.prefillAvailable ? data.prefillValues : {};
                       setValues(prefill);
                       setUsedPrefill(data.prefillAvailable);
                     }}
                   >
-                    {data.prefillAvailable ? "Apply with prefill" : "Apply"}
+                    {data.prefillAvailable ? t("discovery.applyPrefill") : t("discovery.apply")}
                   </Button>
                 )}
               </article>
