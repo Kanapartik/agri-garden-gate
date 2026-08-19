@@ -985,6 +985,53 @@ export type Database = {
         }
         Relationships: []
       }
+      document_extractions: {
+        Row: {
+          adapter_code: string
+          confidence: Json
+          confirmed_at: string | null
+          created_at: string
+          document_id: string
+          farmer_user_id: string
+          id: string
+          model_code: string | null
+          provenance: Database["public"]["Enums"]["field_provenance"]
+          suggested_fields: Json
+        }
+        Insert: {
+          adapter_code: string
+          confidence?: Json
+          confirmed_at?: string | null
+          created_at?: string
+          document_id: string
+          farmer_user_id: string
+          id?: string
+          model_code?: string | null
+          provenance?: Database["public"]["Enums"]["field_provenance"]
+          suggested_fields?: Json
+        }
+        Update: {
+          adapter_code?: string
+          confidence?: Json
+          confirmed_at?: string | null
+          created_at?: string
+          document_id?: string
+          farmer_user_id?: string
+          id?: string
+          model_code?: string | null
+          provenance?: Database["public"]["Enums"]["field_provenance"]
+          suggested_fields?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_extractions_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "farmer_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       document_records: {
         Row: {
           checksum: string | null
@@ -1191,6 +1238,48 @@ export type Database = {
           },
         ]
       }
+      farmer_documents: {
+        Row: {
+          created_at: string
+          doc_kind: Database["public"]["Enums"]["farmer_doc_kind"]
+          extraction_error: string | null
+          farmer_user_id: string
+          id: string
+          is_synthetic: boolean
+          mime_type: string | null
+          state: Database["public"]["Enums"]["extraction_state"]
+          storage_path: string
+          updated_at: string
+          uploaded_by_user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          doc_kind: Database["public"]["Enums"]["farmer_doc_kind"]
+          extraction_error?: string | null
+          farmer_user_id: string
+          id?: string
+          is_synthetic?: boolean
+          mime_type?: string | null
+          state?: Database["public"]["Enums"]["extraction_state"]
+          storage_path: string
+          updated_at?: string
+          uploaded_by_user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          doc_kind?: Database["public"]["Enums"]["farmer_doc_kind"]
+          extraction_error?: string | null
+          farmer_user_id?: string
+          id?: string
+          is_synthetic?: boolean
+          mime_type?: string | null
+          state?: Database["public"]["Enums"]["extraction_state"]
+          storage_path?: string
+          updated_at?: string
+          uploaded_by_user_id?: string | null
+        }
+        Relationships: []
+      }
       farmer_input_plans: {
         Row: {
           area_hectares: number
@@ -1237,6 +1326,121 @@ export type Database = {
             columns: ["farm_id"]
             isOneToOne: false
             referencedRelation: "farm_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      farmer_profiles: {
+        Row: {
+          bank_account_hash: string | null
+          bank_account_holder: string | null
+          bank_account_last4: string | null
+          bank_branch: string | null
+          bank_ifsc: string | null
+          bank_name: string | null
+          captured_by_user_id: string | null
+          centroid_lat: number | null
+          centroid_lng: number | null
+          created_at: string
+          date_of_birth: string | null
+          district_geography_id: string | null
+          farmer_user_id: string
+          field_provenance: Json
+          full_name: string | null
+          gender: string | null
+          id: string
+          irrigation_source: string | null
+          is_synthetic: boolean
+          land_record_ref_hash: string | null
+          ownership_type:
+            | Database["public"]["Enums"]["land_ownership_type"]
+            | null
+          photo_path: string | null
+          social_category: Database["public"]["Enums"]["social_category"] | null
+          state_geography_id: string | null
+          total_extent_acres: number | null
+          updated_at: string
+          village_code: string | null
+        }
+        Insert: {
+          bank_account_hash?: string | null
+          bank_account_holder?: string | null
+          bank_account_last4?: string | null
+          bank_branch?: string | null
+          bank_ifsc?: string | null
+          bank_name?: string | null
+          captured_by_user_id?: string | null
+          centroid_lat?: number | null
+          centroid_lng?: number | null
+          created_at?: string
+          date_of_birth?: string | null
+          district_geography_id?: string | null
+          farmer_user_id: string
+          field_provenance?: Json
+          full_name?: string | null
+          gender?: string | null
+          id?: string
+          irrigation_source?: string | null
+          is_synthetic?: boolean
+          land_record_ref_hash?: string | null
+          ownership_type?:
+            | Database["public"]["Enums"]["land_ownership_type"]
+            | null
+          photo_path?: string | null
+          social_category?:
+            | Database["public"]["Enums"]["social_category"]
+            | null
+          state_geography_id?: string | null
+          total_extent_acres?: number | null
+          updated_at?: string
+          village_code?: string | null
+        }
+        Update: {
+          bank_account_hash?: string | null
+          bank_account_holder?: string | null
+          bank_account_last4?: string | null
+          bank_branch?: string | null
+          bank_ifsc?: string | null
+          bank_name?: string | null
+          captured_by_user_id?: string | null
+          centroid_lat?: number | null
+          centroid_lng?: number | null
+          created_at?: string
+          date_of_birth?: string | null
+          district_geography_id?: string | null
+          farmer_user_id?: string
+          field_provenance?: Json
+          full_name?: string | null
+          gender?: string | null
+          id?: string
+          irrigation_source?: string | null
+          is_synthetic?: boolean
+          land_record_ref_hash?: string | null
+          ownership_type?:
+            | Database["public"]["Enums"]["land_ownership_type"]
+            | null
+          photo_path?: string | null
+          social_category?:
+            | Database["public"]["Enums"]["social_category"]
+            | null
+          state_geography_id?: string | null
+          total_extent_acres?: number | null
+          updated_at?: string
+          village_code?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "farmer_profiles_district_geography_id_fkey"
+            columns: ["district_geography_id"]
+            isOneToOne: false
+            referencedRelation: "geographies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "farmer_profiles_state_geography_id_fkey"
+            columns: ["state_geography_id"]
+            isOneToOne: false
+            referencedRelation: "geographies"
             referencedColumns: ["id"]
           },
         ]
@@ -6307,6 +6511,7 @@ export type Database = {
         | "evidence_pending"
         | "approved"
         | "rejected"
+      extraction_state: "pending" | "extracted" | "failed" | "confirmed"
       facility_kind:
         | "fpo"
         | "kvk"
@@ -6318,6 +6523,13 @@ export type Database = {
         | "logistics"
         | "extension_centre"
       farm_sync_state: "local_draft" | "synced" | "conflict"
+      farmer_doc_kind:
+        | "photo"
+        | "bank_passbook"
+        | "land_record"
+        | "id_proof"
+        | "other"
+      field_provenance: "farmer_entered" | "ai_extracted" | "farmer_confirmed"
       gate_status: "pending" | "approved" | "rejected"
       geo_level: "country" | "state" | "district" | "block" | "village"
       identity_check_status:
@@ -6341,6 +6553,12 @@ export type Database = {
         | "published"
         | "rejected"
         | "withdrawn"
+      land_ownership_type:
+        | "owner"
+        | "leased"
+        | "share_cropped"
+        | "mixed"
+        | "landless"
       listing_status: "draft" | "pending_review" | "published" | "delisted"
       market_order_status:
         | "created"
@@ -6449,6 +6667,7 @@ export type Database = {
         | "approved"
         | "rejected"
         | "suspended"
+      social_category: "general" | "obc" | "sc" | "st" | "ews" | "not_disclosed"
       soil_basis: "inferred_from_location" | "lab_tested"
       soil_lab_kind:
         | "government"
@@ -6692,6 +6911,7 @@ export const Constants = {
         "approved",
         "rejected",
       ],
+      extraction_state: ["pending", "extracted", "failed", "confirmed"],
       facility_kind: [
         "fpo",
         "kvk",
@@ -6704,6 +6924,14 @@ export const Constants = {
         "extension_centre",
       ],
       farm_sync_state: ["local_draft", "synced", "conflict"],
+      farmer_doc_kind: [
+        "photo",
+        "bank_passbook",
+        "land_record",
+        "id_proof",
+        "other",
+      ],
+      field_provenance: ["farmer_entered", "ai_extracted", "farmer_confirmed"],
       gate_status: ["pending", "approved", "rejected"],
       geo_level: ["country", "state", "district", "block", "village"],
       identity_check_status: [
@@ -6729,6 +6957,13 @@ export const Constants = {
         "published",
         "rejected",
         "withdrawn",
+      ],
+      land_ownership_type: [
+        "owner",
+        "leased",
+        "share_cropped",
+        "mixed",
+        "landless",
       ],
       listing_status: ["draft", "pending_review", "published", "delisted"],
       market_order_status: [
@@ -6852,6 +7087,7 @@ export const Constants = {
         "rejected",
         "suspended",
       ],
+      social_category: ["general", "obc", "sc", "st", "ews", "not_disclosed"],
       soil_basis: ["inferred_from_location", "lab_tested"],
       soil_lab_kind: [
         "government",

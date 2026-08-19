@@ -23,8 +23,13 @@ export function navItemsForRoles(roles: AppRole[], signedIn: boolean): NavItem[]
     ];
   }
 
+  // Engineering surfaces (platform configuration, architecture assumptions) are
+  // meaningless to a farmer, so they stay with the roles that operate them.
+  const isEngineering = roles.includes("platform_admin") || roles.includes("auditor");
+  const isStaff = roles.some((r) => r !== "viewer" && r !== "talent_candidate");
+
   const items: NavItem[] = [
-    { to: "/dashboard", label: "Access console" },
+    { to: "/profile", label: "My profile" },
     { to: "/onboarding", label: "My onboarding" },
     { to: "/farm", label: "My farm" },
     { to: "/intelligence", label: "Farm intelligence" },
@@ -35,6 +40,8 @@ export function navItemsForRoles(roles: AppRole[], signedIn: boolean): NavItem[]
     { to: "/discovery", label: "Schemes" },
     { to: "/market", label: "Marketplace" },
   ];
+
+  if (isStaff) items.push({ to: "/dashboard", label: "Access console" });
 
   if (roles.some((r) => r === "tenant_admin" || r === "onboarding_officer" || r === "field_agent")) {
     items.push({ to: "/fpo", label: "FPO workspace" });
@@ -62,7 +69,7 @@ export function navItemsForRoles(roles: AppRole[], signedIn: boolean): NavItem[]
   }
 
   if (roles.includes("platform_admin")) items.push({ to: "/configuration", label: "Configuration" });
-  items.push({ to: "/architecture", label: "Architecture" });
+  if (isEngineering) items.push({ to: "/architecture", label: "Architecture" });
   return items;
 }
 
