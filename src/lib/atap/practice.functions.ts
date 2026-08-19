@@ -329,7 +329,7 @@ export const getSoilCare = createServerFn({ method: "GET" })
     const { normalizeLocale } = await import("@/lib/i18n");
     const { loadSoilPractices } = await import("@/lib/atap/practice.server");
     const { buildSoilCarePlan } = await import("@/lib/atap/practice");
-    const { listParcels, resolveLocation, readSoil } = await import(
+    const { listParcels, resolveLocation, readSoil, loadFacilities } = await import(
       "@/lib/atap/intelligence.server"
     );
 
