@@ -347,15 +347,17 @@ export const getSoilCare = createServerFn({ method: "GET" })
       };
     }
 
-    const location = await resolveLocation(supabase, parcel);
+    const facilities = await loadFacilities(supabase);
+    const { location } = await resolveLocation(supabase, parcel, facilities);
     const soil = await readSoil(parcel, location.districtName);
 
     return {
       locale,
       farmId: parcel.id,
       parcels: parcels.map((p) => ({ id: p.id, label: p.label })),
+      soilBasisNote: soil.basisNote,
       plan: buildSoilCarePlan({
-        soilTypes: soil.soilTypes,
+        soilTypes: soil.general.majorSoils,
         basis: soil.basis === "lab_tested" ? "lab_tested" : "inferred_from_location",
         practices,
       }),
