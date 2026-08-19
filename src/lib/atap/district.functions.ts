@@ -922,7 +922,7 @@ export const getSchemeDiscovery = createServerFn({ method: "GET" })
       applications: (applications ?? []) as ApplicationRow[],
       prefillAvailable: prefill.source === "consented_farm_profile",
       prefillBlockedReason: prefill.blockedReason,
-      prefillValues: prefill.values,
+      prefillValues: { ...profileValues, ...prefill.values },
     };
   });
 
