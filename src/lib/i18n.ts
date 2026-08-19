@@ -203,6 +203,38 @@ const te: Dict = {
 };
 
 const hi: Dict = {
+  "nav.overview": "मुख्य पृष्ठ",
+  "nav.profile": "मेरा प्रोफ़ाइल",
+  "nav.onboarding": "मेरा पंजीकरण",
+  "nav.consent": "सहमति",
+  "nav.schemes": "योजनाएँ",
+  "nav.market": "बाज़ार",
+  "nav.dashboard": "एक्सेस कंसोल",
+  "shell.signIn": "साइन इन",
+  "shell.signOut": "साइन आउट",
+  "discovery.title": "योजना खोज",
+  "discovery.description":
+    "आपके ज़िले की प्रकाशित योजनाएँ। आवेदन करने पर केवल फ़ॉर्म में भरे विवरण विभाग को जाते हैं।",
+  "discovery.prefillTitle": "आपके खेत विवरण से स्वतः भरना",
+  "discovery.prefillBlocked": "स्वतः भरना उपलब्ध नहीं",
+  "discovery.prefillBlockedHelp": "आप स्वयं विवरण भरकर भी आवेदन कर सकते हैं।",
+  "discovery.reviewConsent": "सहमति देखें",
+  "discovery.addParcel": "खेत जोड़ें",
+  "discovery.empty": "आपके ज़िले में अभी कोई प्रकाशित योजना नहीं है।",
+  "discovery.apply": "आवेदन करें",
+  "discovery.applyPrefill": "स्वतः भरकर आवेदन करें",
+  "discovery.cancel": "रद्द करें",
+  "discovery.continueReview": "जमा करने से पहले जाँचें",
+  "discovery.reviewTitle": "अपना आवेदन जाँचें",
+  "discovery.reviewHelp":
+    "जमा करने से पहले हर विवरण अपनी भाषा में पढ़ें। पुष्टि करने तक कुछ नहीं भेजा जाता।",
+  "discovery.backToEdit": "संपादित करने के लिए वापस",
+  "discovery.confirmSubmit": "पुष्टि करें और जमा करें",
+  "discovery.notProvided": "नहीं दिया गया",
+  "discovery.note": "टिप्पणी",
+  "discovery.humanReview": "इस आवेदन पर सरकारी समीक्षक निर्णय लेते हैं।",
+  "discovery.appliedOn": "आपने आवेदन किया",
+
   "nav.practices": "प्रशिक्षण",
   "nav.inputs": "उर्वरक और सुरक्षा",
   "nav.soilCare": "मृदा देखभाल",
