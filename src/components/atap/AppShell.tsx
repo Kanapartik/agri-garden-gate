@@ -41,6 +41,8 @@ export function navItemsForRoles(roles: AppRole[], signedIn: boolean): NavItem[]
     { to: "/market", label: "Marketplace" },
   ];
 
+  if (isStaff) items.push({ to: "/dashboard", label: "Access console" });
+
   if (roles.some((r) => r === "tenant_admin" || r === "onboarding_officer" || r === "field_agent")) {
     items.push({ to: "/fpo", label: "FPO workspace" });
   }
