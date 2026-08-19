@@ -22,12 +22,15 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedDiscoveryRouteImport } from './routes/_authenticated/discovery'
 import { Route as AuthenticatedFarmRouteImport } from './routes/_authenticated/farm'
 import { Route as AuthenticatedFpoRouteImport } from './routes/_authenticated/fpo'
+import { Route as AuthenticatedInputsRouteImport } from './routes/_authenticated/inputs'
 import { Route as AuthenticatedIntelligenceRouteImport } from './routes/_authenticated/intelligence'
 import { Route as AuthenticatedMarketRouteImport } from './routes/_authenticated/market'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
+import { Route as AuthenticatedPracticesRouteImport } from './routes/_authenticated/practices'
 import { Route as AuthenticatedReviewRouteImport } from './routes/_authenticated/review'
 import { Route as AuthenticatedRolloutRouteImport } from './routes/_authenticated/rollout'
 import { Route as AuthenticatedSchemesRouteImport } from './routes/_authenticated/schemes'
+import { Route as AuthenticatedSoilCareRouteImport } from './routes/_authenticated/soil-care'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -94,6 +97,11 @@ const AuthenticatedFpoRoute = AuthenticatedFpoRouteImport.update({
   path: '/fpo',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedInputsRoute = AuthenticatedInputsRouteImport.update({
+  id: '/inputs',
+  path: '/inputs',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedIntelligenceRoute =
   AuthenticatedIntelligenceRouteImport.update({
     id: '/intelligence',
@@ -108,6 +116,11 @@ const AuthenticatedMarketRoute = AuthenticatedMarketRouteImport.update({
 const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPracticesRoute = AuthenticatedPracticesRouteImport.update({
+  id: '/practices',
+  path: '/practices',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedReviewRoute = AuthenticatedReviewRouteImport.update({
@@ -125,6 +138,11 @@ const AuthenticatedSchemesRoute = AuthenticatedSchemesRouteImport.update({
   path: '/schemes',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSoilCareRoute = AuthenticatedSoilCareRouteImport.update({
+  id: '/soil-care',
+  path: '/soil-care',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -139,12 +157,15 @@ export interface FileRoutesByFullPath {
   '/discovery': typeof AuthenticatedDiscoveryRoute
   '/farm': typeof AuthenticatedFarmRoute
   '/fpo': typeof AuthenticatedFpoRoute
+  '/inputs': typeof AuthenticatedInputsRoute
   '/intelligence': typeof AuthenticatedIntelligenceRoute
   '/market': typeof AuthenticatedMarketRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/practices': typeof AuthenticatedPracticesRoute
   '/review': typeof AuthenticatedReviewRoute
   '/rollout': typeof AuthenticatedRolloutRoute
   '/schemes': typeof AuthenticatedSchemesRoute
+  '/soil-care': typeof AuthenticatedSoilCareRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -159,12 +180,15 @@ export interface FileRoutesByTo {
   '/discovery': typeof AuthenticatedDiscoveryRoute
   '/farm': typeof AuthenticatedFarmRoute
   '/fpo': typeof AuthenticatedFpoRoute
+  '/inputs': typeof AuthenticatedInputsRoute
   '/intelligence': typeof AuthenticatedIntelligenceRoute
   '/market': typeof AuthenticatedMarketRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/practices': typeof AuthenticatedPracticesRoute
   '/review': typeof AuthenticatedReviewRoute
   '/rollout': typeof AuthenticatedRolloutRoute
   '/schemes': typeof AuthenticatedSchemesRoute
+  '/soil-care': typeof AuthenticatedSoilCareRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -181,12 +205,15 @@ export interface FileRoutesById {
   '/_authenticated/discovery': typeof AuthenticatedDiscoveryRoute
   '/_authenticated/farm': typeof AuthenticatedFarmRoute
   '/_authenticated/fpo': typeof AuthenticatedFpoRoute
+  '/_authenticated/inputs': typeof AuthenticatedInputsRoute
   '/_authenticated/intelligence': typeof AuthenticatedIntelligenceRoute
   '/_authenticated/market': typeof AuthenticatedMarketRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/_authenticated/practices': typeof AuthenticatedPracticesRoute
   '/_authenticated/review': typeof AuthenticatedReviewRoute
   '/_authenticated/rollout': typeof AuthenticatedRolloutRoute
   '/_authenticated/schemes': typeof AuthenticatedSchemesRoute
+  '/_authenticated/soil-care': typeof AuthenticatedSoilCareRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -203,12 +230,15 @@ export interface FileRouteTypes {
     | '/discovery'
     | '/farm'
     | '/fpo'
+    | '/inputs'
     | '/intelligence'
     | '/market'
     | '/onboarding'
+    | '/practices'
     | '/review'
     | '/rollout'
     | '/schemes'
+    | '/soil-care'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -223,12 +253,15 @@ export interface FileRouteTypes {
     | '/discovery'
     | '/farm'
     | '/fpo'
+    | '/inputs'
     | '/intelligence'
     | '/market'
     | '/onboarding'
+    | '/practices'
     | '/review'
     | '/rollout'
     | '/schemes'
+    | '/soil-care'
   id:
     | '__root__'
     | '/'
@@ -244,12 +277,15 @@ export interface FileRouteTypes {
     | '/_authenticated/discovery'
     | '/_authenticated/farm'
     | '/_authenticated/fpo'
+    | '/_authenticated/inputs'
     | '/_authenticated/intelligence'
     | '/_authenticated/market'
     | '/_authenticated/onboarding'
+    | '/_authenticated/practices'
     | '/_authenticated/review'
     | '/_authenticated/rollout'
     | '/_authenticated/schemes'
+    | '/_authenticated/soil-care'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -353,6 +389,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedFpoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/inputs': {
+      id: '/_authenticated/inputs'
+      path: '/inputs'
+      fullPath: '/inputs'
+      preLoaderRoute: typeof AuthenticatedInputsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/intelligence': {
       id: '/_authenticated/intelligence'
       path: '/intelligence'
@@ -372,6 +415,13 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/practices': {
+      id: '/_authenticated/practices'
+      path: '/practices'
+      fullPath: '/practices'
+      preLoaderRoute: typeof AuthenticatedPracticesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/review': {
@@ -395,6 +445,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSchemesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/soil-care': {
+      id: '/_authenticated/soil-care'
+      path: '/soil-care'
+      fullPath: '/soil-care'
+      preLoaderRoute: typeof AuthenticatedSoilCareRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -407,12 +464,15 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDiscoveryRoute: typeof AuthenticatedDiscoveryRoute
   AuthenticatedFarmRoute: typeof AuthenticatedFarmRoute
   AuthenticatedFpoRoute: typeof AuthenticatedFpoRoute
+  AuthenticatedInputsRoute: typeof AuthenticatedInputsRoute
   AuthenticatedIntelligenceRoute: typeof AuthenticatedIntelligenceRoute
   AuthenticatedMarketRoute: typeof AuthenticatedMarketRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedPracticesRoute: typeof AuthenticatedPracticesRoute
   AuthenticatedReviewRoute: typeof AuthenticatedReviewRoute
   AuthenticatedRolloutRoute: typeof AuthenticatedRolloutRoute
   AuthenticatedSchemesRoute: typeof AuthenticatedSchemesRoute
+  AuthenticatedSoilCareRoute: typeof AuthenticatedSoilCareRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -424,12 +484,15 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDiscoveryRoute: AuthenticatedDiscoveryRoute,
   AuthenticatedFarmRoute: AuthenticatedFarmRoute,
   AuthenticatedFpoRoute: AuthenticatedFpoRoute,
+  AuthenticatedInputsRoute: AuthenticatedInputsRoute,
   AuthenticatedIntelligenceRoute: AuthenticatedIntelligenceRoute,
   AuthenticatedMarketRoute: AuthenticatedMarketRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedPracticesRoute: AuthenticatedPracticesRoute,
   AuthenticatedReviewRoute: AuthenticatedReviewRoute,
   AuthenticatedRolloutRoute: AuthenticatedRolloutRoute,
   AuthenticatedSchemesRoute: AuthenticatedSchemesRoute,
+  AuthenticatedSoilCareRoute: AuthenticatedSoilCareRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

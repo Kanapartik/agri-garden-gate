@@ -592,6 +592,36 @@ export type Database = {
         }
         Relationships: []
       }
+      content_translations: {
+        Row: {
+          created_at: string
+          entity: string
+          entity_id: string
+          field: string
+          id: string
+          locale: string
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          entity: string
+          entity_id: string
+          field: string
+          id?: string
+          locale: string
+          value: string
+        }
+        Update: {
+          created_at?: string
+          entity?: string
+          entity_id?: string
+          field?: string
+          id?: string
+          locale?: string
+          value?: string
+        }
+        Relationships: []
+      }
       crop_outcome_scenarios: {
         Row: {
           assumptions: Json
@@ -1161,6 +1191,56 @@ export type Database = {
           },
         ]
       }
+      farmer_input_plans: {
+        Row: {
+          area_hectares: number
+          created_at: string
+          created_by_user_id: string
+          crop: string
+          farm_id: string
+          growth_stage: string
+          id: string
+          mode: string
+          snapshot: Json
+          subject_user_id: string
+          updated_at: string
+        }
+        Insert: {
+          area_hectares?: number
+          created_at?: string
+          created_by_user_id: string
+          crop: string
+          farm_id: string
+          growth_stage: string
+          id?: string
+          mode?: string
+          snapshot?: Json
+          subject_user_id: string
+          updated_at?: string
+        }
+        Update: {
+          area_hectares?: number
+          created_at?: string
+          created_by_user_id?: string
+          crop?: string
+          farm_id?: string
+          growth_stage?: string
+          id?: string
+          mode?: string
+          snapshot?: Json
+          subject_user_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "farmer_input_plans_farm_id_fkey"
+            columns: ["farm_id"]
+            isOneToOne: false
+            referencedRelation: "farm_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       feature_flags: {
         Row: {
           description: string | null
@@ -1357,6 +1437,147 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      infestation_treatments: {
+        Row: {
+          created_at: string
+          dose_per_hectare: number
+          id: string
+          infestation_id: string
+          is_organic: boolean
+          product_code: string
+          reentry_note: string | null
+          safety_interval_days: number
+          unit: string
+        }
+        Insert: {
+          created_at?: string
+          dose_per_hectare: number
+          id?: string
+          infestation_id: string
+          is_organic?: boolean
+          product_code: string
+          reentry_note?: string | null
+          safety_interval_days?: number
+          unit?: string
+        }
+        Update: {
+          created_at?: string
+          dose_per_hectare?: number
+          id?: string
+          infestation_id?: string
+          is_organic?: boolean
+          product_code?: string
+          reentry_note?: string | null
+          safety_interval_days?: number
+          unit?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "infestation_treatments_infestation_id_fkey"
+            columns: ["infestation_id"]
+            isOneToOne: false
+            referencedRelation: "infestation_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "infestation_treatments_product_code_fkey"
+            columns: ["product_code"]
+            isOneToOne: false
+            referencedRelation: "input_products"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      infestation_types: {
+        Row: {
+          code: string
+          created_at: string
+          crop: string
+          id: string
+          is_synthetic: boolean
+          kind: string
+          name: string
+          severity: string
+          symptoms: string[]
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          crop: string
+          id?: string
+          is_synthetic?: boolean
+          kind: string
+          name: string
+          severity?: string
+          symptoms?: string[]
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          crop?: string
+          id?: string
+          is_synthetic?: boolean
+          kind?: string
+          name?: string
+          severity?: string
+          symptoms?: string[]
+        }
+        Relationships: []
+      }
+      input_products: {
+        Row: {
+          brand_names: string[]
+          category: string
+          code: string
+          cost_max_minor: number
+          cost_min_minor: number
+          created_at: string
+          currency: string
+          generic_name: string
+          id: string
+          is_synthetic: boolean
+          kind: string
+          nutrient_or_active: string
+          preparation_notes: string | null
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          brand_names?: string[]
+          category: string
+          code: string
+          cost_max_minor?: number
+          cost_min_minor?: number
+          created_at?: string
+          currency?: string
+          generic_name: string
+          id?: string
+          is_synthetic?: boolean
+          kind: string
+          nutrient_or_active: string
+          preparation_notes?: string | null
+          unit?: string
+          updated_at?: string
+        }
+        Update: {
+          brand_names?: string[]
+          category?: string
+          code?: string
+          cost_max_minor?: number
+          cost_min_minor?: number
+          created_at?: string
+          currency?: string
+          generic_name?: string
+          id?: string
+          is_synthetic?: boolean
+          kind?: string
+          nutrient_or_active?: string
+          preparation_notes?: string | null
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       knowledge_contributions: {
         Row: {
@@ -2264,6 +2485,56 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "tenants"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      nutrient_recommendations: {
+        Row: {
+          created_at: string
+          crop: string
+          dose_per_hectare: number
+          growth_stage: string
+          id: string
+          is_synthetic: boolean
+          notes: string | null
+          nutrient: string
+          product_code: string
+          soil_type: string | null
+          unit: string
+        }
+        Insert: {
+          created_at?: string
+          crop: string
+          dose_per_hectare: number
+          growth_stage: string
+          id?: string
+          is_synthetic?: boolean
+          notes?: string | null
+          nutrient: string
+          product_code: string
+          soil_type?: string | null
+          unit?: string
+        }
+        Update: {
+          created_at?: string
+          crop?: string
+          dose_per_hectare?: number
+          growth_stage?: string
+          id?: string
+          is_synthetic?: boolean
+          notes?: string | null
+          nutrient?: string
+          product_code?: string
+          soil_type?: string | null
+          unit?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nutrient_recommendations_product_code_fkey"
+            columns: ["product_code"]
+            isOneToOne: false
+            referencedRelation: "input_products"
+            referencedColumns: ["code"]
           },
         ]
       }
@@ -3412,6 +3683,130 @@ export type Database = {
           },
         ]
       }
+      practice_lessons: {
+        Row: {
+          body: string
+          created_at: string
+          do_notes: string[]
+          dont_notes: string[]
+          id: string
+          lesson_key: string
+          module_id: string
+          sort_order: number
+          title: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          do_notes?: string[]
+          dont_notes?: string[]
+          id?: string
+          lesson_key: string
+          module_id: string
+          sort_order?: number
+          title: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          do_notes?: string[]
+          dont_notes?: string[]
+          id?: string
+          lesson_key?: string
+          module_id?: string
+          sort_order?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "practice_lessons_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "practice_modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      practice_modules: {
+        Row: {
+          code: string
+          created_at: string
+          crop_tags: string[]
+          id: string
+          is_synthetic: boolean
+          published: boolean
+          season_codes: string[]
+          sort_order: number
+          source_attribution: string | null
+          stage: string
+          summary: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          crop_tags?: string[]
+          id?: string
+          is_synthetic?: boolean
+          published?: boolean
+          season_codes?: string[]
+          sort_order?: number
+          source_attribution?: string | null
+          stage: string
+          summary?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          crop_tags?: string[]
+          id?: string
+          is_synthetic?: boolean
+          published?: boolean
+          season_codes?: string[]
+          sort_order?: number
+          source_attribution?: string | null
+          stage?: string
+          summary?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      practice_progress: {
+        Row: {
+          completed_at: string
+          id: string
+          lesson_key: string
+          module_id: string
+          subject_user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          id?: string
+          lesson_key: string
+          module_id: string
+          subject_user_id: string
+        }
+        Update: {
+          completed_at?: string
+          id?: string
+          lesson_key?: string
+          module_id?: string
+          subject_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "practice_progress_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "practice_modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       privileged_access_requests: {
         Row: {
           approved_at: string | null
@@ -3666,6 +4061,7 @@ export type Database = {
           id: string
           locale: string
           phone: string | null
+          preferred_locale: string
           updated_at: string
         }
         Insert: {
@@ -3674,6 +4070,7 @@ export type Database = {
           id: string
           locale?: string
           phone?: string | null
+          preferred_locale?: string
           updated_at?: string
         }
         Update: {
@@ -3682,6 +4079,7 @@ export type Database = {
           id?: string
           locale?: string
           phone?: string | null
+          preferred_locale?: string
           updated_at?: string
         }
         Relationships: []
@@ -4392,6 +4790,57 @@ export type Database = {
             referencedColumns: ["key"]
           },
         ]
+      }
+      soil_retention_practices: {
+        Row: {
+          body: string
+          code: string
+          cost_max_minor: number
+          cost_min_minor: number
+          created_at: string
+          currency: string
+          effort: string
+          expected_benefit: string
+          id: string
+          is_synthetic: boolean
+          name: string
+          soil_types: string[]
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          body?: string
+          code: string
+          cost_max_minor?: number
+          cost_min_minor?: number
+          created_at?: string
+          currency?: string
+          effort?: string
+          expected_benefit?: string
+          id?: string
+          is_synthetic?: boolean
+          name: string
+          soil_types?: string[]
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          code?: string
+          cost_max_minor?: number
+          cost_min_minor?: number
+          created_at?: string
+          currency?: string
+          effort?: string
+          expected_benefit?: string
+          id?: string
+          is_synthetic?: boolean
+          name?: string
+          soil_types?: string[]
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
       }
       sponsored_placements: {
         Row: {

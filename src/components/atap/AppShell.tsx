@@ -5,6 +5,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { getMyContext } from "@/lib/atap.functions";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { LanguageSwitcher } from "@/components/atap/LanguageProvider";
 import type { AppRole } from "@/lib/atap/policy";
 
 type NavItem = { to: string; label: string };
@@ -27,6 +28,9 @@ export function navItemsForRoles(roles: AppRole[], signedIn: boolean): NavItem[]
     { to: "/onboarding", label: "My onboarding" },
     { to: "/farm", label: "My farm" },
     { to: "/intelligence", label: "Farm intelligence" },
+    { to: "/practices", label: "Training" },
+    { to: "/inputs", label: "Inputs & protection" },
+    { to: "/soil-care", label: "Soil care" },
     { to: "/consent", label: "Consent" },
     { to: "/discovery", label: "Schemes" },
     { to: "/market", label: "Marketplace" },
@@ -124,6 +128,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             ))}
           </nav>
           <div className="ml-auto flex items-center gap-2">
+            <LanguageSwitcher />
             {signedIn ? (
               <Button variant="outline" size="sm" onClick={signOut}>
                 Sign out
