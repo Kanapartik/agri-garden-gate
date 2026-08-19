@@ -23,8 +23,13 @@ export function navItemsForRoles(roles: AppRole[], signedIn: boolean): NavItem[]
     ];
   }
 
+  // Engineering surfaces (platform configuration, architecture assumptions) are
+  // meaningless to a farmer, so they stay with the roles that operate them.
+  const isEngineering = roles.includes("platform_admin") || roles.includes("auditor");
+  const isStaff = roles.some((r) => r !== "viewer" && r !== "talent_candidate");
+
   const items: NavItem[] = [
-    { to: "/dashboard", label: "Access console" },
+    { to: "/profile", label: "My profile" },
     { to: "/onboarding", label: "My onboarding" },
     { to: "/farm", label: "My farm" },
     { to: "/intelligence", label: "Farm intelligence" },
