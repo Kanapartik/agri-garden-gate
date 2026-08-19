@@ -69,7 +69,7 @@ export function navItemsForRoles(roles: AppRole[], signedIn: boolean): NavItem[]
   }
 
   if (roles.includes("platform_admin")) items.push({ to: "/configuration", label: "Configuration" });
-  items.push({ to: "/architecture", label: "Architecture" });
+  if (isEngineering) items.push({ to: "/architecture", label: "Architecture" });
   return items;
 }
 
