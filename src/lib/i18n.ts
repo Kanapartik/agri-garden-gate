@@ -329,6 +329,38 @@ const ta: Dict = {
 };
 
 const kn: Dict = {
+  "nav.overview": "ಮುಖ್ಯ ಪುಟ",
+  "nav.profile": "ನನ್ನ ವಿವರ",
+  "nav.onboarding": "ನನ್ನ ನೋಂದಣಿ",
+  "nav.consent": "ಸಮ್ಮತಿ",
+  "nav.schemes": "ಯೋಜನೆಗಳು",
+  "nav.market": "ಮಾರುಕಟ್ಟೆ",
+  "nav.dashboard": "ಪ್ರವೇಶ ಕನ್ಸೋಲ್",
+  "shell.signIn": "ಸೈನ್ ಇನ್",
+  "shell.signOut": "ಸೈನ್ ಔಟ್",
+  "discovery.title": "ಯೋಜನೆ ಹುಡುಕಾಟ",
+  "discovery.description":
+    "ನಿಮ್ಮ ಜಿಲ್ಲೆಯಲ್ಲಿ ಪ್ರಕಟಿಸಿದ ಯೋಜನೆಗಳು. ಅರ್ಜಿ ಸಲ್ಲಿಸಿದಾಗ ನಮೂನೆಯಲ್ಲಿನ ವಿವರಗಳು ಮಾತ್ರ ಇಲಾಖೆಗೆ ಹೋಗುತ್ತವೆ.",
+  "discovery.prefillTitle": "ನಿಮ್ಮ ಹೊಲದ ವಿವರಗಳಿಂದ ಸ್ವಯಂ ಭರ್ತಿ",
+  "discovery.prefillBlocked": "ಸ್ವಯಂ ಭರ್ತಿ ಲಭ್ಯವಿಲ್ಲ",
+  "discovery.prefillBlockedHelp": "ನೀವೇ ವಿವರಗಳನ್ನು ಬರೆದು ಅರ್ಜಿ ಸಲ್ಲಿಸಬಹುದು.",
+  "discovery.reviewConsent": "ಸಮ್ಮತಿ ನೋಡಿ",
+  "discovery.addParcel": "ಹೊಲ ಸೇರಿಸಿ",
+  "discovery.empty": "ನಿಮ್ಮ ಜಿಲ್ಲೆಯಲ್ಲಿ ಇನ್ನೂ ಪ್ರಕಟಿತ ಯೋಜನೆಗಳಿಲ್ಲ.",
+  "discovery.apply": "ಅರ್ಜಿ ಸಲ್ಲಿಸಿ",
+  "discovery.applyPrefill": "ಸ್ವಯಂ ಭರ್ತಿಯೊಂದಿಗೆ ಅರ್ಜಿ",
+  "discovery.cancel": "ರದ್ದು",
+  "discovery.continueReview": "ಸಲ್ಲಿಸುವ ಮೊದಲು ಪರಿಶೀಲಿಸಿ",
+  "discovery.reviewTitle": "ನಿಮ್ಮ ಅರ್ಜಿಯನ್ನು ಪರಿಶೀಲಿಸಿ",
+  "discovery.reviewHelp":
+    "ಸಲ್ಲಿಸುವ ಮೊದಲು ಪ್ರತಿ ವಿವರವನ್ನು ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ ಓದಿ. ದೃಢಪಡಿಸುವವರೆಗೆ ಏನೂ ಕಳುಹಿಸುವುದಿಲ್ಲ.",
+  "discovery.backToEdit": "ತಿದ್ದಲು ಹಿಂತಿರುಗಿ",
+  "discovery.confirmSubmit": "ದೃಢಪಡಿಸಿ ಸಲ್ಲಿಸಿ",
+  "discovery.notProvided": "ನೀಡಿಲ್ಲ",
+  "discovery.note": "ಟಿಪ್ಪಣಿ",
+  "discovery.humanReview": "ಈ ಅರ್ಜಿಯ ನಿರ್ಧಾರ ಸರ್ಕಾರಿ ಪರಿಶೀಲಕರದ್ದು.",
+  "discovery.appliedOn": "ನೀವು ಅರ್ಜಿ ಸಲ್ಲಿಸಿದ ದಿನ",
+
   "nav.practices": "ತರಬೇತಿ",
   "nav.inputs": "ಗೊಬ್ಬರ & ರಕ್ಷಣೆ",
   "nav.soilCare": "ಮಣ್ಣಿನ ಆರೈಕೆ",
