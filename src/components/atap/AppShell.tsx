@@ -5,6 +5,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { getMyContext } from "@/lib/atap.functions";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { LanguageSwitcher } from "@/components/atap/LanguageProvider";
 import type { AppRole } from "@/lib/atap/policy";
 
 type NavItem = { to: string; label: string };
