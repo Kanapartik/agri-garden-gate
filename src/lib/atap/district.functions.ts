@@ -891,7 +891,7 @@ export const getSchemeDiscovery = createServerFn({ method: "GET" })
     // Scheme rules read profile facts (age, social category, ownership, extent,
     // state/district, bank linkage). Reading them is still a farmer-data read, so
     // it stays behind the same baseline consent gate as farm prefill.
-    let profileValues: Record<string, unknown> = {};
+    let profileValues: FormValues = {};
     if (consentOk) {
       const { schemeContextValues } = await import("@/lib/atap/profile");
       const [{ data: profileRow }, { data: geoRows }] = await Promise.all([
