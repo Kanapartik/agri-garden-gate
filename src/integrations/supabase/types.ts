@@ -1582,6 +1582,94 @@ export type Database = {
           },
         ]
       }
+      fpo_buyer_enquiries: {
+        Row: {
+          buyer_name: string
+          buyer_org_id: string | null
+          buyer_type: string
+          created_at: string
+          delivery_terms: string | null
+          id: string
+          is_synthetic: boolean
+          lot_id: string | null
+          note: string | null
+          offered_price_per_unit: number | null
+          payment_terms: string | null
+          pickup_location: string | null
+          quantity: number | null
+          responded_at: string | null
+          responded_by_user_id: string | null
+          status: Database["public"]["Enums"]["fpo_enquiry_status"]
+          tenant_id: string
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          buyer_name: string
+          buyer_org_id?: string | null
+          buyer_type?: string
+          created_at?: string
+          delivery_terms?: string | null
+          id?: string
+          is_synthetic?: boolean
+          lot_id?: string | null
+          note?: string | null
+          offered_price_per_unit?: number | null
+          payment_terms?: string | null
+          pickup_location?: string | null
+          quantity?: number | null
+          responded_at?: string | null
+          responded_by_user_id?: string | null
+          status?: Database["public"]["Enums"]["fpo_enquiry_status"]
+          tenant_id: string
+          unit?: string
+          updated_at?: string
+        }
+        Update: {
+          buyer_name?: string
+          buyer_org_id?: string | null
+          buyer_type?: string
+          created_at?: string
+          delivery_terms?: string | null
+          id?: string
+          is_synthetic?: boolean
+          lot_id?: string | null
+          note?: string | null
+          offered_price_per_unit?: number | null
+          payment_terms?: string | null
+          pickup_location?: string | null
+          quantity?: number | null
+          responded_at?: string | null
+          responded_by_user_id?: string | null
+          status?: Database["public"]["Enums"]["fpo_enquiry_status"]
+          tenant_id?: string
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_buyer_enquiries_buyer_org_id_fkey"
+            columns: ["buyer_org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_buyer_enquiries_lot_id_fkey"
+            columns: ["lot_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_produce_lots"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_buyer_enquiries_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fpo_campaign_members: {
         Row: {
           assigned_agent_user_id: string | null
@@ -1811,6 +1899,143 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "fpo_leadership_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_logistics_options: {
+        Row: {
+          capacity: number | null
+          capacity_unit: string | null
+          contact: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          is_synthetic: boolean
+          kind: Database["public"]["Enums"]["fpo_logistics_kind"]
+          location: string | null
+          note: string | null
+          provider_name: string
+          provider_org_id: string | null
+          rate: number | null
+          rate_basis: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          capacity?: number | null
+          capacity_unit?: string | null
+          contact?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_synthetic?: boolean
+          kind: Database["public"]["Enums"]["fpo_logistics_kind"]
+          location?: string | null
+          note?: string | null
+          provider_name: string
+          provider_org_id?: string | null
+          rate?: number | null
+          rate_basis?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          capacity?: number | null
+          capacity_unit?: string | null
+          contact?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_synthetic?: boolean
+          kind?: Database["public"]["Enums"]["fpo_logistics_kind"]
+          location?: string | null
+          note?: string | null
+          provider_name?: string
+          provider_org_id?: string | null
+          rate?: number | null
+          rate_basis?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_logistics_options_provider_org_id_fkey"
+            columns: ["provider_org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_logistics_options_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_market_price_observations: {
+        Row: {
+          basis: Database["public"]["Enums"]["fpo_price_basis"]
+          commodity: string
+          created_at: string
+          district_code: string | null
+          id: string
+          is_synthetic: boolean
+          market_name: string
+          note: string | null
+          observed_on: string
+          price_per_unit: number
+          source: string | null
+          state_code: string | null
+          tenant_id: string
+          unit: string
+          updated_at: string
+          variety: string | null
+        }
+        Insert: {
+          basis?: Database["public"]["Enums"]["fpo_price_basis"]
+          commodity: string
+          created_at?: string
+          district_code?: string | null
+          id?: string
+          is_synthetic?: boolean
+          market_name: string
+          note?: string | null
+          observed_on?: string
+          price_per_unit: number
+          source?: string | null
+          state_code?: string | null
+          tenant_id: string
+          unit?: string
+          updated_at?: string
+          variety?: string | null
+        }
+        Update: {
+          basis?: Database["public"]["Enums"]["fpo_price_basis"]
+          commodity?: string
+          created_at?: string
+          district_code?: string | null
+          id?: string
+          is_synthetic?: boolean
+          market_name?: string
+          note?: string | null
+          observed_on?: string
+          price_per_unit?: number
+          source?: string | null
+          state_code?: string | null
+          tenant_id?: string
+          unit?: string
+          updated_at?: string
+          variety?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_market_price_observations_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -2527,6 +2752,173 @@ export type Database = {
           },
           {
             foreignKeyName: "fpo_procurement_rfqs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_produce_contributions: {
+        Row: {
+          confirmed_quantity: number
+          created_at: string
+          delivered_quantity: number
+          expected_quantity: number
+          grade: string | null
+          id: string
+          is_synthetic: boolean
+          lot_id: string
+          member_id: string | null
+          note: string | null
+          tenant_id: string
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          confirmed_quantity?: number
+          created_at?: string
+          delivered_quantity?: number
+          expected_quantity?: number
+          grade?: string | null
+          id?: string
+          is_synthetic?: boolean
+          lot_id: string
+          member_id?: string | null
+          note?: string | null
+          tenant_id: string
+          unit?: string
+          updated_at?: string
+        }
+        Update: {
+          confirmed_quantity?: number
+          created_at?: string
+          delivered_quantity?: number
+          expected_quantity?: number
+          grade?: string | null
+          id?: string
+          is_synthetic?: boolean
+          lot_id?: string
+          member_id?: string | null
+          note?: string | null
+          tenant_id?: string
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_produce_contributions_lot_id_fkey"
+            columns: ["lot_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_produce_lots"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_produce_contributions_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_produce_contributions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_produce_lots: {
+        Row: {
+          aggregated_quantity: number
+          commodity: string
+          created_at: string
+          created_by_user_id: string | null
+          expected_quantity: number
+          grade: string | null
+          harvest_window_end: string | null
+          harvest_window_start: string | null
+          id: string
+          is_synthetic: boolean
+          lot_code: string | null
+          marketplace_listing_id: string | null
+          marketplace_rfq_id: string | null
+          note: string | null
+          reserve_price_per_unit: number | null
+          season: string | null
+          status: Database["public"]["Enums"]["fpo_produce_lot_status"]
+          storage_location: string | null
+          tenant_id: string
+          unit: string
+          updated_at: string
+          variety: string | null
+        }
+        Insert: {
+          aggregated_quantity?: number
+          commodity: string
+          created_at?: string
+          created_by_user_id?: string | null
+          expected_quantity?: number
+          grade?: string | null
+          harvest_window_end?: string | null
+          harvest_window_start?: string | null
+          id?: string
+          is_synthetic?: boolean
+          lot_code?: string | null
+          marketplace_listing_id?: string | null
+          marketplace_rfq_id?: string | null
+          note?: string | null
+          reserve_price_per_unit?: number | null
+          season?: string | null
+          status?: Database["public"]["Enums"]["fpo_produce_lot_status"]
+          storage_location?: string | null
+          tenant_id: string
+          unit?: string
+          updated_at?: string
+          variety?: string | null
+        }
+        Update: {
+          aggregated_quantity?: number
+          commodity?: string
+          created_at?: string
+          created_by_user_id?: string | null
+          expected_quantity?: number
+          grade?: string | null
+          harvest_window_end?: string | null
+          harvest_window_start?: string | null
+          id?: string
+          is_synthetic?: boolean
+          lot_code?: string | null
+          marketplace_listing_id?: string | null
+          marketplace_rfq_id?: string | null
+          note?: string | null
+          reserve_price_per_unit?: number | null
+          season?: string | null
+          status?: Database["public"]["Enums"]["fpo_produce_lot_status"]
+          storage_location?: string | null
+          tenant_id?: string
+          unit?: string
+          updated_at?: string
+          variety?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_produce_lots_marketplace_listing_id_fkey"
+            columns: ["marketplace_listing_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_produce_lots_marketplace_rfq_id_fkey"
+            columns: ["marketplace_rfq_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_rfqs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_produce_lots_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -7947,6 +8339,14 @@ export type Database = {
         | "rejected"
         | "benefit_received"
         | "closed"
+      fpo_enquiry_status:
+        | "received"
+        | "under_review"
+        | "negotiating"
+        | "accepted"
+        | "declined"
+        | "withdrawn"
+        | "expired"
       fpo_facilitation_state:
         | "identified"
         | "notified"
@@ -7964,6 +8364,12 @@ export type Database = {
         | "irrigation"
         | "packaging"
         | "farm_service"
+      fpo_logistics_kind:
+        | "transport"
+        | "cold_storage"
+        | "warehouse"
+        | "grading"
+        | "processing"
       fpo_opportunity_category:
         | "scheme"
         | "input_procurement"
@@ -7986,6 +8392,7 @@ export type Database = {
         | "not_relevant"
         | "closed"
       fpo_payment_state: "pending" | "partial" | "paid" | "waived"
+      fpo_price_basis: "observed" | "forecast" | "derived_scenario"
       fpo_procurement_status:
         | "draft"
         | "collecting_demand"
@@ -7997,6 +8404,18 @@ export type Database = {
         | "ordered"
         | "distributing"
         | "payment_pending"
+        | "closed"
+        | "cancelled"
+      fpo_produce_lot_status:
+        | "planned"
+        | "collecting"
+        | "aggregated"
+        | "listed"
+        | "offers_received"
+        | "buyer_selected"
+        | "dispatched"
+        | "delivered"
+        | "settled"
         | "closed"
         | "cancelled"
       fpo_profile_state:
@@ -8445,6 +8864,15 @@ export const Constants = {
         "benefit_received",
         "closed",
       ],
+      fpo_enquiry_status: [
+        "received",
+        "under_review",
+        "negotiating",
+        "accepted",
+        "declined",
+        "withdrawn",
+        "expired",
+      ],
       fpo_facilitation_state: [
         "identified",
         "notified",
@@ -8463,6 +8891,13 @@ export const Constants = {
         "irrigation",
         "packaging",
         "farm_service",
+      ],
+      fpo_logistics_kind: [
+        "transport",
+        "cold_storage",
+        "warehouse",
+        "grading",
+        "processing",
       ],
       fpo_opportunity_category: [
         "scheme",
@@ -8488,6 +8923,7 @@ export const Constants = {
         "closed",
       ],
       fpo_payment_state: ["pending", "partial", "paid", "waived"],
+      fpo_price_basis: ["observed", "forecast", "derived_scenario"],
       fpo_procurement_status: [
         "draft",
         "collecting_demand",
@@ -8499,6 +8935,19 @@ export const Constants = {
         "ordered",
         "distributing",
         "payment_pending",
+        "closed",
+        "cancelled",
+      ],
+      fpo_produce_lot_status: [
+        "planned",
+        "collecting",
+        "aggregated",
+        "listed",
+        "offers_received",
+        "buyer_selected",
+        "dispatched",
+        "delivered",
+        "settled",
         "closed",
         "cancelled",
       ],
