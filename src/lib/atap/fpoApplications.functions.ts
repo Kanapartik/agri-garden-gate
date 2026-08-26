@@ -303,20 +303,23 @@ export const setFpoApplicationStatus = createServerFn({ method: "POST" })
       );
     }
 
-    const patch: Record<string, unknown> = { status: data.status, note: data.note ?? null };
+    const patch: Database["public"]["Tables"]["fpo_scheme_applications"]["Update"] = {
+      status: data.status,
+      note: data.note ?? null,
+    };
     if (data.status === "submitted") {
       const readiness = submissionReadiness(current, {
         isSignatory: await isSignatory(supabase, data.tenantId, userId),
       });
       if (!readiness.ready) throw new Error(readiness.blockers.join("; "));
-      patch["submitted_at"] = new Date().toISOString();
-      patch["submitted_by_user_id"] = userId;
+      patch.submitted_at = new Date().toISOString();
+      patch.submitted_by_user_id = userId;
     }
     if (data.status === "approved" || data.status === "rejected") {
-      patch["decided_at"] = new Date().toISOString();
+      patch.decided_at = new Date().toISOString();
     }
     if (data.status === "benefit_received") {
-      patch["benefit_amount"] = data.benefitAmount ?? null;
+      patch.benefit_amount = data.benefitAmount ?? null;
     }
 
     const { error } = await supabase
