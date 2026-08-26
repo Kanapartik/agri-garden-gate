@@ -1933,6 +1933,147 @@ export type Database = {
           },
         ]
       }
+      fpo_opportunities: {
+        Row: {
+          application_deadline: string | null
+          benefit_summary: string
+          category: Database["public"]["Enums"]["fpo_opportunity_category"]
+          commodities: string[]
+          created_at: string
+          created_by: string | null
+          district_code: string | null
+          eligibility_summary: string
+          geography_note: string | null
+          id: string
+          is_active: boolean
+          is_synthetic: boolean
+          last_verified_at: string | null
+          provider_name: string
+          required_documents: string[]
+          scheme_id: string | null
+          source_name: string
+          source_url: string | null
+          state_code: string | null
+          tenant_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          application_deadline?: string | null
+          benefit_summary: string
+          category: Database["public"]["Enums"]["fpo_opportunity_category"]
+          commodities?: string[]
+          created_at?: string
+          created_by?: string | null
+          district_code?: string | null
+          eligibility_summary: string
+          geography_note?: string | null
+          id?: string
+          is_active?: boolean
+          is_synthetic?: boolean
+          last_verified_at?: string | null
+          provider_name: string
+          required_documents?: string[]
+          scheme_id?: string | null
+          source_name?: string
+          source_url?: string | null
+          state_code?: string | null
+          tenant_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          application_deadline?: string | null
+          benefit_summary?: string
+          category?: Database["public"]["Enums"]["fpo_opportunity_category"]
+          commodities?: string[]
+          created_at?: string
+          created_by?: string | null
+          district_code?: string | null
+          eligibility_summary?: string
+          geography_note?: string | null
+          id?: string
+          is_active?: boolean
+          is_synthetic?: boolean
+          last_verified_at?: string | null
+          provider_name?: string
+          required_documents?: string[]
+          scheme_id?: string | null
+          source_name?: string
+          source_url?: string | null
+          state_code?: string | null
+          tenant_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_opportunities_scheme_id_fkey"
+            columns: ["scheme_id"]
+            isOneToOne: false
+            referencedRelation: "schemes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_opportunities_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_opportunity_tracking: {
+        Row: {
+          created_at: string
+          id: string
+          is_synthetic: boolean
+          note: string | null
+          opportunity_id: string
+          owner_user_id: string | null
+          status: Database["public"]["Enums"]["fpo_opportunity_track_status"]
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_synthetic?: boolean
+          note?: string | null
+          opportunity_id: string
+          owner_user_id?: string | null
+          status?: Database["public"]["Enums"]["fpo_opportunity_track_status"]
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_synthetic?: boolean
+          note?: string | null
+          opportunity_id?: string
+          owner_user_id?: string | null
+          status?: Database["public"]["Enums"]["fpo_opportunity_track_status"]
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_opportunity_tracking_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_opportunities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_opportunity_tracking_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fpo_profiles: {
         Row: {
           active_farmers: number
@@ -2093,6 +2234,69 @@ export type Database = {
             foreignKeyName: "fpo_profiles_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: true
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_scheme_eligibility: {
+        Row: {
+          advisory_note: string | null
+          assessed_at: string
+          assessed_by: string | null
+          bucket: Database["public"]["Enums"]["fpo_eligibility_bucket"]
+          created_at: string
+          id: string
+          is_synthetic: boolean
+          missing_information: string[]
+          reasons: Json
+          scheme_id: string
+          source_name: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          advisory_note?: string | null
+          assessed_at?: string
+          assessed_by?: string | null
+          bucket?: Database["public"]["Enums"]["fpo_eligibility_bucket"]
+          created_at?: string
+          id?: string
+          is_synthetic?: boolean
+          missing_information?: string[]
+          reasons?: Json
+          scheme_id: string
+          source_name?: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          advisory_note?: string | null
+          assessed_at?: string
+          assessed_by?: string | null
+          bucket?: Database["public"]["Enums"]["fpo_eligibility_bucket"]
+          created_at?: string
+          id?: string
+          is_synthetic?: boolean
+          missing_information?: string[]
+          reasons?: Json
+          scheme_id?: string
+          source_name?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_scheme_eligibility_scheme_id_fkey"
+            columns: ["scheme_id"]
+            isOneToOne: false
+            referencedRelation: "schemes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_scheme_eligibility_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
             referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
@@ -7089,6 +7293,36 @@ export type Database = {
         | "verified"
         | "rejected"
         | "expired"
+      fpo_eligibility_bucket:
+        | "likely_eligible"
+        | "needs_verification"
+        | "not_eligible"
+        | "applied"
+        | "approved"
+        | "rejected"
+        | "benefit_received"
+        | "closed"
+      fpo_opportunity_category:
+        | "scheme"
+        | "input_procurement"
+        | "collective_sale"
+        | "credit"
+        | "insurance"
+        | "training"
+        | "infrastructure"
+        | "processing"
+        | "storage"
+        | "equipment"
+        | "export"
+        | "certification"
+        | "market_linkage"
+      fpo_opportunity_track_status:
+        | "new"
+        | "reviewing"
+        | "shortlisted"
+        | "applied"
+        | "not_relevant"
+        | "closed"
       fpo_profile_state:
         | "draft"
         | "in_progress"
@@ -7510,6 +7744,39 @@ export const Constants = {
         "verified",
         "rejected",
         "expired",
+      ],
+      fpo_eligibility_bucket: [
+        "likely_eligible",
+        "needs_verification",
+        "not_eligible",
+        "applied",
+        "approved",
+        "rejected",
+        "benefit_received",
+        "closed",
+      ],
+      fpo_opportunity_category: [
+        "scheme",
+        "input_procurement",
+        "collective_sale",
+        "credit",
+        "insurance",
+        "training",
+        "infrastructure",
+        "processing",
+        "storage",
+        "equipment",
+        "export",
+        "certification",
+        "market_linkage",
+      ],
+      fpo_opportunity_track_status: [
+        "new",
+        "reviewing",
+        "shortlisted",
+        "applied",
+        "not_relevant",
+        "closed",
       ],
       fpo_profile_state: [
         "draft",
