@@ -193,6 +193,49 @@ function ConsentPage() {
           )}
         </ul>
       </section>
+
+      <section className="space-y-3">
+        <div>
+          <h2 className="font-display text-lg font-semibold">Your FPO authorizations</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            What each producer organization you belong to may see about you, and why. Membership on
+            its own gives an FPO no access to your farm, scheme or market details — only these
+            authorizations do, and you can withdraw any of them here.
+          </p>
+        </div>
+        <ul className="grid gap-3 md:grid-cols-2">
+          {(fpoConsents.data ?? []).map((c) => (
+            <li key={c.id} className="rounded-lg border border-border bg-card p-4">
+              <p className="font-medium">{c.tenantName}</p>
+              <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                {FPO_PURPOSE_LABEL[c.purpose_code as FpoPurpose] ?? c.purpose_code}
+              </p>
+              {c.evidence ? (
+                <p className="mt-2 text-sm text-muted-foreground">{c.evidence}</p>
+              ) : null}
+              <p className="mt-2 text-xs text-muted-foreground">
+                Recorded {new Date(c.granted_at).toLocaleDateString()}
+                {c.expires_at ? ` · until ${new Date(c.expires_at).toLocaleDateString()}` : ""}
+              </p>
+              <Button
+                size="sm"
+                variant="outline"
+                className="mt-3"
+                disabled={fpoRevokeMutation.isPending}
+                onClick={() => fpoRevokeMutation.mutate(c.id)}
+              >
+                Withdraw
+              </Button>
+            </li>
+          ))}
+          {(fpoConsents.data ?? []).length === 0 && (
+            <li className="text-sm text-muted-foreground">
+              No producer organization currently has authorization to view your details.
+            </li>
+          )}
+        </ul>
+      </section>
     </div>
   );
 }
+
