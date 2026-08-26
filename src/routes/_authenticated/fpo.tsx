@@ -19,6 +19,7 @@ import { FpoAccountsSection } from "@/components/atap/fpo/FpoAccountsSection";
 import { FpoDocumentsSection } from "@/components/atap/fpo/FpoDocumentsSection";
 import { FpoNotificationsSection } from "@/components/atap/fpo/FpoNotificationsSection";
 import { FpoTasksSection } from "@/components/atap/fpo/FpoTasksSection";
+import { FpoTeamSection } from "@/components/atap/fpo/FpoTeamSection";
 import { Button } from "@/components/ui/button";
 import {
   acceptInvite,
@@ -315,6 +316,8 @@ function FpoPage() {
 
       {section === "team" ? (
         <div className="space-y-6">
+          <FpoTeamSection tenantId={activeTenant?.id ?? ""} />
+
           <section className="grid gap-6 lg:grid-cols-2">
             <div className="panel space-y-3 p-5">
               <h2 className="font-display text-base font-semibold">Invite staff</h2>
