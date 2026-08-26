@@ -2592,6 +2592,194 @@ export type Database = {
           },
         ]
       }
+      fpo_notification_deliveries: {
+        Row: {
+          channel: Database["public"]["Enums"]["fpo_notice_channel"]
+          created_at: string
+          id: string
+          is_synthetic: boolean
+          member_id: string | null
+          notification_id: string
+          read_at: string | null
+          recipient_label: string
+          recipient_user_id: string | null
+          state: Database["public"]["Enums"]["fpo_delivery_state"]
+          tenant_id: string
+          updated_at: string
+          withheld_reason: string | null
+        }
+        Insert: {
+          channel?: Database["public"]["Enums"]["fpo_notice_channel"]
+          created_at?: string
+          id?: string
+          is_synthetic?: boolean
+          member_id?: string | null
+          notification_id: string
+          read_at?: string | null
+          recipient_label: string
+          recipient_user_id?: string | null
+          state?: Database["public"]["Enums"]["fpo_delivery_state"]
+          tenant_id: string
+          updated_at?: string
+          withheld_reason?: string | null
+        }
+        Update: {
+          channel?: Database["public"]["Enums"]["fpo_notice_channel"]
+          created_at?: string
+          id?: string
+          is_synthetic?: boolean
+          member_id?: string | null
+          notification_id?: string
+          read_at?: string | null
+          recipient_label?: string
+          recipient_user_id?: string | null
+          state?: Database["public"]["Enums"]["fpo_delivery_state"]
+          tenant_id?: string
+          updated_at?: string
+          withheld_reason?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_notification_deliveries_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_notification_deliveries_notification_id_fkey"
+            columns: ["notification_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_notifications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_notification_deliveries_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_notifications: {
+        Row: {
+          application_id: string | null
+          audience: Database["public"]["Enums"]["fpo_notice_audience"]
+          body: string
+          campaign_id: string | null
+          category: Database["public"]["Enums"]["fpo_notice_category"]
+          created_at: string
+          created_by_user_id: string | null
+          id: string
+          is_synthetic: boolean
+          language_code: string
+          lot_id: string | null
+          member_id: string | null
+          recipient_count: number
+          requested_channels: Database["public"]["Enums"]["fpo_notice_channel"][]
+          scheduled_for: string | null
+          segment_id: string | null
+          sent_at: string | null
+          state: Database["public"]["Enums"]["fpo_notice_state"]
+          tenant_id: string
+          title: string
+          updated_at: string
+          withheld_count: number
+        }
+        Insert: {
+          application_id?: string | null
+          audience?: Database["public"]["Enums"]["fpo_notice_audience"]
+          body: string
+          campaign_id?: string | null
+          category?: Database["public"]["Enums"]["fpo_notice_category"]
+          created_at?: string
+          created_by_user_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          language_code?: string
+          lot_id?: string | null
+          member_id?: string | null
+          recipient_count?: number
+          requested_channels?: Database["public"]["Enums"]["fpo_notice_channel"][]
+          scheduled_for?: string | null
+          segment_id?: string | null
+          sent_at?: string | null
+          state?: Database["public"]["Enums"]["fpo_notice_state"]
+          tenant_id: string
+          title: string
+          updated_at?: string
+          withheld_count?: number
+        }
+        Update: {
+          application_id?: string | null
+          audience?: Database["public"]["Enums"]["fpo_notice_audience"]
+          body?: string
+          campaign_id?: string | null
+          category?: Database["public"]["Enums"]["fpo_notice_category"]
+          created_at?: string
+          created_by_user_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          language_code?: string
+          lot_id?: string | null
+          member_id?: string | null
+          recipient_count?: number
+          requested_channels?: Database["public"]["Enums"]["fpo_notice_channel"][]
+          scheduled_for?: string | null
+          segment_id?: string | null
+          sent_at?: string | null
+          state?: Database["public"]["Enums"]["fpo_notice_state"]
+          tenant_id?: string
+          title?: string
+          updated_at?: string
+          withheld_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_notifications_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_scheme_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_notifications_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_procurement_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_notifications_lot_id_fkey"
+            columns: ["lot_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_produce_lots"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_notifications_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_notifications_segment_id_fkey"
+            columns: ["segment_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_member_segments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_notifications_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fpo_opportunities: {
         Row: {
           application_deadline: string | null
@@ -3574,6 +3762,156 @@ export type Database = {
           },
           {
             foreignKeyName: "fpo_supplier_quotes_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_task_comments: {
+        Row: {
+          author_user_id: string | null
+          body: string
+          created_at: string
+          id: string
+          is_synthetic: boolean
+          task_id: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          author_user_id?: string | null
+          body: string
+          created_at?: string
+          id?: string
+          is_synthetic?: boolean
+          task_id: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          author_user_id?: string | null
+          body?: string
+          created_at?: string
+          id?: string
+          is_synthetic?: boolean
+          task_id?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_task_comments_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_tasks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_task_comments_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_tasks: {
+        Row: {
+          application_id: string | null
+          assigned_to_user_id: string | null
+          assignee_label: string | null
+          campaign_id: string | null
+          category: Database["public"]["Enums"]["fpo_notice_category"]
+          completed_at: string | null
+          created_at: string
+          created_by_user_id: string | null
+          description: string | null
+          due_date: string | null
+          id: string
+          is_synthetic: boolean
+          lot_id: string | null
+          member_id: string | null
+          priority: Database["public"]["Enums"]["fpo_task_priority"]
+          status: Database["public"]["Enums"]["fpo_task_status"]
+          tenant_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          application_id?: string | null
+          assigned_to_user_id?: string | null
+          assignee_label?: string | null
+          campaign_id?: string | null
+          category?: Database["public"]["Enums"]["fpo_notice_category"]
+          completed_at?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          is_synthetic?: boolean
+          lot_id?: string | null
+          member_id?: string | null
+          priority?: Database["public"]["Enums"]["fpo_task_priority"]
+          status?: Database["public"]["Enums"]["fpo_task_status"]
+          tenant_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          application_id?: string | null
+          assigned_to_user_id?: string | null
+          assignee_label?: string | null
+          campaign_id?: string | null
+          category?: Database["public"]["Enums"]["fpo_notice_category"]
+          completed_at?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          is_synthetic?: boolean
+          lot_id?: string | null
+          member_id?: string | null
+          priority?: Database["public"]["Enums"]["fpo_task_priority"]
+          status?: Database["public"]["Enums"]["fpo_task_status"]
+          tenant_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_tasks_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_scheme_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_tasks_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_procurement_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_tasks_lot_id_fkey"
+            columns: ["lot_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_produce_lots"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_tasks_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_tasks_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -8579,6 +8917,7 @@ export type Database = {
         | "benefit_received"
         | "closed"
       fpo_campaign_status: "draft" | "active" | "paused" | "closed"
+      fpo_delivery_state: "queued" | "delivered" | "withheld" | "failed"
       fpo_doc_status:
         | "uploaded"
         | "under_review"
@@ -8634,6 +8973,17 @@ export type Database = {
         | "warehouse"
         | "grading"
         | "processing"
+      fpo_notice_audience: "all_members" | "segment" | "staff" | "single_member"
+      fpo_notice_category:
+        | "scheme"
+        | "procurement"
+        | "produce"
+        | "payment"
+        | "meeting"
+        | "compliance"
+        | "general"
+      fpo_notice_channel: "in_app" | "sms" | "whatsapp" | "voice"
+      fpo_notice_state: "draft" | "scheduled" | "sending" | "sent" | "cancelled"
       fpo_opportunity_category:
         | "scheme"
         | "input_procurement"
@@ -8689,6 +9039,8 @@ export type Database = {
         | "verified"
         | "active"
         | "suspended"
+      fpo_task_priority: "low" | "normal" | "high" | "urgent"
+      fpo_task_status: "open" | "in_progress" | "blocked" | "done" | "cancelled"
       fpo_uc_state:
         | "not_due"
         | "pending"
@@ -9117,6 +9469,7 @@ export const Constants = {
         "closed",
       ],
       fpo_campaign_status: ["draft", "active", "paused", "closed"],
+      fpo_delivery_state: ["queued", "delivered", "withheld", "failed"],
       fpo_doc_status: [
         "uploaded",
         "under_review",
@@ -9179,6 +9532,18 @@ export const Constants = {
         "grading",
         "processing",
       ],
+      fpo_notice_audience: ["all_members", "segment", "staff", "single_member"],
+      fpo_notice_category: [
+        "scheme",
+        "procurement",
+        "produce",
+        "payment",
+        "meeting",
+        "compliance",
+        "general",
+      ],
+      fpo_notice_channel: ["in_app", "sms", "whatsapp", "voice"],
+      fpo_notice_state: ["draft", "scheduled", "sending", "sent", "cancelled"],
       fpo_opportunity_category: [
         "scheme",
         "input_procurement",
@@ -9239,6 +9604,8 @@ export const Constants = {
         "active",
         "suspended",
       ],
+      fpo_task_priority: ["low", "normal", "high", "urgent"],
+      fpo_task_status: ["open", "in_progress", "blocked", "done", "cancelled"],
       fpo_uc_state: ["not_due", "pending", "submitted", "accepted", "rejected"],
       gate_status: ["pending", "approved", "rejected"],
       geo_level: ["country", "state", "district", "block", "village"],
