@@ -854,3 +854,48 @@ export const getFarmer360 = createServerFn({ method: "POST" })
 
     return result;
   });
+
+/* ------------------------------------------------- farmer-side consent view */
+
+export interface MyFpoConsent {
+  id: string;
+  tenantName: string;
+  purpose_code: string;
+  granted_at: string;
+  expires_at: string | null;
+  evidence: string | null;
+}
+
+/** A farmer's own view of what each FPO may see, with revoke available. */
+export const getMyFpoConsents = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<MyFpoConsent[]> => {
+    const { supabase, userId } = context;
+    const { data } = await supabase
+      .from("fpo_farmer_consents")
+      .select("id, tenant_id, purpose_code, granted_at, expires_at, evidence, revoked_at")
+      .eq("farmer_user_id", userId)
+      .is("revoked_at", null);
+    const rows = (data ?? []) as Array<{
+      id: string;
+      tenant_id: string;
+      purpose_code: string;
+      granted_at: string;
+      expires_at: string | null;
+      evidence: string | null;
+    }>;
+    if (rows.length === 0) return [];
+    const { data: tenants } = await supabase
+      .from("tenants")
+      .select("id, name")
+      .in("id", Array.from(new Set(rows.map((r) => r.tenant_id))));
+    const names = new Map(((tenants ?? []) as Array<{ id: string; name: string }>).map((t) => [t.id, t.name]));
+    return rows.map((r) => ({
+      id: r.id,
+      tenantName: names.get(r.tenant_id) ?? "FPO",
+      purpose_code: r.purpose_code,
+      granted_at: r.granted_at,
+      expires_at: r.expires_at,
+      evidence: r.evidence,
+    }));
+  });
