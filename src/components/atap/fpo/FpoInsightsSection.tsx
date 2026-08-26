@@ -105,7 +105,10 @@ export function FpoInsightsSection({
                   </p>
                   <ul className="space-y-2">
                     {group.hits.map((hit) => (
-                      <li key={`${hit.kind}-${hit.id}`} className={`${card} flex flex-wrap items-center justify-between gap-3`}>
+                      <li
+                        key={`${hit.kind}-${hit.id}`}
+                        className={`${card} flex flex-wrap items-center justify-between gap-3`}
+                      >
                         <div>
                           <p className="text-sm font-medium">{hit.title}</p>
                           {hit.subtitle ? (
@@ -139,7 +142,10 @@ export function FpoInsightsSection({
         {data.attention.length > 0 ? (
           <ul className="space-y-2">
             {data.attention.map((item) => (
-              <li key={item.key} className={`${card} flex flex-wrap items-center justify-between gap-3`}>
+              <li
+                key={item.key}
+                className={`${card} flex flex-wrap items-center justify-between gap-3`}
+              >
                 <span className="text-sm">
                   <StateBadge state={item.severity === "warning" ? "pending" : "info"} />{" "}
                   {item.label}

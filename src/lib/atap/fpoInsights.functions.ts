@@ -86,7 +86,11 @@ export const getInsightsBoard = createServerFn({ method: "GET" })
       tasks,
       notices,
     ] = await Promise.all([
-      supabase.from("fpo_members").select("id, status, farmer_user_id").eq("tenant_id", t).limit(2000),
+      supabase
+        .from("fpo_members")
+        .select("id, status, farmer_user_id")
+        .eq("tenant_id", t)
+        .limit(2000),
       supabase
         .from("fpo_farmer_consents")
         .select("farmer_user_id, purpose_code, revoked_at, expires_at")
@@ -117,7 +121,11 @@ export const getInsightsBoard = createServerFn({ method: "GET" })
         .eq("tenant_id", t)
         .limit(500),
       supabase.from("fpo_tasks").select("status, due_date").eq("tenant_id", t).limit(1000),
-      supabase.from("fpo_notifications").select("state, withheld_count").eq("tenant_id", t).limit(500),
+      supabase
+        .from("fpo_notifications")
+        .select("state, withheld_count")
+        .eq("tenant_id", t)
+        .limit(500),
     ]);
 
     const now = new Date().toISOString();
@@ -233,47 +241,71 @@ export const searchWorkspace = createServerFn({ method: "GET" })
     if (query.length < 2) return { hits: [], disclaimer: SEARCH_DISCLAIMER };
 
     const t = data.tenantId;
-    const [members, applications, opportunities, campaigns, lots, ledger, grants, notices, tasks, staff] =
-      await Promise.all([
-        supabase
-          .from("fpo_members")
-          .select("id, member_ref, membership_number, display_name, contact_hint, village_cluster, crops, status")
-          .eq("tenant_id", t)
-          .limit(500),
-        supabase
-          .from("fpo_scheme_applications")
-          .select("id, title, reference_no, status")
-          .eq("tenant_id", t)
-          .limit(300),
-        supabase
-          .from("fpo_opportunities")
-          .select("id, title, provider_name, category, commodities")
-          .or(`tenant_id.eq.${t},tenant_id.is.null`)
-          .limit(300),
-        supabase
-          .from("fpo_procurement_campaigns")
-          .select("id, name, input_category, season, status")
-          .eq("tenant_id", t)
-          .limit(300),
-        supabase
-          .from("fpo_produce_lots")
-          .select("id, lot_code, commodity, variety, grade, status")
-          .eq("tenant_id", t)
-          .limit(300),
-        supabase
-          .from("fpo_ledger_entries")
-          .select("id, description, reference, party_name, category, payment_state")
-          .eq("tenant_id", t)
-          .limit(500),
-        supabase.from("fpo_grant_funds").select("id, title, funder_name, uc_state").eq("tenant_id", t).limit(200),
-        supabase.from("fpo_notifications").select("id, title, category, state").eq("tenant_id", t).limit(300),
-        supabase.from("fpo_tasks").select("id, title, category, status").eq("tenant_id", t).limit(300),
-        supabase
-          .from("fpo_staff_members")
-          .select("id, display_name, designation, staff_role, status")
-          .eq("tenant_id", t)
-          .limit(200),
-      ]);
+    const [
+      members,
+      applications,
+      opportunities,
+      campaigns,
+      lots,
+      ledger,
+      grants,
+      notices,
+      tasks,
+      staff,
+    ] = await Promise.all([
+      supabase
+        .from("fpo_members")
+        .select(
+          "id, member_ref, membership_number, display_name, contact_hint, village_cluster, crops, status",
+        )
+        .eq("tenant_id", t)
+        .limit(500),
+      supabase
+        .from("fpo_scheme_applications")
+        .select("id, title, reference_no, status")
+        .eq("tenant_id", t)
+        .limit(300),
+      supabase
+        .from("fpo_opportunities")
+        .select("id, title, provider_name, category, commodities")
+        .or(`tenant_id.eq.${t},tenant_id.is.null`)
+        .limit(300),
+      supabase
+        .from("fpo_procurement_campaigns")
+        .select("id, name, input_category, season, status")
+        .eq("tenant_id", t)
+        .limit(300),
+      supabase
+        .from("fpo_produce_lots")
+        .select("id, lot_code, commodity, variety, grade, status")
+        .eq("tenant_id", t)
+        .limit(300),
+      supabase
+        .from("fpo_ledger_entries")
+        .select("id, description, reference, party_name, category, payment_state")
+        .eq("tenant_id", t)
+        .limit(500),
+      supabase
+        .from("fpo_grant_funds")
+        .select("id, title, funder_name, uc_state")
+        .eq("tenant_id", t)
+        .limit(200),
+      supabase
+        .from("fpo_notifications")
+        .select("id, title, category, state")
+        .eq("tenant_id", t)
+        .limit(300),
+      supabase
+        .from("fpo_tasks")
+        .select("id, title, category, status")
+        .eq("tenant_id", t)
+        .limit(300),
+      supabase
+        .from("fpo_staff_members")
+        .select("id, display_name, designation, staff_role, status")
+        .eq("tenant_id", t)
+        .limit(200),
+    ]);
 
     const docs: SearchDoc[] = [
       // Membership rows expose only the workspace reference and the masked

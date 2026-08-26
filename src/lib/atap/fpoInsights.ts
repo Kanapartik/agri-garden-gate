@@ -53,12 +53,7 @@ export function canViewSearch(roles: AppRole[]): boolean {
 export type MetricBasis = "OBSERVED" | "DERIVED";
 
 export type MetricGroup =
-  | "membership"
-  | "schemes"
-  | "procurement"
-  | "produce"
-  | "accounts"
-  | "operations";
+  "membership" | "schemes" | "procurement" | "produce" | "accounts" | "operations";
 
 export interface MetricCard {
   key: string;
@@ -126,7 +121,8 @@ export function buildMetrics(input: InsightsInput): MetricCard[] {
     {
       key: "authorization_coverage",
       label: "Authorization coverage",
-      value: activeMembers.length === 0 ? 0 : round2((authorized.length / activeMembers.length) * 100),
+      value:
+        activeMembers.length === 0 ? 0 : round2((authorized.length / activeMembers.length) * 100),
       unit: "percent",
       basis: "DERIVED",
       group: "membership",
@@ -318,7 +314,8 @@ export function buildAttention(cards: MetricCard[]): AttentionItem[] {
   if (value("authorization_coverage") < 100 && value("active_members") > 0) {
     items.push({
       key: "authorization_gap",
-      label: "Some active members have no authorization on record — farmer-facing work is blocked for them",
+      label:
+        "Some active members have no authorization on record — farmer-facing work is blocked for them",
       section: "farmers",
       severity: "info",
     });
@@ -406,7 +403,10 @@ export function sectionForAction(action: string): FpoSection {
 }
 
 export function humanizeAction(action: string): string {
-  const trimmed = action.replace(/^fpo\./, "").replaceAll(".", " ").replaceAll("_", " ");
+  const trimmed = action
+    .replace(/^fpo\./, "")
+    .replaceAll(".", " ")
+    .replaceAll("_", " ");
   return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
 }
 
@@ -457,7 +457,8 @@ export function filterTimeline(
 ): TimelineEntry[] {
   return entries.filter((e) => {
     if (filter.section && filter.section !== "all" && e.section !== filter.section) return false;
-    if (filter.decision && filter.decision !== "all" && e.decision !== filter.decision) return false;
+    if (filter.decision && filter.decision !== "all" && e.decision !== filter.decision)
+      return false;
     return true;
   });
 }
@@ -525,13 +526,13 @@ export function searchDocs(docs: SearchDoc[], query: string, limit = 20): Search
   return docs
     .map((doc) => ({ ...doc, score: scoreDoc(doc, query) }))
     .filter((hit) => hit.score > 0)
-    .sort((a, b) =>
-      b.score - a.score !== 0 ? b.score - a.score : a.title.localeCompare(b.title),
-    )
+    .sort((a, b) => (b.score - a.score !== 0 ? b.score - a.score : a.title.localeCompare(b.title)))
     .slice(0, limit);
 }
 
-export function groupHits(hits: SearchHit[]): Array<{ kind: SearchKind; label: string; hits: SearchHit[] }> {
+export function groupHits(
+  hits: SearchHit[],
+): Array<{ kind: SearchKind; label: string; hits: SearchHit[] }> {
   const kinds = Array.from(new Set(hits.map((h) => h.kind)));
   return kinds.map((kind) => ({
     kind,
