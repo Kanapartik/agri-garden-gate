@@ -1472,6 +1472,63 @@ export type Database = {
         }
         Relationships: []
       }
+      fpo_access_reviews: {
+        Row: {
+          created_at: string
+          decision: Database["public"]["Enums"]["fpo_access_review_decision"]
+          id: string
+          is_synthetic: boolean
+          new_role: Database["public"]["Enums"]["app_role"] | null
+          notes: string | null
+          previous_role: Database["public"]["Enums"]["app_role"] | null
+          reviewed_at: string
+          reviewed_by: string | null
+          staff_member_id: string
+          tenant_id: string
+        }
+        Insert: {
+          created_at?: string
+          decision: Database["public"]["Enums"]["fpo_access_review_decision"]
+          id?: string
+          is_synthetic?: boolean
+          new_role?: Database["public"]["Enums"]["app_role"] | null
+          notes?: string | null
+          previous_role?: Database["public"]["Enums"]["app_role"] | null
+          reviewed_at?: string
+          reviewed_by?: string | null
+          staff_member_id: string
+          tenant_id: string
+        }
+        Update: {
+          created_at?: string
+          decision?: Database["public"]["Enums"]["fpo_access_review_decision"]
+          id?: string
+          is_synthetic?: boolean
+          new_role?: Database["public"]["Enums"]["app_role"] | null
+          notes?: string | null
+          previous_role?: Database["public"]["Enums"]["app_role"] | null
+          reviewed_at?: string
+          reviewed_by?: string | null
+          staff_member_id?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_access_reviews_staff_member_id_fkey"
+            columns: ["staff_member_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_staff_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_access_reviews_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fpo_application_events: {
         Row: {
           actor_user_id: string | null
@@ -3534,6 +3591,53 @@ export type Database = {
           },
         ]
       }
+      fpo_role_permissions: {
+        Row: {
+          created_at: string
+          id: string
+          is_synthetic: boolean
+          level: Database["public"]["Enums"]["fpo_permission_level"]
+          rationale: string | null
+          section: string
+          staff_role: Database["public"]["Enums"]["app_role"]
+          tenant_id: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_synthetic?: boolean
+          level?: Database["public"]["Enums"]["fpo_permission_level"]
+          rationale?: string | null
+          section: string
+          staff_role: Database["public"]["Enums"]["app_role"]
+          tenant_id?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_synthetic?: boolean
+          level?: Database["public"]["Enums"]["fpo_permission_level"]
+          rationale?: string | null
+          section?: string
+          staff_role?: Database["public"]["Enums"]["app_role"]
+          tenant_id?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_role_permissions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fpo_scheme_applications: {
         Row: {
           assigned_user_id: string | null
@@ -3671,6 +3775,84 @@ export type Database = {
           },
           {
             foreignKeyName: "fpo_scheme_eligibility_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_staff_members: {
+        Row: {
+          contact_hint: string | null
+          created_at: string
+          created_by: string | null
+          designation: string | null
+          display_name: string
+          district_scope: string[]
+          id: string
+          invitation_id: string | null
+          is_synthetic: boolean
+          last_reviewed_at: string | null
+          mandal_scope: string[]
+          notes: string | null
+          staff_role: Database["public"]["Enums"]["app_role"]
+          status: Database["public"]["Enums"]["fpo_staff_status"]
+          suspended_reason: string | null
+          tenant_id: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          contact_hint?: string | null
+          created_at?: string
+          created_by?: string | null
+          designation?: string | null
+          display_name: string
+          district_scope?: string[]
+          id?: string
+          invitation_id?: string | null
+          is_synthetic?: boolean
+          last_reviewed_at?: string | null
+          mandal_scope?: string[]
+          notes?: string | null
+          staff_role: Database["public"]["Enums"]["app_role"]
+          status?: Database["public"]["Enums"]["fpo_staff_status"]
+          suspended_reason?: string | null
+          tenant_id: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          contact_hint?: string | null
+          created_at?: string
+          created_by?: string | null
+          designation?: string | null
+          display_name?: string
+          district_scope?: string[]
+          id?: string
+          invitation_id?: string | null
+          is_synthetic?: boolean
+          last_reviewed_at?: string | null
+          mandal_scope?: string[]
+          notes?: string | null
+          staff_role?: Database["public"]["Enums"]["app_role"]
+          status?: Database["public"]["Enums"]["fpo_staff_status"]
+          suspended_reason?: string | null
+          tenant_id?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_staff_members_invitation_id_fkey"
+            columns: ["invitation_id"]
+            isOneToOne: false
+            referencedRelation: "tenant_invitations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_staff_members_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -8904,6 +9086,12 @@ export type Database = {
         | "id_proof"
         | "other"
       field_provenance: "farmer_entered" | "ai_extracted" | "farmer_confirmed"
+      fpo_access_review_decision:
+        | "retained"
+        | "role_changed"
+        | "scope_changed"
+        | "suspended"
+        | "removed"
       fpo_application_status:
         | "draft"
         | "documents_pending"
@@ -9006,6 +9194,7 @@ export type Database = {
         | "not_relevant"
         | "closed"
       fpo_payment_state: "pending" | "partial" | "paid" | "waived"
+      fpo_permission_level: "none" | "read" | "write" | "manage"
       fpo_price_basis: "observed" | "forecast" | "derived_scenario"
       fpo_procurement_status:
         | "draft"
@@ -9039,6 +9228,7 @@ export type Database = {
         | "verified"
         | "active"
         | "suspended"
+      fpo_staff_status: "invited" | "active" | "suspended" | "removed"
       fpo_task_priority: "low" | "normal" | "high" | "urgent"
       fpo_task_status: "open" | "in_progress" | "blocked" | "done" | "cancelled"
       fpo_uc_state:
@@ -9455,6 +9645,13 @@ export const Constants = {
         "other",
       ],
       field_provenance: ["farmer_entered", "ai_extracted", "farmer_confirmed"],
+      fpo_access_review_decision: [
+        "retained",
+        "role_changed",
+        "scope_changed",
+        "suspended",
+        "removed",
+      ],
       fpo_application_status: [
         "draft",
         "documents_pending",
@@ -9568,6 +9765,7 @@ export const Constants = {
         "closed",
       ],
       fpo_payment_state: ["pending", "partial", "paid", "waived"],
+      fpo_permission_level: ["none", "read", "write", "manage"],
       fpo_price_basis: ["observed", "forecast", "derived_scenario"],
       fpo_procurement_status: [
         "draft",
@@ -9604,6 +9802,7 @@ export const Constants = {
         "active",
         "suspended",
       ],
+      fpo_staff_status: ["invited", "active", "suspended", "removed"],
       fpo_task_priority: ["low", "normal", "high", "urgent"],
       fpo_task_status: ["open", "in_progress", "blocked", "done", "cancelled"],
       fpo_uc_state: ["not_due", "pending", "submitted", "accepted", "rejected"],
