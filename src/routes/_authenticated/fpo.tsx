@@ -60,7 +60,6 @@ function FpoPage() {
   const revoke = useServerFn(revokeInvite);
   const accept = useServerFn(acceptInvite);
   const importRows = useServerFn(importMembers);
-  const memberStatus = useServerFn(setMemberStatus);
   const probe = useServerFn(rosterVisibilityProbe);
 
   const [section, setSection] = useState<FpoSection>("overview");
@@ -177,7 +176,6 @@ function FpoPage() {
   }
 
   const tenantInvites = data.invites.filter((i) => i.tenant_id === activeTenant?.id);
-  const tenantMembers = data.members.filter((m) => m.tenant_id === activeTenant?.id);
   const tenantBatches = data.batches.filter((b) => b.tenant_id === activeTenant?.id);
   const canManage = (activeTenant?.roles ?? []).includes("tenant_admin");
   const ov = overview.data;
