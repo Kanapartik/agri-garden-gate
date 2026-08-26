@@ -26,6 +26,7 @@ import {
   type MemberRow,
   type MembershipState,
   type RegistrySummary,
+  type SegmentFilters,
 } from "@/lib/atap/fpoMembers";
 import type { AppRole } from "@/lib/atap/policy";
 
@@ -44,7 +45,7 @@ export interface SegmentRow {
   id: string;
   name: string;
   description: string | null;
-  filters: Record<string, unknown>;
+  filters: SegmentFilters;
 }
 
 export interface MemberConsentRow {
@@ -79,23 +80,41 @@ export interface FarmerCandidate {
   alreadyMember: boolean;
 }
 
+export interface Farmer360Profile {
+  full_name: string | null;
+  gender: string | null;
+  social_category: string | null;
+  ownership_type: string | null;
+  total_extent_acres: number | null;
+  irrigation_source: string | null;
+  village_code: string | null;
+  updated_at: string | null;
+}
+
+export interface FarmSummary {
+  id: string;
+  label: string;
+  plot_ref: string;
+  area_acres: number | null;
+  primary_crop: string | null;
+  village_code: string | null;
+  sync_state: string;
+  updated_at: string;
+}
+
 export interface Farmer360 {
   memberId: string;
   purposes: string[];
   tabs: Farmer360Tab[];
   membership: MemberRow | null;
-  profile: Record<string, unknown> | null;
-  farms: Array<Record<string, unknown>>;
+  profile: Farmer360Profile | null;
+  farms: FarmSummary[];
   crops: Array<{ crop: string; acres: number; plots: number }>;
-  schemes: Array<{ id: string; status: string; scheme_id: string; submitted_at: string | null }>;
+  schemes: Array<{ id: string; status: string; scheme_id: string; decided_at: string | null; created_at: string }>;
   market: Array<{ commodity: string; expectedAcres: number }>;
 }
 
 /* ------------------------------------------------------------- internals */
-
-interface Ctx {
-  supabase: Parameters<typeof requireSupabaseAuth>[0] extends never ? never : any;
-}
 
 async function actorFor(supabase: any, userId: string) {
   const { resolveDistrictActor } = await import("@/lib/atap/district.server");
@@ -113,14 +132,20 @@ async function tenantScope(supabase: any, userId: string, tenantId: string) {
   return { actor, roles: roles as AppRole[] };
 }
 
-async function memberTenant(supabase: any, memberId: string) {
+export interface MemberFull extends MemberRow {
+  tenant_id: string;
+  joined_on: string | null;
+  exited_on: string | null;
+}
+
+async function memberTenant(supabase: any, memberId: string): Promise<MemberFull> {
   const { data } = await supabase
     .from("fpo_members")
     .select("*")
     .eq("id", memberId)
     .maybeSingle();
   if (!data) throw new Error("Member not found");
-  return data as MemberRow & { tenant_id: string };
+  return data as MemberFull;
 }
 
 /* -------------------------------------------------------------- registry */
@@ -188,7 +213,7 @@ export const getMemberRegistry = createServerFn({ method: "POST" })
         memberCount: assignRows.filter((a) => a.tag_id === t.id).length,
       })),
       segments: ((segments ?? []) as Array<{ id: string; name: string; description: string | null; filters: unknown }>).map(
-        (s) => ({ ...s, filters: (s.filters ?? {}) as Record<string, unknown> }),
+        (s) => ({ ...s, filters: (s.filters ?? {}) as SegmentFilters }),
       ),
       consents: consentRows,
       summary: registrySummary(memberRows),
@@ -319,7 +344,7 @@ export const setMembershipStatus = createServerFn({ method: "POST" })
     if (data.status === "active") {
       const check = canActivateMembership({
         status: member.status,
-        farmer_user_id: member.farmer_user_id,
+        farmer_user_id: member.farmer_user_id ?? null,
       });
       if (!check.ok) {
         throw new Error(
@@ -336,8 +361,12 @@ export const setMembershipStatus = createServerFn({ method: "POST" })
       throw new Error("Only an FPO admin can exit or remove a member");
     }
 
-    const patch: Record<string, unknown> = { status: data.status };
-    if (data.status === "active" && !member.joined_on) patch.joined_on = new Date().toISOString().slice(0, 10);
+    const patch: { status: MembershipState; joined_on?: string; exited_on?: string } = {
+      status: data.status,
+    };
+    if (data.status === "active" && !member.joined_on) {
+      patch.joined_on = new Date().toISOString().slice(0, 10);
+    }
     if (data.status === "exited") patch.exited_on = new Date().toISOString().slice(0, 10);
 
     const { error } = await supabase.from("fpo_members").update(patch).eq("id", data.memberId);
@@ -428,7 +457,9 @@ export const linkMemberFarmer = createServerFn({ method: "POST" })
       if (clash) throw new Error("That farmer is already linked to another membership row");
     }
 
-    const patch: Record<string, unknown> = { farmer_user_id: data.farmerUserId };
+    const patch: { farmer_user_id: string | null; status?: MembershipState } = {
+      farmer_user_id: data.farmerUserId,
+    };
     if (!data.farmerUserId && member.status === "active") patch.status = "approval_pending";
 
     const { error } = await supabase.from("fpo_members").update(patch).eq("id", data.memberId);
@@ -534,7 +565,7 @@ export const saveSegment = createServerFn({ method: "POST" })
       segmentId?: string;
       name: string;
       description?: string | null;
-      filters: Record<string, unknown>;
+      filters: SegmentFilters;
     }) => input,
   )
   .handler(async ({ data, context }) => {
@@ -715,7 +746,10 @@ export const getFarmer360 = createServerFn({ method: "POST" })
         .select("*")
         .eq("farmer_user_id", member.farmer_user_id)
         .maybeSingle();
-      result.profile = profile ? stripNeverShared(profile as Record<string, unknown>) : null;
+      const row = profile as Record<string, unknown> | null;
+      result.profile = row
+        ? (stripNeverShared(row) as unknown as Farmer360Profile)
+        : null;
     }
 
     if (tabAllowed("farms", purposes)) {
@@ -724,11 +758,11 @@ export const getFarmer360 = createServerFn({ method: "POST" })
         .select("id, label, plot_ref, area_acres, primary_crop, village_code, sync_state, updated_at")
         .eq("farmer_user_id", member.farmer_user_id)
         .order("updated_at", { ascending: false });
-      result.farms = (farms ?? []) as Array<Record<string, unknown>>;
+      result.farms = (farms ?? []) as FarmSummary[];
 
       const byCrop = new Map<string, { acres: number; plots: number }>();
       for (const f of result.farms) {
-        const crop = String(f.primary_crop ?? "unspecified");
+        const crop = f.primary_crop ?? "unspecified";
         const prev = byCrop.get(crop) ?? { acres: 0, plots: 0 };
         byCrop.set(crop, { acres: prev.acres + Number(f.area_acres ?? 0), plots: prev.plots + 1 });
       }
@@ -741,12 +775,22 @@ export const getFarmer360 = createServerFn({ method: "POST" })
     if (tabAllowed("schemes", purposes)) {
       const { data: apps } = await supabaseAdmin
         .from("scheme_applications")
-        .select("id, scheme_id, status, submitted_at")
+        .select("id, scheme_id, status, decided_at, created_at")
         .eq("applicant_user_id", member.farmer_user_id)
         .order("created_at", { ascending: false });
-      result.schemes = ((apps ?? []) as Array<{ id: string; scheme_id: string; status: string; submitted_at: string | null }>).map(
-        (a) => ({ id: a.id, scheme_id: a.scheme_id, status: a.status, submitted_at: a.submitted_at }),
-      );
+      result.schemes = ((apps ?? []) as Array<{
+        id: string;
+        scheme_id: string;
+        status: string;
+        decided_at: string | null;
+        created_at: string;
+      }>).map((a) => ({
+        id: a.id,
+        scheme_id: a.scheme_id,
+        status: a.status,
+        decided_at: a.decided_at,
+        created_at: a.created_at,
+      }));
     }
 
     return result;
