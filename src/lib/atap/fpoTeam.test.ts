@@ -217,9 +217,9 @@ const STAFF: StaffLike[] = [
 
 describe("staff summary and review due", () => {
   it("flags reviews older than the interval and never for removed staff", () => {
-    expect(reviewDue(STAFF[1], NOW)).toBe(true);
-    expect(reviewDue(STAFF[0], NOW)).toBe(false);
-    expect(reviewDue(STAFF[4], NOW)).toBe(false);
+    expect(reviewDue(STAFF[1]!, NOW)).toBe(true);
+    expect(reviewDue(STAFF[0]!, NOW)).toBe(false);
+    expect(reviewDue(STAFF[4]!, NOW)).toBe(false);
     expect(
       reviewDue({ id: "x", display_name: "n", staff_role: "viewer", status: "active" }, NOW),
     ).toBe(true);
