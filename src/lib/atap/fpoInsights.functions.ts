@@ -163,9 +163,17 @@ export const getInsightsBoard = createServerFn({ method: "GET" })
         sanctioned_amount: Number(g.sanctioned_amount ?? 0),
         utilized_amount: Number(g.utilized_amount ?? 0),
       })),
-      tasks: rows(tasks).map((tk) => ({
+      tasks: rows(tasks).map((tk, index) => ({
         status: tk.status as string,
-        overdue: taskOverdue({ status: tk.status as never, due_date: tk.due_date }, now),
+        overdue: taskOverdue(
+          {
+            id: `task-${index}`,
+            status: tk.status as never,
+            priority: "normal",
+            due_date: tk.due_date,
+          },
+          new Date(now),
+        ),
       })),
       notices: rows(notices).map((n) => ({
         state: n.state as string,
