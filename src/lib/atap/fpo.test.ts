@@ -35,7 +35,7 @@ describe("fpo workspace sections", () => {
     expect(sectionAvailable("documents")).toBe(true);
     expect(sectionAvailable("procurement")).toBe(true);
     expect(sectionAvailable("produce")).toBe(true);
-    expect(sectionAvailable("accounts")).toBe(false);
+    expect(sectionAvailable("accounts")).toBe(true);
   });
 });
 
