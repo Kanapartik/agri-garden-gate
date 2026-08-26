@@ -394,16 +394,16 @@ export const getFacilitationBoard = createServerFn({ method: "POST" })
         .eq("tenant_id", data.tenantId),
       supabase
         .from("fpo_farmer_consents")
-        .select("member_id, purpose_code, revoked_at")
+        .select("farmer_user_id, purpose_code, revoked_at")
         .eq("tenant_id", data.tenantId)
         .eq("purpose_code", "fpo_scheme_assistance"),
       publishedSchemes(supabase),
     ]);
 
     const consented = new Set(
-      ((consents ?? []) as Array<{ member_id: string; revoked_at: string | null }>)
+      ((consents ?? []) as Array<{ farmer_user_id: string; revoked_at: string | null }>)
         .filter((c) => !c.revoked_at)
-        .map((c) => c.member_id),
+        .map((c) => c.farmer_user_id),
     );
 
     const memberRows = (members ?? []) as Array<{
@@ -413,7 +413,7 @@ export const getFacilitationBoard = createServerFn({ method: "POST" })
       state: FacilitationState;
       assigned_agent_user_id: string | null;
       authorization_recorded_at: string | null;
-      fpo_members: { display_name: string | null } | null;
+      fpo_members: { display_name: string | null; farmer_user_id: string | null } | null;
     }>;
 
     const summaries: CampaignSummary[] = (
