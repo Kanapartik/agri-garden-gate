@@ -20,6 +20,7 @@ import { FpoDocumentsSection } from "@/components/atap/fpo/FpoDocumentsSection";
 import { FpoNotificationsSection } from "@/components/atap/fpo/FpoNotificationsSection";
 import { FpoTasksSection } from "@/components/atap/fpo/FpoTasksSection";
 import { FpoTeamSection } from "@/components/atap/fpo/FpoTeamSection";
+import { FpoInsightsSection } from "@/components/atap/fpo/FpoInsightsSection";
 import { Button } from "@/components/ui/button";
 import {
   acceptInvite,
@@ -483,6 +484,9 @@ function FpoPage() {
         <FpoNotificationsSection tenantId={activeTenant?.id ?? ""} />
       ) : null}
       {section === "tasks" ? <FpoTasksSection tenantId={activeTenant?.id ?? ""} /> : null}
+      {section === "insights" ? (
+        <FpoInsightsSection tenantId={activeTenant?.id ?? ""} onOpenSection={setSection} />
+      ) : null}
 
       {section === "farmers" ? (
         <div className="space-y-6">
