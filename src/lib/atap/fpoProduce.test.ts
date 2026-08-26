@@ -58,7 +58,7 @@ describe("authorization", () => {
     expect(canManageProduce(["tenant_admin"])).toBe(true);
     expect(canManageProduce(["platform_admin"])).toBe(true);
     expect(canManageProduce(["field_agent"])).toBe(false);
-    expect(canManageProduce(["farmer"])).toBe(false);
+    expect(canManageProduce(["viewer"])).toBe(false);
   });
 
   it("lets field agents record contributions but never accept offers", () => {
