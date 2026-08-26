@@ -1856,6 +1856,151 @@ export type Database = {
           },
         ]
       }
+      fpo_grant_funds: {
+        Row: {
+          application_id: string | null
+          created_at: string
+          funder_name: string
+          id: string
+          is_synthetic: boolean
+          next_installment_amount: number | null
+          next_installment_due: string | null
+          note: string | null
+          received_amount: number
+          reporting_deadline: string | null
+          sanctioned_amount: number
+          sanctioned_on: string | null
+          scheme_id: string | null
+          tenant_id: string
+          title: string
+          uc_state: Database["public"]["Enums"]["fpo_uc_state"]
+          updated_at: string
+          utilized_amount: number
+        }
+        Insert: {
+          application_id?: string | null
+          created_at?: string
+          funder_name: string
+          id?: string
+          is_synthetic?: boolean
+          next_installment_amount?: number | null
+          next_installment_due?: string | null
+          note?: string | null
+          received_amount?: number
+          reporting_deadline?: string | null
+          sanctioned_amount?: number
+          sanctioned_on?: string | null
+          scheme_id?: string | null
+          tenant_id: string
+          title: string
+          uc_state?: Database["public"]["Enums"]["fpo_uc_state"]
+          updated_at?: string
+          utilized_amount?: number
+        }
+        Update: {
+          application_id?: string | null
+          created_at?: string
+          funder_name?: string
+          id?: string
+          is_synthetic?: boolean
+          next_installment_amount?: number | null
+          next_installment_due?: string | null
+          note?: string | null
+          received_amount?: number
+          reporting_deadline?: string | null
+          sanctioned_amount?: number
+          sanctioned_on?: string | null
+          scheme_id?: string | null
+          tenant_id?: string
+          title?: string
+          uc_state?: Database["public"]["Enums"]["fpo_uc_state"]
+          updated_at?: string
+          utilized_amount?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_grant_funds_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_scheme_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_grant_funds_scheme_id_fkey"
+            columns: ["scheme_id"]
+            isOneToOne: false
+            referencedRelation: "schemes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_grant_funds_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_grant_utilizations: {
+        Row: {
+          amount: number
+          created_at: string
+          grant_id: string
+          id: string
+          is_synthetic: boolean
+          note: string | null
+          purpose: string
+          recorded_by_user_id: string | null
+          spent_on: string
+          tenant_id: string
+          updated_at: string
+          voucher_reference: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          grant_id: string
+          id?: string
+          is_synthetic?: boolean
+          note?: string | null
+          purpose: string
+          recorded_by_user_id?: string | null
+          spent_on?: string
+          tenant_id: string
+          updated_at?: string
+          voucher_reference?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          grant_id?: string
+          id?: string
+          is_synthetic?: boolean
+          note?: string | null
+          purpose?: string
+          recorded_by_user_id?: string | null
+          spent_on?: string
+          tenant_id?: string
+          updated_at?: string
+          voucher_reference?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_grant_utilizations_grant_id_fkey"
+            columns: ["grant_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_grant_funds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_grant_utilizations_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fpo_leadership: {
         Row: {
           created_at: string
@@ -1899,6 +2044,116 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "fpo_leadership_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_ledger_entries: {
+        Row: {
+          amount: number
+          amount_settled: number
+          bank_reference: string | null
+          campaign_id: string | null
+          category: Database["public"]["Enums"]["fpo_ledger_category"]
+          created_at: string
+          created_by_user_id: string | null
+          description: string
+          direction: Database["public"]["Enums"]["fpo_ledger_direction"]
+          due_date: string | null
+          entry_date: string
+          id: string
+          is_reconciled: boolean
+          is_synthetic: boolean
+          lot_id: string | null
+          member_id: string | null
+          note: string | null
+          party_name: string | null
+          payment_state: Database["public"]["Enums"]["fpo_payment_state"]
+          reconciled_at: string | null
+          reconciled_by_user_id: string | null
+          reference: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          amount_settled?: number
+          bank_reference?: string | null
+          campaign_id?: string | null
+          category?: Database["public"]["Enums"]["fpo_ledger_category"]
+          created_at?: string
+          created_by_user_id?: string | null
+          description: string
+          direction: Database["public"]["Enums"]["fpo_ledger_direction"]
+          due_date?: string | null
+          entry_date?: string
+          id?: string
+          is_reconciled?: boolean
+          is_synthetic?: boolean
+          lot_id?: string | null
+          member_id?: string | null
+          note?: string | null
+          party_name?: string | null
+          payment_state?: Database["public"]["Enums"]["fpo_payment_state"]
+          reconciled_at?: string | null
+          reconciled_by_user_id?: string | null
+          reference?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          amount_settled?: number
+          bank_reference?: string | null
+          campaign_id?: string | null
+          category?: Database["public"]["Enums"]["fpo_ledger_category"]
+          created_at?: string
+          created_by_user_id?: string | null
+          description?: string
+          direction?: Database["public"]["Enums"]["fpo_ledger_direction"]
+          due_date?: string | null
+          entry_date?: string
+          id?: string
+          is_reconciled?: boolean
+          is_synthetic?: boolean
+          lot_id?: string | null
+          member_id?: string | null
+          note?: string | null
+          party_name?: string | null
+          payment_state?: Database["public"]["Enums"]["fpo_payment_state"]
+          reconciled_at?: string | null
+          reconciled_by_user_id?: string | null
+          reference?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_ledger_entries_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_procurement_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_ledger_entries_lot_id_fkey"
+            columns: ["lot_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_produce_lots"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_ledger_entries_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_ledger_entries_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -8364,6 +8619,15 @@ export type Database = {
         | "irrigation"
         | "packaging"
         | "farm_service"
+      fpo_ledger_category:
+        | "procurement"
+        | "produce_sale"
+        | "membership_fee"
+        | "scheme_grant"
+        | "expense"
+        | "loan"
+        | "other"
+      fpo_ledger_direction: "inflow" | "outflow"
       fpo_logistics_kind:
         | "transport"
         | "cold_storage"
@@ -8425,6 +8689,12 @@ export type Database = {
         | "verified"
         | "active"
         | "suspended"
+      fpo_uc_state:
+        | "not_due"
+        | "pending"
+        | "submitted"
+        | "accepted"
+        | "rejected"
       gate_status: "pending" | "approved" | "rejected"
       geo_level: "country" | "state" | "district" | "block" | "village"
       identity_check_status:
@@ -8892,6 +9162,16 @@ export const Constants = {
         "packaging",
         "farm_service",
       ],
+      fpo_ledger_category: [
+        "procurement",
+        "produce_sale",
+        "membership_fee",
+        "scheme_grant",
+        "expense",
+        "loan",
+        "other",
+      ],
+      fpo_ledger_direction: ["inflow", "outflow"],
       fpo_logistics_kind: [
         "transport",
         "cold_storage",
@@ -8959,6 +9239,7 @@ export const Constants = {
         "active",
         "suspended",
       ],
+      fpo_uc_state: ["not_due", "pending", "submitted", "accepted", "rejected"],
       gate_status: ["pending", "approved", "rejected"],
       geo_level: ["country", "state", "district", "block", "village"],
       identity_check_status: [
