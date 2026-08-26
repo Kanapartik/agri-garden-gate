@@ -429,7 +429,8 @@ export const getFacilitationBoard = createServerFn({ method: "POST" })
       const rows = memberRows
         .filter((m) => m.campaign_id === c.id)
         .map((m) => {
-          const hasConsent = consented.has(m.member_id);
+          const farmerUserId = m.fpo_members?.farmer_user_id ?? null;
+          const hasConsent = farmerUserId ? consented.has(farmerUserId) : false;
           return {
             id: m.id,
             member_id: m.member_id,
@@ -562,27 +563,34 @@ export const setFacilitationState = createServerFn({ method: "POST" })
 
     const { data: existing } = await supabase
       .from("fpo_campaign_members")
-      .select("id, state, member_id")
+      .select("id, state, member_id, fpo_members(farmer_user_id)")
       .eq("tenant_id", data.tenantId)
       .eq("id", data.cohortMemberId)
       .maybeSingle();
     if (!existing) throw new Error("Cohort member not found");
 
-    const current = existing as { state: FacilitationState; member_id: string };
+    const current = existing as {
+      state: FacilitationState;
+      member_id: string;
+      fpo_members: { farmer_user_id: string | null } | null;
+    };
     if (!canTransitionFacilitation(current.state, data.state)) {
       throw new Error(`Cannot move this member from ${current.state} to ${data.state}`);
     }
 
     // Farmer authorization is a consent fact, not an FPO click.
     if (data.state === "authorized" || data.state === "application_started" || data.state === "application_submitted") {
-      const { data: consent } = await supabase
-        .from("fpo_farmer_consents")
-        .select("id")
-        .eq("tenant_id", data.tenantId)
-        .eq("member_id", current.member_id)
-        .eq("purpose_code", "fpo_scheme_assistance")
-        .is("revoked_at", null)
-        .maybeSingle();
+      const farmerUserId = current.fpo_members?.farmer_user_id ?? null;
+      const { data: consent } = farmerUserId
+        ? await supabase
+            .from("fpo_farmer_consents")
+            .select("id")
+            .eq("tenant_id", data.tenantId)
+            .eq("farmer_user_id", farmerUserId)
+            .eq("purpose_code", "fpo_scheme_assistance")
+            .is("revoked_at", null)
+            .maybeSingle()
+        : { data: null };
       if (!consent) {
         throw new Error(
           "This farmer has not authorized scheme assistance. Record purpose-scoped consent first.",
