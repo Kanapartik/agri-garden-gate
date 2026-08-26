@@ -124,16 +124,16 @@ export interface MemberRow {
 }
 
 export interface SegmentFilters {
-  search?: string;
-  status?: MembershipState[];
-  memberTypes?: string[];
-  crops?: string[];
-  tagCodes?: string[];
-  villageClusters?: string[];
-  minAcreage?: number;
-  maxAcreage?: number;
-  linkedOnly?: boolean;
-  consentedPurpose?: string;
+  search?: string | undefined;
+  status?: MembershipState[] | undefined;
+  memberTypes?: string[] | undefined;
+  crops?: string[] | undefined;
+  tagCodes?: string[] | undefined;
+  villageClusters?: string[] | undefined;
+  minAcreage?: number | undefined;
+  maxAcreage?: number | undefined;
+  linkedOnly?: boolean | undefined;
+  consentedPurpose?: string | undefined;
 }
 
 /** Segment evaluation is pure and applied identically in UI and server exports. */
