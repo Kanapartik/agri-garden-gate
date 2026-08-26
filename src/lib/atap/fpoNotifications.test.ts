@@ -105,9 +105,9 @@ describe("noticeReadiness", () => {
       "This audience resolves to no recipients",
     );
     expect(noticeReadiness({ ...base, body: " " }).ready).toBe(false);
-    expect(
-      noticeReadiness({ ...base, audience: "segment", segmentId: null }).blockers,
-    ).toContain("Select a member segment");
+    expect(noticeReadiness({ ...base, audience: "segment", segmentId: null }).blockers).toContain(
+      "Select a member segment",
+    );
     expect(
       noticeReadiness({ ...base, audience: "single_member", memberId: null }).blockers,
     ).toContain("Select a member");

@@ -56,8 +56,7 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
     enabled: Boolean(tenantId),
   });
 
-  const refresh = () =>
-    qc.invalidateQueries({ queryKey: ["atap", "fpo-notifications", tenantId] });
+  const refresh = () => qc.invalidateQueries({ queryKey: ["atap", "fpo-notifications", tenantId] });
 
   const useAction = <T,>(fn: (args: { data: T }) => Promise<unknown>, message: string) =>
     useMutation({
@@ -170,7 +169,11 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
           ) : null}
 
           {audience === "single_member" ? (
-            <select className={input} value={memberId} onChange={(e) => setMemberId(e.target.value)}>
+            <select
+              className={input}
+              value={memberId}
+              onChange={(e) => setMemberId(e.target.value)}
+            >
               <option value="">Select a member</option>
               {data.memberOptions.map((m) => (
                 <option key={m.id} value={m.id}>

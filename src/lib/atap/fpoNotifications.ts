@@ -181,10 +181,7 @@ export interface ChannelDecision {
  * explicit and explainable — no fallback channel is invented, and consent is
  * never widened because the FPO administers the roster.
  */
-export function decideChannel(
-  recipient: RecipientLike,
-  channel: NoticeChannel,
-): ChannelDecision {
+export function decideChannel(recipient: RecipientLike, channel: NoticeChannel): ChannelDecision {
   const base = { memberId: recipient.memberId, label: recipient.label, channel };
   if (!channelEnabled(channel)) {
     return {
@@ -215,10 +212,7 @@ export interface DispatchPlan {
 }
 
 /** Plans a full send: one decision per recipient per requested channel. */
-export function planDispatch(
-  recipients: RecipientLike[],
-  channels: NoticeChannel[],
-): DispatchPlan {
+export function planDispatch(recipients: RecipientLike[], channels: NoticeChannel[]): DispatchPlan {
   const requested = channels.length > 0 ? channels : (["in_app"] as NoticeChannel[]);
   const decisions: ChannelDecision[] = [];
   for (const r of recipients) {

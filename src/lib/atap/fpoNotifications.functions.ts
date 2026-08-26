@@ -371,8 +371,9 @@ export const getNotificationsBoard = createServerFn({ method: "POST" })
       })),
     );
 
-    const memberOptions = ((memberRes.data ?? []) as Array<{ id: string; display_name: string }>)
-      .map((m) => ({ id: m.id, display_name: m.display_name }));
+    const memberOptions = (
+      (memberRes.data ?? []) as Array<{ id: string; display_name: string }>
+    ).map((m) => ({ id: m.id, display_name: m.display_name }));
 
     return {
       tenantId: data.tenantId,

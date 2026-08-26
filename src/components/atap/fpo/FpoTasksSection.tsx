@@ -52,8 +52,7 @@ export function FpoTasksSection({ tenantId }: { tenantId: string }) {
     enabled: Boolean(tenantId),
   });
 
-  const refresh = () =>
-    qc.invalidateQueries({ queryKey: ["atap", "fpo-notifications", tenantId] });
+  const refresh = () => qc.invalidateQueries({ queryKey: ["atap", "fpo-notifications", tenantId] });
 
   const useAction = <T,>(fn: (args: { data: T }) => Promise<unknown>, message: string) =>
     useMutation({
