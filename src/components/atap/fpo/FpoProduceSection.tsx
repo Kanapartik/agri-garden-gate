@@ -280,7 +280,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <StateBadge label={PRODUCE_LOT_STATUS_LABEL[lot.status]} />
+                <StateBadge state={PRODUCE_LOT_STATUS_LABEL[lot.status]} />
                 <Button
                   size="sm"
                   variant="outline"
@@ -417,7 +417,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                                 {e.buyer_name} · {e.buyer_type}
                                 {e.is_highest_price ? " · highest live offer" : ""}
                               </span>
-                              <StateBadge label={ENQUIRY_STATUS_LABEL[e.status]} />
+                              <StateBadge state={ENQUIRY_STATUS_LABEL[e.status]} />
                             </div>
                             <p className="mt-1 text-xs text-muted-foreground">
                               {e.workings ?? "No price quoted"}
