@@ -9,6 +9,8 @@ import { TrainingChecklistPanel } from "@/components/atap/TrainingChecklist";
 import { useLanguage } from "@/components/atap/LanguageProvider";
 import { FpoProfileSection } from "@/components/atap/fpo/FpoProfileSection";
 import { FpoFarmersSection } from "@/components/atap/fpo/FpoFarmersSection";
+import { FpoOpportunitiesSection } from "@/components/atap/fpo/FpoOpportunitiesSection";
+import { FpoSchemesSection } from "@/components/atap/fpo/FpoSchemesSection";
 import { FpoDocumentsSection } from "@/components/atap/fpo/FpoDocumentsSection";
 import { Button } from "@/components/ui/button";
 import {
@@ -447,6 +449,12 @@ function FpoPage() {
           </section>
         </div>
       ) : null}
+
+      {section === "opportunities" ? (
+        <FpoOpportunitiesSection tenantId={activeTenant?.id ?? ""} />
+      ) : null}
+
+      {section === "schemes" ? <FpoSchemesSection tenantId={activeTenant?.id ?? ""} /> : null}
 
       {section === "farmers" ? (
         <div className="space-y-6">

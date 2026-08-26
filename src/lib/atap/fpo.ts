@@ -56,7 +56,7 @@ export function isFpoSection(value: string): value is FpoSection {
 }
 
 /** Phases delivered so far; later sections render a scoped placeholder. */
-export const DELIVERED_PHASES = 2;
+export const DELIVERED_PHASES = 3;
 
 export function sectionAvailable(key: FpoSection): boolean {
   const def = FPO_SECTION_DEFS.find((s) => s.key === key);
