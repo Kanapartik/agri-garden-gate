@@ -885,10 +885,9 @@ export const getMyFpoConsents = createServerFn({ method: "POST" })
       evidence: string | null;
     }>;
     if (rows.length === 0) return [];
-    // The farmer cannot read the tenants table directly, so resolve only the
-    // names of organizations that already hold a consent from this farmer.
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: tenants } = await supabaseAdmin
+    // A narrow RLS policy lets the farmer read the name of only those
+    // organizations that already hold an active authorization from them.
+    const { data: tenants } = await supabase
       .from("tenants")
       .select("id, name")
       .in("id", Array.from(new Set(rows.map((r) => r.tenant_id))));
