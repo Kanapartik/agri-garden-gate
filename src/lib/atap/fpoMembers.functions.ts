@@ -885,11 +885,15 @@ export const getMyFpoConsents = createServerFn({ method: "POST" })
       evidence: string | null;
     }>;
     if (rows.length === 0) return [];
+    // A narrow RLS policy lets the farmer read the name of only those
+    // organizations that already hold an active authorization from them.
     const { data: tenants } = await supabase
       .from("tenants")
       .select("id, name")
       .in("id", Array.from(new Set(rows.map((r) => r.tenant_id))));
-    const names = new Map(((tenants ?? []) as Array<{ id: string; name: string }>).map((t) => [t.id, t.name]));
+    const names = new Map(
+      ((tenants ?? []) as Array<{ id: string; name: string }>).map((t) => [t.id, t.name]),
+    );
     return rows.map((r) => ({
       id: r.id,
       tenantName: names.get(r.tenant_id) ?? "FPO",
