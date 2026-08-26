@@ -56,7 +56,7 @@ describe("effective permissions", () => {
   });
 
   it("returns none when neither an override nor a default exists", () => {
-    expect(effectiveLevel(DEFAULTS, "field_agent", "insights", TENANT)).toBe("read");
+    expect(effectiveLevel(DEFAULTS, "field_agent", "insights", TENANT)).toBe("none");
     expect(effectiveLevel([], "field_agent", "farmers", TENANT)).toBe("none");
   });
 
