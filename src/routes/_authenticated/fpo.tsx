@@ -85,7 +85,7 @@ function FpoPage() {
 
   const overview = useQuery({
     queryKey: ["atap", "fpo-overview", activeTenant?.id ?? ""],
-    queryFn: () => fetchOverview({ data: { tenantId: activeTenant?.id } }),
+    queryFn: () => fetchOverview({ data: { tenantId: activeTenant?.id ?? "" } }),
     enabled: Boolean(activeTenant?.id),
   });
 
