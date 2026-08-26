@@ -31,8 +31,7 @@ export function FpoFacilitationSection({ tenantId }: { tenantId: string }) {
   const [name, setName] = useState("");
   const [schemeId, setSchemeId] = useState("");
 
-  const invalidate = () =>
-    qc.invalidateQueries({ queryKey: ["fpo-facilitation-board", tenantId] });
+  const invalidate = () => qc.invalidateQueries({ queryKey: ["fpo-facilitation-board", tenantId] });
 
   const create = useMutation({
     mutationFn: () => createFn({ data: { tenantId, name, schemeId: schemeId || null } }),
@@ -91,13 +90,18 @@ export function FpoFacilitationSection({ tenantId }: { tenantId: string }) {
               </p>
             </div>
             <div className="flex flex-wrap gap-2 text-xs">
-              {(["identified", "notified", "authorization_pending", "authorized"] as FacilitationState[]).map(
-                (s) => (
-                  <span key={s} className="rounded-md border border-border px-2 py-1">
-                    {FACILITATION_STATE_LABEL[s]}: <strong>{c.counts[s]}</strong>
-                  </span>
-                ),
-              )}
+              {(
+                [
+                  "identified",
+                  "notified",
+                  "authorization_pending",
+                  "authorized",
+                ] as FacilitationState[]
+              ).map((s) => (
+                <span key={s} className="rounded-md border border-border px-2 py-1">
+                  {FACILITATION_STATE_LABEL[s]}: <strong>{c.counts[s]}</strong>
+                </span>
+              ))}
             </div>
           </div>
 
@@ -190,7 +194,11 @@ export function FpoFacilitationSection({ tenantId }: { tenantId: string }) {
               ))}
             </select>
           </div>
-          <Button size="sm" disabled={!name.trim() || create.isPending} onClick={() => create.mutate()}>
+          <Button
+            size="sm"
+            disabled={!name.trim() || create.isPending}
+            onClick={() => create.mutate()}
+          >
             Create campaign
           </Button>
         </section>

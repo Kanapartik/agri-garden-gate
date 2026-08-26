@@ -167,9 +167,7 @@ export const getApplicationBoard = createServerFn({ method: "POST" })
     ]);
 
     const applications: ApplicationRow[] = (
-      (rows ?? []) as Array<
-        Record<string, unknown> & { schemes: { title: string } | null }
-      >
+      (rows ?? []) as Array<Record<string, unknown> & { schemes: { title: string } | null }>
     ).map((r) => ({
       id: r["id"] as string,
       scheme_id: r["scheme_id"] as string,
@@ -380,25 +378,27 @@ export const getFacilitationBoard = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const { actor, roles } = await tenantScope(supabase, userId, data.tenantId);
 
-    const [{ data: campaigns }, { data: members }, { data: consents }, schemes] = await Promise.all([
-      supabase
-        .from("fpo_member_campaigns")
-        .select("id, name, status, scheme_id, note, schemes(title)")
-        .eq("tenant_id", data.tenantId)
-        .order("created_at", { ascending: false }),
-      supabase
-        .from("fpo_campaign_members")
-        .select(
-          "id, campaign_id, member_id, state, assigned_agent_user_id, authorization_recorded_at, fpo_members(display_name, farmer_user_id)",
-        )
-        .eq("tenant_id", data.tenantId),
-      supabase
-        .from("fpo_farmer_consents")
-        .select("farmer_user_id, purpose_code, revoked_at")
-        .eq("tenant_id", data.tenantId)
-        .eq("purpose_code", "fpo_scheme_assistance"),
-      publishedSchemes(supabase),
-    ]);
+    const [{ data: campaigns }, { data: members }, { data: consents }, schemes] = await Promise.all(
+      [
+        supabase
+          .from("fpo_member_campaigns")
+          .select("id, name, status, scheme_id, note, schemes(title)")
+          .eq("tenant_id", data.tenantId)
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("fpo_campaign_members")
+          .select(
+            "id, campaign_id, member_id, state, assigned_agent_user_id, authorization_recorded_at, fpo_members(display_name, farmer_user_id)",
+          )
+          .eq("tenant_id", data.tenantId),
+        supabase
+          .from("fpo_farmer_consents")
+          .select("farmer_user_id, purpose_code, revoked_at")
+          .eq("tenant_id", data.tenantId)
+          .eq("purpose_code", "fpo_scheme_assistance"),
+        publishedSchemes(supabase),
+      ],
+    );
 
     const consented = new Set(
       ((consents ?? []) as Array<{ farmer_user_id: string; revoked_at: string | null }>)
@@ -579,7 +579,11 @@ export const setFacilitationState = createServerFn({ method: "POST" })
     }
 
     // Farmer authorization is a consent fact, not an FPO click.
-    if (data.state === "authorized" || data.state === "application_started" || data.state === "application_submitted") {
+    if (
+      data.state === "authorized" ||
+      data.state === "application_started" ||
+      data.state === "application_submitted"
+    ) {
       const farmerUserId = current.fpo_members?.farmer_user_id ?? null;
       const { data: consent } = farmerUserId
         ? await supabase
@@ -604,7 +608,9 @@ export const setFacilitationState = createServerFn({ method: "POST" })
         state: data.state,
         note: data.note ?? null,
         ...(data.assignToMe ? { assigned_agent_user_id: userId } : {}),
-        ...(data.state === "authorized" ? { authorization_recorded_at: new Date().toISOString() } : {}),
+        ...(data.state === "authorized"
+          ? { authorization_recorded_at: new Date().toISOString() }
+          : {}),
       })
       .eq("id", data.cohortMemberId);
     if (error) throw new Error(error.message);

@@ -117,13 +117,19 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
             <p className="field-hint">{data.disclaimer}</p>
           </div>
           <div className="flex flex-wrap gap-2 text-xs">
-            {(["draft", "documents_pending", "submitted", "under_review", "approved"] as ApplicationStatus[]).map(
-              (s) => (
-                <span key={s} className="rounded-md border border-border px-2 py-1">
-                  {APPLICATION_STATUS_LABEL[s]}: <strong>{data.counts[s]}</strong>
-                </span>
-              ),
-            )}
+            {(
+              [
+                "draft",
+                "documents_pending",
+                "submitted",
+                "under_review",
+                "approved",
+              ] as ApplicationStatus[]
+            ).map((s) => (
+              <span key={s} className="rounded-md border border-border px-2 py-1">
+                {APPLICATION_STATUS_LABEL[s]}: <strong>{data.counts[s]}</strong>
+              </span>
+            ))}
           </div>
         </div>
 
@@ -165,7 +171,10 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
                 return (
                   <tr key={row.id} className="border-t border-border align-top">
                     <td className="py-2">
-                      <button className="text-left font-medium underline" onClick={() => setOpenId(row.id)}>
+                      <button
+                        className="text-left font-medium underline"
+                        onClick={() => setOpenId(row.id)}
+                      >
                         {row.title}
                       </button>
                       <div className="field-hint">{row.reference_no ?? "No reference yet"}</div>

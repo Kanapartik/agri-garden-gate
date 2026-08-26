@@ -72,10 +72,7 @@ export function isDecisionStatus(status: ApplicationStatus): boolean {
   return DECISION_STATUSES.includes(status);
 }
 
-export function canTransitionApplication(
-  from: ApplicationStatus,
-  to: ApplicationStatus,
-): boolean {
+export function canTransitionApplication(from: ApplicationStatus, to: ApplicationStatus): boolean {
   return APPLICATION_TRANSITIONS[from].includes(to);
 }
 
@@ -104,7 +101,10 @@ export function submissionReadiness(
   opts: { isSignatory: boolean },
 ): SubmissionReadiness {
   const blockers: string[] = [];
-  if (application.status !== "ready_to_submit" && application.status !== "additional_info_requested") {
+  if (
+    application.status !== "ready_to_submit" &&
+    application.status !== "additional_info_requested"
+  ) {
     blockers.push("Application must be marked ready to submit first");
   }
   const pending = application.pending_documents ?? [];
@@ -146,7 +146,8 @@ export function filterApplications<
   return rows.filter((row) => {
     if (filter.status && row.status !== filter.status) return false;
     if (filter.assignedUserId && row.assigned_user_id !== filter.assignedUserId) return false;
-    if (term && !`${row.title} ${row.reference_no ?? ""}`.toLowerCase().includes(term)) return false;
+    if (term && !`${row.title} ${row.reference_no ?? ""}`.toLowerCase().includes(term))
+      return false;
     return true;
   });
 }
@@ -195,10 +196,7 @@ export const AUTHORIZED_STATES: FacilitationState[] = [
   "application_submitted",
 ];
 
-export function canTransitionFacilitation(
-  from: FacilitationState,
-  to: FacilitationState,
-): boolean {
+export function canTransitionFacilitation(from: FacilitationState, to: FacilitationState): boolean {
   return FACILITATION_TRANSITIONS[from].includes(to);
 }
 

@@ -36,7 +36,11 @@ describe("FPO application lifecycle", () => {
 
   it("blocks submission on pending documents and signatory gating", () => {
     const blocked = submissionReadiness(
-      { status: "ready_to_submit", pending_documents: ["board_resolution"], requires_signatory: true },
+      {
+        status: "ready_to_submit",
+        pending_documents: ["board_resolution"],
+        requires_signatory: true,
+      },
       { isSignatory: false },
     );
     expect(blocked.ready).toBe(false);
@@ -59,8 +63,18 @@ describe("FPO application lifecycle", () => {
 
   it("counts and filters applications", () => {
     const rows = [
-      { title: "Working capital", reference_no: "APP-1", status: "submitted" as ApplicationStatus, assigned_user_id: "u1" },
-      { title: "Storage grant", reference_no: "APP-2", status: "approved" as ApplicationStatus, assigned_user_id: null },
+      {
+        title: "Working capital",
+        reference_no: "APP-1",
+        status: "submitted" as ApplicationStatus,
+        assigned_user_id: "u1",
+      },
+      {
+        title: "Storage grant",
+        reference_no: "APP-2",
+        status: "approved" as ApplicationStatus,
+        assigned_user_id: null,
+      },
     ];
     const counts = applicationCounts(rows);
     expect(counts.submitted).toBe(1);
@@ -82,9 +96,15 @@ describe("member facilitation", () => {
   });
 
   it("never assists without recorded farmer authorization", () => {
-    expect(canAssistFarmerApplication({ state: "notified", hasAssistanceConsent: true })).toBe(false);
-    expect(canAssistFarmerApplication({ state: "authorized", hasAssistanceConsent: false })).toBe(false);
-    expect(canAssistFarmerApplication({ state: "authorized", hasAssistanceConsent: true })).toBe(true);
+    expect(canAssistFarmerApplication({ state: "notified", hasAssistanceConsent: true })).toBe(
+      false,
+    );
+    expect(canAssistFarmerApplication({ state: "authorized", hasAssistanceConsent: false })).toBe(
+      false,
+    );
+    expect(canAssistFarmerApplication({ state: "authorized", hasAssistanceConsent: true })).toBe(
+      true,
+    );
   });
 
   it("counts cohort states", () => {
