@@ -11,6 +11,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
   ACCOUNTS_DISCLAIMER,
+  canCertifyGrant,
   canManageAccounts,
   canReconcile,
   canTransitionUc,
@@ -656,7 +657,7 @@ export const setGrantUcState = createServerFn({ method: "POST" })
           "Only the funder side (scheme reviewer or platform administrator) can accept or return a utilization certificate",
         );
       }
-    } else if (!canCertify(roles)) {
+    } else if (!canCertifyGrant(roles)) {
       throw new Error("Only FPO finance administrators can prepare or submit a utilization certificate");
     }
     if (!canTransitionUc(grant.uc_state, data.state)) {
@@ -680,7 +681,3 @@ export const setGrantUcState = createServerFn({ method: "POST" })
     });
     return { uc_state: data.state };
   });
-
-function canCertify(roles: AppRole[]): boolean {
-  return canManageAccounts(roles);
-}
