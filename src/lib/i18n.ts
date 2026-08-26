@@ -97,6 +97,7 @@ const en: Dict = {
   "fpo.section.team": "Team & permissions",
   "fpo.section.opportunities": "Opportunities",
   "fpo.section.schemes": "Schemes",
+  "fpo.section.applications": "Applications",
   "fpo.section.procurement": "Procurement",
   "fpo.section.produce": "Produce & market",
   "fpo.section.accounts": "Accounts & funds",

@@ -11,6 +11,8 @@ import { FpoProfileSection } from "@/components/atap/fpo/FpoProfileSection";
 import { FpoFarmersSection } from "@/components/atap/fpo/FpoFarmersSection";
 import { FpoOpportunitiesSection } from "@/components/atap/fpo/FpoOpportunitiesSection";
 import { FpoSchemesSection } from "@/components/atap/fpo/FpoSchemesSection";
+import { FpoApplicationsSection } from "@/components/atap/fpo/FpoApplicationsSection";
+import { FpoFacilitationSection } from "@/components/atap/fpo/FpoFacilitationSection";
 import { FpoDocumentsSection } from "@/components/atap/fpo/FpoDocumentsSection";
 import { Button } from "@/components/ui/button";
 import {
@@ -455,6 +457,13 @@ function FpoPage() {
       ) : null}
 
       {section === "schemes" ? <FpoSchemesSection tenantId={activeTenant?.id ?? ""} /> : null}
+
+      {section === "applications" ? (
+        <div className="space-y-6">
+          <FpoApplicationsSection tenantId={activeTenant?.id ?? ""} />
+          <FpoFacilitationSection tenantId={activeTenant?.id ?? ""} />
+        </div>
+      ) : null}
 
       {section === "farmers" ? (
         <div className="space-y-6">
