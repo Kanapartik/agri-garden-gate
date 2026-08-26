@@ -14,6 +14,7 @@ import { FpoSchemesSection } from "@/components/atap/fpo/FpoSchemesSection";
 import { FpoApplicationsSection } from "@/components/atap/fpo/FpoApplicationsSection";
 import { FpoFacilitationSection } from "@/components/atap/fpo/FpoFacilitationSection";
 import { FpoProcurementSection } from "@/components/atap/fpo/FpoProcurementSection";
+import { FpoProduceSection } from "@/components/atap/fpo/FpoProduceSection";
 import { FpoDocumentsSection } from "@/components/atap/fpo/FpoDocumentsSection";
 import { Button } from "@/components/ui/button";
 import {
@@ -469,6 +470,8 @@ function FpoPage() {
       {section === "procurement" ? (
         <FpoProcurementSection tenantId={activeTenant?.id ?? ""} />
       ) : null}
+
+      {section === "produce" ? <FpoProduceSection tenantId={activeTenant?.id ?? ""} /> : null}
 
       {section === "farmers" ? (
         <div className="space-y-6">
