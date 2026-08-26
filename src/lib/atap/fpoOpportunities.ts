@@ -204,7 +204,10 @@ export function filterCards(
     }
     if (filters.categories?.length && !filters.categories.includes(c.category)) return false;
     if (filters.statuses?.length && !filters.statuses.includes(c.status)) return false;
-    if (filters.commodities?.length && !filters.commodities.some((x) => c.commodities.includes(x))) {
+    if (
+      filters.commodities?.length &&
+      !filters.commodities.some((x) => c.commodities.includes(x))
+    ) {
       return false;
     }
     if (filters.onlyMyGeography && !c.inGeography) return false;
@@ -317,7 +320,9 @@ export function explainEligibility(
     } else if (!fpo.state_code) {
       missing.push("Confirm the FPO's registered state in the profile.");
     } else {
-      reasons.push(`The scheme is limited to ${scheme.state_code}; this FPO is in ${fpo.state_code}.`);
+      reasons.push(
+        `The scheme is limited to ${scheme.state_code}; this FPO is in ${fpo.state_code}.`,
+      );
       disqualified = true;
     }
   }
@@ -454,7 +459,5 @@ export function canReadOpportunities(roles: string[], isPlatformAdmin: boolean):
 }
 
 export function canManageOpportunities(roles: string[], isPlatformAdmin: boolean): boolean {
-  return (
-    isPlatformAdmin || roles.includes("tenant_admin") || roles.includes("scheme_reviewer")
-  );
+  return isPlatformAdmin || roles.includes("tenant_admin") || roles.includes("scheme_reviewer");
 }

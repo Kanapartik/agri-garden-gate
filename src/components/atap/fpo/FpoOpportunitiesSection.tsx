@@ -165,8 +165,7 @@ export function FpoOpportunitiesSection({ tenantId }: { tenantId: string }) {
                 <dt className="field-hint">Geography</dt>
                 <dd>
                   {c.geography_note ??
-                    ([c.district_code, c.state_code].filter(Boolean).join(", ") ||
-                      "All districts")}
+                    ([c.district_code, c.state_code].filter(Boolean).join(", ") || "All districts")}
                 </dd>
               </div>
               <div>
