@@ -1590,6 +1590,59 @@ export type Database = {
           },
         ]
       }
+      fpo_farmer_consents: {
+        Row: {
+          created_at: string
+          evidence: string | null
+          expires_at: string | null
+          farmer_user_id: string
+          granted_at: string
+          granted_by: string | null
+          id: string
+          is_synthetic: boolean
+          purpose_code: string
+          revoked_at: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          evidence?: string | null
+          expires_at?: string | null
+          farmer_user_id: string
+          granted_at?: string
+          granted_by?: string | null
+          id?: string
+          is_synthetic?: boolean
+          purpose_code: string
+          revoked_at?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          evidence?: string | null
+          expires_at?: string | null
+          farmer_user_id?: string
+          granted_at?: string
+          granted_by?: string | null
+          id?: string
+          is_synthetic?: boolean
+          purpose_code?: string
+          revoked_at?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_farmer_consents_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fpo_leadership: {
         Row: {
           created_at: string
@@ -1640,53 +1693,220 @@ export type Database = {
           },
         ]
       }
+      fpo_member_segments: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          filters: Json
+          id: string
+          is_smart: boolean
+          name: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          filters?: Json
+          id?: string
+          is_smart?: boolean
+          name: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          filters?: Json
+          id?: string
+          is_smart?: boolean
+          name?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_member_segments_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_member_tag_assignments: {
+        Row: {
+          assigned_by: string | null
+          created_at: string
+          id: string
+          member_id: string
+          tag_id: string
+          tenant_id: string
+        }
+        Insert: {
+          assigned_by?: string | null
+          created_at?: string
+          id?: string
+          member_id: string
+          tag_id: string
+          tenant_id: string
+        }
+        Update: {
+          assigned_by?: string | null
+          created_at?: string
+          id?: string
+          member_id?: string
+          tag_id?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_member_tag_assignments_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_member_tag_assignments_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_member_tags"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_member_tag_assignments_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_member_tags: {
+        Row: {
+          code: string
+          color: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          label: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          color?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          label: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          color?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          label?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_member_tags_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fpo_members: {
         Row: {
+          acreage: number | null
           added_by: string | null
           contact_hint: string | null
           created_at: string
+          crops: string[]
           display_name: string
+          exited_on: string | null
           farmer_user_id: string | null
+          field_officer_user_id: string | null
           geography_id: string | null
           id: string
           import_batch_id: string | null
           is_synthetic: boolean
+          joined_on: string | null
           member_ref: string
+          member_type: string | null
+          membership_number: string | null
+          notes: string | null
+          source: string | null
           status: Database["public"]["Enums"]["member_status"]
           tenant_id: string
           updated_at: string
+          village_cluster: string | null
           village_code: string | null
         }
         Insert: {
+          acreage?: number | null
           added_by?: string | null
           contact_hint?: string | null
           created_at?: string
+          crops?: string[]
           display_name: string
+          exited_on?: string | null
           farmer_user_id?: string | null
+          field_officer_user_id?: string | null
           geography_id?: string | null
           id?: string
           import_batch_id?: string | null
           is_synthetic?: boolean
+          joined_on?: string | null
           member_ref: string
+          member_type?: string | null
+          membership_number?: string | null
+          notes?: string | null
+          source?: string | null
           status?: Database["public"]["Enums"]["member_status"]
           tenant_id: string
           updated_at?: string
+          village_cluster?: string | null
           village_code?: string | null
         }
         Update: {
+          acreage?: number | null
           added_by?: string | null
           contact_hint?: string | null
           created_at?: string
+          crops?: string[]
           display_name?: string
+          exited_on?: string | null
           farmer_user_id?: string | null
+          field_officer_user_id?: string | null
           geography_id?: string | null
           id?: string
           import_batch_id?: string | null
           is_synthetic?: boolean
+          joined_on?: string | null
           member_ref?: string
+          member_type?: string | null
+          membership_number?: string | null
+          notes?: string | null
+          source?: string | null
           status?: Database["public"]["Enums"]["member_status"]
           tenant_id?: string
           updated_at?: string
+          village_cluster?: string | null
           village_code?: string | null
         }
         Relationships: [
@@ -6926,7 +7146,13 @@ export type Database = {
         | "rejected"
         | "suspended"
       market_side: "seller" | "buyer"
-      member_status: "invited" | "active" | "suspended" | "removed"
+      member_status:
+        | "invited"
+        | "active"
+        | "suspended"
+        | "removed"
+        | "approval_pending"
+        | "exited"
       membership_status: "active" | "suspended" | "revoked"
       observation_kind:
         | "weather"
@@ -7350,7 +7576,14 @@ export const Constants = {
         "suspended",
       ],
       market_side: ["seller", "buyer"],
-      member_status: ["invited", "active", "suspended", "removed"],
+      member_status: [
+        "invited",
+        "active",
+        "suspended",
+        "removed",
+        "approval_pending",
+        "exited",
+      ],
       membership_status: ["active", "suspended", "revoked"],
       observation_kind: [
         "weather",
