@@ -168,10 +168,7 @@ export function applyFilters(members: MemberRow[], filters: SegmentFilters): Mem
     if (filters.minAcreage != null && Number(m.acreage ?? 0) < filters.minAcreage) return false;
     if (filters.maxAcreage != null && Number(m.acreage ?? 0) > filters.maxAcreage) return false;
     if (filters.linkedOnly && !m.farmer_user_id) return false;
-    if (
-      filters.consentedPurpose &&
-      !(m.consentPurposes ?? []).includes(filters.consentedPurpose)
-    ) {
+    if (filters.consentedPurpose && !(m.consentPurposes ?? []).includes(filters.consentedPurpose)) {
       return false;
     }
     return true;

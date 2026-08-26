@@ -127,9 +127,6 @@ const en: Dict = {
   "fpo.consent.hint":
     "Farm, crop, scheme and market details appear only for purposes the farmer has authorized. The farmer can revoke at any time.",
 
-
-
-
   "language.label": "Language",
   "common.loading": "Loading…",
   "common.synthetic": "Synthetic demo content",

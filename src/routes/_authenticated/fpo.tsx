@@ -20,12 +20,7 @@ import {
   rosterVisibilityProbe,
 } from "@/lib/atap/district.functions";
 import { getFpoOverview } from "@/lib/atap/fpo.functions";
-import {
-  FPO_SECTION_DEFS,
-  isFpoSection,
-  sectionAvailable,
-  type FpoSection,
-} from "@/lib/atap/fpo";
+import { FPO_SECTION_DEFS, isFpoSection, sectionAvailable, type FpoSection } from "@/lib/atap/fpo";
 import type { AppRole } from "@/lib/atap/policy";
 
 export const Route = createFileRoute("/_authenticated/fpo")({
@@ -163,7 +158,10 @@ function FpoPage() {
             value={token}
             onChange={(e) => setToken(e.target.value)}
           />
-          <Button onClick={() => acceptMutation.mutate()} disabled={!token || acceptMutation.isPending}>
+          <Button
+            onClick={() => acceptMutation.mutate()}
+            disabled={!token || acceptMutation.isPending}
+          >
             Accept invitation
           </Button>
           <p className="field-hint">
@@ -214,7 +212,10 @@ function FpoPage() {
         </p>
       </section>
 
-      <nav className="flex flex-wrap gap-1 border-b border-border pb-2 text-sm" aria-label="FPO sections">
+      <nav
+        className="flex flex-wrap gap-1 border-b border-border pb-2 text-sm"
+        aria-label="FPO sections"
+      >
         {FPO_SECTION_DEFS.map((s) => (
           <button
             key={s.key}
@@ -259,7 +260,10 @@ function FpoPage() {
             </div>
             <ol className="grid gap-2 sm:grid-cols-3">
               {(ov?.steps ?? []).map((s) => (
-                <li key={s.step} className="flex items-center justify-between gap-2 rounded-md border border-border px-3 py-2 text-sm">
+                <li
+                  key={s.step}
+                  className="flex items-center justify-between gap-2 rounded-md border border-border px-3 py-2 text-sm"
+                >
                   <span>{s.label}</span>
                   <StateBadge state={s.status} />
                 </li>
@@ -330,7 +334,10 @@ function FpoPage() {
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
                   />
-                  <Button onClick={() => inviteMutation.mutate()} disabled={inviteMutation.isPending}>
+                  <Button
+                    onClick={() => inviteMutation.mutate()}
+                    disabled={inviteMutation.isPending}
+                  >
                     Create invitation
                   </Button>
                   {token ? (
@@ -339,8 +346,8 @@ function FpoPage() {
                     </p>
                   ) : null}
                   <p className="field-hint">
-                    Platform admin and auditor roles are never delegable from a tenant — they require
-                    the privileged access workflow.
+                    Platform admin and auditor roles are never delegable from a tenant — they
+                    require the privileged access workflow.
                   </p>
                 </>
               ) : (
@@ -413,8 +420,8 @@ function FpoPage() {
           <section className="panel space-y-3 p-5">
             <h2 className="font-display text-base font-semibold">Scoped visibility probe</h2>
             <p className="field-hint">
-              Confirms that FPO staff authority stops at the roster: it returns the purposes this role
-              grants over farmer data (expected: none).
+              Confirms that FPO staff authority stops at the roster: it returns the purposes this
+              role grants over farmer data (expected: none).
             </p>
             <Button
               variant="outline"
@@ -448,8 +455,9 @@ function FpoPage() {
           <section className="panel space-y-3 p-5">
             <h2 className="font-display text-base font-semibold">Bulk member onboarding</h2>
             <p className="field-hint">
-              One member per line: <code>member_ref, display name, village_code, contact hint</code>.
-              Rows that fail are reported individually; re-importing the same file adds no duplicates.
+              One member per line: <code>member_ref, display name, village_code, contact hint</code>
+              . Rows that fail are reported individually; re-importing the same file adds no
+              duplicates.
             </p>
             {canManage ? (
               <>

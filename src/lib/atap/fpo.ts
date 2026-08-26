@@ -92,12 +92,7 @@ export const FPO_STEP_LABEL: Record<FpoOnboardingStep, string> = {
 };
 
 export type FpoProfileState =
-  | "draft"
-  | "in_progress"
-  | "submitted"
-  | "verified"
-  | "active"
-  | "suspended";
+  "draft" | "in_progress" | "submitted" | "verified" | "active" | "suspended";
 
 export interface FpoProfileLike {
   legal_name?: string | null;
@@ -209,8 +204,7 @@ export function onboardingSteps(
       label: FPO_STEP_LABEL[step],
       required,
       satisfied,
-      status:
-        satisfied === 0 ? "not_started" : satisfied >= required ? "complete" : "in_progress",
+      status: satisfied === 0 ? "not_started" : satisfied >= required ? "complete" : "in_progress",
     };
   });
 }
@@ -297,7 +291,9 @@ export function missingRequiredDocs(docs: DocLike[]): FpoDocType[] {
     "board_resolution",
   ];
   const present = new Set(
-    docs.filter((d) => d.status === "verified" || d.status === "under_review").map((d) => d.doc_type),
+    docs
+      .filter((d) => d.status === "verified" || d.status === "under_review")
+      .map((d) => d.doc_type),
   );
   return required.filter((r) => !present.has(r));
 }
@@ -353,8 +349,20 @@ export function dashboardMetrics(input: DashboardInput): MetricCard[] {
   const compliance = complianceActions(input.docs).length;
 
   return [
-    { key: "members", label: "Total members", value: String(members.length), section: "farmers", pending: false },
-    { key: "active", label: "Active farmers", value: String(active), section: "farmers", pending: false },
+    {
+      key: "members",
+      label: "Total members",
+      value: String(members.length),
+      section: "farmers",
+      pending: false,
+    },
+    {
+      key: "active",
+      label: "Active farmers",
+      value: String(active),
+      section: "farmers",
+      pending: false,
+    },
     {
       key: "pendingApprovals",
       label: "Pending farmer approvals",
@@ -376,7 +384,13 @@ export function dashboardMetrics(input: DashboardInput): MetricCard[] {
       section: "settings",
       pending: false,
     },
-    { key: "eligible", label: "Eligible schemes", value: String(input.eligibleSchemes), section: "schemes", pending: true },
+    {
+      key: "eligible",
+      label: "Eligible schemes",
+      value: String(input.eligibleSchemes),
+      section: "schemes",
+      pending: true,
+    },
     {
       key: "applications",
       label: "Scheme applications in progress",

@@ -138,11 +138,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
     return <p className="text-sm text-muted-foreground">{t("common.loading")}</p>;
   }
   if (registry.isError) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        {(registry.error as Error).message}
-      </p>
-    );
+    return <p className="text-sm text-muted-foreground">{(registry.error as Error).message}</p>;
   }
   if (!data) return null;
 
@@ -183,19 +179,53 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
             documents stay owned by the farmer.
           </p>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            <input className="field-base" placeholder="Farmer name" value={name} onChange={(e) => setName(e.target.value)} />
-            <select className="field-base" value={memberType} onChange={(e) => setMemberType(e.target.value)}>
+            <input
+              className="field-base"
+              placeholder="Farmer name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <select
+              className="field-base"
+              value={memberType}
+              onChange={(e) => setMemberType(e.target.value)}
+            >
               {MEMBER_TYPES.map((m) => (
                 <option key={m} value={m}>
                   {m.replaceAll("_", " ")}
                 </option>
               ))}
             </select>
-            <input className="field-base" placeholder="Village code" value={village} onChange={(e) => setVillage(e.target.value)} />
-            <input className="field-base" placeholder="Village cluster" value={cluster} onChange={(e) => setCluster(e.target.value)} />
-            <input className="field-base" placeholder="Crops (comma separated)" value={crops} onChange={(e) => setCrops(e.target.value)} />
-            <input className="field-base" placeholder="Acreage" value={acreage} onChange={(e) => setAcreage(e.target.value)} />
-            <input className="field-base" placeholder="Contact hint" value={contact} onChange={(e) => setContact(e.target.value)} />
+            <input
+              className="field-base"
+              placeholder="Village code"
+              value={village}
+              onChange={(e) => setVillage(e.target.value)}
+            />
+            <input
+              className="field-base"
+              placeholder="Village cluster"
+              value={cluster}
+              onChange={(e) => setCluster(e.target.value)}
+            />
+            <input
+              className="field-base"
+              placeholder="Crops (comma separated)"
+              value={crops}
+              onChange={(e) => setCrops(e.target.value)}
+            />
+            <input
+              className="field-base"
+              placeholder="Acreage"
+              value={acreage}
+              onChange={(e) => setAcreage(e.target.value)}
+            />
+            <input
+              className="field-base"
+              placeholder="Contact hint"
+              value={contact}
+              onChange={(e) => setContact(e.target.value)}
+            />
           </div>
           <Button onClick={() => addMember.mutate()} disabled={!name || addMember.isPending}>
             {t("fpo.members.add")}
@@ -263,11 +293,20 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
             <input
               type="checkbox"
               checked={Boolean(filters.linkedOnly)}
-              onChange={(e) => setFilters((f) => ({ ...f, linkedOnly: e.target.checked || undefined }))}
+              onChange={(e) =>
+                setFilters((f) => ({ ...f, linkedOnly: e.target.checked || undefined }))
+              }
             />
             {t("fpo.members.linkedOnly")}
           </label>
-          <Button variant="outline" size="sm" onClick={() => { setFilters({}); setSearch(""); }}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setFilters({});
+              setSearch("");
+            }}
+          >
             Clear filters
           </Button>
           {data.canClassify ? (
@@ -299,8 +338,17 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
         {data.segments.length > 0 ? (
           <div className="flex flex-wrap gap-2 border-t border-border pt-3">
             {data.segments.map((s) => (
-              <span key={s.id} className="flex items-center gap-1 rounded-md border border-border px-2 py-1 text-xs">
-                <button type="button" onClick={() => { setFilters(s.filters); setSearch(s.filters.search ?? ""); }}>
+              <span
+                key={s.id}
+                className="flex items-center gap-1 rounded-md border border-border px-2 py-1 text-xs"
+              >
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFilters(s.filters);
+                    setSearch(s.filters.search ?? "");
+                  }}
+                >
                   {s.name}
                 </button>
                 {data.canClassify ? (
@@ -424,7 +472,11 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
                     </td>
                     <td className="font-mono text-xs">{m.membership_number ?? m.member_ref}</td>
                     <td>
-                      <button type="button" className="underline" onClick={() => setOpenMember(m.id)}>
+                      <button
+                        type="button"
+                        className="underline"
+                        onClick={() => setOpenMember(m.id)}
+                      >
                         {m.display_name}
                       </button>
                       {(m.tagCodes ?? []).length > 0 ? (
@@ -519,7 +571,10 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
                 onChange={(e) => setCandidateQuery(e.target.value)}
               />
               {(candidates.data ?? []).map((c) => (
-                <div key={c.farmer_user_id} className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-border px-3 py-2 text-sm">
+                <div
+                  key={c.farmer_user_id}
+                  className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-border px-3 py-2 text-sm"
+                >
                   <span>
                     {c.full_name ?? "Unnamed"} · {c.village_code ?? "—"} ·{" "}
                     {c.total_extent_acres ?? "—"} ac
@@ -554,7 +609,10 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
                   <p className="text-sm text-muted-foreground">{t("fpo.members.noConsent")}</p>
                 ) : (
                   openConsents.map((c) => (
-                    <span key={c.id} className="flex items-center gap-2 rounded-md border border-border px-2 py-1 text-xs">
+                    <span
+                      key={c.id}
+                      className="flex items-center gap-2 rounded-md border border-border px-2 py-1 text-xs"
+                    >
                       {FPO_PURPOSE_LABEL[c.purpose_code as FpoPurpose] ?? c.purpose_code}
                       {data.canConsent ? (
                         <button
