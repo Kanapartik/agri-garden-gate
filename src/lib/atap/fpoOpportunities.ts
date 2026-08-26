@@ -455,6 +455,6 @@ export function canReadOpportunities(roles: string[], isPlatformAdmin: boolean):
 
 export function canManageOpportunities(roles: string[], isPlatformAdmin: boolean): boolean {
   return (
-    isPlatformAdmin || roles.includes("tenant_admin") || roles.includes("scheme_officer")
+    isPlatformAdmin || roles.includes("tenant_admin") || roles.includes("scheme_reviewer")
   );
 }
