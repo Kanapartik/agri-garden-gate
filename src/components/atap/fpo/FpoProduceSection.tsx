@@ -511,8 +511,8 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                       <ul className="mt-1 space-y-1 text-xs text-muted-foreground">
                         {detail.data.prices.map((p) => (
                           <li key={`${p.commodity}-${p.basis}`}>
-                            <span className="font-semibold">{p.basis_label}</span> ₹{p.latest_price}/
-                            {p.unit} · {p.market_name} · {p.observed_on} — {p.basis_note}
+                            <span className="font-semibold">{p.basis_label}</span> ₹{p.latest_price}
+                            /{p.unit} · {p.market_name} · {p.observed_on} — {p.basis_note}
                           </li>
                         ))}
                       </ul>

@@ -386,7 +386,8 @@ export const createProduceLot = createServerFn({ method: "POST" })
   .handler(async ({ data, context }): Promise<{ id: string }> => {
     const { supabase, userId } = context;
     const { roles } = await tenantScope(supabase, userId, data.tenantId);
-    if (!canManageProduce(roles)) throw new Error("Only FPO administrators can create produce lots");
+    if (!canManageProduce(roles))
+      throw new Error("Only FPO administrators can create produce lots");
     const commodity = data.commodity.trim();
     if (!commodity) throw new Error("Commodity is required");
 
@@ -479,7 +480,8 @@ export const recordProduceContribution = createServerFn({ method: "POST" })
     if (!canRecordContribution(roles)) {
       throw new Error("You are not permitted to record member produce declarations");
     }
-    if (!(data.expectedQuantity > 0)) throw new Error("Expected quantity must be greater than zero");
+    if (!(data.expectedQuantity > 0))
+      throw new Error("Expected quantity must be greater than zero");
 
     const lot = await loadLot(supabase, data.tenantId, data.lotId);
     const { data: row, error } = await supabase
@@ -611,9 +613,7 @@ export const recordBuyerEnquiry = createServerFn({ method: "POST" })
 
 export const setEnquiryStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator(
-    (input: { tenantId: string; enquiryId: string; status: EnquiryStatus }) => input,
-  )
+  .inputValidator((input: { tenantId: string; enquiryId: string; status: EnquiryStatus }) => input)
   .handler(async ({ data, context }): Promise<{ status: EnquiryStatus }> => {
     const { supabase, userId } = context;
     const { roles } = await tenantScope(supabase, userId, data.tenantId);

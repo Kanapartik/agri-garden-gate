@@ -373,7 +373,9 @@ export function compareEnquiries(
       vs_reserve: reserve == null || price == null ? null : round2(price - reserve),
       flags,
       workings:
-        price != null && qty != null ? `${price} × ${qty} ${e.unit} = ${round2(price * qty)}` : null,
+        price != null && qty != null
+          ? `${price} × ${qty} ${e.unit} = ${round2(price * qty)}`
+          : null,
     };
   });
 
