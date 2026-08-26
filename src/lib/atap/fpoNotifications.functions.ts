@@ -558,7 +558,9 @@ export const sendNotice = createServerFn({ method: "POST" })
       member_id: d.memberId,
       recipient_label: d.label,
       channel: d.channel,
-      state: d.state === "queued" && d.channel === "in_app" ? "delivered" : d.state,
+      state: (d.state === "queued" && d.channel === "in_app"
+        ? "delivered"
+        : d.state) as DeliveryState,
       withheld_reason: d.reason,
     }));
     const { error: deliveryError } = await supabase
