@@ -452,7 +452,11 @@ export const recordAccessReview = createServerFn({ method: "POST" })
       .single();
     if (error) throw new Error(error.message);
 
-    const update: Record<string, unknown> = { last_reviewed_at: new Date().toISOString() };
+    const update: {
+      last_reviewed_at: string;
+      status?: StaffStatus;
+      staff_role?: AppRole;
+    } = { last_reviewed_at: new Date().toISOString() };
     if (impliedStatus) update.status = impliedStatus;
     if (data.decision === "role_changed") update.staff_role = nextRole;
     const { error: updateError } = await supabase
