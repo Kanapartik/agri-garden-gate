@@ -1472,6 +1472,60 @@ export type Database = {
         }
         Relationships: []
       }
+      fpo_application_events: {
+        Row: {
+          actor_user_id: string | null
+          application_id: string
+          created_at: string
+          from_status:
+            | Database["public"]["Enums"]["fpo_application_status"]
+            | null
+          id: string
+          note: string | null
+          tenant_id: string
+          to_status: Database["public"]["Enums"]["fpo_application_status"]
+        }
+        Insert: {
+          actor_user_id?: string | null
+          application_id: string
+          created_at?: string
+          from_status?:
+            | Database["public"]["Enums"]["fpo_application_status"]
+            | null
+          id?: string
+          note?: string | null
+          tenant_id: string
+          to_status: Database["public"]["Enums"]["fpo_application_status"]
+        }
+        Update: {
+          actor_user_id?: string | null
+          application_id?: string
+          created_at?: string
+          from_status?:
+            | Database["public"]["Enums"]["fpo_application_status"]
+            | null
+          id?: string
+          note?: string | null
+          tenant_id?: string
+          to_status?: Database["public"]["Enums"]["fpo_application_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_application_events_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_scheme_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_application_events_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fpo_bank_accounts: {
         Row: {
           account_last4: string | null
@@ -1521,6 +1575,77 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "fpo_bank_accounts_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_campaign_members: {
+        Row: {
+          assigned_agent_user_id: string | null
+          authorization_recorded_at: string | null
+          campaign_id: string
+          created_at: string
+          farmer_application_id: string | null
+          id: string
+          member_id: string
+          note: string | null
+          state: Database["public"]["Enums"]["fpo_facilitation_state"]
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_agent_user_id?: string | null
+          authorization_recorded_at?: string | null
+          campaign_id: string
+          created_at?: string
+          farmer_application_id?: string | null
+          id?: string
+          member_id: string
+          note?: string | null
+          state?: Database["public"]["Enums"]["fpo_facilitation_state"]
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_agent_user_id?: string | null
+          authorization_recorded_at?: string | null
+          campaign_id?: string
+          created_at?: string
+          farmer_application_id?: string | null
+          id?: string
+          member_id?: string
+          note?: string | null
+          state?: Database["public"]["Enums"]["fpo_facilitation_state"]
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_campaign_members_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_member_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_campaign_members_farmer_application_id_fkey"
+            columns: ["farmer_application_id"]
+            isOneToOne: false
+            referencedRelation: "scheme_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_campaign_members_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_campaign_members_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -1686,6 +1811,60 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "fpo_leadership_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_member_campaigns: {
+        Row: {
+          created_at: string
+          created_by_user_id: string | null
+          id: string
+          is_synthetic: boolean
+          name: string
+          note: string | null
+          scheme_id: string | null
+          status: Database["public"]["Enums"]["fpo_campaign_status"]
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by_user_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          name: string
+          note?: string | null
+          scheme_id?: string | null
+          status?: Database["public"]["Enums"]["fpo_campaign_status"]
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by_user_id?: string | null
+          id?: string
+          is_synthetic?: boolean
+          name?: string
+          note?: string | null
+          scheme_id?: string | null
+          status?: Database["public"]["Enums"]["fpo_campaign_status"]
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_member_campaigns_scheme_id_fkey"
+            columns: ["scheme_id"]
+            isOneToOne: false
+            referencedRelation: "schemes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_member_campaigns_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -2234,6 +2413,87 @@ export type Database = {
             foreignKeyName: "fpo_profiles_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: true
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_scheme_applications: {
+        Row: {
+          assigned_user_id: string | null
+          benefit_amount: number | null
+          created_at: string
+          created_by_user_id: string | null
+          decided_at: string | null
+          id: string
+          is_synthetic: boolean
+          note: string | null
+          pending_documents: string[]
+          reference_no: string | null
+          requested_amount: number | null
+          requires_signatory: boolean
+          scheme_id: string
+          status: Database["public"]["Enums"]["fpo_application_status"]
+          submitted_at: string | null
+          submitted_by_user_id: string | null
+          tenant_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_user_id?: string | null
+          benefit_amount?: number | null
+          created_at?: string
+          created_by_user_id?: string | null
+          decided_at?: string | null
+          id?: string
+          is_synthetic?: boolean
+          note?: string | null
+          pending_documents?: string[]
+          reference_no?: string | null
+          requested_amount?: number | null
+          requires_signatory?: boolean
+          scheme_id: string
+          status?: Database["public"]["Enums"]["fpo_application_status"]
+          submitted_at?: string | null
+          submitted_by_user_id?: string | null
+          tenant_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_user_id?: string | null
+          benefit_amount?: number | null
+          created_at?: string
+          created_by_user_id?: string | null
+          decided_at?: string | null
+          id?: string
+          is_synthetic?: boolean
+          note?: string | null
+          pending_documents?: string[]
+          reference_no?: string | null
+          requested_amount?: number | null
+          requires_signatory?: boolean
+          scheme_id?: string
+          status?: Database["public"]["Enums"]["fpo_application_status"]
+          submitted_at?: string | null
+          submitted_by_user_id?: string | null
+          tenant_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_scheme_applications_scheme_id_fkey"
+            columns: ["scheme_id"]
+            isOneToOne: false
+            referencedRelation: "schemes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_scheme_applications_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
             referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
@@ -7287,6 +7547,19 @@ export type Database = {
         | "id_proof"
         | "other"
       field_provenance: "farmer_entered" | "ai_extracted" | "farmer_confirmed"
+      fpo_application_status:
+        | "draft"
+        | "documents_pending"
+        | "ready_to_submit"
+        | "submitted"
+        | "under_review"
+        | "additional_info_requested"
+        | "approved"
+        | "rejected"
+        | "benefit_pending"
+        | "benefit_received"
+        | "closed"
+      fpo_campaign_status: "draft" | "active" | "paused" | "closed"
       fpo_doc_status:
         | "uploaded"
         | "under_review"
@@ -7302,6 +7575,15 @@ export type Database = {
         | "rejected"
         | "benefit_received"
         | "closed"
+      fpo_facilitation_state:
+        | "identified"
+        | "notified"
+        | "authorization_pending"
+        | "authorized"
+        | "application_started"
+        | "application_submitted"
+        | "declined"
+        | "not_eligible"
       fpo_opportunity_category:
         | "scheme"
         | "input_procurement"
@@ -7738,6 +8020,20 @@ export const Constants = {
         "other",
       ],
       field_provenance: ["farmer_entered", "ai_extracted", "farmer_confirmed"],
+      fpo_application_status: [
+        "draft",
+        "documents_pending",
+        "ready_to_submit",
+        "submitted",
+        "under_review",
+        "additional_info_requested",
+        "approved",
+        "rejected",
+        "benefit_pending",
+        "benefit_received",
+        "closed",
+      ],
+      fpo_campaign_status: ["draft", "active", "paused", "closed"],
       fpo_doc_status: [
         "uploaded",
         "under_review",
@@ -7754,6 +8050,16 @@ export const Constants = {
         "rejected",
         "benefit_received",
         "closed",
+      ],
+      fpo_facilitation_state: [
+        "identified",
+        "notified",
+        "authorization_pending",
+        "authorized",
+        "application_started",
+        "application_submitted",
+        "declined",
+        "not_eligible",
       ],
       fpo_opportunity_category: [
         "scheme",
