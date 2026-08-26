@@ -33,7 +33,8 @@ describe("fpo workspace sections", () => {
   it("marks later-phase sections unavailable", () => {
     expect(sectionAvailable("overview")).toBe(true);
     expect(sectionAvailable("documents")).toBe(true);
-    expect(sectionAvailable("procurement")).toBe(false);
+    expect(sectionAvailable("procurement")).toBe(true);
+    expect(sectionAvailable("produce")).toBe(false);
   });
 });
 

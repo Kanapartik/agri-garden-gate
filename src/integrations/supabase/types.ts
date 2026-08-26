@@ -2253,6 +2253,287 @@ export type Database = {
           },
         ]
       }
+      fpo_procurement_campaigns: {
+        Row: {
+          created_at: string
+          created_by_user_id: string | null
+          demand_window_end: string | null
+          demand_window_start: string | null
+          id: string
+          input_category: Database["public"]["Enums"]["fpo_input_category"]
+          is_synthetic: boolean
+          name: string
+          note: string | null
+          required_by: string | null
+          season: string | null
+          status: Database["public"]["Enums"]["fpo_procurement_status"]
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by_user_id?: string | null
+          demand_window_end?: string | null
+          demand_window_start?: string | null
+          id?: string
+          input_category: Database["public"]["Enums"]["fpo_input_category"]
+          is_synthetic?: boolean
+          name: string
+          note?: string | null
+          required_by?: string | null
+          season?: string | null
+          status?: Database["public"]["Enums"]["fpo_procurement_status"]
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by_user_id?: string | null
+          demand_window_end?: string | null
+          demand_window_start?: string | null
+          id?: string
+          input_category?: Database["public"]["Enums"]["fpo_input_category"]
+          is_synthetic?: boolean
+          name?: string
+          note?: string | null
+          required_by?: string | null
+          season?: string | null
+          status?: Database["public"]["Enums"]["fpo_procurement_status"]
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_procurement_campaigns_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_procurement_demand: {
+        Row: {
+          authorization_recorded_at: string | null
+          campaign_id: string
+          created_at: string
+          generic_name: string | null
+          id: string
+          indicative_price_per_unit: number | null
+          is_synthetic: boolean
+          member_authorized: boolean
+          member_id: string | null
+          note: string | null
+          product_name: string
+          quantity: number
+          tenant_id: string
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          authorization_recorded_at?: string | null
+          campaign_id: string
+          created_at?: string
+          generic_name?: string | null
+          id?: string
+          indicative_price_per_unit?: number | null
+          is_synthetic?: boolean
+          member_authorized?: boolean
+          member_id?: string | null
+          note?: string | null
+          product_name: string
+          quantity: number
+          tenant_id: string
+          unit?: string
+          updated_at?: string
+        }
+        Update: {
+          authorization_recorded_at?: string | null
+          campaign_id?: string
+          created_at?: string
+          generic_name?: string | null
+          id?: string
+          indicative_price_per_unit?: number | null
+          is_synthetic?: boolean
+          member_authorized?: boolean
+          member_id?: string | null
+          note?: string | null
+          product_name?: string
+          quantity?: number
+          tenant_id?: string
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_procurement_demand_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_procurement_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_procurement_demand_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_procurement_demand_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_procurement_distributions: {
+        Row: {
+          amount_collected: number
+          amount_due: number
+          campaign_id: string
+          created_at: string
+          distributed_at: string | null
+          id: string
+          is_synthetic: boolean
+          member_id: string | null
+          note: string | null
+          payment_state: Database["public"]["Enums"]["fpo_payment_state"]
+          product_name: string
+          quantity: number
+          tenant_id: string
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          amount_collected?: number
+          amount_due?: number
+          campaign_id: string
+          created_at?: string
+          distributed_at?: string | null
+          id?: string
+          is_synthetic?: boolean
+          member_id?: string | null
+          note?: string | null
+          payment_state?: Database["public"]["Enums"]["fpo_payment_state"]
+          product_name: string
+          quantity: number
+          tenant_id: string
+          unit?: string
+          updated_at?: string
+        }
+        Update: {
+          amount_collected?: number
+          amount_due?: number
+          campaign_id?: string
+          created_at?: string
+          distributed_at?: string | null
+          id?: string
+          is_synthetic?: boolean
+          member_id?: string | null
+          note?: string | null
+          payment_state?: Database["public"]["Enums"]["fpo_payment_state"]
+          product_name?: string
+          quantity?: number
+          tenant_id?: string
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_procurement_distributions_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_procurement_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_procurement_distributions_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_procurement_distributions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_procurement_rfqs: {
+        Row: {
+          aggregated_quantity: number
+          campaign_id: string
+          created_at: string
+          delivery_by: string | null
+          id: string
+          is_open: boolean
+          is_synthetic: boolean
+          marketplace_rfq_id: string | null
+          product_name: string
+          specification: string | null
+          tenant_id: string
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          aggregated_quantity: number
+          campaign_id: string
+          created_at?: string
+          delivery_by?: string | null
+          id?: string
+          is_open?: boolean
+          is_synthetic?: boolean
+          marketplace_rfq_id?: string | null
+          product_name: string
+          specification?: string | null
+          tenant_id: string
+          unit?: string
+          updated_at?: string
+        }
+        Update: {
+          aggregated_quantity?: number
+          campaign_id?: string
+          created_at?: string
+          delivery_by?: string | null
+          id?: string
+          is_open?: boolean
+          is_synthetic?: boolean
+          marketplace_rfq_id?: string | null
+          product_name?: string
+          specification?: string | null
+          tenant_id?: string
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_procurement_rfqs_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_procurement_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_procurement_rfqs_marketplace_rfq_id_fkey"
+            columns: ["marketplace_rfq_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_rfqs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_procurement_rfqs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fpo_profiles: {
         Row: {
           active_farmers: number
@@ -2555,6 +2836,97 @@ export type Database = {
           },
           {
             foreignKeyName: "fpo_scheme_eligibility_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_supplier_quotes: {
+        Row: {
+          availability_date: string | null
+          available_quantity: number | null
+          certification_label: string | null
+          created_at: string
+          delivery_days: number | null
+          id: string
+          is_selected: boolean
+          is_synthetic: boolean
+          min_order_quantity: number | null
+          note: string | null
+          rfq_id: string
+          selected_at: string | null
+          selected_by_user_id: string | null
+          supplier_name: string
+          supplier_org_id: string | null
+          supplier_rating: number | null
+          tenant_id: string
+          transport_cost: number
+          unit_price: number
+          updated_at: string
+        }
+        Insert: {
+          availability_date?: string | null
+          available_quantity?: number | null
+          certification_label?: string | null
+          created_at?: string
+          delivery_days?: number | null
+          id?: string
+          is_selected?: boolean
+          is_synthetic?: boolean
+          min_order_quantity?: number | null
+          note?: string | null
+          rfq_id: string
+          selected_at?: string | null
+          selected_by_user_id?: string | null
+          supplier_name: string
+          supplier_org_id?: string | null
+          supplier_rating?: number | null
+          tenant_id: string
+          transport_cost?: number
+          unit_price: number
+          updated_at?: string
+        }
+        Update: {
+          availability_date?: string | null
+          available_quantity?: number | null
+          certification_label?: string | null
+          created_at?: string
+          delivery_days?: number | null
+          id?: string
+          is_selected?: boolean
+          is_synthetic?: boolean
+          min_order_quantity?: number | null
+          note?: string | null
+          rfq_id?: string
+          selected_at?: string | null
+          selected_by_user_id?: string | null
+          supplier_name?: string
+          supplier_org_id?: string | null
+          supplier_rating?: number | null
+          tenant_id?: string
+          transport_cost?: number
+          unit_price?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_supplier_quotes_rfq_id_fkey"
+            columns: ["rfq_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_procurement_rfqs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_supplier_quotes_supplier_org_id_fkey"
+            columns: ["supplier_org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_supplier_quotes_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -7584,6 +7956,14 @@ export type Database = {
         | "application_submitted"
         | "declined"
         | "not_eligible"
+      fpo_input_category:
+        | "seed"
+        | "fertilizer"
+        | "crop_protection"
+        | "equipment"
+        | "irrigation"
+        | "packaging"
+        | "farm_service"
       fpo_opportunity_category:
         | "scheme"
         | "input_procurement"
@@ -7605,6 +7985,20 @@ export type Database = {
         | "applied"
         | "not_relevant"
         | "closed"
+      fpo_payment_state: "pending" | "partial" | "paid" | "waived"
+      fpo_procurement_status:
+        | "draft"
+        | "collecting_demand"
+        | "aggregated"
+        | "rfq_open"
+        | "quotes_received"
+        | "supplier_selected"
+        | "member_authorization"
+        | "ordered"
+        | "distributing"
+        | "payment_pending"
+        | "closed"
+        | "cancelled"
       fpo_profile_state:
         | "draft"
         | "in_progress"
@@ -8061,6 +8455,15 @@ export const Constants = {
         "declined",
         "not_eligible",
       ],
+      fpo_input_category: [
+        "seed",
+        "fertilizer",
+        "crop_protection",
+        "equipment",
+        "irrigation",
+        "packaging",
+        "farm_service",
+      ],
       fpo_opportunity_category: [
         "scheme",
         "input_procurement",
@@ -8083,6 +8486,21 @@ export const Constants = {
         "applied",
         "not_relevant",
         "closed",
+      ],
+      fpo_payment_state: ["pending", "partial", "paid", "waived"],
+      fpo_procurement_status: [
+        "draft",
+        "collecting_demand",
+        "aggregated",
+        "rfq_open",
+        "quotes_received",
+        "supplier_selected",
+        "member_authorization",
+        "ordered",
+        "distributing",
+        "payment_pending",
+        "closed",
+        "cancelled",
       ],
       fpo_profile_state: [
         "draft",
