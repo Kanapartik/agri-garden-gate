@@ -29,6 +29,10 @@ import {
   type SegmentFilters,
 } from "@/lib/atap/fpoMembers";
 import type { AppRole } from "@/lib/atap/policy";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
+
+type AuthedClient = SupabaseClient<Database>;
 
 /* ------------------------------------------------------------------ types */
 
@@ -122,12 +126,12 @@ export interface Farmer360 {
 
 /* ------------------------------------------------------------- internals */
 
-async function actorFor(supabase: any, userId: string) {
+async function actorFor(supabase: AuthedClient, userId: string) {
   const { resolveDistrictActor } = await import("@/lib/atap/district.server");
   return resolveDistrictActor(supabase, userId);
 }
 
-async function tenantScope(supabase: any, userId: string, tenantId: string) {
+async function tenantScope(supabase: AuthedClient, userId: string, tenantId: string) {
   const actor = await actorFor(supabase, userId);
   const permitted = actor.isPlatformAdmin || actor.isAuditor || actor.tenantIds.includes(tenantId);
   if (!permitted) throw new Error("You do not have access to this organization");
@@ -143,7 +147,7 @@ export interface MemberFull extends MemberRow {
   exited_on: string | null;
 }
 
-async function memberTenant(supabase: any, memberId: string): Promise<MemberFull> {
+async function memberTenant(supabase: AuthedClient, memberId: string): Promise<MemberFull> {
   const { data } = await supabase.from("fpo_members").select("*").eq("id", memberId).maybeSingle();
   if (!data) throw new Error("Member not found");
   return data as MemberFull;
