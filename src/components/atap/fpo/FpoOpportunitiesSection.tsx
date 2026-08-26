@@ -154,7 +154,7 @@ export function FpoOpportunitiesSection({ tenantId }: { tenantId: string }) {
                   {OPPORTUNITY_CATEGORY_LABEL[c.category]} · {c.provider_name}
                 </p>
               </div>
-              <StateBadge state={c.status} label={TRACK_STATUS_LABEL[c.status]} />
+              <StateBadge state={c.status} />
             </div>
 
             <p className="text-sm">{c.benefit_summary}</p>
@@ -165,8 +165,8 @@ export function FpoOpportunitiesSection({ tenantId }: { tenantId: string }) {
                 <dt className="field-hint">Geography</dt>
                 <dd>
                   {c.geography_note ??
-                    [c.district_code, c.state_code].filter(Boolean).join(", ") ||
-                    "All districts"}
+                    ([c.district_code, c.state_code].filter(Boolean).join(", ") ||
+                      "All districts")}
                 </dd>
               </div>
               <div>
