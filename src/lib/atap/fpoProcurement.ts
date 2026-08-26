@@ -139,16 +139,14 @@ export function aggregateDemand(lines: readonly DemandLineLike[]): AggregatedDem
   const map = new Map<string, AggregatedDemand>();
   for (const line of lines) {
     const key = `${line.product_name}::${line.unit}`;
-    const entry =
-      map.get(key) ??
-      {
-        product_name: line.product_name,
-        unit: line.unit,
-        total_quantity: 0,
-        authorized_quantity: 0,
-        member_count: 0,
-        indicative_value: null,
-      };
+    const entry = map.get(key) ?? {
+      product_name: line.product_name,
+      unit: line.unit,
+      total_quantity: 0,
+      authorized_quantity: 0,
+      member_count: 0,
+      indicative_value: null,
+    };
     entry.total_quantity = round2(entry.total_quantity + line.quantity);
     if (line.member_authorized) {
       entry.authorized_quantity = round2(entry.authorized_quantity + line.quantity);
@@ -223,10 +221,7 @@ export function landedCost(quote: QuoteLike, quantity: number): number {
   return round2(quote.unit_price * quantity + (quote.transport_cost ?? 0));
 }
 
-export function compareQuotes(
-  quotes: readonly QuoteLike[],
-  quantity: number,
-): ComparedQuote[] {
+export function compareQuotes(quotes: readonly QuoteLike[], quantity: number): ComparedQuote[] {
   if (quotes.length === 0) return [];
   const costs = quotes.map((q) => landedCost(q, quantity));
   const lowest = Math.min(...costs);
@@ -294,7 +289,8 @@ export function settlementSummary(rows: readonly DistributionLike[]): Settlement
     amount_collected: round2(collected),
     outstanding: round2(Math.max(0, due - collected)),
     fully_settled:
-      rows.length > 0 && rows.every((r) => r.payment_state === "paid" || r.payment_state === "waived"),
+      rows.length > 0 &&
+      rows.every((r) => r.payment_state === "paid" || r.payment_state === "waived"),
   };
 }
 

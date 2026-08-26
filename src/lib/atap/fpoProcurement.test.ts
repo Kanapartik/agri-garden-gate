@@ -43,9 +43,27 @@ describe("procurement authorization", () => {
 
 describe("demand aggregation", () => {
   const lines = [
-    { product_name: "Paddy seed", quantity: 30, unit: "kg", indicative_price_per_unit: 48, member_authorized: true },
-    { product_name: "Paddy seed", quantity: 20, unit: "kg", indicative_price_per_unit: 48, member_authorized: false },
-    { product_name: "Urea", quantity: 100, unit: "kg", indicative_price_per_unit: 6, member_authorized: true },
+    {
+      product_name: "Paddy seed",
+      quantity: 30,
+      unit: "kg",
+      indicative_price_per_unit: 48,
+      member_authorized: true,
+    },
+    {
+      product_name: "Paddy seed",
+      quantity: 20,
+      unit: "kg",
+      indicative_price_per_unit: 48,
+      member_authorized: false,
+    },
+    {
+      product_name: "Urea",
+      quantity: 100,
+      unit: "kg",
+      indicative_price_per_unit: 6,
+      member_authorized: true,
+    },
   ];
 
   it("groups by product and unit with authorized quantity tracked separately", () => {
@@ -69,9 +87,36 @@ describe("demand aggregation", () => {
 
 describe("quote comparison", () => {
   const quotes = [
-    { id: "a", supplier_name: "Krishna Seeds", certification_label: "State certified", unit_price: 46.5, transport_cost: 4200, delivery_days: 6, supplier_rating: 4.4, available_quantity: 500 },
-    { id: "b", supplier_name: "TG Seed Corp", certification_label: "Government certified", unit_price: 48, transport_cost: 2600, delivery_days: 4, supplier_rating: 4.6, available_quantity: 500 },
-    { id: "c", supplier_name: "Sri Lakshmi", certification_label: null, unit_price: 43.75, transport_cost: 6900, delivery_days: 12, supplier_rating: 3.8, available_quantity: 300 },
+    {
+      id: "a",
+      supplier_name: "Krishna Seeds",
+      certification_label: "State certified",
+      unit_price: 46.5,
+      transport_cost: 4200,
+      delivery_days: 6,
+      supplier_rating: 4.4,
+      available_quantity: 500,
+    },
+    {
+      id: "b",
+      supplier_name: "TG Seed Corp",
+      certification_label: "Government certified",
+      unit_price: 48,
+      transport_cost: 2600,
+      delivery_days: 4,
+      supplier_rating: 4.6,
+      available_quantity: 500,
+    },
+    {
+      id: "c",
+      supplier_name: "Sri Lakshmi",
+      certification_label: null,
+      unit_price: 43.75,
+      transport_cost: 6900,
+      delivery_days: 12,
+      supplier_rating: 3.8,
+      available_quantity: 300,
+    },
   ];
 
   it("computes landed cost as verifiable arithmetic", () => {
@@ -102,9 +147,27 @@ describe("quote comparison", () => {
 
 describe("distribution and payment", () => {
   const rows = [
-    { quantity: 30, amount_due: 1440, amount_collected: 1440, payment_state: "paid" as const, distributed_at: "2026-08-20" },
-    { quantity: 20, amount_due: 960, amount_collected: 400, payment_state: "partial" as const, distributed_at: "2026-08-20" },
-    { quantity: 10, amount_due: 480, amount_collected: 0, payment_state: "pending" as const, distributed_at: null },
+    {
+      quantity: 30,
+      amount_due: 1440,
+      amount_collected: 1440,
+      payment_state: "paid" as const,
+      distributed_at: "2026-08-20",
+    },
+    {
+      quantity: 20,
+      amount_due: 960,
+      amount_collected: 400,
+      payment_state: "partial" as const,
+      distributed_at: "2026-08-20",
+    },
+    {
+      quantity: 10,
+      amount_due: 480,
+      amount_collected: 0,
+      payment_state: "pending" as const,
+      distributed_at: null,
+    },
   ];
 
   it("summarises quantity, dues and outstanding balance", () => {
@@ -126,7 +189,11 @@ describe("distribution and payment", () => {
 
 describe("campaign counts", () => {
   it("counts each status including zeroes", () => {
-    const counts = campaignCounts([{ status: "draft" }, { status: "draft" }, { status: "ordered" }]);
+    const counts = campaignCounts([
+      { status: "draft" },
+      { status: "draft" },
+      { status: "ordered" },
+    ]);
     expect(counts.draft).toBe(2);
     expect(counts.ordered).toBe(1);
     expect(counts.closed).toBe(0);
