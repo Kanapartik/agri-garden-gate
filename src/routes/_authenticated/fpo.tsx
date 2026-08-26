@@ -8,6 +8,7 @@ import { StateBadge } from "@/components/atap/StatusBadge";
 import { TrainingChecklistPanel } from "@/components/atap/TrainingChecklist";
 import { useLanguage } from "@/components/atap/LanguageProvider";
 import { FpoProfileSection } from "@/components/atap/fpo/FpoProfileSection";
+import { FpoFarmersSection } from "@/components/atap/fpo/FpoFarmersSection";
 import { FpoDocumentsSection } from "@/components/atap/fpo/FpoDocumentsSection";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,15 +18,9 @@ import {
   inviteStaff,
   revokeInvite,
   rosterVisibilityProbe,
-  setMemberStatus,
 } from "@/lib/atap/district.functions";
 import { getFpoOverview } from "@/lib/atap/fpo.functions";
-import {
-  FPO_SECTION_DEFS,
-  isFpoSection,
-  sectionAvailable,
-  type FpoSection,
-} from "@/lib/atap/fpo";
+import { FPO_SECTION_DEFS, isFpoSection, sectionAvailable, type FpoSection } from "@/lib/atap/fpo";
 import type { AppRole } from "@/lib/atap/policy";
 
 export const Route = createFileRoute("/_authenticated/fpo")({
@@ -59,7 +54,6 @@ function FpoPage() {
   const revoke = useServerFn(revokeInvite);
   const accept = useServerFn(acceptInvite);
   const importRows = useServerFn(importMembers);
-  const memberStatus = useServerFn(setMemberStatus);
   const probe = useServerFn(rosterVisibilityProbe);
 
   const [section, setSection] = useState<FpoSection>("overview");
@@ -164,7 +158,10 @@ function FpoPage() {
             value={token}
             onChange={(e) => setToken(e.target.value)}
           />
-          <Button onClick={() => acceptMutation.mutate()} disabled={!token || acceptMutation.isPending}>
+          <Button
+            onClick={() => acceptMutation.mutate()}
+            disabled={!token || acceptMutation.isPending}
+          >
             Accept invitation
           </Button>
           <p className="field-hint">
@@ -176,7 +173,6 @@ function FpoPage() {
   }
 
   const tenantInvites = data.invites.filter((i) => i.tenant_id === activeTenant?.id);
-  const tenantMembers = data.members.filter((m) => m.tenant_id === activeTenant?.id);
   const tenantBatches = data.batches.filter((b) => b.tenant_id === activeTenant?.id);
   const canManage = (activeTenant?.roles ?? []).includes("tenant_admin");
   const ov = overview.data;
@@ -216,7 +212,10 @@ function FpoPage() {
         </p>
       </section>
 
-      <nav className="flex flex-wrap gap-1 border-b border-border pb-2 text-sm" aria-label="FPO sections">
+      <nav
+        className="flex flex-wrap gap-1 border-b border-border pb-2 text-sm"
+        aria-label="FPO sections"
+      >
         {FPO_SECTION_DEFS.map((s) => (
           <button
             key={s.key}
@@ -261,7 +260,10 @@ function FpoPage() {
             </div>
             <ol className="grid gap-2 sm:grid-cols-3">
               {(ov?.steps ?? []).map((s) => (
-                <li key={s.step} className="flex items-center justify-between gap-2 rounded-md border border-border px-3 py-2 text-sm">
+                <li
+                  key={s.step}
+                  className="flex items-center justify-between gap-2 rounded-md border border-border px-3 py-2 text-sm"
+                >
                   <span>{s.label}</span>
                   <StateBadge state={s.status} />
                 </li>
@@ -332,7 +334,10 @@ function FpoPage() {
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
                   />
-                  <Button onClick={() => inviteMutation.mutate()} disabled={inviteMutation.isPending}>
+                  <Button
+                    onClick={() => inviteMutation.mutate()}
+                    disabled={inviteMutation.isPending}
+                  >
                     Create invitation
                   </Button>
                   {token ? (
@@ -341,8 +346,8 @@ function FpoPage() {
                     </p>
                   ) : null}
                   <p className="field-hint">
-                    Platform admin and auditor roles are never delegable from a tenant — they require
-                    the privileged access workflow.
+                    Platform admin and auditor roles are never delegable from a tenant — they
+                    require the privileged access workflow.
                   </p>
                 </>
               ) : (
@@ -415,8 +420,8 @@ function FpoPage() {
           <section className="panel space-y-3 p-5">
             <h2 className="font-display text-base font-semibold">Scoped visibility probe</h2>
             <p className="field-hint">
-              Confirms that FPO staff authority stops at the roster: it returns the purposes this role
-              grants over farmer data (expected: none).
+              Confirms that FPO staff authority stops at the roster: it returns the purposes this
+              role grants over farmer data (expected: none).
             </p>
             <Button
               variant="outline"
@@ -445,11 +450,14 @@ function FpoPage() {
 
       {section === "farmers" ? (
         <div className="space-y-6">
+          <FpoFarmersSection tenantId={activeTenant?.id ?? ""} />
+
           <section className="panel space-y-3 p-5">
             <h2 className="font-display text-base font-semibold">Bulk member onboarding</h2>
             <p className="field-hint">
-              One member per line: <code>member_ref, display name, village_code, contact hint</code>.
-              Rows that fail are reported individually; re-importing the same file adds no duplicates.
+              One member per line: <code>member_ref, display name, village_code, contact hint</code>
+              . Rows that fail are reported individually; re-importing the same file adds no
+              duplicates.
             </p>
             {canManage ? (
               <>
@@ -501,65 +509,10 @@ function FpoPage() {
               </div>
             ) : null}
           </section>
-
-          <section className="panel space-y-3 p-5">
-            <h2 className="font-display text-base font-semibold">Member roster</h2>
-            {tenantMembers.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No members yet.</p>
-            ) : (
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>Ref</th>
-                    <th>Name</th>
-                    <th>Village</th>
-                    <th>Status</th>
-                    <th />
-                  </tr>
-                </thead>
-                <tbody>
-                  {tenantMembers.map((m) => (
-                    <tr key={m.id}>
-                      <td className="font-mono text-xs">{m.member_ref}</td>
-                      <td>{m.display_name}</td>
-                      <td>{m.village_code ?? "—"}</td>
-                      <td>
-                        <StateBadge state={m.status} />
-                      </td>
-                      <td className="text-right">
-                        {canManage && m.status !== "removed" ? (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={async () => {
-                              await memberStatus({
-                                data: {
-                                  memberId: m.id,
-                                  status: m.status === "suspended" ? "active" : "suspended",
-                                },
-                              });
-                              toast.success("Member status updated and audited");
-                              await refresh();
-                            }}
-                          >
-                            {m.status === "suspended" ? "Reinstate" : "Suspend"}
-                          </Button>
-                        ) : null}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-            <p className="field-hint">
-              Roster records are membership data only. Linking members to canonical farmer identities
-              and Farmer 360 arrives in the next phase.
-            </p>
-          </section>
         </div>
       ) : null}
 
-      {!sectionAvailable(section) && section !== "farmers" ? (
+      {!sectionAvailable(section) ? (
         <section className="panel space-y-2 p-5">
           <h2 className="font-display text-base font-semibold">
             {t(FPO_SECTION_DEFS.find((s) => s.key === section)?.labelKey ?? "fpo.section.overview")}

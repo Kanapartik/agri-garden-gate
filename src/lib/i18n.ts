@@ -108,7 +108,24 @@ const en: Dict = {
   "fpo.onboarding.complete": "complete",
   "fpo.documents.missing": "Missing required documents",
   "fpo.finance.restricted": "Bank details are visible only to authorized FPO administrators.",
-
+  "fpo.members.total": "Members",
+  "fpo.members.linked": "Linked identities",
+  "fpo.members.consented": "With consent",
+  "fpo.members.acreage": "Member acres",
+  "fpo.members.add": "Add member",
+  "fpo.members.search": "Search name, membership no. or village",
+  "fpo.members.linkedOnly": "Only linked farmer identities",
+  "fpo.members.tags": "Tags & segments",
+  "fpo.members.registry": "Member registry",
+  "fpo.members.none": "No members match these filters.",
+  "fpo.members.noConsent": "No consent on record",
+  "fpo.members.link": "Link farmer identity",
+  "fpo.farmer360.title": "Farmer 360",
+  "fpo.farmer360.denied":
+    "This farmer has not authorized the FPO for any purpose, so only membership data is shown.",
+  "fpo.consent.title": "Farmer authorization",
+  "fpo.consent.hint":
+    "Farm, crop, scheme and market details appear only for purposes the farmer has authorized. The farmer can revoke at any time.",
 
   "language.label": "Language",
   "common.loading": "Loading…",
