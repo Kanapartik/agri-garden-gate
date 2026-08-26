@@ -10,7 +10,6 @@ import {
   groupHits,
   groupMetrics,
   SEARCH_KIND_LABEL,
-  type FpoSectionTarget,
 } from "@/lib/atap/fpoInsights";
 import { FPO_SECTION_DEFS, type FpoSection } from "@/lib/atap/fpo";
 
@@ -247,5 +246,3 @@ export function FpoInsightsSection({
     </div>
   );
 }
-
-export type { FpoSectionTarget };
