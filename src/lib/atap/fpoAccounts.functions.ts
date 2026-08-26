@@ -263,35 +263,37 @@ export const getAccountsBoard = createServerFn({ method: "POST" })
       };
     });
 
-    const memberOptions = ((memberRes.data ?? []) as Array<{ id: string; display_name: string }>).map(
-      (m) => ({ id: m.id, display_name: m.display_name }),
-    );
+    const memberOptions = (
+      (memberRes.data ?? []) as Array<{ id: string; display_name: string }>
+    ).map((m) => ({ id: m.id, display_name: m.display_name }));
     const nameById = new Map(memberOptions.map((m) => [m.id, m.display_name]));
     const entryNameById = new Map(
       entries.filter((e) => e.member_id).map((e) => [e.member_id as string, e.member_name]),
     );
 
-    const grants: GrantRow[] = ((grantRes.data ?? []) as Array<Record<string, unknown>>).map((r) => {
-      const g = {
-        sanctioned_amount: num(r["sanctioned_amount"]),
-        received_amount: num(r["received_amount"]),
-        utilized_amount: num(r["utilized_amount"]),
-        uc_state: r["uc_state"] as UcState,
-        next_installment_due: (r["next_installment_due"] as string | null) ?? null,
-        reporting_deadline: (r["reporting_deadline"] as string | null) ?? null,
-      };
-      return {
-        id: r["id"] as string,
-        title: r["title"] as string,
-        funder_name: r["funder_name"] as string,
-        sanctioned_on: (r["sanctioned_on"] as string | null) ?? null,
-        next_installment_amount:
-          r["next_installment_amount"] === null ? null : num(r["next_installment_amount"]),
-        note: (r["note"] as string | null) ?? null,
-        position: grantPosition(g),
-        ...g,
-      };
-    });
+    const grants: GrantRow[] = ((grantRes.data ?? []) as Array<Record<string, unknown>>).map(
+      (r) => {
+        const g = {
+          sanctioned_amount: num(r["sanctioned_amount"]),
+          received_amount: num(r["received_amount"]),
+          utilized_amount: num(r["utilized_amount"]),
+          uc_state: r["uc_state"] as UcState,
+          next_installment_due: (r["next_installment_due"] as string | null) ?? null,
+          reporting_deadline: (r["reporting_deadline"] as string | null) ?? null,
+        };
+        return {
+          id: r["id"] as string,
+          title: r["title"] as string,
+          funder_name: r["funder_name"] as string,
+          sanctioned_on: (r["sanctioned_on"] as string | null) ?? null,
+          next_installment_amount:
+            r["next_installment_amount"] === null ? null : num(r["next_installment_amount"]),
+          note: (r["note"] as string | null) ?? null,
+          position: grantPosition(g),
+          ...g,
+        };
+      },
+    );
 
     const utilizations: UtilizationRow[] = (
       (utilRes.data ?? []) as Array<Record<string, unknown>>
@@ -397,12 +399,7 @@ export const recordLedgerEntry = createServerFn({ method: "POST" })
 export const recordSettlement = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator(
-    (input: {
-      tenantId: string;
-      entryId: string;
-      amountSettled: number;
-      waive?: boolean;
-    }) => input,
+    (input: { tenantId: string; entryId: string; amountSettled: number; waive?: boolean }) => input,
   )
   .handler(async ({ data, context }): Promise<{ payment_state: PaymentState }> => {
     const { supabase, userId } = context;
@@ -441,12 +438,8 @@ export const recordSettlement = createServerFn({ method: "POST" })
 export const reconcileLedgerEntry = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator(
-    (input: {
-      tenantId: string;
-      entryId: string;
-      bankReference: string;
-      reconciled: boolean;
-    }) => input,
+    (input: { tenantId: string; entryId: string; bankReference: string; reconciled: boolean }) =>
+      input,
   )
   .handler(async ({ data, context }): Promise<{ is_reconciled: boolean }> => {
     const { supabase, userId } = context;
@@ -658,10 +651,14 @@ export const setGrantUcState = createServerFn({ method: "POST" })
         );
       }
     } else if (!canCertifyGrant(roles)) {
-      throw new Error("Only FPO finance administrators can prepare or submit a utilization certificate");
+      throw new Error(
+        "Only FPO finance administrators can prepare or submit a utilization certificate",
+      );
     }
     if (!canTransitionUc(grant.uc_state, data.state)) {
-      throw new Error(`A utilization certificate cannot move from ${grant.uc_state} to ${data.state}`);
+      throw new Error(
+        `A utilization certificate cannot move from ${grant.uc_state} to ${data.state}`,
+      );
     }
 
     const { error } = await supabase

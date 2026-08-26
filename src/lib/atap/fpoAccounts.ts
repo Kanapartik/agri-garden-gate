@@ -143,10 +143,7 @@ export interface AccountsSummary {
   entries: number;
 }
 
-export function summarizeLedger(
-  entries: LedgerEntryLike[],
-  now = new Date(),
-): AccountsSummary {
+export function summarizeLedger(entries: LedgerEntryLike[], now = new Date()): AccountsSummary {
   let inflow = 0;
   let outflow = 0;
   let receivable = 0;
@@ -300,9 +297,7 @@ export interface GrantPosition {
 
 export function grantPosition(grant: GrantLike, now = new Date()): GrantPosition {
   const balance = round2(Math.max(0, grant.received_amount - grant.utilized_amount));
-  const awaitingRelease = round2(
-    Math.max(0, grant.sanctioned_amount - grant.received_amount),
-  );
+  const awaitingRelease = round2(Math.max(0, grant.sanctioned_amount - grant.received_amount));
   const utilizationPercent =
     grant.received_amount > 0
       ? Math.min(100, Math.round((grant.utilized_amount / grant.received_amount) * 100))
@@ -365,7 +360,10 @@ export function utilizationTotal(rows: UtilizationLike[]): number {
  * Guard against certifying more than was received. Returned as reasons rather
  * than a silent clamp so the finance user sees exactly what is wrong.
  */
-export function utilizationCheck(grant: GrantLike, addedAmount: number): {
+export function utilizationCheck(
+  grant: GrantLike,
+  addedAmount: number,
+): {
   allowed: boolean;
   reasons: string[];
 } {

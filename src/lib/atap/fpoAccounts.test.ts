@@ -64,7 +64,10 @@ describe("settlement arithmetic", () => {
   it("flags overdue only when money is still open", () => {
     expect(isOverdue(entry({ due_date: "2026-08-01" }), NOW)).toBe(true);
     expect(
-      isOverdue(entry({ due_date: "2026-08-01", amount_settled: 1000, payment_state: "paid" }), NOW),
+      isOverdue(
+        entry({ due_date: "2026-08-01", amount_settled: 1000, payment_state: "paid" }),
+        NOW,
+      ),
     ).toBe(false);
     expect(isOverdue(entry({ due_date: "2026-09-30" }), NOW)).toBe(false);
   });
@@ -101,7 +104,11 @@ describe("ledger summaries", () => {
 
   it("reports only categories that have entries", () => {
     const totals = categoryTotals(entries);
-    expect(totals.map((t) => t.category).sort()).toEqual(["expense", "procurement", "produce_sale"]);
+    expect(totals.map((t) => t.category).sort()).toEqual([
+      "expense",
+      "procurement",
+      "produce_sale",
+    ]);
     const produce = totals.find((t) => t.category === "produce_sale");
     expect(produce?.inflow).toBe(1000);
     expect(produce?.outstanding).toBe(500);
@@ -109,8 +116,20 @@ describe("ledger summaries", () => {
 
   it("keeps member dues and member payables separate", () => {
     const rows = memberLedger([
-      entry({ member_id: "m1", direction: "outflow", amount: 900, amount_settled: 900, payment_state: "paid" }),
-      entry({ member_id: "m1", direction: "inflow", amount: 400, amount_settled: 100, payment_state: "partial" }),
+      entry({
+        member_id: "m1",
+        direction: "outflow",
+        amount: 900,
+        amount_settled: 900,
+        payment_state: "paid",
+      }),
+      entry({
+        member_id: "m1",
+        direction: "inflow",
+        amount: 400,
+        amount_settled: 100,
+        payment_state: "partial",
+      }),
       entry({ member_id: "m2", direction: "outflow", amount: 700, amount_settled: 0 }),
       entry({ amount: 100 }),
     ]);

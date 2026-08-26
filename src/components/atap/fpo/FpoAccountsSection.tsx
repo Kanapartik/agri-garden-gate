@@ -158,7 +158,9 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
   );
 
   if (!tenantId) {
-    return <p className="text-sm text-muted-foreground">Select an organization to view accounts.</p>;
+    return (
+      <p className="text-sm text-muted-foreground">Select an organization to view accounts.</p>
+    );
   }
   if (board.isLoading) {
     return <p className="text-sm text-muted-foreground">Loading finance records…</p>;
@@ -423,9 +425,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                       size="sm"
                       variant="outline"
                       disabled={settle.isPending}
-                      onClick={() =>
-                        settle.mutate({ entryId: e.id, amountSettled: e.amount })
-                      }
+                      onClick={() => settle.mutate({ entryId: e.id, amountSettled: e.amount })}
                     >
                       Mark fully settled
                     </Button>
@@ -447,7 +447,11 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                       variant="ghost"
                       disabled={settle.isPending}
                       onClick={() =>
-                        settle.mutate({ entryId: e.id, amountSettled: e.amount_settled, waive: true })
+                        settle.mutate({
+                          entryId: e.id,
+                          amountSettled: e.amount_settled,
+                          waive: true,
+                        })
                       }
                     >
                       Waive balance
@@ -606,7 +610,11 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                 ) : null}
 
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <Button size="sm" variant="outline" onClick={() => setOpenGrantId(open ? null : g.id)}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setOpenGrantId(open ? null : g.id)}
+                  >
                     {open ? "Hide utilization" : `Utilization (${rows.length})`}
                   </Button>
                   {data.canManage ? (
@@ -749,7 +757,11 @@ function ReconcileRow({
           value={value}
           onChange={(e) => setValue(e.target.value)}
         />
-        <Button size="sm" disabled={disabled || !value.trim()} onClick={() => onSubmit(value.trim())}>
+        <Button
+          size="sm"
+          disabled={disabled || !value.trim()}
+          onClick={() => onSubmit(value.trim())}
+        >
           Mark reconciled
         </Button>
       </div>
