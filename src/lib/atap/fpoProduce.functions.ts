@@ -528,7 +528,7 @@ export const updateProduceContribution = createServerFn({ method: "POST" })
       throw new Error("You are not permitted to update member produce declarations");
     }
 
-    const patch: Record<string, number> = {};
+    const patch: { confirmed_quantity?: number; delivered_quantity?: number } = {};
     if (data.confirmedQuantity != null) patch["confirmed_quantity"] = data.confirmedQuantity;
     if (data.deliveredQuantity != null) patch["delivered_quantity"] = data.deliveredQuantity;
     if (Object.keys(patch).length === 0) throw new Error("Nothing to update");
