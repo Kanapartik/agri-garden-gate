@@ -889,7 +889,9 @@ export const getMyFpoConsents = createServerFn({ method: "POST" })
       .from("tenants")
       .select("id, name")
       .in("id", Array.from(new Set(rows.map((r) => r.tenant_id))));
-    const names = new Map(((tenants ?? []) as Array<{ id: string; name: string }>).map((t) => [t.id, t.name]));
+    const names = new Map(
+      ((tenants ?? []) as Array<{ id: string; name: string }>).map((t) => [t.id, t.name]),
+    );
     return rows.map((r) => ({
       id: r.id,
       tenantName: names.get(r.tenant_id) ?? "FPO",
