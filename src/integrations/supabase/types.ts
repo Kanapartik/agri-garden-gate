@@ -1472,6 +1472,174 @@ export type Database = {
         }
         Relationships: []
       }
+      fpo_bank_accounts: {
+        Row: {
+          account_last4: string | null
+          account_type: string | null
+          bank_name: string
+          branch: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          ifsc: string | null
+          is_primary: boolean
+          is_synthetic: boolean
+          signatories: string[]
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          account_last4?: string | null
+          account_type?: string | null
+          bank_name: string
+          branch?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          ifsc?: string | null
+          is_primary?: boolean
+          is_synthetic?: boolean
+          signatories?: string[]
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          account_last4?: string | null
+          account_type?: string | null
+          bank_name?: string
+          branch?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          ifsc?: string | null
+          is_primary?: boolean
+          is_synthetic?: boolean
+          signatories?: string[]
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_bank_accounts_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_documents: {
+        Row: {
+          created_at: string
+          doc_type: string
+          expires_at: string | null
+          id: string
+          is_synthetic: boolean
+          issued_on: string | null
+          review_note: string | null
+          reviewed_at: string | null
+          reviewer_user_id: string | null
+          status: Database["public"]["Enums"]["fpo_doc_status"]
+          storage_path: string | null
+          tenant_id: string
+          title: string
+          updated_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          doc_type: string
+          expires_at?: string | null
+          id?: string
+          is_synthetic?: boolean
+          issued_on?: string | null
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewer_user_id?: string | null
+          status?: Database["public"]["Enums"]["fpo_doc_status"]
+          storage_path?: string | null
+          tenant_id: string
+          title: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          doc_type?: string
+          expires_at?: string | null
+          id?: string
+          is_synthetic?: boolean
+          issued_on?: string | null
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewer_user_id?: string | null
+          status?: Database["public"]["Enums"]["fpo_doc_status"]
+          storage_path?: string | null
+          tenant_id?: string
+          title?: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_documents_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_leadership: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          is_signatory: boolean
+          is_synthetic: boolean
+          person_name: string
+          phone: string | null
+          role_title: string
+          tenant_id: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_signatory?: boolean
+          is_synthetic?: boolean
+          person_name: string
+          phone?: string | null
+          role_title: string
+          tenant_id: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_signatory?: boolean
+          is_synthetic?: boolean
+          person_name?: string
+          phone?: string | null
+          role_title?: string
+          tenant_id?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_leadership_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fpo_members: {
         Row: {
           added_by: string | null
@@ -1540,6 +1708,171 @@ export type Database = {
             foreignKeyName: "fpo_members_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_profiles: {
+        Row: {
+          active_farmers: number
+          annual_produce_tonnes: number | null
+          cin: string | null
+          created_at: string
+          created_by: string | null
+          display_name: string
+          district_code: string | null
+          email: string | null
+          equipment: string[]
+          fpo_category: string | null
+          fpo_code: string
+          gps_lat: number | null
+          gps_lng: number | null
+          gst: string | null
+          id: string
+          incorporation_date: string | null
+          input_categories: string[]
+          is_synthetic: boolean
+          legal_name: string
+          logistics_relationships: string[]
+          mandal: string | null
+          onboarding_step: string
+          operational_districts: string[]
+          org_type: string | null
+          organization_id: string | null
+          pan: string | null
+          phone: string | null
+          pin_code: string | null
+          primary_crops: string[]
+          processing_facilities: string[]
+          produce_categories: string[]
+          promoting_org: string | null
+          registered_address: string | null
+          registered_farmers: number
+          registration_number: string | null
+          secondary_crops: string[]
+          state: Database["public"]["Enums"]["fpo_profile_state"]
+          state_code: string | null
+          storage_facilities: string[]
+          tenant_id: string
+          total_acres: number
+          updated_at: string
+          verified_at: string | null
+          village: string | null
+          villages_served: string[]
+          warehouse_relationships: string[]
+          website: string | null
+        }
+        Insert: {
+          active_farmers?: number
+          annual_produce_tonnes?: number | null
+          cin?: string | null
+          created_at?: string
+          created_by?: string | null
+          display_name: string
+          district_code?: string | null
+          email?: string | null
+          equipment?: string[]
+          fpo_category?: string | null
+          fpo_code: string
+          gps_lat?: number | null
+          gps_lng?: number | null
+          gst?: string | null
+          id?: string
+          incorporation_date?: string | null
+          input_categories?: string[]
+          is_synthetic?: boolean
+          legal_name: string
+          logistics_relationships?: string[]
+          mandal?: string | null
+          onboarding_step?: string
+          operational_districts?: string[]
+          org_type?: string | null
+          organization_id?: string | null
+          pan?: string | null
+          phone?: string | null
+          pin_code?: string | null
+          primary_crops?: string[]
+          processing_facilities?: string[]
+          produce_categories?: string[]
+          promoting_org?: string | null
+          registered_address?: string | null
+          registered_farmers?: number
+          registration_number?: string | null
+          secondary_crops?: string[]
+          state?: Database["public"]["Enums"]["fpo_profile_state"]
+          state_code?: string | null
+          storage_facilities?: string[]
+          tenant_id: string
+          total_acres?: number
+          updated_at?: string
+          verified_at?: string | null
+          village?: string | null
+          villages_served?: string[]
+          warehouse_relationships?: string[]
+          website?: string | null
+        }
+        Update: {
+          active_farmers?: number
+          annual_produce_tonnes?: number | null
+          cin?: string | null
+          created_at?: string
+          created_by?: string | null
+          display_name?: string
+          district_code?: string | null
+          email?: string | null
+          equipment?: string[]
+          fpo_category?: string | null
+          fpo_code?: string
+          gps_lat?: number | null
+          gps_lng?: number | null
+          gst?: string | null
+          id?: string
+          incorporation_date?: string | null
+          input_categories?: string[]
+          is_synthetic?: boolean
+          legal_name?: string
+          logistics_relationships?: string[]
+          mandal?: string | null
+          onboarding_step?: string
+          operational_districts?: string[]
+          org_type?: string | null
+          organization_id?: string | null
+          pan?: string | null
+          phone?: string | null
+          pin_code?: string | null
+          primary_crops?: string[]
+          processing_facilities?: string[]
+          produce_categories?: string[]
+          promoting_org?: string | null
+          registered_address?: string | null
+          registered_farmers?: number
+          registration_number?: string | null
+          secondary_crops?: string[]
+          state?: Database["public"]["Enums"]["fpo_profile_state"]
+          state_code?: string | null
+          storage_facilities?: string[]
+          tenant_id?: string
+          total_acres?: number
+          updated_at?: string
+          verified_at?: string | null
+          village?: string | null
+          villages_served?: string[]
+          warehouse_relationships?: string[]
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_profiles_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_profiles_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: true
             referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
@@ -6530,6 +6863,19 @@ export type Database = {
         | "id_proof"
         | "other"
       field_provenance: "farmer_entered" | "ai_extracted" | "farmer_confirmed"
+      fpo_doc_status:
+        | "uploaded"
+        | "under_review"
+        | "verified"
+        | "rejected"
+        | "expired"
+      fpo_profile_state:
+        | "draft"
+        | "in_progress"
+        | "submitted"
+        | "verified"
+        | "active"
+        | "suspended"
       gate_status: "pending" | "approved" | "rejected"
       geo_level: "country" | "state" | "district" | "block" | "village"
       identity_check_status:
@@ -6932,6 +7278,21 @@ export const Constants = {
         "other",
       ],
       field_provenance: ["farmer_entered", "ai_extracted", "farmer_confirmed"],
+      fpo_doc_status: [
+        "uploaded",
+        "under_review",
+        "verified",
+        "rejected",
+        "expired",
+      ],
+      fpo_profile_state: [
+        "draft",
+        "in_progress",
+        "submitted",
+        "verified",
+        "active",
+        "suspended",
+      ],
       gate_status: ["pending", "approved", "rejected"],
       geo_level: ["country", "state", "district", "block", "village"],
       identity_check_status: [
