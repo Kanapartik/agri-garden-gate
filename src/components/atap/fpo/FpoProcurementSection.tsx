@@ -72,7 +72,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
     await qc.invalidateQueries({ queryKey: ["fpo-procurement-detail", tenantId] });
   };
 
-  const wrap = <T,>(fn: (input: T) => Promise<unknown>, message: string) =>
+  const useAction = <T,>(fn: (input: T) => Promise<unknown>, message: string) =>
     useMutation({
       mutationFn: fn,
       onSuccess: async () => {
@@ -82,19 +82,19 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
       onError: (e: Error) => toast.error(e.message),
     });
 
-  const create = wrap(
+  const create = useAction(
     () =>
       createFn({
         data: { tenantId, name, inputCategory: category, season: season || null },
       }),
     "Procurement campaign created as a draft",
   );
-  const move = wrap(
+  const move = useAction(
     (input: { campaignId: string; status: ProcurementStatus }) =>
       statusFn({ data: { tenantId, ...input } }),
     "Campaign stage updated",
   );
-  const addDemand = wrap(
+  const addDemand = useAction(
     () =>
       demandFn({
         data: {
@@ -110,17 +110,17 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
       }),
     "Member demand recorded",
   );
-  const authorize = wrap(
+  const authorize = useAction(
     (input: { demandId: string; authorized: boolean }) =>
       authFn({ data: { tenantId, ...input } }),
     "Member authorization updated",
   );
-  const raiseRfq = wrap(
+  const raiseRfq = useAction(
     (input: { productName: string; unit: string }) =>
       rfqFn({ data: { tenantId, campaignId: openId ?? "", ...input } }),
     "RFQ raised for aggregated demand",
   );
-  const addQuote = wrap(
+  const addQuote = useAction(
     () =>
       quoteFn({
         data: {
@@ -134,16 +134,16 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
       }),
     "Supplier quote recorded",
   );
-  const choose = wrap(
+  const choose = useAction(
     (input: { rfqId: string; quoteId: string }) => selectFn({ data: { tenantId, ...input } }),
     "Supplier selection recorded and audited",
   );
-  const distribute = wrap(
+  const distribute = useAction(
     (input: { memberId: string | null; productName: string; quantity: number; unit: string; amountDue: number }) =>
       distFn({ data: { tenantId, campaignId: openId ?? "", ...input } }),
     "Distribution recorded",
   );
-  const collect = wrap(
+  const collect = useAction(
     (input: { distributionId: string; amountCollected: number }) =>
       payFn({ data: { tenantId, ...input } }),
     "Payment recorded",
