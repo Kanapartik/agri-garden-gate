@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
@@ -81,11 +81,6 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
   });
 
   const data = board.data;
-  const deliveriesByNotice = useMemo(() => {
-    const map = new Map<string, typeof data extends undefined ? never : never>();
-    return map;
-  }, []);
-  void deliveriesByNotice;
 
   if (board.isLoading) return <p className="text-sm text-muted-foreground">Loading…</p>;
   if (!data) return <p className="text-sm text-muted-foreground">No communication records yet.</p>;
