@@ -111,8 +111,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
     "Member demand recorded",
   );
   const authorize = useAction(
-    (input: { demandId: string; authorized: boolean }) =>
-      authFn({ data: { tenantId, ...input } }),
+    (input: { demandId: string; authorized: boolean }) => authFn({ data: { tenantId, ...input } }),
     "Member authorization updated",
   );
   const raiseRfq = useAction(
@@ -139,8 +138,13 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
     "Supplier selection recorded and audited",
   );
   const distribute = useAction(
-    (input: { memberId: string | null; productName: string; quantity: number; unit: string; amountDue: number }) =>
-      distFn({ data: { tenantId, campaignId: openId ?? "", ...input } }),
+    (input: {
+      memberId: string | null;
+      productName: string;
+      quantity: number;
+      unit: string;
+      amountDue: number;
+    }) => distFn({ data: { tenantId, campaignId: openId ?? "", ...input } }),
     "Distribution recorded",
   );
   const collect = useAction(
@@ -177,13 +181,19 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
             <p className="field-hint">{data.disclaimer}</p>
           </div>
           <div className="flex flex-wrap gap-2 text-xs">
-            {(["collecting_demand", "rfq_open", "quotes_received", "ordered", "closed"] as ProcurementStatus[]).map(
-              (s) => (
-                <span key={s} className="rounded-md border border-border px-2 py-1">
-                  {PROCUREMENT_STATUS_LABEL[s]}: <strong>{data.counts[s]}</strong>
-                </span>
-              ),
-            )}
+            {(
+              [
+                "collecting_demand",
+                "rfq_open",
+                "quotes_received",
+                "ordered",
+                "closed",
+              ] as ProcurementStatus[]
+            ).map((s) => (
+              <span key={s} className="rounded-md border border-border px-2 py-1">
+                {PROCUREMENT_STATUS_LABEL[s]}: <strong>{data.counts[s]}</strong>
+              </span>
+            ))}
           </div>
         </div>
 
@@ -212,7 +222,11 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
               value={season}
               onChange={(e) => setSeason(e.target.value)}
             />
-            <Button size="sm" disabled={!name.trim() || create.isPending} onClick={() => create.mutate(undefined as never)}>
+            <Button
+              size="sm"
+              disabled={!name.trim() || create.isPending}
+              onClick={() => create.mutate(undefined as never)}
+            >
               Open campaign
             </Button>
           </div>
@@ -233,7 +247,10 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
               {data.campaigns.map((c) => (
                 <tr key={c.id} className="border-t border-border align-top">
                   <td className="py-2">
-                    <button className="text-left font-medium underline" onClick={() => setOpenId(c.id)}>
+                    <button
+                      className="text-left font-medium underline"
+                      onClick={() => setOpenId(c.id)}
+                    >
                       {c.name}
                     </button>
                     <div className="field-hint">{c.season ?? "No season recorded"}</div>
@@ -251,7 +268,10 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                         className="input-field"
                         value=""
                         onChange={(e) =>
-                          move.mutate({ campaignId: c.id, status: e.target.value as ProcurementStatus })
+                          move.mutate({
+                            campaignId: c.id,
+                            status: e.target.value as ProcurementStatus,
+                          })
                         }
                       >
                         <option value="">Move to…</option>
@@ -328,7 +348,9 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                         <Button
                           size="sm"
                           variant="secondary"
-                          onClick={() => raiseRfq.mutate({ productName: a.product_name, unit: a.unit })}
+                          onClick={() =>
+                            raiseRfq.mutate({ productName: a.product_name, unit: a.unit })
+                          }
                         >
                           Raise RFQ
                         </Button>
@@ -349,7 +371,11 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
 
           {d.canRecordDemand ? (
             <div className="flex flex-wrap gap-2">
-              <select className="input-field max-w-xs" value={memberId} onChange={(e) => setMemberId(e.target.value)}>
+              <select
+                className="input-field max-w-xs"
+                value={memberId}
+                onChange={(e) => setMemberId(e.target.value)}
+              >
                 <option value="">Unlinked member</option>
                 {d.members.map((m) => (
                   <option key={m.id} value={m.id}>

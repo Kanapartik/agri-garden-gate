@@ -340,7 +340,8 @@ export const createProcurementCampaign = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { roles } = await tenantScope(supabase, userId, data.tenantId);
-    if (!canManageProcurement(roles)) throw new Error("Only FPO administrators can open a procurement campaign");
+    if (!canManageProcurement(roles))
+      throw new Error("Only FPO administrators can open a procurement campaign");
     if (!data.name.trim()) throw new Error("Campaign name is required");
 
     const { data: row, error } = await supabase
@@ -372,11 +373,14 @@ export const createProcurementCampaign = createServerFn({ method: "POST" })
 
 export const setCampaignStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { tenantId: string; campaignId: string; status: ProcurementStatus }) => input)
+  .inputValidator(
+    (input: { tenantId: string; campaignId: string; status: ProcurementStatus }) => input,
+  )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { roles } = await tenantScope(supabase, userId, data.tenantId);
-    if (!canManageProcurement(roles)) throw new Error("Only FPO administrators can move a procurement campaign");
+    if (!canManageProcurement(roles))
+      throw new Error("Only FPO administrators can move a procurement campaign");
 
     const { data: existing } = await supabase
       .from("fpo_procurement_campaigns")
@@ -489,7 +493,8 @@ export const setDemandAuthorization = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { roles } = await tenantScope(supabase, userId, data.tenantId);
-    if (!canRecordDemand(roles)) throw new Error("You are not permitted to record member authorization");
+    if (!canRecordDemand(roles))
+      throw new Error("You are not permitted to record member authorization");
 
     const { error } = await supabase
       .from("fpo_procurement_demand")
@@ -534,11 +539,13 @@ export const raiseRfqFromDemand = createServerFn({ method: "POST" })
       .select("product_name, quantity, unit")
       .eq("campaign_id", data.campaignId);
     const agg = aggregateDemand(
-      ((lines ?? []) as Array<{ product_name: string; quantity: number; unit: string }>).map((l) => ({
-        product_name: l.product_name,
-        quantity: Number(l.quantity),
-        unit: l.unit,
-      })),
+      ((lines ?? []) as Array<{ product_name: string; quantity: number; unit: string }>).map(
+        (l) => ({
+          product_name: l.product_name,
+          quantity: Number(l.quantity),
+          unit: l.unit,
+        }),
+      ),
     ).find((a) => a.product_name === data.productName && a.unit === data.unit);
     if (!agg) throw new Error("No aggregated demand found for this product");
 
@@ -587,7 +594,8 @@ export const recordSupplierQuote = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { roles } = await tenantScope(supabase, userId, data.tenantId);
-    if (!canManageProcurement(roles)) throw new Error("Only FPO administrators can record supplier quotes");
+    if (!canManageProcurement(roles))
+      throw new Error("Only FPO administrators can record supplier quotes");
     if (!data.supplierName.trim()) throw new Error("Supplier name is required");
     if (!(data.unitPrice >= 0)) throw new Error("Unit price must be zero or more");
 
@@ -622,11 +630,14 @@ export const recordSupplierQuote = createServerFn({ method: "POST" })
 
 export const selectSupplierQuote = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { tenantId: string; rfqId: string; quoteId: string; note?: string | null }) => input)
+  .inputValidator(
+    (input: { tenantId: string; rfqId: string; quoteId: string; note?: string | null }) => input,
+  )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { roles } = await tenantScope(supabase, userId, data.tenantId);
-    if (!canSelectSupplier(roles)) throw new Error("Only an authorized FPO office bearer can select a supplier");
+    if (!canSelectSupplier(roles))
+      throw new Error("Only an authorized FPO office bearer can select a supplier");
 
     await supabase
       .from("fpo_supplier_quotes")
@@ -673,7 +684,8 @@ export const recordDistribution = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { roles } = await tenantScope(supabase, userId, data.tenantId);
-    if (!canManageProcurement(roles)) throw new Error("Only FPO administrators can record distribution");
+    if (!canManageProcurement(roles))
+      throw new Error("Only FPO administrators can record distribution");
     if (!(data.quantity > 0)) throw new Error("Quantity must be greater than zero");
 
     const { data: row, error } = await supabase
@@ -706,11 +718,14 @@ export const recordDistribution = createServerFn({ method: "POST" })
 
 export const recordDistributionPayment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { tenantId: string; distributionId: string; amountCollected: number }) => input)
+  .inputValidator(
+    (input: { tenantId: string; distributionId: string; amountCollected: number }) => input,
+  )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { roles } = await tenantScope(supabase, userId, data.tenantId);
-    if (!canManageProcurement(roles)) throw new Error("Only FPO administrators can record payments");
+    if (!canManageProcurement(roles))
+      throw new Error("Only FPO administrators can record payments");
     if (data.amountCollected < 0) throw new Error("Collected amount cannot be negative");
 
     const { data: existing } = await supabase
