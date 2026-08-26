@@ -377,9 +377,7 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
                   <tr key={def.key}>
                     <td>{def.label}</td>
                     {data.staffRoles.map((r) => {
-                      const cell = data.matrix.find(
-                        (c) => c.role === r && c.section === def.key,
-                      );
+                      const cell = data.matrix.find((c) => c.role === r && c.section === def.key);
                       if (!cell) return <td key={r} />;
                       return (
                         <td key={r}>
@@ -484,9 +482,7 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
                 <p className="text-sm font-medium">
                   {FPO_SECTION_DEFS.find((d) => d.key === s.section)?.label ?? s.section}
                 </p>
-                <p className="text-xs text-muted-foreground">
-                  {PERMISSION_LEVEL_LABEL[s.level]}
-                </p>
+                <p className="text-xs text-muted-foreground">{PERMISSION_LEVEL_LABEL[s.level]}</p>
               </div>
             ))}
           </div>

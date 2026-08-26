@@ -126,12 +126,12 @@ describe("override authorization", () => {
       ok: false,
       reason: "not_authorized",
     });
-    expect(
-      checkPermissionOverride("field_agent", "produce", "write", ["tenant_admin"]).ok,
-    ).toBe(true);
-    expect(
-      checkPermissionOverride("field_agent", "produce", "write", ["platform_admin"]).ok,
-    ).toBe(true);
+    expect(checkPermissionOverride("field_agent", "produce", "write", ["tenant_admin"]).ok).toBe(
+      true,
+    );
+    expect(checkPermissionOverride("field_agent", "produce", "write", ["platform_admin"]).ok).toBe(
+      true,
+    );
   });
 
   it("refuses non-delegable roles", () => {

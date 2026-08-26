@@ -169,8 +169,21 @@ export const getTeamBoard = createServerFn({ method: "POST" })
 
     const permissionRows = (permRes.data ?? []) as unknown as PermissionRow[];
     const mySections = (
-      ["overview", "farmers", "schemes", "applications", "procurement", "produce", "accounts",
-        "opportunities", "documents", "notifications", "tasks", "insights", "team", "settings",
+      [
+        "overview",
+        "farmers",
+        "schemes",
+        "applications",
+        "procurement",
+        "produce",
+        "accounts",
+        "opportunities",
+        "documents",
+        "notifications",
+        "tasks",
+        "insights",
+        "team",
+        "settings",
       ] as FpoSection[]
     ).map((section) => ({
       section,
@@ -290,7 +303,7 @@ export const setStaffStatus = createServerFn({ method: "POST" })
       .from("fpo_staff_members")
       .update({
         status: data.status,
-        suspended_reason: data.status === "suspended" ? (data.reason?.trim() || null) : null,
+        suspended_reason: data.status === "suspended" ? data.reason?.trim() || null : null,
       })
       .eq("tenant_id", data.tenantId)
       .eq("id", data.staffId);
