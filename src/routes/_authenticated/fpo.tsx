@@ -8,6 +8,7 @@ import { StateBadge } from "@/components/atap/StatusBadge";
 import { TrainingChecklistPanel } from "@/components/atap/TrainingChecklist";
 import { useLanguage } from "@/components/atap/LanguageProvider";
 import { FpoProfileSection } from "@/components/atap/fpo/FpoProfileSection";
+import { FpoFarmersSection } from "@/components/atap/fpo/FpoFarmersSection";
 import { FpoDocumentsSection } from "@/components/atap/fpo/FpoDocumentsSection";
 import { Button } from "@/components/ui/button";
 import {
@@ -445,6 +446,8 @@ function FpoPage() {
 
       {section === "farmers" ? (
         <div className="space-y-6">
+          <FpoFarmersSection tenantId={activeTenant?.id ?? ""} />
+
           <section className="panel space-y-3 p-5">
             <h2 className="font-display text-base font-semibold">Bulk member onboarding</h2>
             <p className="field-hint">
@@ -501,65 +504,10 @@ function FpoPage() {
               </div>
             ) : null}
           </section>
-
-          <section className="panel space-y-3 p-5">
-            <h2 className="font-display text-base font-semibold">Member roster</h2>
-            {tenantMembers.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No members yet.</p>
-            ) : (
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>Ref</th>
-                    <th>Name</th>
-                    <th>Village</th>
-                    <th>Status</th>
-                    <th />
-                  </tr>
-                </thead>
-                <tbody>
-                  {tenantMembers.map((m) => (
-                    <tr key={m.id}>
-                      <td className="font-mono text-xs">{m.member_ref}</td>
-                      <td>{m.display_name}</td>
-                      <td>{m.village_code ?? "—"}</td>
-                      <td>
-                        <StateBadge state={m.status} />
-                      </td>
-                      <td className="text-right">
-                        {canManage && m.status !== "removed" ? (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={async () => {
-                              await memberStatus({
-                                data: {
-                                  memberId: m.id,
-                                  status: m.status === "suspended" ? "active" : "suspended",
-                                },
-                              });
-                              toast.success("Member status updated and audited");
-                              await refresh();
-                            }}
-                          >
-                            {m.status === "suspended" ? "Reinstate" : "Suspend"}
-                          </Button>
-                        ) : null}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-            <p className="field-hint">
-              Roster records are membership data only. Linking members to canonical farmer identities
-              and Farmer 360 arrives in the next phase.
-            </p>
-          </section>
         </div>
       ) : null}
 
-      {!sectionAvailable(section) && section !== "farmers" ? (
+      {!sectionAvailable(section) ? (
         <section className="panel space-y-2 p-5">
           <h2 className="font-display text-base font-semibold">
             {t(FPO_SECTION_DEFS.find((s) => s.key === section)?.labelKey ?? "fpo.section.overview")}

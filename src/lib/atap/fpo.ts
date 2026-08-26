@@ -55,10 +55,12 @@ export function isFpoSection(value: string): value is FpoSection {
   return (FPO_SECTIONS as readonly string[]).includes(value);
 }
 
-/** Sections built in this phase; the rest render a scoped placeholder. */
+/** Phases delivered so far; later sections render a scoped placeholder. */
+export const DELIVERED_PHASES = 2;
+
 export function sectionAvailable(key: FpoSection): boolean {
   const def = FPO_SECTION_DEFS.find((s) => s.key === key);
-  return def ? def.phase === 1 : false;
+  return def ? def.phase <= DELIVERED_PHASES : false;
 }
 
 /* ---------------------------------------------------------- onboarding */
