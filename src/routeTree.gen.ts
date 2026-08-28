@@ -26,6 +26,7 @@ import { Route as AuthenticatedFpoOpportunityRouteImport } from './routes/_authe
 import { Route as AuthenticatedInputsRouteImport } from './routes/_authenticated/inputs'
 import { Route as AuthenticatedInsurerRouteImport } from './routes/_authenticated/insurer'
 import { Route as AuthenticatedInsurerClaimsRouteImport } from './routes/_authenticated/insurer-claims'
+import { Route as AuthenticatedInsurerPoliciesRouteImport } from './routes/_authenticated/insurer-policies'
 import { Route as AuthenticatedInsurerRiskRouteImport } from './routes/_authenticated/insurer-risk'
 import { Route as AuthenticatedIntelligenceRouteImport } from './routes/_authenticated/intelligence'
 import { Route as AuthenticatedMarketRouteImport } from './routes/_authenticated/market'
@@ -124,6 +125,12 @@ const AuthenticatedInsurerClaimsRoute =
     path: '/insurer-claims',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedInsurerPoliciesRoute =
+  AuthenticatedInsurerPoliciesRouteImport.update({
+    id: '/insurer-policies',
+    path: '/insurer-policies',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedInsurerRiskRoute =
   AuthenticatedInsurerRiskRouteImport.update({
     id: '/insurer-risk',
@@ -194,6 +201,7 @@ export interface FileRoutesByFullPath {
   '/inputs': typeof AuthenticatedInputsRoute
   '/insurer': typeof AuthenticatedInsurerRoute
   '/insurer-claims': typeof AuthenticatedInsurerClaimsRoute
+  '/insurer-policies': typeof AuthenticatedInsurerPoliciesRoute
   '/insurer-risk': typeof AuthenticatedInsurerRiskRoute
   '/intelligence': typeof AuthenticatedIntelligenceRoute
   '/market': typeof AuthenticatedMarketRoute
@@ -222,6 +230,7 @@ export interface FileRoutesByTo {
   '/inputs': typeof AuthenticatedInputsRoute
   '/insurer': typeof AuthenticatedInsurerRoute
   '/insurer-claims': typeof AuthenticatedInsurerClaimsRoute
+  '/insurer-policies': typeof AuthenticatedInsurerPoliciesRoute
   '/insurer-risk': typeof AuthenticatedInsurerRiskRoute
   '/intelligence': typeof AuthenticatedIntelligenceRoute
   '/market': typeof AuthenticatedMarketRoute
@@ -252,6 +261,7 @@ export interface FileRoutesById {
   '/_authenticated/inputs': typeof AuthenticatedInputsRoute
   '/_authenticated/insurer': typeof AuthenticatedInsurerRoute
   '/_authenticated/insurer-claims': typeof AuthenticatedInsurerClaimsRoute
+  '/_authenticated/insurer-policies': typeof AuthenticatedInsurerPoliciesRoute
   '/_authenticated/insurer-risk': typeof AuthenticatedInsurerRiskRoute
   '/_authenticated/intelligence': typeof AuthenticatedIntelligenceRoute
   '/_authenticated/market': typeof AuthenticatedMarketRoute
@@ -282,6 +292,7 @@ export interface FileRouteTypes {
     | '/inputs'
     | '/insurer'
     | '/insurer-claims'
+    | '/insurer-policies'
     | '/insurer-risk'
     | '/intelligence'
     | '/market'
@@ -310,6 +321,7 @@ export interface FileRouteTypes {
     | '/inputs'
     | '/insurer'
     | '/insurer-claims'
+    | '/insurer-policies'
     | '/insurer-risk'
     | '/intelligence'
     | '/market'
@@ -339,6 +351,7 @@ export interface FileRouteTypes {
     | '/_authenticated/inputs'
     | '/_authenticated/insurer'
     | '/_authenticated/insurer-claims'
+    | '/_authenticated/insurer-policies'
     | '/_authenticated/insurer-risk'
     | '/_authenticated/intelligence'
     | '/_authenticated/market'
@@ -480,6 +493,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedInsurerClaimsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/insurer-policies': {
+      id: '/_authenticated/insurer-policies'
+      path: '/insurer-policies'
+      fullPath: '/insurer-policies'
+      preLoaderRoute: typeof AuthenticatedInsurerPoliciesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/insurer-risk': {
       id: '/_authenticated/insurer-risk'
       path: '/insurer-risk'
@@ -566,6 +586,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedInputsRoute: typeof AuthenticatedInputsRoute
   AuthenticatedInsurerRoute: typeof AuthenticatedInsurerRoute
   AuthenticatedInsurerClaimsRoute: typeof AuthenticatedInsurerClaimsRoute
+  AuthenticatedInsurerPoliciesRoute: typeof AuthenticatedInsurerPoliciesRoute
   AuthenticatedInsurerRiskRoute: typeof AuthenticatedInsurerRiskRoute
   AuthenticatedIntelligenceRoute: typeof AuthenticatedIntelligenceRoute
   AuthenticatedMarketRoute: typeof AuthenticatedMarketRoute
@@ -591,6 +612,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedInputsRoute: AuthenticatedInputsRoute,
   AuthenticatedInsurerRoute: AuthenticatedInsurerRoute,
   AuthenticatedInsurerClaimsRoute: AuthenticatedInsurerClaimsRoute,
+  AuthenticatedInsurerPoliciesRoute: AuthenticatedInsurerPoliciesRoute,
   AuthenticatedInsurerRiskRoute: AuthenticatedInsurerRiskRoute,
   AuthenticatedIntelligenceRoute: AuthenticatedIntelligenceRoute,
   AuthenticatedMarketRoute: AuthenticatedMarketRoute,
