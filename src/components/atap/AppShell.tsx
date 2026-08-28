@@ -58,6 +58,7 @@ export function navItemsForRoles(roles: AppRole[], signedIn: boolean): NavItem[]
     items.push({ to: "/insurer", label: "Insurer revenue", labelKey: "nav.insurerRevenue" });
     items.push({ to: "/insurer-risk", label: "Risk surveillance", labelKey: "nav.insurerRisk" });
     items.push({ to: "/insurer-claims", label: "Claims management", labelKey: "nav.insurerClaims" });
+    items.push({ to: "/insurer-policies", label: "Policies & enrolment", labelKey: "nav.insurerPolicies" });
   }
 
 
