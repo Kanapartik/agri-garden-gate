@@ -104,7 +104,7 @@ export async function loadRiskWorkspace(
     rules: (rules.data ?? []) as unknown as AlertRuleRow[],
     alerts: ((alerts.data ?? []) as unknown as AlertRow[]).map((a) => ({
       ...a,
-      cell: cellById.get(a.risk_cell_id),
+      cell: cellById.get(a.risk_cell_id) ?? null,
     })),
     exposure: (channel.data ?? []) as unknown as RiskWorkspace["exposure"],
   };
@@ -169,7 +169,7 @@ export async function saveWatchEntry(
     tenant_id: input.tenantId,
     action: "insurer.watchlist.save",
     subject_type: "insurer_watchlist",
-    subject_id: input.watchId ?? null,
+    ...(input.watchId ? { subject_id: input.watchId } : {}),
     decision: "allow",
     metadata: { district: input.district, crop: input.crop, season: input.season },
   });
@@ -236,7 +236,7 @@ export async function saveAlertRule(
     tenant_id: input.tenantId,
     action: "insurer.alert_rule.save",
     subject_type: "insurer_alert_rule",
-    subject_id: input.ruleId ?? null,
+    ...(input.ruleId ? { subject_id: input.ruleId } : {}),
     decision: "allow",
     metadata: { name: input.name },
   });

@@ -72,7 +72,7 @@ export interface AlertRow {
   detail: string | null;
   status: AlertStatus;
   acknowledged_at: string | null;
-  cell?: RiskCellRow;
+  cell: RiskCellRow | null;
 }
 
 /* -------------------------------------------------------------- severity */
