@@ -139,14 +139,14 @@ describe("talent journey configuration", () => {
   });
 
   it("gates institution journeys on a listing step before review", () => {
-    for (const [code, listing] of [
-      ["training_partner_admin", "course_listing"],
-      ["recruiter_agency", "role_listing"],
-      ["employer_company", "job_requisition"],
+    for (const [code, evidence, listing] of [
+      ["training_partner_admin", "accreditation", "course_listing"],
+      ["recruiter_agency", "verification", "role_listing"],
+      ["employer_company", "verification", "job_requisition"],
     ] as const) {
       const keys = stepsForRole(steps, code).map((s) => s.step_key);
-      expect(keys).toContain("verification");
-      expect(keys.indexOf(listing)).toBeGreaterThan(keys.indexOf("verification"));
+      expect(keys).toContain(evidence);
+      expect(keys.indexOf(listing)).toBeGreaterThan(keys.indexOf(evidence));
       expect(keys.indexOf(listing)).toBeLessThan(keys.indexOf("review"));
     }
   });
