@@ -7491,6 +7491,7 @@ export type Database = {
       }
       service_subtypes: {
         Row: {
+          activation_trigger: string | null
           code: string
           description: string
           dispute_categories: Json
@@ -7502,12 +7503,15 @@ export type Database = {
           feature_flag_key: string | null
           is_active: boolean
           label: string
+          profile_fields: Json
           requires_human_decision: boolean
           sort_order: number
           updated_at: string
+          validate_note: string | null
           verification_checks: Json
         }
         Insert: {
+          activation_trigger?: string | null
           code: string
           description?: string
           dispute_categories?: Json
@@ -7519,12 +7523,15 @@ export type Database = {
           feature_flag_key?: string | null
           is_active?: boolean
           label: string
+          profile_fields?: Json
           requires_human_decision?: boolean
           sort_order?: number
           updated_at?: string
+          validate_note?: string | null
           verification_checks?: Json
         }
         Update: {
+          activation_trigger?: string | null
           code?: string
           description?: string
           dispute_categories?: Json
@@ -7536,9 +7543,11 @@ export type Database = {
           feature_flag_key?: string | null
           is_active?: boolean
           label?: string
+          profile_fields?: Json
           requires_human_decision?: boolean
           sort_order?: number
           updated_at?: string
+          validate_note?: string | null
           verification_checks?: Json
         }
         Relationships: [
