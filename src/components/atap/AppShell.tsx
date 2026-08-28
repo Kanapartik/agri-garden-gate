@@ -52,6 +52,13 @@ export function navItemsForRoles(roles: AppRole[], signedIn: boolean): NavItem[]
     });
   }
 
+  // Insurer sales intelligence is aggregate-only; the server still resolves the
+  // caller's insurer tenant, so a non-insurer tenant_admin sees an empty scope.
+  if (roles.some((r) => r === "tenant_admin" || r === "platform_admin" || r === "auditor")) {
+    items.push({ to: "/insurer", label: "Insurer revenue", labelKey: "nav.insurerRevenue" });
+  }
+
+
   if (
     roles.some(
       (r) => r === "scheme_publisher" || r === "scheme_reviewer" || r === "platform_admin",
