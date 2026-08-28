@@ -205,7 +205,7 @@ function InsurerClaimsPage() {
   if (workspace.isLoading) {
     return (
       <div className="space-y-4">
-        <PageHeader title="Claims intake & settlement" subtitle="Loading claims workspace…" />
+        <PageHeader title="Claims intake & settlement" description="Loading claims workspace…" />
       </div>
     );
   }
@@ -213,7 +213,7 @@ function InsurerClaimsPage() {
   if (workspace.isError) {
     return (
       <div className="space-y-4">
-        <PageHeader title="Claims intake & settlement" subtitle="Insurer claims workspace" />
+        <PageHeader title="Claims intake & settlement" description="Insurer claims workspace" />
         <div className="panel p-4 text-sm text-destructive">{(workspace.error as Error).message}</div>
       </div>
     );
@@ -223,7 +223,7 @@ function InsurerClaimsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Claims intake & settlement"
-        subtitle={`${data?.scope.tenantName ?? ""} — FPO-level claims lifecycle with human decisions`}
+        description={`${data?.scope.tenantName ?? ""} — FPO-level claims lifecycle with human decisions`}
       />
 
       <div className="panel p-4 text-sm text-muted-foreground">
