@@ -52,6 +52,7 @@ const en: Dict = {
   "nav.insurerRevenue": "Insurer revenue",
   "nav.insurerRisk": "Risk surveillance",
   "nav.insurerClaims": "Claims management",
+  "nav.insurerPolicies": "Policies & enrolment",
   "nav.government": "Government",
   "nav.district": "District",
   "nav.review": "Review queue",

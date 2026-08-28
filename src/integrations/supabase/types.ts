@@ -5107,6 +5107,108 @@ export type Database = {
           },
         ]
       }
+      insurer_enrolment_batches: {
+        Row: {
+          acres: number
+          batch_reference: string
+          created_at: string
+          created_by: string | null
+          crop: string | null
+          decided_by: string | null
+          decision_note: string | null
+          district: string | null
+          farmer_premium_inr: number
+          fpo_name: string
+          id: string
+          insurer_tenant_id: string
+          internal_notes: string | null
+          member_count: number
+          policy_id: string | null
+          premium_due_inr: number
+          registration_number: string
+          season: string
+          state: Database["public"]["Enums"]["insurer_enrolment_state"]
+          state_name: string | null
+          submitted_at: string | null
+          subsidy_premium_inr: number
+          synthetic: boolean
+          updated_at: string
+          verification_note: string | null
+          verified_at: string | null
+        }
+        Insert: {
+          acres?: number
+          batch_reference: string
+          created_at?: string
+          created_by?: string | null
+          crop?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          district?: string | null
+          farmer_premium_inr?: number
+          fpo_name: string
+          id?: string
+          insurer_tenant_id: string
+          internal_notes?: string | null
+          member_count?: number
+          policy_id?: string | null
+          premium_due_inr?: number
+          registration_number: string
+          season?: string
+          state?: Database["public"]["Enums"]["insurer_enrolment_state"]
+          state_name?: string | null
+          submitted_at?: string | null
+          subsidy_premium_inr?: number
+          synthetic?: boolean
+          updated_at?: string
+          verification_note?: string | null
+          verified_at?: string | null
+        }
+        Update: {
+          acres?: number
+          batch_reference?: string
+          created_at?: string
+          created_by?: string | null
+          crop?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          district?: string | null
+          farmer_premium_inr?: number
+          fpo_name?: string
+          id?: string
+          insurer_tenant_id?: string
+          internal_notes?: string | null
+          member_count?: number
+          policy_id?: string | null
+          premium_due_inr?: number
+          registration_number?: string
+          season?: string
+          state?: Database["public"]["Enums"]["insurer_enrolment_state"]
+          state_name?: string | null
+          submitted_at?: string | null
+          subsidy_premium_inr?: number
+          synthetic?: boolean
+          updated_at?: string
+          verification_note?: string | null
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurer_enrolment_batches_insurer_tenant_id_fkey"
+            columns: ["insurer_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insurer_enrolment_batches_policy_id_fkey"
+            columns: ["policy_id"]
+            isOneToOne: false
+            referencedRelation: "insurer_policies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       insurer_fpo_channel: {
         Row: {
           accessibility: string | null
@@ -5319,6 +5421,185 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      insurer_policies: {
+        Row: {
+          actuarial_rate_pct: number
+          centre_share_pct: number
+          coverage_end: string | null
+          coverage_start: string | null
+          created_at: string
+          created_by: string | null
+          crop: string | null
+          decided_at: string | null
+          decided_by: string | null
+          decision_note: string | null
+          district: string | null
+          enrolment_cutoff: string | null
+          farmer_share_pct: number
+          fpo_name: string
+          gross_premium_inr: number
+          id: string
+          insured_acres: number
+          insured_members: number
+          insurer_tenant_id: string
+          internal_notes: string | null
+          policy_reference: string
+          registration_number: string
+          scheme_code: string
+          scheme_name: string
+          season: string
+          state_name: string | null
+          state_share_pct: number
+          status: Database["public"]["Enums"]["insurer_policy_status"]
+          sum_insured_per_acre_inr: number
+          synthetic: boolean
+          updated_at: string
+        }
+        Insert: {
+          actuarial_rate_pct?: number
+          centre_share_pct?: number
+          coverage_end?: string | null
+          coverage_start?: string | null
+          created_at?: string
+          created_by?: string | null
+          crop?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          district?: string | null
+          enrolment_cutoff?: string | null
+          farmer_share_pct?: number
+          fpo_name: string
+          gross_premium_inr?: number
+          id?: string
+          insured_acres?: number
+          insured_members?: number
+          insurer_tenant_id: string
+          internal_notes?: string | null
+          policy_reference: string
+          registration_number: string
+          scheme_code?: string
+          scheme_name?: string
+          season?: string
+          state_name?: string | null
+          state_share_pct?: number
+          status?: Database["public"]["Enums"]["insurer_policy_status"]
+          sum_insured_per_acre_inr?: number
+          synthetic?: boolean
+          updated_at?: string
+        }
+        Update: {
+          actuarial_rate_pct?: number
+          centre_share_pct?: number
+          coverage_end?: string | null
+          coverage_start?: string | null
+          created_at?: string
+          created_by?: string | null
+          crop?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          district?: string | null
+          enrolment_cutoff?: string | null
+          farmer_share_pct?: number
+          fpo_name?: string
+          gross_premium_inr?: number
+          id?: string
+          insured_acres?: number
+          insured_members?: number
+          insurer_tenant_id?: string
+          internal_notes?: string | null
+          policy_reference?: string
+          registration_number?: string
+          scheme_code?: string
+          scheme_name?: string
+          season?: string
+          state_name?: string | null
+          state_share_pct?: number
+          status?: Database["public"]["Enums"]["insurer_policy_status"]
+          sum_insured_per_acre_inr?: number
+          synthetic?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurer_policies_insurer_tenant_id_fkey"
+            columns: ["insurer_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      insurer_premium_remittances: {
+        Row: {
+          adapter_source: string
+          amount_inr: number
+          batch_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          insurer_tenant_id: string
+          method: string
+          received_at: string | null
+          reconciled_at: string | null
+          reconciliation_note: string | null
+          remittance_reference: string
+          state: Database["public"]["Enums"]["insurer_remittance_state"]
+          synthetic: boolean
+          updated_at: string
+        }
+        Insert: {
+          adapter_source?: string
+          amount_inr?: number
+          batch_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          insurer_tenant_id: string
+          method?: string
+          received_at?: string | null
+          reconciled_at?: string | null
+          reconciliation_note?: string | null
+          remittance_reference: string
+          state?: Database["public"]["Enums"]["insurer_remittance_state"]
+          synthetic?: boolean
+          updated_at?: string
+        }
+        Update: {
+          adapter_source?: string
+          amount_inr?: number
+          batch_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          insurer_tenant_id?: string
+          method?: string
+          received_at?: string | null
+          reconciled_at?: string | null
+          reconciliation_note?: string | null
+          remittance_reference?: string
+          state?: Database["public"]["Enums"]["insurer_remittance_state"]
+          synthetic?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurer_premium_remittances_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "insurer_enrolment_batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insurer_premium_remittances_insurer_tenant_id_fkey"
+            columns: ["insurer_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       insurer_risk_cells: {
         Row: {
@@ -10354,6 +10635,14 @@ export type Database = {
         | "payout_initiated"
         | "settled"
         | "withdrawn"
+      insurer_enrolment_state:
+        | "draft"
+        | "submitted"
+        | "under_verification"
+        | "verified"
+        | "rejected"
+        | "withdrawn"
+        | "policy_linked"
       insurer_funnel_stage:
         | "lead"
         | "contacted"
@@ -10364,6 +10653,20 @@ export type Database = {
         | "premium_pending"
         | "enrolled"
         | "dropped"
+      insurer_policy_status:
+        | "draft"
+        | "pending_enrolment"
+        | "issued"
+        | "active"
+        | "expired"
+        | "cancelled"
+      insurer_remittance_state:
+        | "expected"
+        | "received"
+        | "reconciled"
+        | "short"
+        | "excess"
+        | "refunded"
       insurer_risk_event:
         | "drought"
         | "excess_rain"
@@ -10963,6 +11266,15 @@ export const Constants = {
         "settled",
         "withdrawn",
       ],
+      insurer_enrolment_state: [
+        "draft",
+        "submitted",
+        "under_verification",
+        "verified",
+        "rejected",
+        "withdrawn",
+        "policy_linked",
+      ],
       insurer_funnel_stage: [
         "lead",
         "contacted",
@@ -10973,6 +11285,22 @@ export const Constants = {
         "premium_pending",
         "enrolled",
         "dropped",
+      ],
+      insurer_policy_status: [
+        "draft",
+        "pending_enrolment",
+        "issued",
+        "active",
+        "expired",
+        "cancelled",
+      ],
+      insurer_remittance_state: [
+        "expected",
+        "received",
+        "reconciled",
+        "short",
+        "excess",
+        "refunded",
       ],
       insurer_risk_event: [
         "drought",
