@@ -220,6 +220,10 @@ export function filterRiskCells(
   );
 }
 
+export function uniqueStates(cells: Array<{ state_name: string }>): string[] {
+  return [...new Set(cells.map((c) => c.state_name))].sort();
+}
+
 export function summarizeRisk(cells: RiskCellRow[]) {
   const severe = cells.filter((c) => c.severity === "severe").length;
   const advisory = cells.filter((c) => c.severity === "advisory").length;

@@ -104,7 +104,7 @@ function InsurerRiskPage() {
   const filtered = useMemo(
     () =>
       filterRiskCells(data?.cells ?? [], {
-        state: stateFilter || undefined,
+        ...(stateFilter ? { state: stateFilter } : {}),
         severity: severityFilter,
         event: eventFilter,
       }),
