@@ -3591,6 +3591,66 @@ export type Database = {
           },
         ]
       }
+      fpo_registry: {
+        Row: {
+          block_mandal: string | null
+          cbbo: string | null
+          created_at: string
+          district: string | null
+          fpo_name: string
+          id: string
+          incorporation_date: string | null
+          qa_note: string | null
+          registration_act: string | null
+          registration_number: string
+          scheme: string | null
+          sfac_serial: number | null
+          source_as_of: string | null
+          source_url: string | null
+          state_code: string | null
+          state_name: string
+          updated_at: string
+        }
+        Insert: {
+          block_mandal?: string | null
+          cbbo?: string | null
+          created_at?: string
+          district?: string | null
+          fpo_name: string
+          id?: string
+          incorporation_date?: string | null
+          qa_note?: string | null
+          registration_act?: string | null
+          registration_number: string
+          scheme?: string | null
+          sfac_serial?: number | null
+          source_as_of?: string | null
+          source_url?: string | null
+          state_code?: string | null
+          state_name: string
+          updated_at?: string
+        }
+        Update: {
+          block_mandal?: string | null
+          cbbo?: string | null
+          created_at?: string
+          district?: string | null
+          fpo_name?: string
+          id?: string
+          incorporation_date?: string | null
+          qa_note?: string | null
+          registration_act?: string | null
+          registration_number?: string
+          scheme?: string | null
+          sfac_serial?: number | null
+          source_as_of?: string | null
+          source_url?: string | null
+          state_code?: string | null
+          state_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       fpo_role_permissions: {
         Row: {
           created_at: string
