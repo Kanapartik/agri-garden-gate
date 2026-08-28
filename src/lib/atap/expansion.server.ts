@@ -62,6 +62,9 @@ export interface SubtypeRow {
   requires_human_decision: boolean;
   is_active: boolean;
   sort_order: number;
+  profile_fields?: Array<{ key: string; label: string; required: boolean }>;
+  activation_trigger?: string | null;
+  validate_note?: string | null;
 }
 
 /** Joins subtype configuration with its activation flag into the pure-rule shape. */
@@ -90,5 +93,7 @@ export function toSubtypeConfig(row: SubtypeRow & { flagEnabled: boolean }): Ser
     requires_human_decision: row.requires_human_decision,
     is_active: row.is_active,
     flagEnabled: row.flagEnabled,
+    profile_fields: row.profile_fields ?? [],
+    activation_trigger: row.activation_trigger ?? null,
   };
 }
