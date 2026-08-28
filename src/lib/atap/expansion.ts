@@ -199,6 +199,13 @@ export function compareDistrictEffort(input: {
 
 /* ------------------------------------------------- service subtype gating */
 
+/** Extra provider profile data a subtype requires, as catalogue configuration. */
+export interface SubtypeProfileField {
+  key: string;
+  label: string;
+  required: boolean;
+}
+
 export interface ServiceSubtypeConfig {
   code: string;
   domain: string;
@@ -208,6 +215,43 @@ export interface ServiceSubtypeConfig {
   requires_human_decision: boolean;
   is_active: boolean;
   flagEnabled: boolean;
+  /** Configured additional profile data for this subtype. */
+  profile_fields?: SubtypeProfileField[];
+  /** Human-readable condition that must hold before the subtype goes live. */
+  activation_trigger?: string | null;
+}
+
+/** Required profile keys the provider has not supplied yet. */
+export function missingProfileFields(
+  subtype: Pick<ServiceSubtypeConfig, "profile_fields">,
+  profile: Record<string, unknown>,
+): string[] {
+  return (subtype.profile_fields ?? [])
+    .filter((f) => f.required)
+    .filter((f) => {
+      const v = profile[f.key];
+      if (v === undefined || v === null) return true;
+      if (typeof v === "string") return v.trim().length === 0;
+      if (Array.isArray(v)) return v.length === 0;
+      return false;
+    })
+    .map((f) => f.key);
+}
+
+/**
+ * Catalogue readiness: a subtype cannot be offered until it declares both the
+ * extra profile data it needs and the trigger that makes it live. This is
+ * configuration completeness, not an approval — the evidence gate still decides.
+ */
+export function subtypeCatalogueReady(
+  subtype: Pick<ServiceSubtypeConfig, "profile_fields" | "activation_trigger" | "dispute_categories" | "verification_checks">,
+): { ok: boolean; errors: string[] } {
+  const errors: string[] = [];
+  if ((subtype.profile_fields ?? []).length === 0) errors.push("profile_fields_missing");
+  if (!(subtype.activation_trigger ?? "").trim()) errors.push("activation_trigger_missing");
+  if (subtype.verification_checks.length === 0) errors.push("verification_checks_missing");
+  if (subtype.dispute_categories.length === 0) errors.push("dispute_flow_missing");
+  return { ok: errors.length === 0, errors };
 }
 
 export interface ActivationDecision {
