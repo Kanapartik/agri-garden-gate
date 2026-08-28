@@ -4897,6 +4897,216 @@ export type Database = {
           },
         ]
       }
+      insurer_claim_documents: {
+        Row: {
+          claim_id: string
+          created_at: string
+          doc_type: string
+          id: string
+          insurer_tenant_id: string
+          label: string
+          received_at: string | null
+          required: boolean
+          status: Database["public"]["Enums"]["insurer_claim_doc_status"]
+          updated_at: string
+        }
+        Insert: {
+          claim_id: string
+          created_at?: string
+          doc_type: string
+          id?: string
+          insurer_tenant_id: string
+          label: string
+          received_at?: string | null
+          required?: boolean
+          status?: Database["public"]["Enums"]["insurer_claim_doc_status"]
+          updated_at?: string
+        }
+        Update: {
+          claim_id?: string
+          created_at?: string
+          doc_type?: string
+          id?: string
+          insurer_tenant_id?: string
+          label?: string
+          received_at?: string | null
+          required?: boolean
+          status?: Database["public"]["Enums"]["insurer_claim_doc_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurer_claim_documents_claim_id_fkey"
+            columns: ["claim_id"]
+            isOneToOne: false
+            referencedRelation: "insurer_claims"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insurer_claim_documents_insurer_tenant_id_fkey"
+            columns: ["insurer_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      insurer_claim_events: {
+        Row: {
+          actor_user_id: string | null
+          claim_id: string
+          created_at: string
+          from_stage: Database["public"]["Enums"]["insurer_claim_stage"] | null
+          id: string
+          insurer_tenant_id: string
+          note: string | null
+          to_stage: Database["public"]["Enums"]["insurer_claim_stage"]
+        }
+        Insert: {
+          actor_user_id?: string | null
+          claim_id: string
+          created_at?: string
+          from_stage?: Database["public"]["Enums"]["insurer_claim_stage"] | null
+          id?: string
+          insurer_tenant_id: string
+          note?: string | null
+          to_stage: Database["public"]["Enums"]["insurer_claim_stage"]
+        }
+        Update: {
+          actor_user_id?: string | null
+          claim_id?: string
+          created_at?: string
+          from_stage?: Database["public"]["Enums"]["insurer_claim_stage"] | null
+          id?: string
+          insurer_tenant_id?: string
+          note?: string | null
+          to_stage?: Database["public"]["Enums"]["insurer_claim_stage"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurer_claim_events_claim_id_fkey"
+            columns: ["claim_id"]
+            isOneToOne: false
+            referencedRelation: "insurer_claims"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insurer_claim_events_insurer_tenant_id_fkey"
+            columns: ["insurer_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      insurer_claims: {
+        Row: {
+          affected_members: number
+          approved_amount_inr: number | null
+          assessed_loss_pct: number | null
+          claim_reference: string
+          claimed_amount_inr: number
+          created_at: string
+          created_by: string | null
+          crop: string | null
+          decided_at: string | null
+          decided_by: string | null
+          decision_note: string | null
+          district: string | null
+          fpo_name: string
+          id: string
+          insurer_tenant_id: string
+          internal_notes: string | null
+          peril: Database["public"]["Enums"]["insurer_risk_event"]
+          registration_number: string
+          reported_acres: number | null
+          reported_at: string
+          response_due_at: string | null
+          risk_cell_id: string | null
+          season: string
+          stage: Database["public"]["Enums"]["insurer_claim_stage"]
+          state_name: string | null
+          surveyor_name: string | null
+          synthetic: boolean
+          updated_at: string
+        }
+        Insert: {
+          affected_members?: number
+          approved_amount_inr?: number | null
+          assessed_loss_pct?: number | null
+          claim_reference: string
+          claimed_amount_inr?: number
+          created_at?: string
+          created_by?: string | null
+          crop?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          district?: string | null
+          fpo_name: string
+          id?: string
+          insurer_tenant_id: string
+          internal_notes?: string | null
+          peril: Database["public"]["Enums"]["insurer_risk_event"]
+          registration_number: string
+          reported_acres?: number | null
+          reported_at?: string
+          response_due_at?: string | null
+          risk_cell_id?: string | null
+          season?: string
+          stage?: Database["public"]["Enums"]["insurer_claim_stage"]
+          state_name?: string | null
+          surveyor_name?: string | null
+          synthetic?: boolean
+          updated_at?: string
+        }
+        Update: {
+          affected_members?: number
+          approved_amount_inr?: number | null
+          assessed_loss_pct?: number | null
+          claim_reference?: string
+          claimed_amount_inr?: number
+          created_at?: string
+          created_by?: string | null
+          crop?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          district?: string | null
+          fpo_name?: string
+          id?: string
+          insurer_tenant_id?: string
+          internal_notes?: string | null
+          peril?: Database["public"]["Enums"]["insurer_risk_event"]
+          registration_number?: string
+          reported_acres?: number | null
+          reported_at?: string
+          response_due_at?: string | null
+          risk_cell_id?: string | null
+          season?: string
+          stage?: Database["public"]["Enums"]["insurer_claim_stage"]
+          state_name?: string | null
+          surveyor_name?: string | null
+          synthetic?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurer_claims_insurer_tenant_id_fkey"
+            columns: ["insurer_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insurer_claims_risk_cell_id_fkey"
+            columns: ["risk_cell_id"]
+            isOneToOne: false
+            referencedRelation: "insurer_risk_cells"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       insurer_fpo_channel: {
         Row: {
           accessibility: string | null
@@ -10133,6 +10343,17 @@ export type Database = {
         | "paused"
         | "completed"
         | "cancelled"
+      insurer_claim_doc_status: "pending" | "received" | "verified" | "rejected"
+      insurer_claim_stage:
+        | "reported"
+        | "documents_pending"
+        | "survey_assigned"
+        | "assessment_review"
+        | "approved"
+        | "rejected"
+        | "payout_initiated"
+        | "settled"
+        | "withdrawn"
       insurer_funnel_stage:
         | "lead"
         | "contacted"
@@ -10729,6 +10950,18 @@ export const Constants = {
         "paused",
         "completed",
         "cancelled",
+      ],
+      insurer_claim_doc_status: ["pending", "received", "verified", "rejected"],
+      insurer_claim_stage: [
+        "reported",
+        "documents_pending",
+        "survey_assigned",
+        "assessment_review",
+        "approved",
+        "rejected",
+        "payout_initiated",
+        "settled",
+        "withdrawn",
       ],
       insurer_funnel_stage: [
         "lead",
