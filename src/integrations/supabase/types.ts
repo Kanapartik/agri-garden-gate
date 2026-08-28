@@ -4661,6 +4661,120 @@ export type Database = {
         }
         Relationships: []
       }
+      insurer_alert_rules: {
+        Row: {
+          active: boolean
+          created_at: string
+          created_by: string | null
+          event_type: Database["public"]["Enums"]["insurer_risk_event"] | null
+          id: string
+          insurer_tenant_id: string
+          min_severity: Database["public"]["Enums"]["insurer_risk_severity"]
+          name: string
+          rainfall_deviation_threshold_pct: number | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          created_by?: string | null
+          event_type?: Database["public"]["Enums"]["insurer_risk_event"] | null
+          id?: string
+          insurer_tenant_id: string
+          min_severity?: Database["public"]["Enums"]["insurer_risk_severity"]
+          name: string
+          rainfall_deviation_threshold_pct?: number | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          created_by?: string | null
+          event_type?: Database["public"]["Enums"]["insurer_risk_event"] | null
+          id?: string
+          insurer_tenant_id?: string
+          min_severity?: Database["public"]["Enums"]["insurer_risk_severity"]
+          name?: string
+          rainfall_deviation_threshold_pct?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurer_alert_rules_insurer_tenant_id_fkey"
+            columns: ["insurer_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      insurer_alerts: {
+        Row: {
+          acknowledged_at: string | null
+          acknowledged_by: string | null
+          created_at: string
+          detail: string | null
+          id: string
+          insurer_tenant_id: string
+          risk_cell_id: string
+          rule_id: string | null
+          severity: Database["public"]["Enums"]["insurer_risk_severity"]
+          status: Database["public"]["Enums"]["insurer_alert_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          created_at?: string
+          detail?: string | null
+          id?: string
+          insurer_tenant_id: string
+          risk_cell_id: string
+          rule_id?: string | null
+          severity: Database["public"]["Enums"]["insurer_risk_severity"]
+          status?: Database["public"]["Enums"]["insurer_alert_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          created_at?: string
+          detail?: string | null
+          id?: string
+          insurer_tenant_id?: string
+          risk_cell_id?: string
+          rule_id?: string | null
+          severity?: Database["public"]["Enums"]["insurer_risk_severity"]
+          status?: Database["public"]["Enums"]["insurer_alert_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurer_alerts_insurer_tenant_id_fkey"
+            columns: ["insurer_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insurer_alerts_risk_cell_id_fkey"
+            columns: ["risk_cell_id"]
+            isOneToOne: false
+            referencedRelation: "insurer_risk_cells"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insurer_alerts_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "insurer_alert_rules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       insurer_campaign_targets: {
         Row: {
           campaign_id: string
@@ -4995,6 +5109,107 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      insurer_risk_cells: {
+        Row: {
+          affected_acres: number | null
+          affected_fpos: number
+          created_at: string
+          crop: string
+          district: string
+          event_type: Database["public"]["Enums"]["insurer_risk_event"]
+          id: string
+          observed_at: string
+          rainfall_deviation_pct: number | null
+          season: string
+          severity: Database["public"]["Enums"]["insurer_risk_severity"]
+          source: string
+          state_name: string
+          synthetic: boolean
+          updated_at: string
+        }
+        Insert: {
+          affected_acres?: number | null
+          affected_fpos?: number
+          created_at?: string
+          crop: string
+          district: string
+          event_type: Database["public"]["Enums"]["insurer_risk_event"]
+          id?: string
+          observed_at: string
+          rainfall_deviation_pct?: number | null
+          season: string
+          severity: Database["public"]["Enums"]["insurer_risk_severity"]
+          source?: string
+          state_name: string
+          synthetic?: boolean
+          updated_at?: string
+        }
+        Update: {
+          affected_acres?: number | null
+          affected_fpos?: number
+          created_at?: string
+          crop?: string
+          district?: string
+          event_type?: Database["public"]["Enums"]["insurer_risk_event"]
+          id?: string
+          observed_at?: string
+          rainfall_deviation_pct?: number | null
+          season?: string
+          severity?: Database["public"]["Enums"]["insurer_risk_severity"]
+          source?: string
+          state_name?: string
+          synthetic?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      insurer_watchlist: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          crop: string
+          district: string
+          id: string
+          insurer_tenant_id: string
+          notes: string | null
+          season: string
+          state_name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          crop: string
+          district: string
+          id?: string
+          insurer_tenant_id: string
+          notes?: string | null
+          season: string
+          state_name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          crop?: string
+          district?: string
+          id?: string
+          insurer_tenant_id?: string
+          notes?: string | null
+          season?: string
+          state_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurer_watchlist_insurer_tenant_id_fkey"
+            columns: ["insurer_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       knowledge_contributions: {
         Row: {
@@ -9911,6 +10126,7 @@ export type Database = {
         | "failed"
         | "manual_review"
         | "duplicate_hold"
+      insurer_alert_status: "open" | "acknowledged" | "dismissed"
       insurer_campaign_state:
         | "draft"
         | "active"
@@ -9927,6 +10143,15 @@ export type Database = {
         | "premium_pending"
         | "enrolled"
         | "dropped"
+      insurer_risk_event:
+        | "drought"
+        | "excess_rain"
+        | "flood"
+        | "hail"
+        | "pest_outbreak"
+        | "heatwave"
+        | "cyclone"
+      insurer_risk_severity: "watch" | "advisory" | "severe"
       invitation_status: "pending" | "accepted" | "revoked" | "expired"
       job_listing_status: "draft" | "open" | "closed" | "filled" | "withdrawn"
       knowledge_kind:
@@ -10497,6 +10722,7 @@ export const Constants = {
         "manual_review",
         "duplicate_hold",
       ],
+      insurer_alert_status: ["open", "acknowledged", "dismissed"],
       insurer_campaign_state: [
         "draft",
         "active",
@@ -10515,6 +10741,16 @@ export const Constants = {
         "enrolled",
         "dropped",
       ],
+      insurer_risk_event: [
+        "drought",
+        "excess_rain",
+        "flood",
+        "hail",
+        "pest_outbreak",
+        "heatwave",
+        "cyclone",
+      ],
+      insurer_risk_severity: ["watch", "advisory", "severe"],
       invitation_status: ["pending", "accepted", "revoked", "expired"],
       job_listing_status: ["draft", "open", "closed", "filled", "withdrawn"],
       knowledge_kind: [

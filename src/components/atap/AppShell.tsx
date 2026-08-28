@@ -56,6 +56,7 @@ export function navItemsForRoles(roles: AppRole[], signedIn: boolean): NavItem[]
   // caller's insurer tenant, so a non-insurer tenant_admin sees an empty scope.
   if (roles.some((r) => r === "tenant_admin" || r === "platform_admin" || r === "auditor")) {
     items.push({ to: "/insurer", label: "Insurer revenue", labelKey: "nav.insurerRevenue" });
+    items.push({ to: "/insurer-risk", label: "Risk surveillance", labelKey: "nav.insurerRisk" });
   }
 
 

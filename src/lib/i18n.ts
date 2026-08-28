@@ -50,6 +50,7 @@ const en: Dict = {
   "nav.fpo": "FPO workspace",
   "nav.fpoOpportunity": "Opportunity intelligence",
   "nav.insurerRevenue": "Insurer revenue",
+  "nav.insurerRisk": "Risk surveillance",
   "nav.government": "Government",
   "nav.district": "District",
   "nav.review": "Review queue",

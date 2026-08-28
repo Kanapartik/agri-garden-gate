@@ -121,8 +121,10 @@ export const mockJurisdictionIdentity: JurisdictionIdentityAdapter = {
 
 export * from "./farmIntelligence";
 export * from "./insurerMarket";
+export * from "./weatherRisk";
 import { farmIntelligenceAdapters } from "./farmIntelligence";
 import { syntheticInsurerMarketBaseline } from "./insurerMarket";
+import { syntheticCropCalendar, syntheticWeatherRiskFeed } from "./weatherRisk";
 
 export const adapters = {
   identityKyc: syntheticIdentityKyc,
@@ -131,6 +133,8 @@ export const adapters = {
   payments: syntheticPayments,
   govtRegistry: syntheticGovtRegistry,
   insurerMarketBaseline: syntheticInsurerMarketBaseline,
+  weatherRiskFeed: syntheticWeatherRiskFeed,
+  cropCalendar: syntheticCropCalendar,
   ...farmIntelligenceAdapters,
 } as const;
 
