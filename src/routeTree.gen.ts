@@ -24,6 +24,7 @@ import { Route as AuthenticatedFarmRouteImport } from './routes/_authenticated/f
 import { Route as AuthenticatedFpoRouteImport } from './routes/_authenticated/fpo'
 import { Route as AuthenticatedFpoOpportunityRouteImport } from './routes/_authenticated/fpo-opportunity'
 import { Route as AuthenticatedInputsRouteImport } from './routes/_authenticated/inputs'
+import { Route as AuthenticatedInsurerRouteImport } from './routes/_authenticated/insurer'
 import { Route as AuthenticatedIntelligenceRouteImport } from './routes/_authenticated/intelligence'
 import { Route as AuthenticatedMarketRouteImport } from './routes/_authenticated/market'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
@@ -110,6 +111,11 @@ const AuthenticatedInputsRoute = AuthenticatedInputsRouteImport.update({
   path: '/inputs',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedInsurerRoute = AuthenticatedInsurerRouteImport.update({
+  id: '/insurer',
+  path: '/insurer',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedIntelligenceRoute =
   AuthenticatedIntelligenceRouteImport.update({
     id: '/intelligence',
@@ -172,6 +178,7 @@ export interface FileRoutesByFullPath {
   '/fpo': typeof AuthenticatedFpoRoute
   '/fpo-opportunity': typeof AuthenticatedFpoOpportunityRoute
   '/inputs': typeof AuthenticatedInputsRoute
+  '/insurer': typeof AuthenticatedInsurerRoute
   '/intelligence': typeof AuthenticatedIntelligenceRoute
   '/market': typeof AuthenticatedMarketRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
@@ -197,6 +204,7 @@ export interface FileRoutesByTo {
   '/fpo': typeof AuthenticatedFpoRoute
   '/fpo-opportunity': typeof AuthenticatedFpoOpportunityRoute
   '/inputs': typeof AuthenticatedInputsRoute
+  '/insurer': typeof AuthenticatedInsurerRoute
   '/intelligence': typeof AuthenticatedIntelligenceRoute
   '/market': typeof AuthenticatedMarketRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
@@ -224,6 +232,7 @@ export interface FileRoutesById {
   '/_authenticated/fpo': typeof AuthenticatedFpoRoute
   '/_authenticated/fpo-opportunity': typeof AuthenticatedFpoOpportunityRoute
   '/_authenticated/inputs': typeof AuthenticatedInputsRoute
+  '/_authenticated/insurer': typeof AuthenticatedInsurerRoute
   '/_authenticated/intelligence': typeof AuthenticatedIntelligenceRoute
   '/_authenticated/market': typeof AuthenticatedMarketRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
@@ -251,6 +260,7 @@ export interface FileRouteTypes {
     | '/fpo'
     | '/fpo-opportunity'
     | '/inputs'
+    | '/insurer'
     | '/intelligence'
     | '/market'
     | '/onboarding'
@@ -276,6 +286,7 @@ export interface FileRouteTypes {
     | '/fpo'
     | '/fpo-opportunity'
     | '/inputs'
+    | '/insurer'
     | '/intelligence'
     | '/market'
     | '/onboarding'
@@ -302,6 +313,7 @@ export interface FileRouteTypes {
     | '/_authenticated/fpo'
     | '/_authenticated/fpo-opportunity'
     | '/_authenticated/inputs'
+    | '/_authenticated/insurer'
     | '/_authenticated/intelligence'
     | '/_authenticated/market'
     | '/_authenticated/onboarding'
@@ -428,6 +440,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedInputsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/insurer': {
+      id: '/_authenticated/insurer'
+      path: '/insurer'
+      fullPath: '/insurer'
+      preLoaderRoute: typeof AuthenticatedInsurerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/intelligence': {
       id: '/_authenticated/intelligence'
       path: '/intelligence'
@@ -505,6 +524,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedFpoRoute: typeof AuthenticatedFpoRoute
   AuthenticatedFpoOpportunityRoute: typeof AuthenticatedFpoOpportunityRoute
   AuthenticatedInputsRoute: typeof AuthenticatedInputsRoute
+  AuthenticatedInsurerRoute: typeof AuthenticatedInsurerRoute
   AuthenticatedIntelligenceRoute: typeof AuthenticatedIntelligenceRoute
   AuthenticatedMarketRoute: typeof AuthenticatedMarketRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
@@ -527,6 +547,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedFpoRoute: AuthenticatedFpoRoute,
   AuthenticatedFpoOpportunityRoute: AuthenticatedFpoOpportunityRoute,
   AuthenticatedInputsRoute: AuthenticatedInputsRoute,
+  AuthenticatedInsurerRoute: AuthenticatedInsurerRoute,
   AuthenticatedIntelligenceRoute: AuthenticatedIntelligenceRoute,
   AuthenticatedMarketRoute: AuthenticatedMarketRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,

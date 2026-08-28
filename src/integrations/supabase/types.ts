@@ -4661,6 +4661,341 @@ export type Database = {
         }
         Relationships: []
       }
+      insurer_campaign_targets: {
+        Row: {
+          campaign_id: string
+          created_at: string
+          fpo_name: string
+          id: string
+          premium_opportunity_inr: number
+          registration_number: string
+          registry_id: string | null
+          target_farmers: number
+          updated_at: string
+        }
+        Insert: {
+          campaign_id: string
+          created_at?: string
+          fpo_name: string
+          id?: string
+          premium_opportunity_inr?: number
+          registration_number: string
+          registry_id?: string | null
+          target_farmers?: number
+          updated_at?: string
+        }
+        Update: {
+          campaign_id?: string
+          created_at?: string
+          fpo_name?: string
+          id?: string
+          premium_opportunity_inr?: number
+          registration_number?: string
+          registry_id?: string | null
+          target_farmers?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurer_campaign_targets_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "insurer_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insurer_campaign_targets_registry_id_fkey"
+            columns: ["registry_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_registry"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      insurer_campaigns: {
+        Row: {
+          commodity: string | null
+          created_at: string
+          created_by: string | null
+          district: string | null
+          ends_on: string | null
+          id: string
+          insurer_tenant_id: string
+          name: string
+          notes: string | null
+          owner_name: string | null
+          premium_opportunity_inr: number
+          season: string | null
+          starts_on: string | null
+          state: Database["public"]["Enums"]["insurer_campaign_state"]
+          state_name: string | null
+          target_acres: number
+          target_farmers: number
+          updated_at: string
+        }
+        Insert: {
+          commodity?: string | null
+          created_at?: string
+          created_by?: string | null
+          district?: string | null
+          ends_on?: string | null
+          id?: string
+          insurer_tenant_id: string
+          name: string
+          notes?: string | null
+          owner_name?: string | null
+          premium_opportunity_inr?: number
+          season?: string | null
+          starts_on?: string | null
+          state?: Database["public"]["Enums"]["insurer_campaign_state"]
+          state_name?: string | null
+          target_acres?: number
+          target_farmers?: number
+          updated_at?: string
+        }
+        Update: {
+          commodity?: string | null
+          created_at?: string
+          created_by?: string | null
+          district?: string | null
+          ends_on?: string | null
+          id?: string
+          insurer_tenant_id?: string
+          name?: string
+          notes?: string | null
+          owner_name?: string | null
+          premium_opportunity_inr?: number
+          season?: string | null
+          starts_on?: string | null
+          state?: Database["public"]["Enums"]["insurer_campaign_state"]
+          state_name?: string | null
+          target_acres?: number
+          target_farmers?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurer_campaigns_insurer_tenant_id_fkey"
+            columns: ["insurer_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      insurer_fpo_channel: {
+        Row: {
+          accessibility: string | null
+          block_mandal: string | null
+          commodity_group: string | null
+          created_at: string
+          cultivated_acres: number | null
+          district: string | null
+          fpo_name: string
+          id: string
+          insured_members: number
+          insurer_tenant_id: string
+          internal_notes: string | null
+          last_reviewed: string | null
+          member_count: number | null
+          opportunity_score: number
+          owner_name: string | null
+          policies_count: number
+          potential_premium_inr: number
+          premium_inr: number
+          primary_commodity: string | null
+          registration_number: string
+          registry_id: string | null
+          score_drivers: Json
+          state_name: string
+          updated_at: string
+        }
+        Insert: {
+          accessibility?: string | null
+          block_mandal?: string | null
+          commodity_group?: string | null
+          created_at?: string
+          cultivated_acres?: number | null
+          district?: string | null
+          fpo_name: string
+          id?: string
+          insured_members?: number
+          insurer_tenant_id: string
+          internal_notes?: string | null
+          last_reviewed?: string | null
+          member_count?: number | null
+          opportunity_score?: number
+          owner_name?: string | null
+          policies_count?: number
+          potential_premium_inr?: number
+          premium_inr?: number
+          primary_commodity?: string | null
+          registration_number: string
+          registry_id?: string | null
+          score_drivers?: Json
+          state_name: string
+          updated_at?: string
+        }
+        Update: {
+          accessibility?: string | null
+          block_mandal?: string | null
+          commodity_group?: string | null
+          created_at?: string
+          cultivated_acres?: number | null
+          district?: string | null
+          fpo_name?: string
+          id?: string
+          insured_members?: number
+          insurer_tenant_id?: string
+          internal_notes?: string | null
+          last_reviewed?: string | null
+          member_count?: number | null
+          opportunity_score?: number
+          owner_name?: string | null
+          policies_count?: number
+          potential_premium_inr?: number
+          premium_inr?: number
+          primary_commodity?: string | null
+          registration_number?: string
+          registry_id?: string | null
+          score_drivers?: Json
+          state_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurer_fpo_channel_insurer_tenant_id_fkey"
+            columns: ["insurer_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insurer_fpo_channel_registry_id_fkey"
+            columns: ["registry_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_registry"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      insurer_funnel_entries: {
+        Row: {
+          acres: number
+          created_at: string
+          district: string | null
+          farmer_count: number
+          fpo_name: string
+          id: string
+          insurer_tenant_id: string
+          notes: string | null
+          owner_name: string | null
+          premium_opportunity_inr: number
+          registration_number: string
+          registry_id: string | null
+          stage: Database["public"]["Enums"]["insurer_funnel_stage"]
+          state_name: string
+          updated_at: string
+        }
+        Insert: {
+          acres?: number
+          created_at?: string
+          district?: string | null
+          farmer_count?: number
+          fpo_name: string
+          id?: string
+          insurer_tenant_id: string
+          notes?: string | null
+          owner_name?: string | null
+          premium_opportunity_inr?: number
+          registration_number: string
+          registry_id?: string | null
+          stage?: Database["public"]["Enums"]["insurer_funnel_stage"]
+          state_name: string
+          updated_at?: string
+        }
+        Update: {
+          acres?: number
+          created_at?: string
+          district?: string | null
+          farmer_count?: number
+          fpo_name?: string
+          id?: string
+          insurer_tenant_id?: string
+          notes?: string | null
+          owner_name?: string | null
+          premium_opportunity_inr?: number
+          registration_number?: string
+          registry_id?: string | null
+          stage?: Database["public"]["Enums"]["insurer_funnel_stage"]
+          state_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurer_funnel_entries_insurer_tenant_id_fkey"
+            columns: ["insurer_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insurer_funnel_entries_registry_id_fkey"
+            columns: ["registry_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_registry"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      insurer_market_cells: {
+        Row: {
+          created_at: string
+          crop: string
+          cultivated_acres: number
+          district: string
+          id: string
+          insured_acres: number
+          insured_farmers: number
+          last_verified: string | null
+          potential_farmers: number
+          premium_per_acre: number
+          source: string
+          state_name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          crop: string
+          cultivated_acres?: number
+          district: string
+          id?: string
+          insured_acres?: number
+          insured_farmers?: number
+          last_verified?: string | null
+          potential_farmers?: number
+          premium_per_acre?: number
+          source?: string
+          state_name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          crop?: string
+          cultivated_acres?: number
+          district?: string
+          id?: string
+          insured_acres?: number
+          insured_farmers?: number
+          last_verified?: string | null
+          potential_farmers?: number
+          premium_per_acre?: number
+          source?: string
+          state_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       knowledge_contributions: {
         Row: {
           ai_grounding_enabled: boolean
@@ -9576,6 +9911,22 @@ export type Database = {
         | "failed"
         | "manual_review"
         | "duplicate_hold"
+      insurer_campaign_state:
+        | "draft"
+        | "active"
+        | "paused"
+        | "completed"
+        | "cancelled"
+      insurer_funnel_stage:
+        | "lead"
+        | "contacted"
+        | "interested"
+        | "documents_initiated"
+        | "verified"
+        | "quote_generated"
+        | "premium_pending"
+        | "enrolled"
+        | "dropped"
       invitation_status: "pending" | "accepted" | "revoked" | "expired"
       job_listing_status: "draft" | "open" | "closed" | "filled" | "withdrawn"
       knowledge_kind:
@@ -10145,6 +10496,24 @@ export const Constants = {
         "failed",
         "manual_review",
         "duplicate_hold",
+      ],
+      insurer_campaign_state: [
+        "draft",
+        "active",
+        "paused",
+        "completed",
+        "cancelled",
+      ],
+      insurer_funnel_stage: [
+        "lead",
+        "contacted",
+        "interested",
+        "documents_initiated",
+        "verified",
+        "quote_generated",
+        "premium_pending",
+        "enrolled",
+        "dropped",
       ],
       invitation_status: ["pending", "accepted", "revoked", "expired"],
       job_listing_status: ["draft", "open", "closed", "filled", "withdrawn"],

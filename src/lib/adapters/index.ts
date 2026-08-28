@@ -120,7 +120,9 @@ export const mockJurisdictionIdentity: JurisdictionIdentityAdapter = {
 };
 
 export * from "./farmIntelligence";
+export * from "./insurerMarket";
 import { farmIntelligenceAdapters } from "./farmIntelligence";
+import { syntheticInsurerMarketBaseline } from "./insurerMarket";
 
 export const adapters = {
   identityKyc: syntheticIdentityKyc,
@@ -128,5 +130,7 @@ export const adapters = {
   gis: syntheticGis,
   payments: syntheticPayments,
   govtRegistry: syntheticGovtRegistry,
+  insurerMarketBaseline: syntheticInsurerMarketBaseline,
   ...farmIntelligenceAdapters,
 } as const;
+
