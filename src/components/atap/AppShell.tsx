@@ -45,7 +45,13 @@ export function navItemsForRoles(roles: AppRole[], signedIn: boolean): NavItem[]
 
   if (roles.some((r) => r === "tenant_admin" || r === "onboarding_officer" || r === "field_agent")) {
     items.push({ to: "/fpo", label: "FPO workspace", labelKey: "nav.fpo" });
+    items.push({
+      to: "/fpo-opportunity",
+      label: "Opportunity intelligence",
+      labelKey: "nav.fpoOpportunity",
+    });
   }
+
   if (
     roles.some(
       (r) => r === "scheme_publisher" || r === "scheme_reviewer" || r === "platform_admin",
