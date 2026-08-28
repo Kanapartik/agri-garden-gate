@@ -145,8 +145,8 @@ describe("talent journey configuration", () => {
       ["employer_company", "job_requisition"],
     ] as const) {
       const keys = stepsForRole(steps, code).map((s) => s.step_key);
-      expect(keys).toContain("verification".replace("verification", keys[1]!));
-      expect(keys.indexOf(listing)).toBeGreaterThan(0);
+      expect(keys).toContain("verification");
+      expect(keys.indexOf(listing)).toBeGreaterThan(keys.indexOf("verification"));
       expect(keys.indexOf(listing)).toBeLessThan(keys.indexOf("review"));
     }
   });
