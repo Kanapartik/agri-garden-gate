@@ -2927,6 +2927,122 @@ export type Database = {
           },
         ]
       }
+      fpo_opportunity_profiles: {
+        Row: {
+          annual_turnover_lakh: number | null
+          benefits_10k_status: string | null
+          block_mandal: string | null
+          cbbo: string | null
+          commodity_group: string | null
+          created_at: string
+          data_readiness_score: number | null
+          district: string | null
+          enam_status: string | null
+          existing_infrastructure: string | null
+          fpo_name: string
+          fssai_status: string | null
+          gst_status: string | null
+          id: string
+          last_verified: string | null
+          loan_requirement_lakh: number | null
+          member_count: number | null
+          notes: string | null
+          opportunity_score: number | null
+          owner_name: string | null
+          primary_commodity: string | null
+          priority_need: string | null
+          recommended_next_action: string | null
+          registration_number: string
+          registry_id: string | null
+          source_url: string | null
+          state_name: string
+          top_scheme_1: string | null
+          top_scheme_2: string | null
+          top_scheme_3: string | null
+          udyam_status: string | null
+          updated_at: string
+          verification_status: string | null
+        }
+        Insert: {
+          annual_turnover_lakh?: number | null
+          benefits_10k_status?: string | null
+          block_mandal?: string | null
+          cbbo?: string | null
+          commodity_group?: string | null
+          created_at?: string
+          data_readiness_score?: number | null
+          district?: string | null
+          enam_status?: string | null
+          existing_infrastructure?: string | null
+          fpo_name: string
+          fssai_status?: string | null
+          gst_status?: string | null
+          id?: string
+          last_verified?: string | null
+          loan_requirement_lakh?: number | null
+          member_count?: number | null
+          notes?: string | null
+          opportunity_score?: number | null
+          owner_name?: string | null
+          primary_commodity?: string | null
+          priority_need?: string | null
+          recommended_next_action?: string | null
+          registration_number: string
+          registry_id?: string | null
+          source_url?: string | null
+          state_name: string
+          top_scheme_1?: string | null
+          top_scheme_2?: string | null
+          top_scheme_3?: string | null
+          udyam_status?: string | null
+          updated_at?: string
+          verification_status?: string | null
+        }
+        Update: {
+          annual_turnover_lakh?: number | null
+          benefits_10k_status?: string | null
+          block_mandal?: string | null
+          cbbo?: string | null
+          commodity_group?: string | null
+          created_at?: string
+          data_readiness_score?: number | null
+          district?: string | null
+          enam_status?: string | null
+          existing_infrastructure?: string | null
+          fpo_name?: string
+          fssai_status?: string | null
+          gst_status?: string | null
+          id?: string
+          last_verified?: string | null
+          loan_requirement_lakh?: number | null
+          member_count?: number | null
+          notes?: string | null
+          opportunity_score?: number | null
+          owner_name?: string | null
+          primary_commodity?: string | null
+          priority_need?: string | null
+          recommended_next_action?: string | null
+          registration_number?: string
+          registry_id?: string | null
+          source_url?: string | null
+          state_name?: string
+          top_scheme_1?: string | null
+          top_scheme_2?: string | null
+          top_scheme_3?: string | null
+          udyam_status?: string | null
+          updated_at?: string
+          verification_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_opportunity_profiles_registry_id_fkey"
+            columns: ["registry_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_registry"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fpo_opportunity_tracking: {
         Row: {
           created_at: string
@@ -3779,6 +3895,66 @@ export type Database = {
           },
         ]
       }
+      fpo_scheme_catalog: {
+        Row: {
+          applicable_state: string | null
+          application_window: string | null
+          beneficiary: string | null
+          category: string | null
+          created_at: string
+          data_note: string | null
+          eligibility_trigger: string | null
+          fpo_relevance: string | null
+          id: string
+          implementer: string | null
+          indicative_limit: string | null
+          key_benefit: string | null
+          level: string | null
+          scheme_id: string
+          scheme_name: string
+          source_url: string | null
+          updated_at: string
+        }
+        Insert: {
+          applicable_state?: string | null
+          application_window?: string | null
+          beneficiary?: string | null
+          category?: string | null
+          created_at?: string
+          data_note?: string | null
+          eligibility_trigger?: string | null
+          fpo_relevance?: string | null
+          id?: string
+          implementer?: string | null
+          indicative_limit?: string | null
+          key_benefit?: string | null
+          level?: string | null
+          scheme_id: string
+          scheme_name: string
+          source_url?: string | null
+          updated_at?: string
+        }
+        Update: {
+          applicable_state?: string | null
+          application_window?: string | null
+          beneficiary?: string | null
+          category?: string | null
+          created_at?: string
+          data_note?: string | null
+          eligibility_trigger?: string | null
+          fpo_relevance?: string | null
+          id?: string
+          implementer?: string | null
+          indicative_limit?: string | null
+          key_benefit?: string | null
+          level?: string | null
+          scheme_id?: string
+          scheme_name?: string
+          source_url?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       fpo_scheme_eligibility: {
         Row: {
           advisory_note: string | null
@@ -3838,6 +4014,92 @@ export type Database = {
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_scheme_matrix: {
+        Row: {
+          commodity_group: string | null
+          created_at: string
+          district: string | null
+          flag_10k_benefits: string | null
+          flag_aif: string | null
+          flag_enam: string | null
+          flag_mechanisation_chc: string | null
+          flag_midh: string | null
+          flag_nmeo_op: string | null
+          flag_pm_rkvy: string | null
+          flag_pmfme: string | null
+          flag_pmmsy: string | null
+          flag_sampada: string | null
+          flag_state_income_support: string | null
+          flag_state_micro_irrigation: string | null
+          flag_state_other_benefit: string | null
+          fpo_name: string
+          id: string
+          priority_need: string | null
+          registration_number: string
+          registry_id: string | null
+          state_name: string
+          updated_at: string
+        }
+        Insert: {
+          commodity_group?: string | null
+          created_at?: string
+          district?: string | null
+          flag_10k_benefits?: string | null
+          flag_aif?: string | null
+          flag_enam?: string | null
+          flag_mechanisation_chc?: string | null
+          flag_midh?: string | null
+          flag_nmeo_op?: string | null
+          flag_pm_rkvy?: string | null
+          flag_pmfme?: string | null
+          flag_pmmsy?: string | null
+          flag_sampada?: string | null
+          flag_state_income_support?: string | null
+          flag_state_micro_irrigation?: string | null
+          flag_state_other_benefit?: string | null
+          fpo_name: string
+          id?: string
+          priority_need?: string | null
+          registration_number: string
+          registry_id?: string | null
+          state_name: string
+          updated_at?: string
+        }
+        Update: {
+          commodity_group?: string | null
+          created_at?: string
+          district?: string | null
+          flag_10k_benefits?: string | null
+          flag_aif?: string | null
+          flag_enam?: string | null
+          flag_mechanisation_chc?: string | null
+          flag_midh?: string | null
+          flag_nmeo_op?: string | null
+          flag_pm_rkvy?: string | null
+          flag_pmfme?: string | null
+          flag_pmmsy?: string | null
+          flag_sampada?: string | null
+          flag_state_income_support?: string | null
+          flag_state_micro_irrigation?: string | null
+          flag_state_other_benefit?: string | null
+          fpo_name?: string
+          id?: string
+          priority_need?: string | null
+          registration_number?: string
+          registry_id?: string | null
+          state_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_scheme_matrix_registry_id_fkey"
+            columns: ["registry_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_registry"
             referencedColumns: ["id"]
           },
         ]
