@@ -68,8 +68,9 @@ export function navItemsForRoles(
   if (isStaff) items.push({ to: "/dashboard", label: "Access console", labelKey: "nav.dashboard" });
 
   if (
-    roles.some((r) => r === "tenant_admin" || r === "onboarding_officer" || r === "field_agent") &&
-    (isFpoMember || isOversight)
+    (roles.some((r) => r === "tenant_admin" || r === "onboarding_officer" || r === "field_agent") &&
+      isFpoMember) ||
+    isOversight
   ) {
     items.push({ to: "/fpo", label: "FPO workspace", labelKey: "nav.fpo" });
     items.push({
