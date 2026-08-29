@@ -13,6 +13,7 @@ import {
   getFarmHistoryWorkspace,
   saveFarmSeason,
 } from "@/lib/atap/farmHistory.functions";
+import { getFarmerCoverDetail } from "@/lib/atap/insuranceBridge.functions";
 import {
   COST_HEADS,
   COST_HEAD_LABEL,
@@ -208,6 +209,13 @@ function FarmHistoryPage() {
   const plans = useQuery({
     queryKey: ["atap", "season-plans"],
     queryFn: () => fetchPlans(),
+  });
+
+  /* C3 — cover bound to a notified insurer policy + organization claim stage */
+  const fetchCover = useServerFn(getFarmerCoverDetail);
+  const cover = useQuery({
+    queryKey: ["atap", "farmer-cover-detail"],
+    queryFn: () => fetchCover({ data: {} }),
   });
 
   const savePlanMutation = useMutation({
@@ -880,6 +888,85 @@ function FarmHistoryPage() {
                   </span>
                 ) : null}
               </div>
+
+              <div className="rounded-xl border border-border bg-card p-5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h2 className="text-base font-semibold">My cover record</h2>
+                  <Badge variant={cover.data?.bound ? "default" : "secondary"}>
+                    {cover.data?.bound ? "Bound to a notified policy" : "Indicative only"}
+                  </Badge>
+                </div>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {cover.data?.note ??
+                    "Cover figures become policy-bound once your organization links a notified insurer policy."}
+                </p>
+                {(cover.data?.snapshots.length ?? 0) === 0 ? (
+                  <p className="mt-3 text-sm text-muted-foreground">
+                    No cover record yet. Your FPO can refresh cover indicators once you authorize
+                    membership facilitation.
+                  </p>
+                ) : (
+                  <div className="mt-3 space-y-2">
+                    {cover.data?.snapshots.map((s) => (
+                      <div
+                        key={`${s.cropYear}-${s.seasonCode}`}
+                        className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border p-4"
+                      >
+                        <div>
+                          <p className="text-sm font-medium">
+                            {SEASON_LABEL[s.seasonCode] ?? s.seasonCode} {s.cropYear} ·{" "}
+                            {s.crop ?? "crop not set"}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {inr(s.sumInsuredPerAcre ?? 0)} sum insured / acre · your share{" "}
+                            {inr(s.farmerSharePerAcre ?? 0)} / acre
+                            {s.contactLabel ? ` · ${s.contactLabel}` : ""}
+                          </p>
+                        </div>
+                        <Badge variant={s.source === "insurer_policy" ? "default" : "outline"}>
+                          {s.source === "insurer_policy" ? "Policy-bound" : "Indicative"}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="rounded-xl border border-border bg-card p-5">
+                <h2 className="text-base font-semibold">Claim status at my organization</h2>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {cover.data?.claimNote ??
+                    "Claim status is mirrored from the insurer at organization level."}
+                </p>
+                {(cover.data?.claims.length ?? 0) === 0 ? (
+                  <p className="mt-3 text-sm text-muted-foreground">
+                    No claim has been reported for your organization.
+                  </p>
+                ) : (
+                  <div className="mt-3 space-y-2">
+                    {cover.data?.claims.map((c) => (
+                      <div
+                        key={c.id}
+                        className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border p-4"
+                      >
+                        <div>
+                          <p className="text-sm font-medium">
+                            {c.crop ?? "all crops"} · {c.season} · {c.peril.replace(/_/g, " ")}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {c.fpoName} · reported{" "}
+                            {new Date(c.reportedAt).toLocaleDateString("en-IN")}
+                            {c.relevantToFarmer ? " · matches your district and crop" : ""}
+                          </p>
+                        </div>
+                        <Badge variant="secondary">{c.stageLabel}</Badge>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+
 
               <div className="rounded-xl border border-border bg-card p-5">
                 <h2 className="text-base font-semibold">My applications</h2>
