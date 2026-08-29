@@ -347,6 +347,33 @@ function FarmHistoryPage() {
         }
       />
 
+      {/* C4 — field-capture sync state, always visible so a farmer knows
+          whether an entry is on the device only or saved to the account. */}
+      {sync.counts.total > 0 || !sync.online ? (
+        <div
+          className={
+            sync.counts.blocked > 0
+              ? "flex flex-wrap items-center justify-between gap-3 rounded-xl border border-destructive/40 bg-destructive/5 p-4"
+              : "flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-secondary/40 p-4"
+          }
+        >
+          <div className="flex items-center gap-2">
+            <Badge variant={sync.online ? "secondary" : "outline"}>
+              {sync.online ? "Online" : "Offline"}
+            </Badge>
+            <p className="text-sm">{sync.summary}</p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={!sync.online || sync.flushing || sync.counts.total === 0}
+            onClick={() => void sync.flush()}
+          >
+            {sync.flushing ? "Syncing…" : "Sync now"}
+          </Button>
+        </div>
+      ) : null}
+
       <div className="flex flex-wrap gap-2">
         {TABS.map((t) => (
           <button
@@ -481,7 +508,45 @@ function FarmHistoryPage() {
 
           {tab === "history" ? (
             <section className="space-y-4">
-              {seasonsSorted.length === 0 ? (
+              {sync.optimistic.length > 0 ? (
+                <div className="space-y-2 rounded-xl border border-dashed border-border p-4">
+                  <p className="text-sm font-semibold">Waiting to sync from this device</p>
+                  {sync.optimistic.map((o) => (
+                    <div
+                      key={o.key}
+                      className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border bg-card p-3"
+                    >
+                      <div>
+                        <p className="text-sm font-medium">
+                          {o.crop_year} {SEASON_LABEL[o.season_code] ?? o.season_code} · {o.crop} ·{" "}
+                          {o.area_acres} ac
+                        </p>
+                        {o.lastError ? (
+                          <p className="text-xs text-destructive">{o.lastError}</p>
+                        ) : (
+                          <p className="text-xs text-muted-foreground">
+                            Stored on this device only
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={o.blocked ? "destructive" : "outline"}>
+                          {o.blocked ? "Needs attention" : "Queued"}
+                        </Badge>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => sync.discard(o.clientOpId)}
+                        >
+                          Discard
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+
+              {seasonsSorted.length === 0 && sync.optimistic.length === 0 ? (
                 <p className="rounded-xl border border-dashed border-border p-6 text-sm text-muted-foreground">
                   Nothing recorded yet. Use “Add a season” to record what you sowed, what it cost and
                   what you earned.
