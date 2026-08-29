@@ -84,6 +84,21 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
       onError: (e: Error) => toast.error(e.message),
     });
 
+  const publishLot = useMutation({
+    mutationFn: (lotId: string) => publishFn({ data: { tenantId, lotId } }),
+    onSuccess: async (result) => {
+      if (result.status === "listed") {
+        toast.success("Lot is live on the marketplace.");
+      } else {
+        toast.info(
+          "Marketplace seller profile submitted for internal review. Listing will be possible once approved.",
+        );
+      }
+      await invalidate();
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   const create = useAction(
     () =>
       createFn({
