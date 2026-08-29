@@ -24,7 +24,9 @@ export function navItemsForRoles(
   if (!signedIn) {
     return [
       { to: "/", label: "Overview", labelKey: "nav.overview" },
+      { to: "/platform", label: "Platform", labelKey: "nav.platform" },
       { to: "/roles", label: "Roles", labelKey: "nav.roles" },
+      { to: "/team", label: "Team", labelKey: "nav.team" },
       { to: "/architecture", label: "Architecture", labelKey: "nav.architecture" },
     ];
   }
