@@ -61,11 +61,11 @@ export function Reveal({
   );
 }
 
-export function Container({ children, className }: { children: ReactNode; className?: string }) {
+export function Container({ children, className }: { children: ReactNode; className?: string | undefined }) {
   return <div className={cn("mx-auto w-full max-w-6xl px-6", className)}>{children}</div>;
 }
 
-export function Eyebrow({ children, className }: { children: ReactNode; className?: string }) {
+export function Eyebrow({ children, className }: { children: ReactNode; className?: string | undefined }) {
   return (
     <p
       className={cn(
@@ -118,7 +118,7 @@ export function Section({
   className,
   tone = "default",
 }: {
-  id?: string;
+  id?: string | undefined;
   children: ReactNode;
   className?: string | undefined;
   tone?: "default" | "muted" | "deep";
