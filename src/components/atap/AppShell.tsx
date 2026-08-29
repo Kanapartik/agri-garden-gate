@@ -142,11 +142,12 @@ function useSessionRoles() {
   return {
     signedIn: signedIn === true,
     roles: (context.data?.roles ?? []).map((r) => r.role),
+    tenantTypes: (context.data?.tenants ?? []).map((t) => t.tenant_type),
   };
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { signedIn, roles } = useSessionRoles();
+  const { signedIn, roles, tenantTypes } = useSessionRoles();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
