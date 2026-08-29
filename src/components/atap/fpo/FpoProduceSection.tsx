@@ -331,6 +331,26 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                 <p className="mt-4 text-sm text-destructive">{(detail.error as Error).message}</p>
               ) : detail.data ? (
                 <div className="mt-5 space-y-5 border-t border-border pt-4">
+                  {lot.marketplace_listing_id ? (
+                    <p className="rounded-md border border-border bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
+                      Listed on the marketplace — buyers can discover and order this lot from the
+                      Market page.
+                    </p>
+                  ) : detail.data.canManage && detail.data.readiness.ready ? (
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Button
+                        size="sm"
+                        disabled={publishLot.isPending}
+                        onClick={() => publishLot.mutate(lot.id)}
+                      >
+                        {publishLot.isPending ? "Listing…" : "List on marketplace"}
+                      </Button>
+                      <span className="text-xs text-muted-foreground">
+                        Publishes the aggregate as a single FPO listing at the reserve price.
+                        Member identities are never shared.
+                      </span>
+                    </div>
+                  ) : null}
                   {!detail.data.readiness.ready ? (
                     <ul className="space-y-1 text-xs text-muted-foreground">
                       {detail.data.readiness.reasons.map((r) => (
