@@ -93,8 +93,13 @@ function OnboardingPage() {
 
       <section className="panel p-5">
         <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-          Start a synthetic draft
+          Add a role profile
         </h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          One account can hold multiple role profiles — for example farmer, FPO office bearer and
+          knowledge contributor. Each journey is drafted separately and only becomes active after
+          human review; starting a draft grants no access by itself.
+        </p>
         <div className="mt-3 flex flex-wrap gap-2">
           {selectable.map((role) => (
             <Button
