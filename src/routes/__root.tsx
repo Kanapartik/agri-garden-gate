@@ -144,6 +144,17 @@ function RootComponent() {
     return () => data.subscription.unsubscribe();
   }, [router, queryClient]);
 
+  /* C4 — register the field service worker so the capture screens open in
+     low-signal areas. It caches only the app shell and static assets; farmer
+     data and auth responses are never cached. */
+  useEffect(() => {
+    if (typeof window === "undefined" || !("serviceWorker" in window.navigator)) return;
+    if (window.location.hostname === "localhost") return;
+    const register = () => void window.navigator.serviceWorker.register("/sw.js").catch(() => {});
+    if (document.readyState === "complete") register();
+    else window.addEventListener("load", register, { once: true });
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
