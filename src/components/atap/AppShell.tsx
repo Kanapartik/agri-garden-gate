@@ -1,10 +1,10 @@
-import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { getMyContext } from "@/lib/atap.functions";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { LanguageSwitcher, useLanguage } from "@/components/atap/LanguageProvider";
 import type { AppRole } from "@/lib/atap/policy";
 
@@ -149,7 +149,6 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { signedIn, roles, tenantTypes } = useSessionRoles();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
   const items = navItemsForRoles(roles, signedIn, tenantTypes);
   const { t } = useLanguage();
 
