@@ -49,6 +49,7 @@ export function navItemsForRoles(
   if (isPlainIndividual || isFpoMember || isOversight) {
     items.push(
       { to: "/farm", label: "My farm", labelKey: "nav.farm" },
+      { to: "/farm-history", label: "My farm history", labelKey: "nav.farmHistory" },
       { to: "/intelligence", label: "Farm intelligence", labelKey: "nav.intelligence" },
       { to: "/practices", label: "Training", labelKey: "nav.practices" },
       { to: "/inputs", label: "Inputs & protection", labelKey: "nav.inputs" },

@@ -235,6 +235,69 @@ export type Database = {
           },
         ]
       }
+      area_crop_benchmarks: {
+        Row: {
+          adoption_share: number
+          created_at: string
+          crop: string
+          crop_year: number
+          district: string
+          id: string
+          is_synthetic: boolean
+          price_high_per_quintal: number
+          price_low_per_quintal: number
+          season_code: string
+          source: string
+          state_name: string
+          typical_cost_per_acre: number
+          typical_price_per_quintal: number
+          typical_yield_quintal_per_acre: number
+          updated_at: string
+          yield_high_quintal_per_acre: number
+          yield_low_quintal_per_acre: number
+        }
+        Insert: {
+          adoption_share?: number
+          created_at?: string
+          crop: string
+          crop_year: number
+          district: string
+          id?: string
+          is_synthetic?: boolean
+          price_high_per_quintal: number
+          price_low_per_quintal: number
+          season_code?: string
+          source?: string
+          state_name: string
+          typical_cost_per_acre: number
+          typical_price_per_quintal: number
+          typical_yield_quintal_per_acre: number
+          updated_at?: string
+          yield_high_quintal_per_acre: number
+          yield_low_quintal_per_acre: number
+        }
+        Update: {
+          adoption_share?: number
+          created_at?: string
+          crop?: string
+          crop_year?: number
+          district?: string
+          id?: string
+          is_synthetic?: boolean
+          price_high_per_quintal?: number
+          price_low_per_quintal?: number
+          season_code?: string
+          source?: string
+          state_name?: string
+          typical_cost_per_acre?: number
+          typical_price_per_quintal?: number
+          typical_yield_quintal_per_acre?: number
+          updated_at?: string
+          yield_high_quintal_per_acre?: number
+          yield_low_quintal_per_acre?: number
+        }
+        Relationships: []
+      }
       audit_events: {
         Row: {
           action: string
@@ -1238,6 +1301,74 @@ export type Database = {
           },
         ]
       }
+      farm_season_records: {
+        Row: {
+          area_acres: number
+          created_at: string
+          crop: string
+          crop_year: number
+          farm_id: string | null
+          farmer_user_id: string
+          id: string
+          input_cost_total: number
+          input_costs: Json
+          is_synthetic: boolean
+          notes: string | null
+          price_per_quintal: number | null
+          provenance: Database["public"]["Enums"]["field_provenance"]
+          revenue_inr: number | null
+          season_code: string
+          updated_at: string
+          yield_quintal: number | null
+        }
+        Insert: {
+          area_acres?: number
+          created_at?: string
+          crop: string
+          crop_year: number
+          farm_id?: string | null
+          farmer_user_id: string
+          id?: string
+          input_cost_total?: number
+          input_costs?: Json
+          is_synthetic?: boolean
+          notes?: string | null
+          price_per_quintal?: number | null
+          provenance?: Database["public"]["Enums"]["field_provenance"]
+          revenue_inr?: number | null
+          season_code: string
+          updated_at?: string
+          yield_quintal?: number | null
+        }
+        Update: {
+          area_acres?: number
+          created_at?: string
+          crop?: string
+          crop_year?: number
+          farm_id?: string | null
+          farmer_user_id?: string
+          id?: string
+          input_cost_total?: number
+          input_costs?: Json
+          is_synthetic?: boolean
+          notes?: string | null
+          price_per_quintal?: number | null
+          provenance?: Database["public"]["Enums"]["field_provenance"]
+          revenue_inr?: number | null
+          season_code?: string
+          updated_at?: string
+          yield_quintal?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "farm_season_records_farm_id_fkey"
+            columns: ["farm_id"]
+            isOneToOne: false
+            referencedRelation: "farm_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       farmer_documents: {
         Row: {
           created_at: string
@@ -1329,6 +1460,66 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      farmer_insurance_snapshots: {
+        Row: {
+          contact_label: string | null
+          cover_state: string
+          created_at: string
+          crop: string | null
+          crop_year: number
+          district: string | null
+          farmer_share_per_acre: number | null
+          farmer_user_id: string
+          id: string
+          indicative_premium_per_acre: number | null
+          is_synthetic: boolean
+          scheme_code: string | null
+          season_code: string
+          source: string
+          state_name: string | null
+          sum_insured_per_acre: number | null
+          updated_at: string
+        }
+        Insert: {
+          contact_label?: string | null
+          cover_state?: string
+          created_at?: string
+          crop?: string | null
+          crop_year: number
+          district?: string | null
+          farmer_share_per_acre?: number | null
+          farmer_user_id: string
+          id?: string
+          indicative_premium_per_acre?: number | null
+          is_synthetic?: boolean
+          scheme_code?: string | null
+          season_code: string
+          source?: string
+          state_name?: string | null
+          sum_insured_per_acre?: number | null
+          updated_at?: string
+        }
+        Update: {
+          contact_label?: string | null
+          cover_state?: string
+          created_at?: string
+          crop?: string | null
+          crop_year?: number
+          district?: string | null
+          farmer_share_per_acre?: number | null
+          farmer_user_id?: string
+          id?: string
+          indicative_premium_per_acre?: number | null
+          is_synthetic?: boolean
+          scheme_code?: string | null
+          season_code?: string
+          source?: string
+          state_name?: string | null
+          sum_insured_per_acre?: number | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       farmer_profiles: {
         Row: {
@@ -10450,6 +10641,8 @@ export type Database = {
         | "processor"
         | "logistics"
         | "extension_centre"
+        | "drone_service"
+        | "farm_machinery"
       farm_sync_state: "local_draft" | "synced" | "conflict"
       farmer_doc_kind:
         | "photo"
@@ -11066,6 +11259,8 @@ export const Constants = {
         "processor",
         "logistics",
         "extension_centre",
+        "drone_service",
+        "farm_machinery",
       ],
       farm_sync_state: ["local_draft", "synced", "conflict"],
       farmer_doc_kind: [
