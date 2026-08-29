@@ -92,7 +92,7 @@ export function resolvePolicyBindingSource(input: {
 
   if (mode !== "synthetic_only" && real.length > 0) {
     const source = insurerDomainBindingSource({ policies: real, claims: input.claims });
-    return { source, provenance(source.name, false, "Notified insurer policy") };
+    return { source, provenance: provenance(source.name, false, "Notified insurer policy") };
   }
 
   if (mode === "official_only") {
