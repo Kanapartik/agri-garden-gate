@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AdvantagesRouteImport } from './routes/advantages'
 import { Route as ArchitectureRouteImport } from './routes/architecture'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IntegrationsRouteImport } from './routes/integrations'
@@ -50,6 +51,11 @@ const IndexRoute = IndexRouteImport.update({
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdvantagesRoute = AdvantagesRouteImport.update({
+  id: '/advantages',
+  path: '/advantages',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArchitectureRoute = ArchitectureRouteImport.update({
@@ -217,6 +223,7 @@ const AuthenticatedSoilCareRoute = AuthenticatedSoilCareRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/advantages': typeof AdvantagesRoute
   '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
   '/integrations': typeof IntegrationsRoute
@@ -251,6 +258,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/advantages': typeof AdvantagesRoute
   '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
   '/integrations': typeof IntegrationsRoute
@@ -287,6 +295,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/advantages': typeof AdvantagesRoute
   '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
   '/integrations': typeof IntegrationsRoute
@@ -323,6 +332,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/advantages'
     | '/architecture'
     | '/auth'
     | '/integrations'
@@ -357,6 +367,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/advantages'
     | '/architecture'
     | '/auth'
     | '/integrations'
@@ -392,6 +403,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/advantages'
     | '/architecture'
     | '/auth'
     | '/integrations'
@@ -428,6 +440,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AdvantagesRoute: typeof AdvantagesRoute
   ArchitectureRoute: typeof ArchitectureRoute
   AuthRoute: typeof AuthRoute
   IntegrationsRoute: typeof IntegrationsRoute
@@ -451,6 +464,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/advantages': {
+      id: '/advantages'
+      path: '/advantages'
+      fullPath: '/advantages'
+      preLoaderRoute: typeof AdvantagesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/architecture': {
@@ -733,6 +753,7 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AdvantagesRoute: AdvantagesRoute,
   ArchitectureRoute: ArchitectureRoute,
   AuthRoute: AuthRoute,
   IntegrationsRoute: IntegrationsRoute,
