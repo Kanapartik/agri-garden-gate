@@ -4,7 +4,6 @@ import { useServerFn } from "@tanstack/react-start";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { getMemberHistoryInsights } from "@/lib/atap/fpoHistoryInsights.functions";
-import { COST_HEAD_LABEL, type CostHead } from "@/lib/atap/farmHistory";
 
 const card = "rounded-lg border border-border bg-card p-4";
 const inr = (v: number | null | undefined) =>
@@ -87,9 +86,9 @@ export function FpoMemberHistorySection({ tenantId }: { tenantId: string }) {
               <thead className="bg-secondary text-secondary-foreground">
                 <tr>
                   <th className="p-3 text-left">Crop</th>
-                  <th className="p-3 text-right">Acres (latest year)</th>
+                  <th className="p-3 text-right">Acres recorded</th>
                   <th className="p-3 text-right">Avg yield / acre</th>
-                  <th className="p-3 text-right">Avg cost / acre</th>
+                  <th className="p-3 text-right">Avg net / acre</th>
                   <th className="p-3 text-left">Trend</th>
                 </tr>
               </thead>
@@ -97,9 +96,9 @@ export function FpoMemberHistorySection({ tenantId }: { tenantId: string }) {
                 {data.trends.map((t) => (
                   <tr key={t.crop} className="border-t border-border">
                     <td className="p-3 font-medium">{t.crop}</td>
-                    <td className="p-3 text-right tabular-nums">{t.latestAcres}</td>
+                    <td className="p-3 text-right tabular-nums">{t.acres}</td>
                     <td className="p-3 text-right tabular-nums">{t.avgYieldPerAcre ?? "—"}</td>
-                    <td className="p-3 text-right tabular-nums">{inr(t.avgCostPerAcre)}</td>
+                    <td className="p-3 text-right tabular-nums">{inr(t.avgNetPerAcre)}</td>
                     <td className="p-3">
                       <Badge variant={TREND_TONE[t.trend] ?? "outline"}>
                         {t.trend.replace(/_/g, " ")}
@@ -142,24 +141,21 @@ export function FpoMemberHistorySection({ tenantId }: { tenantId: string }) {
               <thead className="bg-secondary text-secondary-foreground">
                 <tr>
                   <th className="p-3 text-left">Crop</th>
-                  <th className="p-3 text-right">Planned acres</th>
-                  <th className="p-3 text-right">Indicative spend</th>
-                  <th className="p-3 text-left">Head-wise split</th>
+                  <th className="p-3 text-right">Projected acres</th>
+                  <th className="p-3 text-right">Indicative budget</th>
+                  <th className="p-3 text-left">Basis</th>
                 </tr>
               </thead>
               <tbody>
                 {data.demand.map((d) => (
                   <tr key={d.crop} className="border-t border-border align-top">
                     <td className="p-3 font-medium">{d.crop}</td>
-                    <td className="p-3 text-right tabular-nums">{d.plannedAcres}</td>
-                    <td className="p-3 text-right tabular-nums">{inr(d.indicativeSpend)}</td>
+                    <td className="p-3 text-right tabular-nums">{d.projectedAcres}</td>
+                    <td className="p-3 text-right tabular-nums">{inr(d.indicativeBudget)}</td>
                     <td className="p-3 text-xs text-muted-foreground">
-                      {Object.entries(d.headSpend ?? {})
-                        .map(
-                          ([head, value]) =>
-                            `${COST_HEAD_LABEL[head as CostHead] ?? head} ${inr(Number(value))}`,
-                        )
-                        .join(" · ") || "—"}
+                      {d.basis === "member_history"
+                        ? `${d.contributingMembers} members · ${inr(d.indicativeCostPerAcre)} per acre`
+                        : "Cohort too small — suppressed"}
                     </td>
                   </tr>
                 ))}
@@ -174,9 +170,9 @@ export function FpoMemberHistorySection({ tenantId }: { tenantId: string }) {
           <h3 className="text-sm font-semibold">Procurement &amp; yield-gap signals</h3>
           <ul className="mt-3 space-y-2 text-sm">
             {data.signals.map((s) => (
-              <li key={`${s.crop}-${s.code}`} className="flex items-start gap-2">
+              <li key={`${s.crop}-${s.signal}`} className="flex items-start gap-2">
                 <Badge variant="outline">{s.crop}</Badge>
-                <span className="text-muted-foreground">{s.message}</span>
+                <span className="text-muted-foreground">{s.note}</span>
               </li>
             ))}
           </ul>
