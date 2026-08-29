@@ -25,6 +25,7 @@ import {
   STAKEHOLDERS,
 } from "@/components/marketing/content";
 import heroAsset from "@/assets/agrivah-hero.webp.asset.json";
+import heroClearUrl from "@/assets/agrivah-hero-clear.jpg";
 import trustAsset from "@/assets/agrivah-trust.webp.asset.json";
 import fieldAsset from "@/assets/agrivah-field-collaboration.webp.asset.json";
 
@@ -68,12 +69,14 @@ function Landing() {
       {/* ------------------------------------------------------------ hero */}
       <section className="bg-surface-deep text-surface-deep-foreground relative overflow-hidden">
         <img
-          src={heroAsset.url}
+          src={heroClearUrl}
           alt=""
           aria-hidden
-          className="absolute inset-0 h-full w-full object-cover opacity-20"
+          width={1920}
+          height={1088}
+          className="absolute inset-0 h-full w-full object-cover opacity-90"
         />
-        <div className="from-surface-deep via-surface-deep/85 to-surface-deep/60 absolute inset-0 bg-gradient-to-r" />
+        <div className="from-surface-deep via-surface-deep/60 to-surface-deep/10 absolute inset-0 bg-gradient-to-r" />
         <Container className="relative grid gap-12 py-20 sm:py-28 lg:grid-cols-[1.4fr_1fr] lg:items-end">
           <div>
             <Eyebrow className="text-accent">Shared digital rails for agriculture</Eyebrow>
