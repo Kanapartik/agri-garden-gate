@@ -287,3 +287,51 @@ describe("listing readiness", () => {
     expect(r.reasons.join(" ")).toContain("cannot be listed directly");
   });
 });
+
+describe("marketplace bridge (C2)", () => {
+  it("maps commodities to in-scope listing categories", () => {
+    expect(produceCategoryFor("Paddy")).toBe("produce_grain");
+    expect(produceCategoryFor("redgram")).toBe("produce_grain");
+    expect(produceCategoryFor("Chilli")).toBe("produce_horticulture");
+    expect(produceCategoryFor("Turmeric")).toBe("produce_horticulture");
+    expect(produceCategoryFor("Cotton")).toBe("produce_horticulture");
+  });
+
+  it("builds a listing draft that protects member returns and identities", () => {
+    const draft = lotListingDraft(
+      {
+        commodity: "Paddy",
+        variety: "Sona Masuri",
+        grade: "A",
+        season: "Kharif 2025",
+        aggregated_quantity: 1240,
+        unit: "quintal",
+        reserve_price_per_unit: 2320,
+      },
+      "Guntur Chilli Growers FPO",
+    );
+    expect(draft.category).toBe("produce_grain");
+    expect(draft.title).toBe("Paddy · Sona Masuri · Grade A — Kharif 2025");
+    expect(draft.priceMin).toBe(2320);
+    expect(draft.minOrderQty).toBe(1240);
+    expect(draft.unit).toBe("quintal");
+    expect(draft.description).toContain("Guntur Chilli Growers FPO");
+    expect(draft.description).toContain("Individual member data is not shared");
+  });
+
+  it("omits optional lot attributes from the listing title", () => {
+    const draft = lotListingDraft(
+      {
+        commodity: "Maize",
+        variety: null,
+        grade: null,
+        season: null,
+        aggregated_quantity: 500,
+        unit: "quintal",
+        reserve_price_per_unit: 2100,
+      },
+      "Test FPC",
+    );
+    expect(draft.title).toBe("Maize");
+  });
+});
