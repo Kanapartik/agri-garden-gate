@@ -116,7 +116,7 @@ describe("matrix", () => {
 
   it("covers every workspace role and section", () => {
     const matrix = buildMatrix(DEFAULTS, TENANT);
-    expect(matrix.length).toBe(14 * 4);
+    expect(matrix.length).toBe(15 * 4);
   });
 });
 

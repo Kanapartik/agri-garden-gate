@@ -24,6 +24,18 @@ import {
   type CostBreakdown,
   type CostHead,
 } from "@/lib/atap/farmHistory";
+import {
+  PLANNING_DISCLAIMER,
+  buildSeasonBudget,
+  planCandidates,
+  planRisks,
+  planSnapshot,
+} from "@/lib/atap/seasonPlanning";
+import {
+  deleteSeasonPlan,
+  listSeasonPlans,
+  saveSeasonPlan,
+} from "@/lib/atap/seasonPlanning.functions";
 
 const TITLE = "My farm history & command centre — AgriGhar ATAP";
 const DESCRIPTION =
@@ -71,12 +83,13 @@ const SERVICE_LABEL: Record<string, string> = {
   extension_centre: "Extension centre",
 };
 
-type Tab = "overview" | "history" | "area" | "insurance" | "services";
+type Tab = "overview" | "history" | "area" | "plan" | "insurance" | "services";
 
 const TABS: Array<{ id: Tab; label: string }> = [
   { id: "overview", label: "Command centre" },
   { id: "history", label: "My 5-year history" },
   { id: "area", label: "What my area grows" },
+  { id: "plan", label: "Next season plan" },
   { id: "insurance", label: "Insurance corner" },
   { id: "services", label: "Services near me" },
 ];
@@ -138,6 +151,9 @@ function FarmHistoryPage() {
   const [tab, setTab] = useState<Tab>("overview");
   const [draft, setDraft] = useState<DraftState | null>(null);
   const [serviceKind, setServiceKind] = useState<string>("all");
+  const [planCrop, setPlanCrop] = useState<string>("");
+  const [planAcres, setPlanAcres] = useState<string>("");
+  const [planParcel, setPlanParcel] = useState<string>("");
 
   const workspace = useQuery({
     queryKey: ["atap", "farm-history"],
@@ -184,6 +200,67 @@ function FarmHistoryPage() {
     },
     onError: () => toast.error("Could not remove this season"),
   });
+
+  const fetchPlans = useServerFn(listSeasonPlans);
+  const savePlan = useServerFn(saveSeasonPlan);
+  const removePlan = useServerFn(deleteSeasonPlan);
+
+  const plans = useQuery({
+    queryKey: ["atap", "season-plans"],
+    queryFn: () => fetchPlans(),
+  });
+
+  const savePlanMutation = useMutation({
+    mutationFn: (input: Parameters<typeof savePlan>[0]) => savePlan(input),
+    onSuccess: async () => {
+      toast.success("Advisory plan saved");
+      await queryClient.invalidateQueries({ queryKey: ["atap", "season-plans"] });
+    },
+    onError: (e: Error) => toast.error(e.message || "Could not save this plan"),
+  });
+
+  const deletePlanMutation = useMutation({
+    mutationFn: (planId: string) => removePlan({ data: { planId } }),
+    onSuccess: async () => {
+      toast.success("Plan removed");
+      await queryClient.invalidateQueries({ queryKey: ["atap", "season-plans"] });
+    },
+    onError: () => toast.error("Could not remove this plan"),
+  });
+
+  const candidates = useMemo(
+    () =>
+      data
+        ? planCandidates({ history: data.seasons, areaCrops: data.areaCrops, limit: 6 })
+        : [],
+    [data],
+  );
+
+  const activeCandidate = useMemo(
+    () => candidates.find((c) => c.crop === planCrop) ?? candidates[0] ?? null,
+    [candidates, planCrop],
+  );
+
+  const planBudget = useMemo(() => {
+    if (!data || !activeCandidate) return null;
+    const acres = Number(planAcres) || data.totalAcres || 1;
+    return buildSeasonBudget({
+      crop: activeCandidate.crop,
+      acres,
+      history: data.seasons,
+      candidate: activeCandidate,
+    });
+  }, [data, activeCandidate, planAcres]);
+
+  const planWarnings = useMemo(() => {
+    if (!data || !activeCandidate || !planBudget) return [];
+    return planRisks({
+      candidate: activeCandidate,
+      budget: planBudget,
+      areaView: data.areaCrops.find((c) => c.crop === activeCandidate.crop) ?? null,
+      insuranceCovered: data.insurance.coverState === "covered",
+    });
+  }, [data, activeCandidate, planBudget]);
 
   const seasonsSorted = useMemo(
     () =>
@@ -544,6 +621,208 @@ function FarmHistoryPage() {
                     </div>
                   ))}
                 </div>
+              </div>
+            </section>
+          ) : null}
+
+          {tab === "plan" ? (
+            <section className="space-y-5">
+              <p className="text-sm text-muted-foreground">{PLANNING_DISCLAIMER}</p>
+
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {candidates.map((c) => {
+                  const active = activeCandidate?.crop === c.crop;
+                  return (
+                    <button
+                      key={c.crop}
+                      type="button"
+                      onClick={() => setPlanCrop(c.crop)}
+                      className={
+                        active
+                          ? "rounded-xl border-2 border-primary bg-card p-5 text-left"
+                          : "rounded-xl border border-border bg-card p-5 text-left"
+                      }
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-sm font-medium">{c.crop}</p>
+                        <Badge variant={active ? "default" : "outline"}>score {c.score}</Badge>
+                      </div>
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        Indicative net {inr(c.expectedNetPerAcre)}/acre · yield{" "}
+                        {c.expectedYieldPerAcre} qtl/ac
+                      </p>
+                      <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
+                        {c.reasons.slice(0, 2).map((r) => (
+                          <li key={r}>• {r}</li>
+                        ))}
+                      </ul>
+                    </button>
+                  );
+                })}
+                {candidates.length === 0 ? (
+                  <p className="rounded-xl border border-dashed border-border p-6 text-sm text-muted-foreground">
+                    Add a season or wait for district reference data to see planning options.
+                  </p>
+                ) : null}
+              </div>
+
+              {activeCandidate && planBudget ? (
+                <div className="rounded-xl border border-border bg-card p-5">
+                  <h2 className="text-base font-semibold">
+                    Input budget — {activeCandidate.crop}
+                  </h2>
+                  <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                    <div>
+                      <Label htmlFor="plan-acres">Acres you plan to sow</Label>
+                      <Input
+                        id="plan-acres"
+                        inputMode="decimal"
+                        value={planAcres}
+                        placeholder={String(data.totalAcres || 1)}
+                        onChange={(e) => setPlanAcres(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="plan-parcel">Parcel</Label>
+                      <select
+                        id="plan-parcel"
+                        className="mt-1 h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+                        value={planParcel}
+                        onChange={(e) => setPlanParcel(e.target.value)}
+                      >
+                        <option value="">Select a parcel</option>
+                        {data.parcels.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.label || p.id.slice(0, 8)}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="flex items-end">
+                      <Button
+                        disabled={!planParcel || savePlanMutation.isPending}
+                        onClick={() =>
+                          savePlanMutation.mutate({
+                            data: {
+                              farmId: planParcel,
+                              crop: activeCandidate.crop,
+                              seasonCode: data.currentSeason,
+                              cropYear: data.currentYear,
+                              acres: planBudget.acres,
+                              snapshot: planSnapshot({
+                                crop: activeCandidate.crop,
+                                seasonCode: data.currentSeason,
+                                cropYear: data.currentYear,
+                                acres: planBudget.acres,
+                                budget: planBudget,
+                                candidate: activeCandidate,
+                                risks: planWarnings,
+                              }),
+                            },
+                          })
+                        }
+                      >
+                        Save advisory plan
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="mt-5 overflow-x-auto rounded-lg border border-border">
+                    <table className="w-full text-sm">
+                      <thead className="bg-secondary text-secondary-foreground">
+                        <tr>
+                          <th className="p-3 text-left">Input head</th>
+                          <th className="p-3 text-right">Per acre</th>
+                          <th className="p-3 text-right">
+                            Total ({planBudget.acres} ac)
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {planBudget.lines.map((line) => (
+                          <tr key={line.head} className="border-t border-border">
+                            <td className="p-3">{COST_HEAD_LABEL[line.head]}</td>
+                            <td className="p-3 text-right tabular-nums">{inr(line.perAcre)}</td>
+                            <td className="p-3 text-right tabular-nums">{inr(line.total)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <Stat label="Total input budget" value={inr(planBudget.totalCost)} />
+                    <Stat label="Indicative gross" value={inr(planBudget.expectedGross)} />
+                    <Stat label="Indicative net" value={inr(planBudget.expectedNet)} />
+                    <Stat
+                      label="Break-even"
+                      value={
+                        planBudget.breakEvenYieldPerAcre !== null
+                          ? `${planBudget.breakEvenYieldPerAcre} qtl/ac`
+                          : "—"
+                      }
+                      {...(planBudget.breakEvenPricePerQuintal !== null
+                        ? { helper: `or ${inr(planBudget.breakEvenPricePerQuintal)}/qtl` }
+                        : {})}
+                    />
+                  </div>
+
+                  {planWarnings.length > 0 ? (
+                    <ul className="mt-4 space-y-2 text-xs">
+                      {planWarnings.map((r) => (
+                        <li key={r.code} className="flex items-start gap-2">
+                          <Badge
+                            variant={
+                              r.severity === "high"
+                                ? "destructive"
+                                : r.severity === "watch"
+                                  ? "secondary"
+                                  : "outline"
+                            }
+                          >
+                            {r.severity}
+                          </Badge>
+                          <span className="text-muted-foreground">{r.message}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </div>
+              ) : null}
+
+              <div className="rounded-xl border border-border bg-card p-5">
+                <h2 className="text-base font-semibold">Saved plans</h2>
+                {(plans.data ?? []).length === 0 ? (
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    No advisory plan saved yet.
+                  </p>
+                ) : (
+                  <div className="mt-3 space-y-2">
+                    {(plans.data ?? []).map((p) => (
+                      <div
+                        key={p.id}
+                        className="flex items-center justify-between gap-3 rounded-lg border border-border p-3"
+                      >
+                        <div>
+                          <p className="text-sm font-medium">
+                            {p.crop} · {SEASON_LABEL[p.snapshot.season_code] ?? p.snapshot.season_code}{" "}
+                            {p.snapshot.crop_year}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {p.snapshot.acres} ac · budget {inr(p.snapshot.budget?.totalCost)}
+                          </p>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => deletePlanMutation.mutate(p.id)}
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </section>
           ) : null}
