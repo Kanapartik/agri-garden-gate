@@ -16,7 +16,7 @@ export function Reveal({
   as: Tag = "div",
 }: {
   children: ReactNode;
-  className?: string;
+  className?: string | undefined;
   as?: "div" | "section" | "article" | "header" | "aside";
 }) {
   const ref = useRef<HTMLElement | null>(null);
@@ -87,7 +87,7 @@ export function SectionHeading({
 }: {
   kicker: string;
   title: string;
-  description?: string;
+  description?: string | undefined;
   tone?: "default" | "onDeep";
 }) {
   return (
@@ -120,7 +120,7 @@ export function Section({
 }: {
   id?: string;
   children: ReactNode;
-  className?: string;
+  className?: string | undefined;
   tone?: "default" | "muted" | "deep";
 }) {
   return (
