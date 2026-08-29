@@ -1,10 +1,10 @@
-import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { getMyContext } from "@/lib/atap.functions";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { LanguageSwitcher, useLanguage } from "@/components/atap/LanguageProvider";
 import type { AppRole } from "@/lib/atap/policy";
 
@@ -21,15 +21,10 @@ export function navItemsForRoles(
   signedIn: boolean,
   tenantTypes: string[] = [],
 ): NavItem[] {
-  if (!signedIn) {
-    return [
-      { to: "/", label: "Overview", labelKey: "nav.overview" },
-      { to: "/platform", label: "Platform", labelKey: "nav.platform" },
-      { to: "/roles", label: "Roles", labelKey: "nav.roles" },
-      { to: "/team", label: "Team", labelKey: "nav.team" },
-      { to: "/architecture", label: "Architecture", labelKey: "nav.architecture" },
-    ];
-  }
+  // Public visitors get no top menu at all — the marketing pages carry their own
+  // in-page navigation and sign-in calls to action. The menu appears only after
+  // sign-in, driven by the caller's roles and tenant types.
+  if (!signedIn) return [];
 
   // Engineering surfaces (platform configuration, architecture assumptions) are
   // meaningless to a farmer, so they stay with the roles that operate them.
@@ -154,7 +149,6 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { signedIn, roles, tenantTypes } = useSessionRoles();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
   const items = navItemsForRoles(roles, signedIn, tenantTypes);
   const { t } = useLanguage();
 
@@ -167,39 +161,33 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3">
-          <Link to="/" className="font-display text-base font-bold">
-            AgriGhar <span className="text-primary">ATAP</span>
-          </Link>
-          <nav className="flex flex-wrap items-center gap-1 text-sm" aria-label="Main">
-            {items.map((item) => (
-              <Link
-                key={item.to}
-                to={item.to}
-                activeProps={{ className: "bg-secondary text-secondary-foreground" }}
-                className="rounded-md px-2.5 py-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-secondary-foreground"
-              >
-                {t(item.labelKey)}
-              </Link>
-            ))}
-          </nav>
-          <div className="ml-auto flex items-center gap-2">
-            <LanguageSwitcher />
-            {signedIn ? (
+      {signedIn ? (
+        <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur">
+          <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3">
+            <Link to="/" className="font-display text-base font-bold">
+              AgriGhar <span className="text-primary">ATAP</span>
+            </Link>
+            <nav className="flex flex-wrap items-center gap-1 text-sm" aria-label="Main">
+              {items.map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  activeProps={{ className: "bg-secondary text-secondary-foreground" }}
+                  className="rounded-md px-2.5 py-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-secondary-foreground"
+                >
+                  {t(item.labelKey)}
+                </Link>
+              ))}
+            </nav>
+            <div className="ml-auto flex items-center gap-2">
+              <LanguageSwitcher />
               <Button variant="outline" size="sm" onClick={signOut}>
                 {t("shell.signOut")}
               </Button>
-            ) : pathname === "/auth" ? null : (
-              /* Plain anchor: protected-route redirects resolve on the client, so a
-                 router-aware Link here would hydrate with a different active state. */
-              <a href="/auth" className={buttonVariants({ size: "sm" })}>
-                {t("shell.signIn")}
-              </a>
-            )}
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
+      ) : null}
       <div className="flex-1">{children}</div>
       <footer className="border-t border-border px-6 py-6 text-xs text-muted-foreground">
         <div className="mx-auto max-w-6xl">
