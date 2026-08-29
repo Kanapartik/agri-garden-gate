@@ -19,6 +19,7 @@ import {
   type PermissionRowLike,
   type StaffLike,
 } from "@/lib/atap/fpoTeam";
+import { FPO_SECTIONS } from "@/lib/atap/fpo";
 import type { AppRole } from "@/lib/atap/policy";
 
 const TENANT = "t1";
@@ -116,7 +117,7 @@ describe("matrix", () => {
 
   it("covers every workspace role and section", () => {
     const matrix = buildMatrix(DEFAULTS, TENANT);
-    expect(matrix.length).toBe(15 * 4);
+    expect(matrix.length).toBe(FPO_SECTIONS.length * 4);
   });
 });
 
