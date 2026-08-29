@@ -150,12 +150,11 @@ export interface SeasonBudget {
 
 const DEFAULT_SHARES: Record<CostHead, number> = {
   seed: 0.14,
-  fertiliser: 0.24,
+  fertiliser: 0.25,
   protection: 0.16,
-  labour: 0.26,
-  machinery: 0.12,
-  irrigation: 0.05,
-  other: 0.03,
+  labour: 0.27,
+  machinery: 0.13,
+  other: 0.05,
 };
 
 function ownCostShares(records: readonly SeasonRecord[], crop: string): CostBreakdown | null {
