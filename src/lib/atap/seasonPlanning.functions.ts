@@ -14,7 +14,7 @@ export interface SavedPlanRow {
   crop: string;
   growth_stage: string;
   area_hectares: number;
-  snapshot: SavedPlanSnapshot | Record<string, unknown>;
+  snapshot: SavedPlanSnapshot;
   created_at: string;
   updated_at: string;
 }
