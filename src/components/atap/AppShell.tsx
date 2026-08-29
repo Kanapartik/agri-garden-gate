@@ -151,7 +151,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const items = navItemsForRoles(roles, signedIn);
+  const items = navItemsForRoles(roles, signedIn, tenantTypes);
   const { t } = useLanguage();
 
   async function signOut() {
