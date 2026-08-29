@@ -13,6 +13,7 @@ import {
   getFarmHistoryWorkspace,
   saveFarmSeason,
 } from "@/lib/atap/farmHistory.functions";
+import { getFarmerCoverDetail } from "@/lib/atap/insuranceBridge.functions";
 import {
   COST_HEADS,
   COST_HEAD_LABEL,
