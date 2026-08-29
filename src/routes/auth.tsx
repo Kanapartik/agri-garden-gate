@@ -13,16 +13,15 @@ const DESCRIPTION =
 
 /** Where to continue after a successful sign-in; defaults to the console. */
 function safeRedirect(value: unknown): string {
-  if (typeof value !== "string") return "/dashboard";
+  if (typeof value !== "string" || value.length === 0) return "/dashboard";
   // Only same-site absolute paths are accepted, never an external URL.
   if (!value.startsWith("/") || value.startsWith("//")) return "/dashboard";
   return value;
 }
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    redirect: safeRedirect(search["redirect"]),
-  }),
+  validateSearch: (search: Record<string, unknown>): { redirect?: string } =>
+    typeof search["redirect"] === "string" ? { redirect: safeRedirect(search["redirect"]) } : {},
   head: () => ({
     meta: [
       { title: TITLE },
@@ -38,7 +37,7 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthPage() {
-  const { redirect: continueTo } = Route.useSearch();
+  const continueTo = Route.useSearch().redirect ?? "/dashboard";
   const goOn = () => {
     window.location.assign(continueTo);
   };
