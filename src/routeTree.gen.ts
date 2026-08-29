@@ -21,6 +21,7 @@ import { Route as AuthenticatedConsentRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDiscoveryRouteImport } from './routes/_authenticated/discovery'
 import { Route as AuthenticatedFarmRouteImport } from './routes/_authenticated/farm'
+import { Route as AuthenticatedFarmHistoryRouteImport } from './routes/_authenticated/farm-history'
 import { Route as AuthenticatedFpoRouteImport } from './routes/_authenticated/fpo'
 import { Route as AuthenticatedFpoOpportunityRouteImport } from './routes/_authenticated/fpo-opportunity'
 import { Route as AuthenticatedInputsRouteImport } from './routes/_authenticated/inputs'
@@ -98,6 +99,12 @@ const AuthenticatedFarmRoute = AuthenticatedFarmRouteImport.update({
   path: '/farm',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedFarmHistoryRoute =
+  AuthenticatedFarmHistoryRouteImport.update({
+    id: '/farm-history',
+    path: '/farm-history',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedFpoRoute = AuthenticatedFpoRouteImport.update({
   id: '/fpo',
   path: '/fpo',
@@ -196,6 +203,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/discovery': typeof AuthenticatedDiscoveryRoute
   '/farm': typeof AuthenticatedFarmRoute
+  '/farm-history': typeof AuthenticatedFarmHistoryRoute
   '/fpo': typeof AuthenticatedFpoRoute
   '/fpo-opportunity': typeof AuthenticatedFpoOpportunityRoute
   '/inputs': typeof AuthenticatedInputsRoute
@@ -225,6 +233,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/discovery': typeof AuthenticatedDiscoveryRoute
   '/farm': typeof AuthenticatedFarmRoute
+  '/farm-history': typeof AuthenticatedFarmHistoryRoute
   '/fpo': typeof AuthenticatedFpoRoute
   '/fpo-opportunity': typeof AuthenticatedFpoOpportunityRoute
   '/inputs': typeof AuthenticatedInputsRoute
@@ -256,6 +265,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/discovery': typeof AuthenticatedDiscoveryRoute
   '/_authenticated/farm': typeof AuthenticatedFarmRoute
+  '/_authenticated/farm-history': typeof AuthenticatedFarmHistoryRoute
   '/_authenticated/fpo': typeof AuthenticatedFpoRoute
   '/_authenticated/fpo-opportunity': typeof AuthenticatedFpoOpportunityRoute
   '/_authenticated/inputs': typeof AuthenticatedInputsRoute
@@ -287,6 +297,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/discovery'
     | '/farm'
+    | '/farm-history'
     | '/fpo'
     | '/fpo-opportunity'
     | '/inputs'
@@ -316,6 +327,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/discovery'
     | '/farm'
+    | '/farm-history'
     | '/fpo'
     | '/fpo-opportunity'
     | '/inputs'
@@ -346,6 +358,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/discovery'
     | '/_authenticated/farm'
+    | '/_authenticated/farm-history'
     | '/_authenticated/fpo'
     | '/_authenticated/fpo-opportunity'
     | '/_authenticated/inputs'
@@ -456,6 +469,13 @@ declare module '@tanstack/react-router' {
       path: '/farm'
       fullPath: '/farm'
       preLoaderRoute: typeof AuthenticatedFarmRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/farm-history': {
+      id: '/_authenticated/farm-history'
+      path: '/farm-history'
+      fullPath: '/farm-history'
+      preLoaderRoute: typeof AuthenticatedFarmHistoryRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/fpo': {
@@ -581,6 +601,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDiscoveryRoute: typeof AuthenticatedDiscoveryRoute
   AuthenticatedFarmRoute: typeof AuthenticatedFarmRoute
+  AuthenticatedFarmHistoryRoute: typeof AuthenticatedFarmHistoryRoute
   AuthenticatedFpoRoute: typeof AuthenticatedFpoRoute
   AuthenticatedFpoOpportunityRoute: typeof AuthenticatedFpoOpportunityRoute
   AuthenticatedInputsRoute: typeof AuthenticatedInputsRoute
@@ -607,6 +628,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDiscoveryRoute: AuthenticatedDiscoveryRoute,
   AuthenticatedFarmRoute: AuthenticatedFarmRoute,
+  AuthenticatedFarmHistoryRoute: AuthenticatedFarmHistoryRoute,
   AuthenticatedFpoRoute: AuthenticatedFpoRoute,
   AuthenticatedFpoOpportunityRoute: AuthenticatedFpoOpportunityRoute,
   AuthenticatedInputsRoute: AuthenticatedInputsRoute,
