@@ -528,6 +528,8 @@ export async function loadWorkspace(
     currentYear,
     currentSeason,
     areaProvenance,
+    officialReference,
+
     insuranceProvenance,
   };
 }
