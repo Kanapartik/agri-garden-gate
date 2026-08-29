@@ -210,6 +210,13 @@ function FarmHistoryPage() {
     queryFn: () => fetchPlans(),
   });
 
+  /* C3 — cover bound to a notified insurer policy + organization claim stage */
+  const fetchCover = useServerFn(getFarmerCoverDetail);
+  const cover = useQuery({
+    queryKey: ["atap", "farmer-cover-detail"],
+    queryFn: () => fetchCover({ data: {} }),
+  });
+
   const savePlanMutation = useMutation({
     mutationFn: (input: Parameters<typeof savePlan>[0]) => savePlan(input),
     onSuccess: async () => {
