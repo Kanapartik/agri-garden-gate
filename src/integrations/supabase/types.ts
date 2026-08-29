@@ -6852,6 +6852,123 @@ export type Database = {
           },
         ]
       }
+      official_data_loads: {
+        Row: {
+          coverage_note: string | null
+          created_at: string
+          dataset_code: string
+          dataset_label: string
+          id: string
+          loaded_at: string
+          loaded_by: string | null
+          row_count: number
+          source_citation: string
+          updated_at: string
+          validate_notes: string | null
+        }
+        Insert: {
+          coverage_note?: string | null
+          created_at?: string
+          dataset_code: string
+          dataset_label: string
+          id?: string
+          loaded_at?: string
+          loaded_by?: string | null
+          row_count?: number
+          source_citation: string
+          updated_at?: string
+          validate_notes?: string | null
+        }
+        Update: {
+          coverage_note?: string | null
+          created_at?: string
+          dataset_code?: string
+          dataset_label?: string
+          id?: string
+          loaded_at?: string
+          loaded_by?: string | null
+          row_count?: number
+          source_citation?: string
+          updated_at?: string
+          validate_notes?: string | null
+        }
+        Relationships: []
+      }
+      official_insurance_rates: {
+        Row: {
+          created_at: string
+          crop_category: string
+          farmer_share_pct: number
+          id: string
+          notification_ref: string | null
+          scheme_code: string
+          season_code: string
+          source: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          crop_category: string
+          farmer_share_pct: number
+          id?: string
+          notification_ref?: string | null
+          scheme_code: string
+          season_code: string
+          source: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          crop_category?: string
+          farmer_share_pct?: number
+          id?: string
+          notification_ref?: string | null
+          scheme_code?: string
+          season_code?: string
+          source?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      official_msp_rates: {
+        Row: {
+          created_at: string
+          crop: string
+          crop_year: number
+          id: string
+          msp_per_quintal: number
+          notification_ref: string | null
+          season_code: string
+          source: string
+          updated_at: string
+          variety_label: string
+        }
+        Insert: {
+          created_at?: string
+          crop: string
+          crop_year: number
+          id?: string
+          msp_per_quintal: number
+          notification_ref?: string | null
+          season_code?: string
+          source: string
+          updated_at?: string
+          variety_label?: string
+        }
+        Update: {
+          created_at?: string
+          crop?: string
+          crop_year?: number
+          id?: string
+          msp_per_quintal?: number
+          notification_ref?: string | null
+          season_code?: string
+          source?: string
+          updated_at?: string
+          variety_label?: string
+        }
+        Relationships: []
+      }
       onboarding_applications: {
         Row: {
           applicant_user_id: string
