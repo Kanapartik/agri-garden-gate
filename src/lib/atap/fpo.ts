@@ -23,6 +23,7 @@ export const FPO_SECTIONS = [
   "tasks",
   "insights",
   "member_history",
+  "insurance",
   "team",
   "settings",
 ] as const;
