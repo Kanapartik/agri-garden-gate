@@ -11,10 +11,16 @@ import type { AppRole } from "@/lib/atap/policy";
 type NavItem = { to: string; label: string; labelKey: string };
 
 /**
- * Navigation is derived from role context, never hardcoded per page. Hiding a
- * link is presentation only — every server function re-checks authority.
+ * Navigation is derived from role AND tenant-type context, never hardcoded per
+ * page. Hiding a link is presentation only — every server function re-checks
+ * authority. Tenant types come from the caller's active memberships
+ * (`getMyContext`), so an insurer employee never sees farmer/FPO workspaces.
  */
-export function navItemsForRoles(roles: AppRole[], signedIn: boolean): NavItem[] {
+export function navItemsForRoles(
+  roles: AppRole[],
+  signedIn: boolean,
+  tenantTypes: string[] = [],
+): NavItem[] {
   if (!signedIn) {
     return [
       { to: "/", label: "Overview", labelKey: "nav.overview" },
@@ -27,23 +33,45 @@ export function navItemsForRoles(roles: AppRole[], signedIn: boolean): NavItem[]
   // meaningless to a farmer, so they stay with the roles that operate them.
   const isEngineering = roles.includes("platform_admin") || roles.includes("auditor");
   const isStaff = roles.some((r) => r !== "viewer" && r !== "talent_candidate");
+  const isOversight = isEngineering; // platform_admin / auditor keep cross-tenant visibility
+  const isFpoMember = tenantTypes.includes("fpo");
+  const isInsurerMember = tenantTypes.includes("insurer");
+  // A signed-in user with no tenant membership is a plain individual (farmer
+  // journey) — farmer surfaces apply. Tenant members see their tenant's
+  // workspaces instead.
+  const isPlainIndividual = tenantTypes.length === 0;
 
   const items: NavItem[] = [
     { to: "/profile", label: "My profile", labelKey: "nav.profile" },
     { to: "/onboarding", label: "My onboarding", labelKey: "nav.onboarding" },
-    { to: "/farm", label: "My farm", labelKey: "nav.farm" },
-    { to: "/intelligence", label: "Farm intelligence", labelKey: "nav.intelligence" },
-    { to: "/practices", label: "Training", labelKey: "nav.practices" },
-    { to: "/inputs", label: "Inputs & protection", labelKey: "nav.inputs" },
-    { to: "/soil-care", label: "Soil care", labelKey: "nav.soilCare" },
+  ];
+
+  if (isPlainIndividual || isFpoMember || isOversight) {
+    items.push(
+      { to: "/farm", label: "My farm", labelKey: "nav.farm" },
+      { to: "/intelligence", label: "Farm intelligence", labelKey: "nav.intelligence" },
+      { to: "/practices", label: "Training", labelKey: "nav.practices" },
+      { to: "/inputs", label: "Inputs & protection", labelKey: "nav.inputs" },
+      { to: "/soil-care", label: "Soil care", labelKey: "nav.soilCare" },
+    );
+  }
+
+  items.push(
     { to: "/consent", label: "Consent", labelKey: "nav.consent" },
     { to: "/discovery", label: "Schemes", labelKey: "nav.schemes" },
-    { to: "/market", label: "Marketplace", labelKey: "nav.market" },
-  ];
+  );
+
+  if (isPlainIndividual || isFpoMember || isOversight) {
+    items.push({ to: "/market", label: "Marketplace", labelKey: "nav.market" });
+  }
 
   if (isStaff) items.push({ to: "/dashboard", label: "Access console", labelKey: "nav.dashboard" });
 
-  if (roles.some((r) => r === "tenant_admin" || r === "onboarding_officer" || r === "field_agent")) {
+  if (
+    (roles.some((r) => r === "tenant_admin" || r === "onboarding_officer" || r === "field_agent") &&
+      isFpoMember) ||
+    isOversight
+  ) {
     items.push({ to: "/fpo", label: "FPO workspace", labelKey: "nav.fpo" });
     items.push({
       to: "/fpo-opportunity",
@@ -52,9 +80,10 @@ export function navItemsForRoles(roles: AppRole[], signedIn: boolean): NavItem[]
     });
   }
 
-  // Insurer sales intelligence is aggregate-only; the server still resolves the
-  // caller's insurer tenant, so a non-insurer tenant_admin sees an empty scope.
-  if (roles.some((r) => r === "tenant_admin" || r === "platform_admin" || r === "auditor")) {
+  // Insurer workspaces are scoped to insurer-tenant members (plus platform
+  // oversight). The server still resolves the caller's insurer tenant, so a
+  // non-insurer caller sees an empty scope even if they craft the URL.
+  if (isInsurerMember || isOversight) {
     items.push({ to: "/insurer", label: "Insurer revenue", labelKey: "nav.insurerRevenue" });
     items.push({ to: "/insurer-risk", label: "Risk surveillance", labelKey: "nav.insurerRisk" });
     items.push({ to: "/insurer-claims", label: "Claims management", labelKey: "nav.insurerClaims" });
@@ -114,15 +143,16 @@ function useSessionRoles() {
   return {
     signedIn: signedIn === true,
     roles: (context.data?.roles ?? []).map((r) => r.role),
+    tenantTypes: (context.data?.tenants ?? []).map((t) => t.tenant_type),
   };
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { signedIn, roles } = useSessionRoles();
+  const { signedIn, roles, tenantTypes } = useSessionRoles();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const items = navItemsForRoles(roles, signedIn);
+  const items = navItemsForRoles(roles, signedIn, tenantTypes);
   const { t } = useLanguage();
 
   async function signOut() {

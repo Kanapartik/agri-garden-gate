@@ -180,12 +180,14 @@ describe("presentation helpers", () => {
 });
 
 describe("insurer navigation", () => {
-  it("exposes the insurer workspace to tenant admins and oversight roles only", () => {
-    const labels = (roles: Parameters<typeof navItemsForRoles>[0]) =>
-      navItemsForRoles(roles, true).map((i) => i.label);
-    expect(labels(["tenant_admin"])).toContain("Insurer revenue");
+  it("exposes the insurer workspace to insurer-tenant members and oversight roles only", () => {
+    const labels = (roles: Parameters<typeof navItemsForRoles>[0], tenantTypes: string[] = []) =>
+      navItemsForRoles(roles, true, tenantTypes).map((i) => i.label);
+    expect(labels(["tenant_admin"], ["insurer"])).toContain("Insurer revenue");
     expect(labels(["auditor"])).toContain("Insurer revenue");
     expect(labels(["viewer"])).not.toContain("Insurer revenue");
     expect(labels(["field_agent"])).not.toContain("Insurer revenue");
+    // An FPO tenant_admin with no insurer membership must not see insurer menus.
+    expect(labels(["tenant_admin"], ["fpo"])).not.toContain("Insurer revenue");
   });
 });
