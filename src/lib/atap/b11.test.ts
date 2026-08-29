@@ -156,7 +156,7 @@ describe("FPO member history insights (B11)", () => {
 
   it("restricts the view to roles with roster authority", () => {
     expect(canViewMemberHistoryInsights(["tenant_admin"])).toBe(true);
-    expect(canViewMemberHistoryInsights(["farmer"])).toBe(false);
+    expect(canViewMemberHistoryInsights(["viewer"])).toBe(false);
   });
 
   it("reports coverage honestly when nothing can be shown", () => {
