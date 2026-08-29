@@ -387,7 +387,7 @@ export async function loadWorkspace(
     // Notified sum-insured/premium tables are not loaded yet — [VALIDATE source].
     officialRows: [],
   });
-  const insuranceProvenance: BaselineProvenance =
+  const insuranceBase: BaselineProvenance =
     snapshot && isOfficialSource((snapshot["source"] as string) ?? null)
       ? {
           adapter: "stored-insurer-snapshot",
@@ -398,6 +398,16 @@ export async function loadWorkspace(
           sources: [(snapshot["source"] as string) ?? "insurer"],
         }
       : insuranceResolution.provenance;
+  // Notified farmer share caps are official even when the premium amount is not.
+  const insuranceProvenance: BaselineProvenance = notifiedShare
+    ? {
+        ...insuranceBase,
+        officialRows: insuranceBase.officialRows + 1,
+        sources: [...new Set([...insuranceBase.sources, notifiedShare.source])].sort(),
+        label: `${insuranceBase.label} · notified farmer share ${notifiedShare.farmer_share_pct}%`,
+      }
+    : insuranceBase;
+
 
   let insurance: InsuranceCorner;
   if (snapshot) {
