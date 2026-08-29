@@ -14,6 +14,7 @@ import {
   saveFarmSeason,
 } from "@/lib/atap/farmHistory.functions";
 import { getFarmerCoverDetail } from "@/lib/atap/insuranceBridge.functions";
+import { useSeasonSync } from "@/hooks/useSeasonSync";
 import {
   COST_HEADS,
   COST_HEAD_LABEL,
@@ -163,6 +164,18 @@ function FarmHistoryPage() {
 
   const data = workspace.data;
 
+  /* C4 — offline field capture. Season entries are queued on the device and
+     replayed with a device-minted idempotency key when connectivity returns. */
+  const sync = useSeasonSync(
+    data?.userId ?? null,
+    {
+      upsert: (payload) => saveSeason({ data: payload }),
+      remove: (input) => removeSeason({ data: input }),
+      onFlushed: () => queryClient.invalidateQueries({ queryKey: ["atap", "farm-history"] }),
+    },
+    data?.seasons ?? [],
+  );
+
   const saveMutation = useMutation({
     mutationFn: async (input: DraftState) => {
       const costs: CostBreakdown = {};
@@ -170,23 +183,30 @@ function FarmHistoryPage() {
         const value = Number(input.costs[head]);
         if (Number.isFinite(value) && value > 0) costs[head] = value;
       }
-      return saveSeason({
-        data: {
-          ...(input.id ? { id: input.id } : {}),
-          farm_id: input.farm_id || null,
-          crop_year: Number(input.crop_year),
-          season_code: input.season_code,
-          crop: input.crop,
-          area_acres: Number(input.area_acres) || 0,
-          input_costs: costs,
-          yield_quintal: Number(input.yield_quintal) || null,
-          price_per_quintal: Number(input.price_per_quintal) || null,
-          notes: input.notes || null,
-        },
-      });
+      const payload = {
+        ...(input.id ? { id: input.id } : {}),
+        farm_id: input.farm_id || null,
+        crop_year: Number(input.crop_year),
+        season_code: input.season_code,
+        crop: input.crop,
+        area_acres: Number(input.area_acres) || 0,
+        input_costs: costs,
+        yield_quintal: Number(input.yield_quintal) || null,
+        price_per_quintal: Number(input.price_per_quintal) || null,
+        notes: input.notes || null,
+      };
+      if (!sync.online) {
+        sync.queueSeason(payload);
+        return { queued: true as const };
+      }
+      return saveSeason({ data: payload });
     },
-    onSuccess: async () => {
-      toast.success("Season saved");
+    onSuccess: async (result) => {
+      toast.success(
+        (result as { queued?: boolean })?.queued
+          ? "Saved on this device — it will sync when you are back online"
+          : "Season saved",
+      );
       setDraft(null);
       await queryClient.invalidateQueries({ queryKey: ["atap", "farm-history"] });
     },
@@ -194,7 +214,13 @@ function FarmHistoryPage() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => removeSeason({ data: { id } }),
+    mutationFn: async (id: string) => {
+      if (!sync.online) {
+        sync.queueDelete(id);
+        return { queued: true as const };
+      }
+      return removeSeason({ data: { id } });
+    },
     onSuccess: async () => {
       toast.success("Season removed");
       await queryClient.invalidateQueries({ queryKey: ["atap", "farm-history"] });
@@ -272,10 +298,12 @@ function FarmHistoryPage() {
 
   const seasonsSorted = useMemo(
     () =>
-      [...(data?.seasons ?? [])].sort(
-        (a, b) => b.crop_year - a.crop_year || a.season_code.localeCompare(b.season_code),
-      ),
-    [data?.seasons],
+      [...(data?.seasons ?? [])]
+        .filter((s) => !sync.deletedIds.includes(s.id))
+        .sort(
+          (a, b) => b.crop_year - a.crop_year || a.season_code.localeCompare(b.season_code),
+        ),
+    [data?.seasons, sync.deletedIds],
   );
 
   const filteredServices = useMemo(
