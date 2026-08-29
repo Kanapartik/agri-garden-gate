@@ -162,39 +162,33 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3">
-          <Link to="/" className="font-display text-base font-bold">
-            AgriGhar <span className="text-primary">ATAP</span>
-          </Link>
-          <nav className="flex flex-wrap items-center gap-1 text-sm" aria-label="Main">
-            {items.map((item) => (
-              <Link
-                key={item.to}
-                to={item.to}
-                activeProps={{ className: "bg-secondary text-secondary-foreground" }}
-                className="rounded-md px-2.5 py-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-secondary-foreground"
-              >
-                {t(item.labelKey)}
-              </Link>
-            ))}
-          </nav>
-          <div className="ml-auto flex items-center gap-2">
-            <LanguageSwitcher />
-            {signedIn ? (
+      {signedIn ? (
+        <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur">
+          <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3">
+            <Link to="/" className="font-display text-base font-bold">
+              AgriGhar <span className="text-primary">ATAP</span>
+            </Link>
+            <nav className="flex flex-wrap items-center gap-1 text-sm" aria-label="Main">
+              {items.map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  activeProps={{ className: "bg-secondary text-secondary-foreground" }}
+                  className="rounded-md px-2.5 py-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-secondary-foreground"
+                >
+                  {t(item.labelKey)}
+                </Link>
+              ))}
+            </nav>
+            <div className="ml-auto flex items-center gap-2">
+              <LanguageSwitcher />
               <Button variant="outline" size="sm" onClick={signOut}>
                 {t("shell.signOut")}
               </Button>
-            ) : pathname === "/auth" ? null : (
-              /* Plain anchor: protected-route redirects resolve on the client, so a
-                 router-aware Link here would hydrate with a different active state. */
-              <a href="/auth" className={buttonVariants({ size: "sm" })}>
-                {t("shell.signIn")}
-              </a>
-            )}
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
+      ) : null}
       <div className="flex-1">{children}</div>
       <footer className="border-t border-border px-6 py-6 text-xs text-muted-foreground">
         <div className="mx-auto max-w-6xl">
