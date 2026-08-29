@@ -110,6 +110,7 @@ const en: Dict = {
   "fpo.section.notifications": "Notifications",
   "fpo.section.tasks": "Tasks",
   "fpo.section.insights": "Insights",
+  "fpo.section.memberHistory": "Member history",
   "fpo.comingSoon": "This section arrives in a later phase of the workspace rollout.",
   "fpo.onboarding.title": "Organization onboarding",
   "fpo.onboarding.complete": "complete",

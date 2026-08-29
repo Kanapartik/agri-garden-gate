@@ -21,6 +21,7 @@ import { FpoNotificationsSection } from "@/components/atap/fpo/FpoNotificationsS
 import { FpoTasksSection } from "@/components/atap/fpo/FpoTasksSection";
 import { FpoTeamSection } from "@/components/atap/fpo/FpoTeamSection";
 import { FpoInsightsSection } from "@/components/atap/fpo/FpoInsightsSection";
+import { FpoMemberHistorySection } from "@/components/atap/fpo/FpoMemberHistorySection";
 import { Button } from "@/components/ui/button";
 import {
   acceptInvite,
@@ -484,6 +485,10 @@ function FpoPage() {
         <FpoNotificationsSection tenantId={activeTenant?.id ?? ""} />
       ) : null}
       {section === "tasks" ? <FpoTasksSection tenantId={activeTenant?.id ?? ""} /> : null}
+      {section === "member_history" ? (
+        <FpoMemberHistorySection tenantId={activeTenant?.id ?? ""} />
+      ) : null}
+
       {section === "insights" ? (
         <FpoInsightsSection tenantId={activeTenant?.id ?? ""} onOpenSection={setSection} />
       ) : null}
