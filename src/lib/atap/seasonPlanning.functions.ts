@@ -32,7 +32,7 @@ export const listSeasonPlans = createServerFn({ method: "GET" })
       .eq("growth_stage", "season_plan")
       .order("created_at", { ascending: false })
       .limit(25);
-    return (data ?? []) as SavedPlanRow[];
+    return (data ?? []) as unknown as SavedPlanRow[];
   });
 
 export const saveSeasonPlan = createServerFn({ method: "POST" })
