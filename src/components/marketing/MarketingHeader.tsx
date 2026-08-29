@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { buttonVariants } from "@/components/ui/button";
+import agrivahLogo from "@/assets/agrivah-logo.png";
 
 /**
  * Public marketing header. Mirrors the Agrivah site menu, but every entry is a
@@ -21,20 +22,7 @@ export function MarketingHeader() {
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
       <div className="mx-auto flex w-full max-w-6xl items-center gap-4 px-6 py-3">
         <Link to="/" className="flex items-center gap-2" aria-label="Agrivah home">
-          <svg viewBox="0 0 40 40" fill="none" aria-hidden className="h-7 w-7 text-primary">
-            <path
-              d="M8 26c8-1 12-7 13-17 7 5 10 11 8 18-2 6-8 8-13 5-4-2-6-5-6-8"
-              stroke="currentColor"
-              strokeWidth="2.4"
-              strokeLinecap="round"
-            />
-            <path
-              d="M10 31c4-8 10-13 18-16"
-              stroke="currentColor"
-              strokeWidth="2.4"
-              strokeLinecap="round"
-            />
-          </svg>
+          <img src={agrivahLogo} alt="Agrivah logo" width={362} height={372} className="h-9 w-auto" />
           <span className="font-display leading-tight font-bold">
             Agrivah
             <small className="block text-[10px] font-medium tracking-wide text-muted-foreground">
