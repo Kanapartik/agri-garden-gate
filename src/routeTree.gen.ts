@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AdvantagesRouteImport } from './routes/advantages'
 import { Route as ArchitectureRouteImport } from './routes/architecture'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ExecutionRouteImport } from './routes/execution'
 import { Route as IntegrationsRouteImport } from './routes/integrations'
 import { Route as PainPointsRouteImport } from './routes/pain-points'
 import { Route as PlatformRouteImport } from './routes/platform'
@@ -66,6 +67,11 @@ const ArchitectureRoute = ArchitectureRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExecutionRoute = ExecutionRouteImport.update({
+  id: '/execution',
+  path: '/execution',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IntegrationsRoute = IntegrationsRouteImport.update({
@@ -226,6 +232,7 @@ export interface FileRoutesByFullPath {
   '/advantages': typeof AdvantagesRoute
   '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
+  '/execution': typeof ExecutionRoute
   '/integrations': typeof IntegrationsRoute
   '/pain-points': typeof PainPointsRoute
   '/platform': typeof PlatformRoute
@@ -261,6 +268,7 @@ export interface FileRoutesByTo {
   '/advantages': typeof AdvantagesRoute
   '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
+  '/execution': typeof ExecutionRoute
   '/integrations': typeof IntegrationsRoute
   '/pain-points': typeof PainPointsRoute
   '/platform': typeof PlatformRoute
@@ -298,6 +306,7 @@ export interface FileRoutesById {
   '/advantages': typeof AdvantagesRoute
   '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
+  '/execution': typeof ExecutionRoute
   '/integrations': typeof IntegrationsRoute
   '/pain-points': typeof PainPointsRoute
   '/platform': typeof PlatformRoute
@@ -335,6 +344,7 @@ export interface FileRouteTypes {
     | '/advantages'
     | '/architecture'
     | '/auth'
+    | '/execution'
     | '/integrations'
     | '/pain-points'
     | '/platform'
@@ -370,6 +380,7 @@ export interface FileRouteTypes {
     | '/advantages'
     | '/architecture'
     | '/auth'
+    | '/execution'
     | '/integrations'
     | '/pain-points'
     | '/platform'
@@ -406,6 +417,7 @@ export interface FileRouteTypes {
     | '/advantages'
     | '/architecture'
     | '/auth'
+    | '/execution'
     | '/integrations'
     | '/pain-points'
     | '/platform'
@@ -443,6 +455,7 @@ export interface RootRouteChildren {
   AdvantagesRoute: typeof AdvantagesRoute
   ArchitectureRoute: typeof ArchitectureRoute
   AuthRoute: typeof AuthRoute
+  ExecutionRoute: typeof ExecutionRoute
   IntegrationsRoute: typeof IntegrationsRoute
   PainPointsRoute: typeof PainPointsRoute
   PlatformRoute: typeof PlatformRoute
@@ -485,6 +498,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/execution': {
+      id: '/execution'
+      path: '/execution'
+      fullPath: '/execution'
+      preLoaderRoute: typeof ExecutionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/integrations': {
@@ -756,6 +776,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdvantagesRoute: AdvantagesRoute,
   ArchitectureRoute: ArchitectureRoute,
   AuthRoute: AuthRoute,
+  ExecutionRoute: ExecutionRoute,
   IntegrationsRoute: IntegrationsRoute,
   PainPointsRoute: PainPointsRoute,
   PlatformRoute: PlatformRoute,
