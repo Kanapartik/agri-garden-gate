@@ -111,6 +111,7 @@ const en: Dict = {
   "fpo.section.tasks": "Tasks",
   "fpo.section.insights": "Insights",
   "fpo.section.memberHistory": "Member history",
+  "fpo.section.insurance": "Insurance cover",
   "fpo.comingSoon": "This section arrives in a later phase of the workspace rollout.",
   "fpo.onboarding.title": "Organization onboarding",
   "fpo.onboarding.complete": "complete",
