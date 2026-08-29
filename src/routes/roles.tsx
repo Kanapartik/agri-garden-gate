@@ -1,4 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/atap/AppShell";
 import { FlagBadge } from "@/components/atap/StatusBadge";
 import { Button } from "@/components/ui/button";
@@ -26,6 +28,22 @@ export const Route = createFileRoute("/roles")({
 
 function RoleSelector() {
   const scaffold = Route.useLoaderData();
+  /* Signed-out visitors are sent through sign-in first and continue into the
+     same journey afterwards; the server still re-checks authority. */
+  const [signedIn, setSignedIn] = useState<boolean | null>(null);
+  useEffect(() => {
+    let active = true;
+    supabase.auth.getSession().then(({ data }) => {
+      if (active) setSignedIn(Boolean(data.session));
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+  const journeyHref = (roleCode: string) => {
+    const target = `/onboarding?role=${encodeURIComponent(roleCode)}`;
+    return signedIn ? target : `/auth?redirect=${encodeURIComponent(target)}`;
+  };
   const visible = visibleRoleCards(scaffold.roles, scaffold.flags, scaffold.env);
   const hidden = scaffold.roles.filter((r) => !visible.some((v) => v.code === r.code));
 
@@ -61,9 +79,11 @@ function RoleSelector() {
               </p>
               <div className="mt-4 pt-2">
                 <Button className="w-full" variant={steps.length ? "default" : "outline"} asChild>
-                  <Link to="/onboarding" search={{ role: role.code }}>
-                    Start onboarding
-                  </Link>
+                  {/* Plain anchor: the destination depends on client-resolved session
+                      state, so a router Link would hydrate with a stale target. */}
+                  <a href={journeyHref(role.code)}>
+                    {signedIn ? "Start onboarding" : "Sign in to start"}
+                  </a>
                 </Button>
               </div>
             </article>
