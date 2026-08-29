@@ -21,15 +21,10 @@ export function navItemsForRoles(
   signedIn: boolean,
   tenantTypes: string[] = [],
 ): NavItem[] {
-  if (!signedIn) {
-    return [
-      { to: "/", label: "Overview", labelKey: "nav.overview" },
-      { to: "/platform", label: "Platform", labelKey: "nav.platform" },
-      { to: "/roles", label: "Roles", labelKey: "nav.roles" },
-      { to: "/team", label: "Team", labelKey: "nav.team" },
-      { to: "/architecture", label: "Architecture", labelKey: "nav.architecture" },
-    ];
-  }
+  // Public visitors get no top menu at all — the marketing pages carry their own
+  // in-page navigation and sign-in calls to action. The menu appears only after
+  // sign-in, driven by the caller's roles and tenant types.
+  if (!signedIn) return [];
 
   // Engineering surfaces (platform configuration, architecture assumptions) are
   // meaningless to a farmer, so they stay with the roles that operate them.
