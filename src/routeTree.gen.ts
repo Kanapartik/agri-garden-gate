@@ -15,6 +15,7 @@ import { Route as ArchitectureRouteImport } from './routes/architecture'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as PlatformRouteImport } from './routes/platform'
 import { Route as RolesRouteImport } from './routes/roles'
+import { Route as TeamRouteImport } from './routes/team'
 import { Route as AuthenticatedAccessRouteImport } from './routes/_authenticated/access'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedConfigurationRouteImport } from './routes/_authenticated/configuration'
@@ -67,6 +68,11 @@ const PlatformRoute = PlatformRouteImport.update({
 const RolesRoute = RolesRouteImport.update({
   id: '/roles',
   path: '/roles',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeamRoute = TeamRouteImport.update({
+  id: '/team',
+  path: '/team',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAccessRoute = AuthenticatedAccessRouteImport.update({
@@ -203,6 +209,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/platform': typeof PlatformRoute
   '/roles': typeof RolesRoute
+  '/team': typeof TeamRoute
   '/access': typeof AuthenticatedAccessRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/configuration': typeof AuthenticatedConfigurationRoute
@@ -234,6 +241,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/platform': typeof PlatformRoute
   '/roles': typeof RolesRoute
+  '/team': typeof TeamRoute
   '/access': typeof AuthenticatedAccessRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/configuration': typeof AuthenticatedConfigurationRoute
@@ -267,6 +275,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/platform': typeof PlatformRoute
   '/roles': typeof RolesRoute
+  '/team': typeof TeamRoute
   '/_authenticated/access': typeof AuthenticatedAccessRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/configuration': typeof AuthenticatedConfigurationRoute
@@ -300,6 +309,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/platform'
     | '/roles'
+    | '/team'
     | '/access'
     | '/admin'
     | '/configuration'
@@ -331,6 +341,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/platform'
     | '/roles'
+    | '/team'
     | '/access'
     | '/admin'
     | '/configuration'
@@ -363,6 +374,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/platform'
     | '/roles'
+    | '/team'
     | '/_authenticated/access'
     | '/_authenticated/admin'
     | '/_authenticated/configuration'
@@ -396,6 +408,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   PlatformRoute: typeof PlatformRoute
   RolesRoute: typeof RolesRoute
+  TeamRoute: typeof TeamRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -440,6 +453,13 @@ declare module '@tanstack/react-router' {
       path: '/roles'
       fullPath: '/roles'
       preLoaderRoute: typeof RolesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/team': {
+      id: '/team'
+      path: '/team'
+      fullPath: '/team'
+      preLoaderRoute: typeof TeamRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/access': {
@@ -677,6 +697,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   PlatformRoute: PlatformRoute,
   RolesRoute: RolesRoute,
+  TeamRoute: TeamRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

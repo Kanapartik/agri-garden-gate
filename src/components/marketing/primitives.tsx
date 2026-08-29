@@ -17,7 +17,7 @@ export function Reveal({
 }: {
   children: ReactNode;
   className?: string | undefined;
-  as?: "div" | "section" | "article" | "header" | "aside";
+  as?: "div" | "section" | "article" | "header" | "aside" | "figure" | undefined;
 }) {
   const ref = useRef<HTMLElement | null>(null);
   const [visible, setVisible] = useState(false);
