@@ -49,7 +49,7 @@ import {
 export type AuthedClient = SupabaseClient<Database>;
 
 const SEASON_SELECT =
-  "id, farm_id, crop_year, season_code, crop, area_acres, input_costs, input_cost_total, yield_quintal, price_per_quintal, revenue_inr, notes";
+  "id, farm_id, crop_year, season_code, crop, area_acres, input_costs, input_cost_total, yield_quintal, price_per_quintal, revenue_inr, notes, updated_at";
 
 export interface ParcelRow {
   id: string;
