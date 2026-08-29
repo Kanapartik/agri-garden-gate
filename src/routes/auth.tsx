@@ -11,7 +11,18 @@ const TITLE = "Sign in — AgriGhar ATAP";
 const DESCRIPTION =
   "Sign in to the AgriGhar ATAP console to review your organisations, roles, consent grants and audit trail.";
 
+/** Where to continue after a successful sign-in; defaults to the console. */
+function safeRedirect(value: unknown): string {
+  if (typeof value !== "string") return "/dashboard";
+  // Only same-site absolute paths are accepted, never an external URL.
+  if (!value.startsWith("/") || value.startsWith("//")) return "/dashboard";
+  return value;
+}
+
 export const Route = createFileRoute("/auth")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    redirect: safeRedirect(search["redirect"]),
+  }),
   head: () => ({
     meta: [
       { title: TITLE },
@@ -28,6 +39,10 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
+  const { redirect: continueTo } = Route.useSearch();
+  const goOn = () => {
+    window.location.assign(continueTo);
+  };
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,9 +52,10 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/dashboard", replace: true });
+      if (data.session) goOn();
     });
-  }, [navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [continueTo]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -59,11 +75,11 @@ function AuthPage() {
           setAwaitingConfirm(true);
           return;
         }
-        navigate({ to: "/dashboard", replace: true });
+        goOn();
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate({ to: "/dashboard", replace: true });
+        goOn();
       }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Sign in failed");
@@ -75,7 +91,7 @@ function AuthPage() {
   async function onGoogle() {
     setBusy(true);
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+      redirect_uri: `${window.location.origin}/auth?redirect=${encodeURIComponent(continueTo)}`,
     });
     if (result.error) {
       toast.error("Google sign-in failed");
@@ -83,7 +99,7 @@ function AuthPage() {
       return;
     }
     if (result.redirected) return;
-    navigate({ to: "/dashboard", replace: true });
+    goOn();
   }
 
   return (
