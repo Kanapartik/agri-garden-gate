@@ -554,6 +554,28 @@ function FarmHistoryPage() {
                 District averages for {data.district ?? "your area"} over the last five years —
                 aggregate reference data, never another farmer's records.
               </p>
+              <div className="rounded-xl border border-border bg-card p-4 space-y-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge variant={data.officialReference.fields.price === "official" ? "default" : "outline"}>
+                    Price: {data.officialReference.fields.price === "official" ? "Official (MSP)" : "Indicative"}
+                  </Badge>
+                  <Badge variant="outline">Yield: indicative</Badge>
+                  <Badge variant="outline">Cost: indicative</Badge>
+                  <span className="text-xs text-muted-foreground">{data.areaProvenance.label}</span>
+                </div>
+                <ul className="list-disc pl-5 text-xs text-muted-foreground space-y-1">
+                  {data.officialReference.notes.map((note) => (
+                    <li key={note}>{note}</li>
+                  ))}
+                </ul>
+                {data.officialReference.datasets.length > 0 ? (
+                  <p className="text-xs text-muted-foreground">
+                    Loaded sources:{" "}
+                    {data.officialReference.datasets.map((d) => `${d.label} (${d.citation})`).join("; ")}
+                  </p>
+                ) : null}
+              </div>
+
               <div className="overflow-x-auto rounded-xl border border-border bg-card">
                 <table className="w-full text-sm">
                   <thead className="bg-secondary text-secondary-foreground">

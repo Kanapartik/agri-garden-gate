@@ -14,7 +14,17 @@ import {
   resolveFarmerInsuranceIndicatorAdapter,
   type BaselineProvenance,
 } from "@/lib/adapters/resolution";
+import {
+  lookupFarmerSharePct,
+  overlayOfficialMsp,
+  summariseOfficialReference,
+  type OfficialDataLoadRow,
+  type OfficialInsuranceShareRow,
+  type OfficialMspRow,
+  type OfficialReferenceSummary,
+} from "@/lib/adapters/officialReference";
 import { haversineKm, type GeoPoint } from "@/lib/atap/intelligence";
+
 import {
   areaCropViews,
   buildInsuranceCorner,
@@ -93,7 +103,10 @@ export interface FarmHistoryWorkspace {
   /** Where the district and insurance reference figures came from (B11). */
   areaProvenance: BaselineProvenance;
   insuranceProvenance: BaselineProvenance;
+  /** Field-level truth of official reference data (C1). */
+  officialReference: OfficialReferenceSummary;
 }
+
 
 function num(value: unknown): number | null {
   if (value === null || value === undefined) return null;
@@ -291,6 +304,65 @@ export async function loadWorkspace(
     }
   }
 
+  /* ------------------------------------------- official reference overlay */
+  // Bulk-loaded government data (C1). MSP is published per crop and crop year,
+  // so the price field becomes official while yield/cost stay indicative until
+  // state statistics are loaded. Provenance is per-field, never per-row.
+  const [mspRes, shareRes, loadRes] = await Promise.all([
+    supabase
+      .from("official_msp_rates")
+      .select("crop, crop_year, season_code, variety_label, msp_per_quintal, source, notification_ref")
+      .gte("crop_year", fromYear),
+    supabase
+      .from("official_insurance_rates")
+      .select("scheme_code, season_code, crop_category, farmer_share_pct, source, notification_ref"),
+    supabase
+      .from("official_data_loads")
+      .select("dataset_code, dataset_label, source_citation, row_count, coverage_note, validate_notes")
+      .order("loaded_at", { ascending: false }),
+  ]);
+
+  const mspRows: OfficialMspRow[] = ((mspRes.data ?? []) as Array<Record<string, unknown>>).map((r) => ({
+    crop: r["crop"] as string,
+    crop_year: Number(r["crop_year"]),
+    season_code: r["season_code"] as string,
+    variety_label: r["variety_label"] as string,
+    msp_per_quintal: num(r["msp_per_quintal"]) ?? 0,
+    source: r["source"] as string,
+    notification_ref: (r["notification_ref"] as string) ?? null,
+  }));
+  const shareRows: OfficialInsuranceShareRow[] = ((shareRes.data ?? []) as Array<Record<string, unknown>>).map(
+    (r) => ({
+      scheme_code: r["scheme_code"] as string,
+      season_code: r["season_code"] as string,
+      crop_category: r["crop_category"] as string,
+      farmer_share_pct: num(r["farmer_share_pct"]) ?? 0,
+      source: r["source"] as string,
+      notification_ref: (r["notification_ref"] as string) ?? null,
+    }),
+  );
+  const loadRows: OfficialDataLoadRow[] = ((loadRes.data ?? []) as Array<Record<string, unknown>>).map((r) => ({
+    dataset_code: r["dataset_code"] as string,
+    dataset_label: r["dataset_label"] as string,
+    source_citation: r["source_citation"] as string,
+    row_count: Number(r["row_count"] ?? 0),
+    coverage_note: (r["coverage_note"] as string) ?? null,
+    validate_notes: (r["validate_notes"] as string) ?? null,
+  }));
+
+  const overlay = overlayOfficialMsp(benchmarkRows, mspRows);
+  benchmarkRows = overlay.rows;
+  const areaProvenanceOut: BaselineProvenance =
+    overlay.matched > 0
+      ? {
+          ...areaProvenance,
+          synthetic: false,
+          sources: [...new Set([...areaProvenance.sources, ...overlay.sources])].sort(),
+          label: `${areaProvenance.label} + notified MSP prices`,
+        }
+      : areaProvenance;
+
+
   const areaCrops = areaCropViews(benchmarkRows);
 
   /* ---------------------------------------------------- insurance corner */
@@ -298,12 +370,24 @@ export async function loadWorkspace(
   const primaryCrop =
     parcels.find((p) => p.primary_crop)?.primary_crop ?? seasons[0]?.crop ?? areaCrops[0]?.crop ?? null;
 
+  const notifiedShare = primaryCrop
+    ? lookupFarmerSharePct(shareRows, { crop: primaryCrop, seasonCode: currentSeason })
+    : null;
+
+  const officialReference = summariseOfficialReference({
+    mspRows,
+    overlay,
+    shareRow: notifiedShare,
+    loads: loadRows,
+  });
+
+
   const insuranceResolution = resolveFarmerInsuranceIndicatorAdapter({
     mode: adapterMode === "official_only" ? "official_first" : adapterMode,
     // Notified sum-insured/premium tables are not loaded yet — [VALIDATE source].
     officialRows: [],
   });
-  const insuranceProvenance: BaselineProvenance =
+  const insuranceBase: BaselineProvenance =
     snapshot && isOfficialSource((snapshot["source"] as string) ?? null)
       ? {
           adapter: "stored-insurer-snapshot",
@@ -314,6 +398,16 @@ export async function loadWorkspace(
           sources: [(snapshot["source"] as string) ?? "insurer"],
         }
       : insuranceResolution.provenance;
+  // Notified farmer share caps are official even when the premium amount is not.
+  const insuranceProvenance: BaselineProvenance = notifiedShare
+    ? {
+        ...insuranceBase,
+        officialRows: insuranceBase.officialRows + 1,
+        sources: [...new Set([...insuranceBase.sources, notifiedShare.source])].sort(),
+        label: `${insuranceBase.label} · notified farmer share ${notifiedShare.farmer_share_pct}%`,
+      }
+    : insuranceBase;
+
 
   let insurance: InsuranceCorner;
   if (snapshot) {
@@ -453,7 +547,10 @@ export async function loadWorkspace(
     cropOptions: [...new Set([...areaCrops.map((c) => c.crop), ...summary.cropsGrown])].sort(),
     currentYear,
     currentSeason,
-    areaProvenance,
+    areaProvenance: areaProvenanceOut,
+
+    officialReference,
+
     insuranceProvenance,
   };
 }
