@@ -144,7 +144,7 @@ export function useSeasonSync(
       }
       try {
         if (op.kind === "season_delete") {
-          await handlersRef.current.remove({ data: (op.payload as { id: string }) } as never);
+          await handlersRef.current.remove(op.payload as { id: string });
         } else {
           await handlersRef.current.upsert({
             ...(op.payload as SeasonQueuePayload),
