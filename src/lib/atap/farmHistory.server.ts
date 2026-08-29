@@ -559,6 +559,11 @@ export async function loadWorkspace(
 
 export interface SeasonInput {
   id?: string;
+  /**
+   * Device-minted idempotency key for offline capture (slice C4). A replay of
+   * the same queued entry updates the same row instead of duplicating it.
+   */
+  client_op_id?: string | null;
   farm_id?: string | null;
   crop_year: number;
   season_code: string;
@@ -600,6 +605,7 @@ export async function saveSeason(supabase: AuthedClient, userId: string, input: 
     notes: input.notes ? input.notes.trim().slice(0, 500) : null,
     provenance: "farmer_entered" as const,
     is_synthetic: true,
+    client_op_id: input.client_op_id ? input.client_op_id.slice(0, 80) : null,
   };
 
   const result = input.id
@@ -610,11 +616,19 @@ export async function saveSeason(supabase: AuthedClient, userId: string, input: 
         .eq("farmer_user_id", userId)
         .select("id")
         .maybeSingle()
-    : await supabase
-        .from("farm_season_records")
-        .insert(payload as never)
-        .select("id")
-        .maybeSingle();
+    : payload.client_op_id
+      ? await supabase
+          .from("farm_season_records")
+          // Offline replays land on the (farmer_user_id, client_op_id) unique
+          // index, so a reconnect never fans out into duplicate records.
+          .upsert(payload as never, { onConflict: "farmer_user_id,client_op_id" })
+          .select("id")
+          .maybeSingle()
+      : await supabase
+          .from("farm_season_records")
+          .insert(payload as never)
+          .select("id")
+          .maybeSingle();
 
   if (result.error) throw new Error(result.error.message);
 
@@ -625,7 +639,11 @@ export async function saveSeason(supabase: AuthedClient, userId: string, input: 
     subject_id: (result.data as { id: string } | null)?.id ?? input.id ?? "unknown",
     decision: "allow",
     purpose_code: "farm_history_self_service",
-    metadata: { crop_year: payload.crop_year, season_code: payload.season_code },
+    metadata: {
+      crop_year: payload.crop_year,
+      season_code: payload.season_code,
+      ...(payload.client_op_id ? { offline_capture: true } : {}),
+    },
   });
 
   return { id: (result.data as { id: string } | null)?.id ?? input.id ?? null };
