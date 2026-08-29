@@ -7,7 +7,13 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { farmHistoryAdapters } from "@/lib/adapters/farmHistoryBaseline";
+import {
+  isOfficialSource,
+  resolveAdapterMode,
+  resolveAreaCropBaselineAdapter,
+  resolveFarmerInsuranceIndicatorAdapter,
+  type BaselineProvenance,
+} from "@/lib/adapters/resolution";
 import { haversineKm, type GeoPoint } from "@/lib/atap/intelligence";
 import {
   areaCropViews,
@@ -84,6 +90,9 @@ export interface FarmHistoryWorkspace {
   cropOptions: string[];
   currentYear: number;
   currentSeason: string;
+  /** Where the district and insurance reference figures came from (B11). */
+  areaProvenance: BaselineProvenance;
+  insuranceProvenance: BaselineProvenance;
 }
 
 function num(value: unknown): number | null {
@@ -232,11 +241,31 @@ export async function loadWorkspace(
 
   // No stored district rows (unknown / new geography) → synthetic adapter fills
   // in the same shape so the farmer still sees an area comparison.
+  // Real-adapter wiring (B11): official rows win, the synthetic baseline is a
+  // declared fallback and its provenance is surfaced to the farmer.
+  const adapterMode = resolveAdapterMode(process.env["ATAP_BASELINE_ADAPTER_MODE"] ?? null);
+  const areaResolution = resolveAreaCropBaselineAdapter({
+    mode: adapterMode === "official_only" ? "official_first" : adapterMode,
+    officialRows: benchmarkRows.map((r) => ({
+      state_name: r.state_name,
+      district: r.district,
+      crop: r.crop,
+      crop_year: r.crop_year,
+      season_code: r.season_code,
+      typical_yield_quintal_per_acre: r.typical_yield_quintal_per_acre,
+      typical_cost_per_acre: r.typical_cost_per_acre,
+      typical_price_per_quintal: r.typical_price_per_quintal,
+      adoption_share: r.adoption_share,
+      source: r.source,
+    })),
+  });
+  const areaProvenance = areaResolution.provenance;
+
   if (benchmarkRows.length === 0) {
     const target = district ?? "Unassigned district";
-    for (const crop of farmHistoryAdapters.areaCropBaseline.crops) {
+    for (const crop of areaResolution.adapter.crops) {
       for (let y = fromYear; y <= currentYear; y += 1) {
-        const b = farmHistoryAdapters.areaCropBaseline.baseline({
+        const b = areaResolution.adapter.baseline({
           stateName: stateName ?? "Andhra Pradesh",
           district: target,
           crop,
@@ -269,6 +298,23 @@ export async function loadWorkspace(
   const primaryCrop =
     parcels.find((p) => p.primary_crop)?.primary_crop ?? seasons[0]?.crop ?? areaCrops[0]?.crop ?? null;
 
+  const insuranceResolution = resolveFarmerInsuranceIndicatorAdapter({
+    mode: adapterMode === "official_only" ? "official_first" : adapterMode,
+    // Notified sum-insured/premium tables are not loaded yet — [VALIDATE source].
+    officialRows: [],
+  });
+  const insuranceProvenance: BaselineProvenance =
+    snapshot && isOfficialSource((snapshot["source"] as string) ?? null)
+      ? {
+          adapter: "stored-insurer-snapshot",
+          mode: adapterMode,
+          officialRows: 1,
+          synthetic: false,
+          label: "Insurer-supplied indicator",
+          sources: [(snapshot["source"] as string) ?? "insurer"],
+        }
+      : insuranceResolution.provenance;
+
   let insurance: InsuranceCorner;
   if (snapshot) {
     insurance = buildInsuranceCorner({
@@ -285,7 +331,7 @@ export async function loadWorkspace(
       source: (snapshot["source"] as string) ?? "synthetic_baseline",
     });
   } else {
-    const indicator = farmHistoryAdapters.farmerInsuranceIndicator.indicator({
+    const indicator = insuranceResolution.adapter.indicator({
       stateName: stateName ?? "Andhra Pradesh",
       district: district ?? "Unassigned district",
       crop: primaryCrop ?? "Paddy",
