@@ -9,7 +9,13 @@ const labels = (
 
 describe("role-aware navigation", () => {
   it("shows only public entries when signed out", () => {
-    expect(labels([], false)).toEqual(["Overview", "Roles", "Architecture"]);
+    expect(labels([], false)).toEqual([
+      "Overview",
+      "Platform",
+      "Roles",
+      "Team",
+      "Architecture",
+    ]);
   });
 
   it("gives a plain member no reviewer or configuration entries", () => {

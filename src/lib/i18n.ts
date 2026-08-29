@@ -47,6 +47,8 @@ const en: Dict = {
   "nav.market": "Marketplace",
   "nav.profile": "My profile",
   "nav.roles": "Roles",
+  "nav.platform": "Platform",
+  "nav.team": "Team",
   "nav.architecture": "Architecture",
   "nav.fpo": "FPO workspace",
   "nav.fpoOpportunity": "Opportunity intelligence",
