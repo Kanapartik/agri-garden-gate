@@ -41,10 +41,15 @@ export function Reveal({
           }
         }
       },
-      { threshold: 0.14 },
+      { threshold: 0, rootMargin: "0px 0px -5% 0px" },
     );
     observer.observe(node);
-    return () => observer.disconnect();
+    /* Safety net: never leave content invisible if the observer never fires. */
+    const failsafe = window.setTimeout(() => setVisible(true), 1200);
+    return () => {
+      window.clearTimeout(failsafe);
+      observer.disconnect();
+    };
   }, []);
 
   return (
