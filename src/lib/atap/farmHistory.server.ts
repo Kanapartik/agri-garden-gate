@@ -14,7 +14,17 @@ import {
   resolveFarmerInsuranceIndicatorAdapter,
   type BaselineProvenance,
 } from "@/lib/adapters/resolution";
+import {
+  lookupFarmerSharePct,
+  overlayOfficialMsp,
+  summariseOfficialReference,
+  type OfficialDataLoadRow,
+  type OfficialInsuranceShareRow,
+  type OfficialMspRow,
+  type OfficialReferenceSummary,
+} from "@/lib/adapters/officialReference";
 import { haversineKm, type GeoPoint } from "@/lib/atap/intelligence";
+
 import {
   areaCropViews,
   buildInsuranceCorner,
