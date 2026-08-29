@@ -57,12 +57,12 @@ function RoleSelector() {
                   ? `${steps.length} configured step${steps.length === 1 ? "" : "s"}: ${steps
                       .map((s) => s.label)
                       .join(" → ")}`
-                  : "No steps configured yet — journey scaffolded, not activated."}
+                  : "Journey configuration is being finalised — check back shortly."}
               </p>
               <div className="mt-4 pt-2">
                 <Button className="w-full" variant={steps.length ? "default" : "outline"} asChild>
-                  <Link to="/auth" search={{ role: role.code }}>
-                    {steps.length ? "Sign in to start a synthetic draft" : "Journey not activated"}
+                  <Link to="/onboarding" search={{ role: role.code }}>
+                    Start onboarding
                   </Link>
                 </Button>
               </div>
