@@ -11,8 +11,12 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AdvantagesRouteImport } from './routes/advantages'
 import { Route as ArchitectureRouteImport } from './routes/architecture'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ExecutionRouteImport } from './routes/execution'
+import { Route as IntegrationsRouteImport } from './routes/integrations'
+import { Route as PainPointsRouteImport } from './routes/pain-points'
 import { Route as PlatformRouteImport } from './routes/platform'
 import { Route as RolesRouteImport } from './routes/roles'
 import { Route as TeamRouteImport } from './routes/team'
@@ -50,6 +54,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdvantagesRoute = AdvantagesRouteImport.update({
+  id: '/advantages',
+  path: '/advantages',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ArchitectureRoute = ArchitectureRouteImport.update({
   id: '/architecture',
   path: '/architecture',
@@ -58,6 +67,21 @@ const ArchitectureRoute = ArchitectureRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExecutionRoute = ExecutionRouteImport.update({
+  id: '/execution',
+  path: '/execution',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IntegrationsRoute = IntegrationsRouteImport.update({
+  id: '/integrations',
+  path: '/integrations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PainPointsRoute = PainPointsRouteImport.update({
+  id: '/pain-points',
+  path: '/pain-points',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlatformRoute = PlatformRouteImport.update({
@@ -205,8 +229,12 @@ const AuthenticatedSoilCareRoute = AuthenticatedSoilCareRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/advantages': typeof AdvantagesRoute
   '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
+  '/execution': typeof ExecutionRoute
+  '/integrations': typeof IntegrationsRoute
+  '/pain-points': typeof PainPointsRoute
   '/platform': typeof PlatformRoute
   '/roles': typeof RolesRoute
   '/team': typeof TeamRoute
@@ -237,8 +265,12 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/advantages': typeof AdvantagesRoute
   '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
+  '/execution': typeof ExecutionRoute
+  '/integrations': typeof IntegrationsRoute
+  '/pain-points': typeof PainPointsRoute
   '/platform': typeof PlatformRoute
   '/roles': typeof RolesRoute
   '/team': typeof TeamRoute
@@ -271,8 +303,12 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/advantages': typeof AdvantagesRoute
   '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
+  '/execution': typeof ExecutionRoute
+  '/integrations': typeof IntegrationsRoute
+  '/pain-points': typeof PainPointsRoute
   '/platform': typeof PlatformRoute
   '/roles': typeof RolesRoute
   '/team': typeof TeamRoute
@@ -305,8 +341,12 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/advantages'
     | '/architecture'
     | '/auth'
+    | '/execution'
+    | '/integrations'
+    | '/pain-points'
     | '/platform'
     | '/roles'
     | '/team'
@@ -337,8 +377,12 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/advantages'
     | '/architecture'
     | '/auth'
+    | '/execution'
+    | '/integrations'
+    | '/pain-points'
     | '/platform'
     | '/roles'
     | '/team'
@@ -370,8 +414,12 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/advantages'
     | '/architecture'
     | '/auth'
+    | '/execution'
+    | '/integrations'
+    | '/pain-points'
     | '/platform'
     | '/roles'
     | '/team'
@@ -404,8 +452,12 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AdvantagesRoute: typeof AdvantagesRoute
   ArchitectureRoute: typeof ArchitectureRoute
   AuthRoute: typeof AuthRoute
+  ExecutionRoute: typeof ExecutionRoute
+  IntegrationsRoute: typeof IntegrationsRoute
+  PainPointsRoute: typeof PainPointsRoute
   PlatformRoute: typeof PlatformRoute
   RolesRoute: typeof RolesRoute
   TeamRoute: typeof TeamRoute
@@ -427,6 +479,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/advantages': {
+      id: '/advantages'
+      path: '/advantages'
+      fullPath: '/advantages'
+      preLoaderRoute: typeof AdvantagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/architecture': {
       id: '/architecture'
       path: '/architecture'
@@ -439,6 +498,27 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/execution': {
+      id: '/execution'
+      path: '/execution'
+      fullPath: '/execution'
+      preLoaderRoute: typeof ExecutionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/integrations': {
+      id: '/integrations'
+      path: '/integrations'
+      fullPath: '/integrations'
+      preLoaderRoute: typeof IntegrationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pain-points': {
+      id: '/pain-points'
+      path: '/pain-points'
+      fullPath: '/pain-points'
+      preLoaderRoute: typeof PainPointsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/platform': {
@@ -693,8 +773,12 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AdvantagesRoute: AdvantagesRoute,
   ArchitectureRoute: ArchitectureRoute,
   AuthRoute: AuthRoute,
+  ExecutionRoute: ExecutionRoute,
+  IntegrationsRoute: IntegrationsRoute,
+  PainPointsRoute: PainPointsRoute,
   PlatformRoute: PlatformRoute,
   RolesRoute: RolesRoute,
   TeamRoute: TeamRoute,
