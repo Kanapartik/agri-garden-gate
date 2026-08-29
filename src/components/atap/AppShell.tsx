@@ -7,6 +7,7 @@ import { getMyContext } from "@/lib/atap.functions";
 import { Button } from "@/components/ui/button";
 import { LanguageSwitcher, useLanguage } from "@/components/atap/LanguageProvider";
 import type { AppRole } from "@/lib/atap/policy";
+import agrivahLogo from "@/assets/agrivah-logo.png";
 
 type NavItem = { to: string; label: string; labelKey: string };
 
