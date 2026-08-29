@@ -693,7 +693,7 @@ function FarmHistoryPage() {
                         <option value="">Select a parcel</option>
                         {data.parcels.map((p) => (
                           <option key={p.id} value={p.id}>
-                            {p.label ?? p.survey_number ?? p.id.slice(0, 8)}
+                            {p.label || p.id.slice(0, 8)}
                           </option>
                         ))}
                       </select>
@@ -761,11 +761,9 @@ function FarmHistoryPage() {
                           ? `${planBudget.breakEvenYieldPerAcre} qtl/ac`
                           : "—"
                       }
-                      helper={
-                        planBudget.breakEvenPricePerQuintal !== null
-                          ? `or ${inr(planBudget.breakEvenPricePerQuintal)}/qtl`
-                          : undefined
-                      }
+                      {...(planBudget.breakEvenPricePerQuintal !== null
+                        ? { helper: `or ${inr(planBudget.breakEvenPricePerQuintal)}/qtl` }
+                        : {})}
                     />
                   </div>
 
