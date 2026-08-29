@@ -352,6 +352,16 @@ export async function loadWorkspace(
 
   const overlay = overlayOfficialMsp(benchmarkRows, mspRows);
   benchmarkRows = overlay.rows;
+  const areaProvenanceOut: BaselineProvenance =
+    overlay.matched > 0
+      ? {
+          ...areaProvenance,
+          synthetic: false,
+          sources: [...new Set([...areaProvenance.sources, ...overlay.sources])].sort(),
+          label: `${areaProvenance.label} + notified MSP prices`,
+        }
+      : areaProvenance;
+
 
   const areaCrops = areaCropViews(benchmarkRows);
 
