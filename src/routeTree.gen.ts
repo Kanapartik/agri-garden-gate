@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as ArchitectureRouteImport } from './routes/architecture'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as PainPointsRouteImport } from './routes/pain-points'
 import { Route as PlatformRouteImport } from './routes/platform'
 import { Route as RolesRouteImport } from './routes/roles'
 import { Route as TeamRouteImport } from './routes/team'
@@ -58,6 +59,11 @@ const ArchitectureRoute = ArchitectureRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PainPointsRoute = PainPointsRouteImport.update({
+  id: '/pain-points',
+  path: '/pain-points',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlatformRoute = PlatformRouteImport.update({
@@ -207,6 +213,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
+  '/pain-points': typeof PainPointsRoute
   '/platform': typeof PlatformRoute
   '/roles': typeof RolesRoute
   '/team': typeof TeamRoute
@@ -239,6 +246,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
+  '/pain-points': typeof PainPointsRoute
   '/platform': typeof PlatformRoute
   '/roles': typeof RolesRoute
   '/team': typeof TeamRoute
@@ -273,6 +281,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
+  '/pain-points': typeof PainPointsRoute
   '/platform': typeof PlatformRoute
   '/roles': typeof RolesRoute
   '/team': typeof TeamRoute
@@ -307,6 +316,7 @@ export interface FileRouteTypes {
     | '/'
     | '/architecture'
     | '/auth'
+    | '/pain-points'
     | '/platform'
     | '/roles'
     | '/team'
@@ -339,6 +349,7 @@ export interface FileRouteTypes {
     | '/'
     | '/architecture'
     | '/auth'
+    | '/pain-points'
     | '/platform'
     | '/roles'
     | '/team'
@@ -372,6 +383,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/architecture'
     | '/auth'
+    | '/pain-points'
     | '/platform'
     | '/roles'
     | '/team'
@@ -406,6 +418,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   ArchitectureRoute: typeof ArchitectureRoute
   AuthRoute: typeof AuthRoute
+  PainPointsRoute: typeof PainPointsRoute
   PlatformRoute: typeof PlatformRoute
   RolesRoute: typeof RolesRoute
   TeamRoute: typeof TeamRoute
@@ -439,6 +452,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pain-points': {
+      id: '/pain-points'
+      path: '/pain-points'
+      fullPath: '/pain-points'
+      preLoaderRoute: typeof PainPointsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/platform': {
@@ -695,6 +715,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   ArchitectureRoute: ArchitectureRoute,
   AuthRoute: AuthRoute,
+  PainPointsRoute: PainPointsRoute,
   PlatformRoute: PlatformRoute,
   RolesRoute: RolesRoute,
   TeamRoute: TeamRoute,
