@@ -51,6 +51,8 @@ export interface SeasonRecord {
   price_per_quintal: number | null;
   revenue_inr: number | null;
   notes: string | null;
+  /** Present for server rows; used by offline sync to detect stale edits. */
+  updated_at?: string | null;
 }
 
 /* ------------------------------------------------------------ money maths */

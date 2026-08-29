@@ -1,0 +1,17 @@
+{
+  "name": "AgriGhar ATAP",
+  "short_name": "AgriGhar",
+  "description": "Field-ready agriculture aggregation workspace for farmers, FPOs and partners.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0b1d14",
+  "theme_color": "#0b1d14",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ]
+}

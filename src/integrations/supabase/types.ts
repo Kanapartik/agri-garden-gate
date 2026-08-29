@@ -1304,6 +1304,7 @@ export type Database = {
       farm_season_records: {
         Row: {
           area_acres: number
+          client_op_id: string | null
           created_at: string
           crop: string
           crop_year: number
@@ -1323,6 +1324,7 @@ export type Database = {
         }
         Insert: {
           area_acres?: number
+          client_op_id?: string | null
           created_at?: string
           crop: string
           crop_year: number
@@ -1342,6 +1344,7 @@ export type Database = {
         }
         Update: {
           area_acres?: number
+          client_op_id?: string | null
           created_at?: string
           crop?: string
           crop_year?: number
