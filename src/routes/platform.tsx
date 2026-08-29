@@ -1,3 +1,4 @@
+import { MarketingHeader } from "@/components/marketing/MarketingHeader";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -71,123 +72,126 @@ export const Route = createFileRoute("/platform")({
 
 function PlatformPage() {
   return (
-    <main>
-      <section className="bg-surface-deep text-surface-deep-foreground">
-        <div className="mx-auto w-full max-w-6xl px-6 py-16 sm:py-20">
-          <Eyebrow className="text-accent">The platform</Eyebrow>
-          <h1 className="font-display mt-5 max-w-3xl text-3xl leading-tight font-bold sm:text-4xl">
-            Governed rails, replaceable adapters, retained authority.
-          </h1>
-          <p className="mt-5 max-w-2xl text-sm leading-relaxed opacity-85 sm:text-base">
-            Agrivah separates what must be trusted and shared from what should stay local and
-            competitive. The layers below can each evolve at the pace their risk permits.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <a href="/auth" className={buttonVariants({ size: "lg", variant: "secondary" })}>
-              Start a role journey
-            </a>
-            <Link
-              to="/architecture"
-              className="border-current/40 hover:bg-surface-deep-foreground/10 inline-flex items-center justify-center rounded-md border px-5 py-2.5 text-sm font-medium"
-            >
-              Engineering assumptions
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <Section>
-        <SectionHeading
-          kicker="Five layers"
-          title="What each layer owns."
-          description="Authoritative records at the base, reusable agricultural capability above it, then governed intelligence, transaction workflows and partner engagement."
-        />
-        <Reveal className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {LAYERS.map((layer, i) => (
-            <NumberedCard key={layer.title} index={i + 1} title={layer.title} body={layer.body} />
-          ))}
-        </Reveal>
-        <Reveal className="mt-8 grid gap-4 sm:grid-cols-3">
-          {ALLOCATION.map((a) => (
-            <div key={a.label} className="rounded-xl border border-border bg-card p-5">
-              <strong className="font-display block text-2xl font-bold text-primary">
-                {a.value}
-              </strong>
-              <span className="mt-1 block text-xs text-muted-foreground">{a.label}</span>
+    <>
+      <MarketingHeader />
+      <main>
+        <section className="bg-surface-deep text-surface-deep-foreground">
+          <div className="mx-auto w-full max-w-6xl px-6 py-16 sm:py-20">
+            <Eyebrow className="text-accent">The platform</Eyebrow>
+            <h1 className="font-display mt-5 max-w-3xl text-3xl leading-tight font-bold sm:text-4xl">
+              Governed rails, replaceable adapters, retained authority.
+            </h1>
+            <p className="mt-5 max-w-2xl text-sm leading-relaxed opacity-85 sm:text-base">
+              Agrivah separates what must be trusted and shared from what should stay local and
+              competitive. The layers below can each evolve at the pace their risk permits.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a href="/auth" className={buttonVariants({ size: "lg", variant: "secondary" })}>
+                Start a role journey
+              </a>
+              <Link
+                to="/architecture"
+                className="border-current/40 hover:bg-surface-deep-foreground/10 inline-flex items-center justify-center rounded-md border px-5 py-2.5 text-sm font-medium"
+              >
+                Engineering assumptions
+              </Link>
             </div>
-          ))}
-        </Reveal>
-      </Section>
+          </div>
+        </section>
 
-      <Section tone="muted">
-        <SectionHeading
-          kicker="Guarantees"
-          title="Enforced server-side, not by hiding routes."
-          description="Navigation visibility is presentation only. Authority, consent and audit are checked in server functions and database policy on every request."
-        />
-        <Reveal className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {GUARANTEES.map((g) => (
-            <article key={g.title} className="rounded-xl border border-border bg-card p-5">
-              <h3 className="font-display text-sm font-semibold">{g.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{g.body}</p>
-            </article>
-          ))}
-        </Reveal>
-        <Disclaimer>{SYNTHETIC_DISCLAIMER}</Disclaimer>
-      </Section>
+        <Section>
+          <SectionHeading
+            kicker="Five layers"
+            title="What each layer owns."
+            description="Authoritative records at the base, reusable agricultural capability above it, then governed intelligence, transaction workflows and partner engagement."
+          />
+          <Reveal className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {LAYERS.map((layer, i) => (
+              <NumberedCard key={layer.title} index={i + 1} title={layer.title} body={layer.body} />
+            ))}
+          </Reveal>
+          <Reveal className="mt-8 grid gap-4 sm:grid-cols-3">
+            {ALLOCATION.map((a) => (
+              <div key={a.label} className="rounded-xl border border-border bg-card p-5">
+                <strong className="font-display block text-2xl font-bold text-primary">
+                  {a.value}
+                </strong>
+                <span className="mt-1 block text-xs text-muted-foreground">{a.label}</span>
+              </div>
+            ))}
+          </Reveal>
+        </Section>
 
-      <Section>
-        <SectionHeading
-          kicker="Integration fabric"
-          title="Adapters keep external complexity outside the core."
-          description="Each connected system keeps its own record of truth. Agrivah exchanges governed events and consented scopes across the boundary."
-        />
-        <Reveal className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {INTEGRATIONS.map((item) => (
-            <article key={item.title} className="rounded-xl border border-border bg-card p-5">
-              <h3 className="font-display text-sm font-semibold">{item.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
-            </article>
-          ))}
-        </Reveal>
-      </Section>
+        <Section tone="muted">
+          <SectionHeading
+            kicker="Guarantees"
+            title="Enforced server-side, not by hiding routes."
+            description="Navigation visibility is presentation only. Authority, consent and audit are checked in server functions and database policy on every request."
+          />
+          <Reveal className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {GUARANTEES.map((g) => (
+              <article key={g.title} className="rounded-xl border border-border bg-card p-5">
+                <h3 className="font-display text-sm font-semibold">{g.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{g.body}</p>
+              </article>
+            ))}
+          </Reveal>
+          <Disclaimer>{SYNTHETIC_DISCLAIMER}</Disclaimer>
+        </Section>
 
-      <Section tone="deep">
-        <SectionHeading
-          kicker="Working today"
-          title="Capabilities already running on these rails."
-          tone="onDeep"
-          description="Each surface is reachable once you are signed in with the role and tenant context it belongs to."
-        />
-        <Reveal className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {LIVE_CAPABILITIES.map((cap) => (
-            <a
-              key={cap.title}
-              href={cap.to}
-              className="border-surface-deep-foreground/20 hover:bg-surface-deep-foreground/5 rounded-xl border p-5 transition-colors"
-            >
-              <h3 className="font-display text-sm font-semibold">{cap.title}</h3>
-              <p className="mt-2 text-xs leading-relaxed opacity-80">{cap.body}</p>
-            </a>
-          ))}
-        </Reveal>
-      </Section>
+        <Section>
+          <SectionHeading
+            kicker="Integration fabric"
+            title="Adapters keep external complexity outside the core."
+            description="Each connected system keeps its own record of truth. Agrivah exchanges governed events and consented scopes across the boundary."
+          />
+          <Reveal className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {INTEGRATIONS.map((item) => (
+              <article key={item.title} className="rounded-xl border border-border bg-card p-5">
+                <h3 className="font-display text-sm font-semibold">{item.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
+              </article>
+            ))}
+          </Reveal>
+        </Section>
 
-      <Section tone="muted">
-        <SectionHeading
-          kicker="Why it compounds"
-          title="Advantages that grow with each implementation."
-        />
-        <Reveal className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {ADVANTAGES.map((item) => (
-            <article key={item.title} className="rounded-xl border border-border bg-card p-5">
-              <h3 className="font-display text-sm font-semibold">{item.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
-            </article>
-          ))}
-        </Reveal>
-        <Disclaimer>{DPI_DISCLAIMER}</Disclaimer>
-      </Section>
-    </main>
+        <Section tone="deep">
+          <SectionHeading
+            kicker="Working today"
+            title="Capabilities already running on these rails."
+            tone="onDeep"
+            description="Each surface is reachable once you are signed in with the role and tenant context it belongs to."
+          />
+          <Reveal className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {LIVE_CAPABILITIES.map((cap) => (
+              <a
+                key={cap.title}
+                href={cap.to}
+                className="border-surface-deep-foreground/20 hover:bg-surface-deep-foreground/5 rounded-xl border p-5 transition-colors"
+              >
+                <h3 className="font-display text-sm font-semibold">{cap.title}</h3>
+                <p className="mt-2 text-xs leading-relaxed opacity-80">{cap.body}</p>
+              </a>
+            ))}
+          </Reveal>
+        </Section>
+
+        <Section tone="muted">
+          <SectionHeading
+            kicker="Why it compounds"
+            title="Advantages that grow with each implementation."
+          />
+          <Reveal className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {ADVANTAGES.map((item) => (
+              <article key={item.title} className="rounded-xl border border-border bg-card p-5">
+                <h3 className="font-display text-sm font-semibold">{item.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
+              </article>
+            ))}
+          </Reveal>
+          <Disclaimer>{DPI_DISCLAIMER}</Disclaimer>
+        </Section>
+      </main>
+    </>
   );
 }

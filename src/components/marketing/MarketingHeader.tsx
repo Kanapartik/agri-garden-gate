@@ -59,10 +59,7 @@ export function MarketingHeader() {
           ))}
         </nav>
 
-        <a
-          href="/auth"
-          className={`ml-auto md:ml-0 ${buttonVariants({ size: "sm" })}`}
-        >
+        <a href="/auth" className={`ml-auto md:ml-0 ${buttonVariants({ size: "sm" })}`}>
           Sign in
         </a>
       </div>
