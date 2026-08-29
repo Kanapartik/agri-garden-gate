@@ -103,7 +103,10 @@ export interface FarmHistoryWorkspace {
   /** Where the district and insurance reference figures came from (B11). */
   areaProvenance: BaselineProvenance;
   insuranceProvenance: BaselineProvenance;
+  /** Field-level truth of official reference data (C1). */
+  officialReference: OfficialReferenceSummary;
 }
+
 
 function num(value: unknown): number | null {
   if (value === null || value === undefined) return null;
