@@ -21,7 +21,9 @@ import {
   compareEnquiries,
   listingReadiness,
   lotCounts,
+  lotListingDraft,
   priceSnapshots,
+  produceCategoryFor,
   PRODUCE_DISCLAIMER,
   type CommodityWindow,
   type ComparedEnquiry,
@@ -658,4 +660,190 @@ export const setEnquiryStatus = createServerFn({ method: "POST" })
       metadata: { from, to: data.status, buyer_name: current.buyer_name },
     });
     return { status: data.status };
+  });
+
+/* ------------------------------------------------ marketplace bridge (C2) */
+
+export type PublishLotResult =
+  | { status: "listed"; listingId: string; qualityScore: number }
+  | { status: "profile_pending_review"; profileId: string };
+
+/**
+ * Slice C2 — publish an aggregated produce lot to the base marketplace.
+ *
+ *  - FPO admin only; readiness (aggregated produce + reserve price) is
+ *    re-checked server-side.
+ *  - The FPO sells through an approved `fpo_aggregator` marketplace profile.
+ *    If none exists, a profile is drafted and submitted for the internal
+ *    human review that already governs marketplace access — this bridge never
+ *    bypasses that approval.
+ *  - The listing carries only aggregate figures; member identities stay
+ *    behind the lot, and the publish quality gate runs unchanged.
+ */
+export const publishLotToMarketplace = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { tenantId: string; lotId: string; regionCode?: string | null }) => input)
+  .handler(async ({ data, context }): Promise<PublishLotResult> => {
+    const { supabase, userId } = context;
+    const { roles } = await tenantScope(supabase, userId, data.tenantId);
+    if (!canManageProduce(roles)) {
+      throw new Error("Only FPO administrators can list produce on the marketplace");
+    }
+
+    const { flagEnabled, entitlementForProfile } = await import("@/lib/atap/marketplace.server");
+    if (!(await flagEnabled(supabase, "marketplace.base_commerce"))) {
+      throw new Error("marketplace_not_activated");
+    }
+
+    const lot = await loadLot(supabase, data.tenantId, data.lotId);
+    if (lot.marketplace_listing_id) throw new Error("This lot is already listed on the marketplace");
+    const readiness = listingReadiness({
+      status: lot.status,
+      aggregated_quantity: num(lot.aggregated_quantity),
+      reserve_price_per_unit: lot.reserve_price_per_unit,
+    });
+    if (!readiness.ready) throw new Error(readiness.reasons.join(" "));
+
+    // Resolve (or draft) the FPO's marketplace seller profile.
+    const { data: profileRows } = await supabase
+      .from("marketplace_profiles")
+      .select("*")
+      .eq("tenant_id", data.tenantId)
+      .eq("party_kind", "fpo_aggregator")
+      .eq("side", "seller")
+      .order("created_at", { ascending: false });
+    const profiles = (profileRows ?? []) as unknown as Array<{
+      id: string;
+      state: "draft" | "submitted" | "approved" | "rejected" | "suspended";
+      created_by: string | null;
+    }>;
+    let profile = profiles.find((p) => p.state === "approved") ?? null;
+
+    if (!profile) {
+      const pending = profiles.find((p) => p.state === "draft" || p.state === "submitted");
+      if (pending) {
+        if (pending.state === "draft") {
+          await supabase
+            .from("marketplace_profiles")
+            .update({ state: "submitted" } as never)
+            .eq("id", pending.id);
+        }
+        return { status: "profile_pending_review", profileId: pending.id };
+      }
+      const { data: fpo } = await supabase
+        .from("fpo_profiles")
+        .select("legal_name")
+        .eq("tenant_id", data.tenantId)
+        .maybeSingle();
+      const fpoName =
+        ((fpo as { legal_name?: string | null } | null)?.legal_name ?? "").trim() ||
+        "Farmer Producer Organisation";
+      const category = produceCategoryFor(lot.commodity);
+      const { data: created, error: profileError } = await supabase
+        .from("marketplace_profiles")
+        .insert({
+          party_kind: "fpo_aggregator",
+          side: "seller",
+          display_name: fpoName,
+          contact_email: "",
+          categories: [category],
+          regions: data.regionCode ? [data.regionCode] : [],
+          tenant_id: data.tenantId,
+          created_by: userId,
+          state: "draft",
+        } as never)
+        .select("id")
+        .single();
+      if (profileError || !created) throw new Error("marketplace_profile_create_failed");
+      await logAudit(supabase, {
+        userId,
+        tenantId: data.tenantId,
+        action: "market.profile.create",
+        subjectType: "marketplace_profile",
+        subjectId: created.id as string,
+        metadata: { party_kind: "fpo_aggregator", bridge: "produce_lot" },
+      });
+      return { status: "profile_pending_review", profileId: created.id as string };
+    }
+
+    const { data: fpo } = await supabase
+      .from("fpo_profiles")
+      .select("legal_name")
+      .eq("tenant_id", data.tenantId)
+      .maybeSingle();
+    const fpoName =
+      ((fpo as { legal_name?: string | null } | null)?.legal_name ?? "").trim() || "the FPO";
+    const draft = lotListingDraft(lot, fpoName);
+    const { listingQualityScore, evaluateListingPublish } = await import("@/lib/atap/marketplace");
+    const quality = { source: "fpo_lot", lot_id: lot.id, declarations: "member_confirmed" };
+    const score = listingQualityScore({
+      category: draft.category,
+      title: draft.title,
+      description: draft.description,
+      unit: draft.unit,
+      price_min: draft.priceMin,
+      price_max: draft.priceMax,
+      min_order_qty: draft.minOrderQty,
+      region_code: data.regionCode ?? null,
+      quality,
+    });
+
+    const entitlement = await entitlementForProfile(supabase, profile.id);
+    const decision = evaluateListingPublish({
+      profileState: "approved",
+      profileSide: "seller",
+      draft: {
+        category: draft.category,
+        title: draft.title,
+        description: draft.description,
+        unit: draft.unit,
+        price_min: draft.priceMin,
+        price_max: draft.priceMax,
+        min_order_qty: draft.minOrderQty,
+        region_code: data.regionCode ?? null,
+        quality,
+      },
+      entitlement,
+    });
+    if (!decision.ok) throw new Error(decision.errors.join(" "));
+
+    const { data: inserted, error: listingError } = await supabase
+      .from("marketplace_listings")
+      .insert({
+        seller_profile_id: profile.id,
+        category: draft.category,
+        title: draft.title,
+        description: draft.description,
+        unit: draft.unit,
+        price_min: draft.priceMin,
+        price_max: draft.priceMax,
+        min_order_qty: draft.minOrderQty,
+        region_code: data.regionCode ?? null,
+        quality,
+        quality_score: score,
+        status: "published",
+        published_at: new Date().toISOString(),
+        created_by: userId,
+      } as never)
+      .select("id")
+      .single();
+    if (listingError || !inserted) throw new Error("listing_publish_failed");
+    const listingId = inserted.id as string;
+
+    const { error: lotError } = await supabase
+      .from("fpo_produce_lots")
+      .update({ status: "listed", marketplace_listing_id: listingId })
+      .eq("tenant_id", data.tenantId)
+      .eq("id", data.lotId);
+    if (lotError) throw new Error(lotError.message);
+
+    await logAudit(supabase, {
+      userId,
+      tenantId: data.tenantId,
+      action: "fpo.produce.listed_to_marketplace",
+      subjectType: "fpo_produce_lot",
+      subjectId: data.lotId,
+      metadata: { listing_id: listingId, profile_id: profile.id, quality_score: score },
+    });
+    return { status: "listed", listingId, qualityScore: score };
   });

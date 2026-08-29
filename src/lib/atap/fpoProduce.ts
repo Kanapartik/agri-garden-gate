@@ -403,6 +403,79 @@ export function listingReadiness(lot: {
   return { ready: reasons.length === 0, reasons };
 }
 
+/* ------------------------------------------------- marketplace bridge (C2) */
+
+/**
+ * Horticulture and commercial commodities map to the horticulture listing
+ * category; everything else is grain & pulses. Keep this conservative — an
+ * unmapped commodity falls to grain, never out of scope.
+ */
+const HORTICULTURE_COMMODITIES = new Set([
+  "chilli",
+  "chillies",
+  "turmeric",
+  "banana",
+  "mango",
+  "onion",
+  "tomato",
+  "potato",
+  "oil palm",
+  "sugarcane",
+  "cotton",
+]);
+
+export type ProduceListingCategory = "produce_grain" | "produce_horticulture";
+
+export function produceCategoryFor(commodity: string): ProduceListingCategory {
+  return HORTICULTURE_COMMODITIES.has(commodity.trim().toLowerCase())
+    ? "produce_horticulture"
+    : "produce_grain";
+}
+
+export interface LotListingDraft {
+  category: ProduceListingCategory;
+  title: string;
+  description: string;
+  unit: string;
+  priceMin: number | null;
+  priceMax: number | null;
+  minOrderQty: number | null;
+}
+
+/**
+ * Build the marketplace listing draft for an aggregated lot. The reserve
+ * price becomes the listing's floor so member returns stay protected; the
+ * listing never exposes member identities.
+ */
+export function lotListingDraft(
+  lot: {
+    commodity: string;
+    variety: string | null;
+    grade: string | null;
+    season: string | null;
+    aggregated_quantity: number;
+    unit: string;
+    reserve_price_per_unit: number | null;
+  },
+  fpoName: string,
+): LotListingDraft {
+  const label = [lot.commodity, lot.variety, lot.grade ? `Grade ${lot.grade}` : null]
+    .filter(Boolean)
+    .join(" · ");
+  const qty = round2(lot.aggregated_quantity);
+  return {
+    category: produceCategoryFor(lot.commodity),
+    title: `${label}${lot.season ? ` — ${lot.season}` : ""}`.trim(),
+    description:
+      `Aggregated ${qty} ${lot.unit} of ${label} from member farmers of ${fpoName}. ` +
+      "Sold as a single FPO lot; quality as per declaration. Individual member data is not shared.",
+    unit: lot.unit,
+    priceMin: lot.reserve_price_per_unit,
+    priceMax: null,
+    minOrderQty: qty > 0 ? qty : null,
+  };
+}
+
 /* ---------------------------------------------------------------- counts */
 
 export function lotCounts(

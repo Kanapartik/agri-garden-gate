@@ -8,6 +8,7 @@ import {
   createProduceLot,
   getProduceBoard,
   getProduceLotDetail,
+  publishLotToMarketplace,
   recordBuyerEnquiry,
   recordProduceContribution,
   setEnquiryStatus,
@@ -39,6 +40,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
   const contribUpdateFn = useServerFn(updateProduceContribution);
   const enquiryFn = useServerFn(recordBuyerEnquiry);
   const enquiryStatusFn = useServerFn(setEnquiryStatus);
+  const publishFn = useServerFn(publishLotToMarketplace);
 
   const [openId, setOpenId] = useState<string | null>(null);
   const [commodity, setCommodity] = useState("");
