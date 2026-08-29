@@ -169,7 +169,7 @@ function FarmHistoryPage() {
   const sync = useSeasonSync(
     data?.userId ?? null,
     {
-      upsert: (payload) => saveSeason({ data: payload }),
+      upsert: ({ id, ...rest }) => saveSeason({ data: { ...(id ? { id } : {}), ...rest } }),
       remove: (input) => removeSeason({ data: input }),
       onFlushed: () => queryClient.invalidateQueries({ queryKey: ["atap", "farm-history"] }),
     },
