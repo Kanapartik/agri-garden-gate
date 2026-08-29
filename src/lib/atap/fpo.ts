@@ -57,6 +57,7 @@ export const FPO_SECTION_DEFS: SectionDef[] = [
     labelKey: "fpo.section.memberHistory",
     phase: 11,
   },
+  { key: "insurance", label: "Insurance cover", labelKey: "fpo.section.insurance", phase: 12 },
   { key: "team", label: "Team & permissions", labelKey: "fpo.section.team", phase: 1 },
   { key: "settings", label: "Settings", labelKey: "fpo.section.settings", phase: 1 },
 ];
