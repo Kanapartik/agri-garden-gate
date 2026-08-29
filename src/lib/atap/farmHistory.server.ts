@@ -537,7 +537,8 @@ export async function loadWorkspace(
     cropOptions: [...new Set([...areaCrops.map((c) => c.crop), ...summary.cropsGrown])].sort(),
     currentYear,
     currentSeason,
-    areaProvenance,
+    areaProvenance: areaProvenanceOut,
+
     officialReference,
 
     insuranceProvenance,
