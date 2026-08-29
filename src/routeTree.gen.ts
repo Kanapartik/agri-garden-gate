@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as ArchitectureRouteImport } from './routes/architecture'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as IntegrationsRouteImport } from './routes/integrations'
 import { Route as PainPointsRouteImport } from './routes/pain-points'
 import { Route as PlatformRouteImport } from './routes/platform'
 import { Route as RolesRouteImport } from './routes/roles'
@@ -59,6 +60,11 @@ const ArchitectureRoute = ArchitectureRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IntegrationsRoute = IntegrationsRouteImport.update({
+  id: '/integrations',
+  path: '/integrations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PainPointsRoute = PainPointsRouteImport.update({
@@ -213,6 +219,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
+  '/integrations': typeof IntegrationsRoute
   '/pain-points': typeof PainPointsRoute
   '/platform': typeof PlatformRoute
   '/roles': typeof RolesRoute
@@ -246,6 +253,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
+  '/integrations': typeof IntegrationsRoute
   '/pain-points': typeof PainPointsRoute
   '/platform': typeof PlatformRoute
   '/roles': typeof RolesRoute
@@ -281,6 +289,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
+  '/integrations': typeof IntegrationsRoute
   '/pain-points': typeof PainPointsRoute
   '/platform': typeof PlatformRoute
   '/roles': typeof RolesRoute
@@ -316,6 +325,7 @@ export interface FileRouteTypes {
     | '/'
     | '/architecture'
     | '/auth'
+    | '/integrations'
     | '/pain-points'
     | '/platform'
     | '/roles'
@@ -349,6 +359,7 @@ export interface FileRouteTypes {
     | '/'
     | '/architecture'
     | '/auth'
+    | '/integrations'
     | '/pain-points'
     | '/platform'
     | '/roles'
@@ -383,6 +394,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/architecture'
     | '/auth'
+    | '/integrations'
     | '/pain-points'
     | '/platform'
     | '/roles'
@@ -418,6 +430,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   ArchitectureRoute: typeof ArchitectureRoute
   AuthRoute: typeof AuthRoute
+  IntegrationsRoute: typeof IntegrationsRoute
   PainPointsRoute: typeof PainPointsRoute
   PlatformRoute: typeof PlatformRoute
   RolesRoute: typeof RolesRoute
@@ -452,6 +465,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/integrations': {
+      id: '/integrations'
+      path: '/integrations'
+      fullPath: '/integrations'
+      preLoaderRoute: typeof IntegrationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pain-points': {
@@ -715,6 +735,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   ArchitectureRoute: ArchitectureRoute,
   AuthRoute: AuthRoute,
+  IntegrationsRoute: IntegrationsRoute,
   PainPointsRoute: PainPointsRoute,
   PlatformRoute: PlatformRoute,
   RolesRoute: RolesRoute,
