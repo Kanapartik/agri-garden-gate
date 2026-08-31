@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { buttonVariants } from "@/components/ui/button";
-import agrivahLogo from "@/assets/agrivah-logo.png";
+import agrivahMark from "@/assets/agrivah-mark.png.asset.json";
 
 /**
  * Public marketing header. Mirrors the Agrivah site menu, but every entry is a
@@ -21,12 +21,20 @@ export function MarketingHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
       <div className="mx-auto flex w-full max-w-6xl items-center gap-4 px-6 py-3">
-        <Link to="/" className="flex items-center gap-2" aria-label="Agrivah home">
-          <img src={agrivahLogo} alt="Agrivah logo" width={362} height={372} className="h-9 w-auto" />
-          <span className="font-display leading-tight font-bold">
-            Agrivah
-            <small className="block text-[10px] font-medium tracking-wide text-muted-foreground">
-              Agriculture Technology Aggregator
+        <Link to="/" className="flex items-center gap-2.5" aria-label="Agrivah home">
+          <img
+            src={agrivahMark.url}
+            alt="Agrivah logo"
+            width={490}
+            height={480}
+            className="h-10 w-auto"
+          />
+          <span className="leading-tight">
+            <span className="font-display block text-lg font-bold tracking-[0.14em] text-primary">
+              AGRIVAH
+            </span>
+            <small className="block text-[9px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
+              Connect • Collaborate • Transform
             </small>
           </span>
         </Link>
