@@ -7,7 +7,7 @@ import { getMyContext } from "@/lib/atap.functions";
 import { Button } from "@/components/ui/button";
 import { LanguageSwitcher, useLanguage } from "@/components/atap/LanguageProvider";
 import type { AppRole } from "@/lib/atap/policy";
-import agrivahLogo from "@/assets/agrivah-logo.png";
+import agrivahMark from "@/assets/agrivah-mark.png.asset.json";
 
 type NavItem = { to: string; label: string; labelKey: string };
 
@@ -166,8 +166,15 @@ export function AppShell({ children }: { children: ReactNode }) {
         <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3">
             <Link to="/" className="flex items-center gap-2 font-display text-base font-bold">
-              <img src={agrivahLogo} alt="Agrivah logo" width={362} height={372} className="h-7 w-auto" />
-              AgriGhar <span className="text-primary">ATAP</span>
+              <img
+                src={agrivahMark.url}
+                alt="Agrivah logo"
+                width={490}
+                height={480}
+                className="h-8 w-auto"
+              />
+              <span className="tracking-[0.12em] text-primary">AGRIVAH</span>
+              <span className="text-xs font-semibold tracking-wide text-muted-foreground">ATAP</span>
             </Link>
             <nav className="flex flex-wrap items-center gap-1 text-sm" aria-label="Main">
               {items.map((item) => (
