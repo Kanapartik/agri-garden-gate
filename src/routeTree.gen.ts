@@ -44,6 +44,10 @@ import { Route as AuthenticatedReviewRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedRolloutRouteImport } from './routes/_authenticated/rollout'
 import { Route as AuthenticatedSchemesRouteImport } from './routes/_authenticated/schemes'
 import { Route as AuthenticatedSoilCareRouteImport } from './routes/_authenticated/soil-care'
+import { Route as MobileV1BootstrapRouteImport } from './routes/mobile/v1/bootstrap'
+import { Route as MobileV1MeRouteImport } from './routes/mobile/v1/me'
+import { Route as MobileV1AuthOtpRequestRouteImport } from './routes/mobile/v1/auth/otp/request'
+import { Route as MobileV1AuthOtpVerifyRouteImport } from './routes/mobile/v1/auth/otp/verify'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -226,6 +230,26 @@ const AuthenticatedSoilCareRoute = AuthenticatedSoilCareRouteImport.update({
   path: '/soil-care',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const MobileV1BootstrapRoute = MobileV1BootstrapRouteImport.update({
+  id: '/mobile/v1/bootstrap',
+  path: '/mobile/v1/bootstrap',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MobileV1MeRoute = MobileV1MeRouteImport.update({
+  id: '/mobile/v1/me',
+  path: '/mobile/v1/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MobileV1AuthOtpRequestRoute = MobileV1AuthOtpRequestRouteImport.update({
+  id: '/mobile/v1/auth/otp/request',
+  path: '/mobile/v1/auth/otp/request',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MobileV1AuthOtpVerifyRoute = MobileV1AuthOtpVerifyRouteImport.update({
+  id: '/mobile/v1/auth/otp/verify',
+  path: '/mobile/v1/auth/otp/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -262,6 +286,10 @@ export interface FileRoutesByFullPath {
   '/rollout': typeof AuthenticatedRolloutRoute
   '/schemes': typeof AuthenticatedSchemesRoute
   '/soil-care': typeof AuthenticatedSoilCareRoute
+  '/mobile/v1/bootstrap': typeof MobileV1BootstrapRoute
+  '/mobile/v1/me': typeof MobileV1MeRoute
+  '/mobile/v1/auth/otp/request': typeof MobileV1AuthOtpRequestRoute
+  '/mobile/v1/auth/otp/verify': typeof MobileV1AuthOtpVerifyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -298,6 +326,10 @@ export interface FileRoutesByTo {
   '/rollout': typeof AuthenticatedRolloutRoute
   '/schemes': typeof AuthenticatedSchemesRoute
   '/soil-care': typeof AuthenticatedSoilCareRoute
+  '/mobile/v1/bootstrap': typeof MobileV1BootstrapRoute
+  '/mobile/v1/me': typeof MobileV1MeRoute
+  '/mobile/v1/auth/otp/request': typeof MobileV1AuthOtpRequestRoute
+  '/mobile/v1/auth/otp/verify': typeof MobileV1AuthOtpVerifyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -336,6 +368,10 @@ export interface FileRoutesById {
   '/_authenticated/rollout': typeof AuthenticatedRolloutRoute
   '/_authenticated/schemes': typeof AuthenticatedSchemesRoute
   '/_authenticated/soil-care': typeof AuthenticatedSoilCareRoute
+  '/mobile/v1/bootstrap': typeof MobileV1BootstrapRoute
+  '/mobile/v1/me': typeof MobileV1MeRoute
+  '/mobile/v1/auth/otp/request': typeof MobileV1AuthOtpRequestRoute
+  '/mobile/v1/auth/otp/verify': typeof MobileV1AuthOtpVerifyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -374,6 +410,10 @@ export interface FileRouteTypes {
     | '/rollout'
     | '/schemes'
     | '/soil-care'
+    | '/mobile/v1/bootstrap'
+    | '/mobile/v1/me'
+    | '/mobile/v1/auth/otp/request'
+    | '/mobile/v1/auth/otp/verify'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -410,6 +450,10 @@ export interface FileRouteTypes {
     | '/rollout'
     | '/schemes'
     | '/soil-care'
+    | '/mobile/v1/bootstrap'
+    | '/mobile/v1/me'
+    | '/mobile/v1/auth/otp/request'
+    | '/mobile/v1/auth/otp/verify'
   id:
     | '__root__'
     | '/'
@@ -447,6 +491,10 @@ export interface FileRouteTypes {
     | '/_authenticated/rollout'
     | '/_authenticated/schemes'
     | '/_authenticated/soil-care'
+    | '/mobile/v1/bootstrap'
+    | '/mobile/v1/me'
+    | '/mobile/v1/auth/otp/request'
+    | '/mobile/v1/auth/otp/verify'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -461,6 +509,10 @@ export interface RootRouteChildren {
   PlatformRoute: typeof PlatformRoute
   RolesRoute: typeof RolesRoute
   TeamRoute: typeof TeamRoute
+  MobileV1BootstrapRoute: typeof MobileV1BootstrapRoute
+  MobileV1MeRoute: typeof MobileV1MeRoute
+  MobileV1AuthOtpRequestRoute: typeof MobileV1AuthOtpRequestRoute
+  MobileV1AuthOtpVerifyRoute: typeof MobileV1AuthOtpVerifyRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -710,6 +762,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSoilCareRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/mobile/v1/bootstrap': {
+      id: '/mobile/v1/bootstrap'
+      path: '/mobile/v1/bootstrap'
+      fullPath: '/mobile/v1/bootstrap'
+      preLoaderRoute: typeof MobileV1BootstrapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mobile/v1/me': {
+      id: '/mobile/v1/me'
+      path: '/mobile/v1/me'
+      fullPath: '/mobile/v1/me'
+      preLoaderRoute: typeof MobileV1MeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mobile/v1/auth/otp/request': {
+      id: '/mobile/v1/auth/otp/request'
+      path: '/mobile/v1/auth/otp/request'
+      fullPath: '/mobile/v1/auth/otp/request'
+      preLoaderRoute: typeof MobileV1AuthOtpRequestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mobile/v1/auth/otp/verify': {
+      id: '/mobile/v1/auth/otp/verify'
+      path: '/mobile/v1/auth/otp/verify'
+      fullPath: '/mobile/v1/auth/otp/verify'
+      preLoaderRoute: typeof MobileV1AuthOtpVerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -782,6 +862,10 @@ const rootRouteChildren: RootRouteChildren = {
   PlatformRoute: PlatformRoute,
   RolesRoute: RolesRoute,
   TeamRoute: TeamRoute,
+  MobileV1BootstrapRoute: MobileV1BootstrapRoute,
+  MobileV1MeRoute: MobileV1MeRoute,
+  MobileV1AuthOtpRequestRoute: MobileV1AuthOtpRequestRoute,
+  MobileV1AuthOtpVerifyRoute: MobileV1AuthOtpVerifyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
