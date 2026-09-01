@@ -12,7 +12,7 @@ are connected.
 - Pilot: Siddipet district, Raipole mandal
 - Crop plan: paddy 10 acres, maize 5 acres, cotton 5 acres
 - Local sensitive state: iOS Keychain (`whenUnlockedThisDeviceOnly`)
-- Mobile API: `https://agrivah.com/mobile/v1`
+- Default mobile API: `https://agrivah.com/mobile/v1` (an HTTPS bundle override may replace it)
 - Authenticated profile refresh: `GET /me`, with bearer tokens stored in the
   iOS Keychain (`whenUnlockedThisDeviceOnly`)
 
