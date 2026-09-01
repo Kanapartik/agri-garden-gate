@@ -545,6 +545,11 @@ components:
         resendAfterSeconds:
           type: integer
           minimum: 1
+        sandboxStaticOtp:
+          type: boolean
+          description: >-
+            True only when SMS delivery failed and the server restricted this challenge to the
+            synthetic pilot farmer's temporary static-OTP path. Remove after SMS activation.
 
     OtpVerification:
       type: object
@@ -560,7 +565,7 @@ components:
           examples: ["+919000000000"]
         otp:
           type: string
-          pattern: '^[0-9]{6}$'
+          pattern: "^[0-9]{6}$"
           writeOnly: true
 
     AuthSession:
@@ -705,7 +710,7 @@ components:
           format: uuid
         disclosureHashSha256:
           type: string
-          pattern: '^[a-f0-9]{64}$'
+          pattern: "^[a-f0-9]{64}$"
         displayedAt:
           type: string
           format: date-time
@@ -810,7 +815,7 @@ components:
           $ref: "#/components/schemas/OnboardingChannel"
         disclosureHashSha256:
           type: string
-          pattern: '^[a-f0-9]{64}$'
+          pattern: "^[a-f0-9]{64}$"
         decidedAt:
           type: string
           format: date-time
@@ -1063,7 +1068,7 @@ components:
           type: [string, "null"]
         evidenceReferenceHash:
           type: [string, "null"]
-          pattern: '^[a-f0-9]{64}$'
+          pattern: "^[a-f0-9]{64}$"
         requestedAt:
           type: string
           format: date-time
@@ -1082,7 +1087,7 @@ components:
       properties:
         code:
           type: string
-          pattern: '^[a-z0-9_]+$'
+          pattern: "^[a-z0-9_]+$"
         messageKey:
           type: string
           description: Localizable key; default mobile rendering is Telugu.

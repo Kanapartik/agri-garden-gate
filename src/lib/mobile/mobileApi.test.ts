@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   isSixDigitOtp,
+  isSandboxStaticOtp,
   isUuid,
   maskIndianMobile,
   mobileOnboardingStatus,
@@ -19,6 +20,8 @@ describe("farmer mobile API boundary", () => {
     expect(isSixDigitOtp("123456")).toBe(true);
     expect(isSixDigitOtp("12345x")).toBe(false);
     expect(isUuid("49749000-9a8e-43ac-a8d3-8691c4122df8")).toBe(true);
+    expect(isSandboxStaticOtp("123456")).toBe(true);
+    expect(isSandboxStaticOtp("123455")).toBe(false);
   });
 
   it("keeps consent and profile gates fail-closed", () => {
