@@ -44,3 +44,10 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+
+## Farmer mobile pilot contract
+
+The frozen Siddipet/Raipole pilot decision, mobile API, and consent contract are
+indexed in [`docs/mobile/README.md`](./docs/mobile/README.md). Native pilot
+applications are available for
+[`Android`](./mobile/android/) and [`iOS`](./mobile/ios/).

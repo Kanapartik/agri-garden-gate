@@ -1,0 +1,7 @@
+build/
+DerivedData/
+dist/
+captures/
+*.xcuserstate
+xcuserdata/
+
