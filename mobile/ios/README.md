@@ -12,8 +12,8 @@ are connected.
 - Pilot: Siddipet district, Raipole mandal
 - Crop plan: paddy 10 acres, maize 5 acres, cotton 5 acres
 - Local sensitive state: iOS Keychain (`whenUnlockedThisDeviceOnly`)
-- Mobile API: `https://agri-garden-gate.lovable.app/mobile/v1`
-- Authenticated profile refresh: `GET /me`, with bearer tokens stored in the
+- Mobile API: defaults to `https://agrivah.com/mobile/v1`; an optional
+  `MobileAPIBaseURL` bundle value may override it but must be HTTPS.
   iOS Keychain (`whenUnlockedThisDeviceOnly`)
 
 Version `0.2.0` replaces the frozen Kalyan receipt with the signed-in farmer's
