@@ -64,7 +64,21 @@ final class PilotContractTests: XCTestCase {
     }
 
     func testDefaultMobileAPIBaseURLIsCanonicalHTTPS() {
-        XCTAssertEqual(PilotContract.defaultMobileAPIBaseURL?.absoluteString, "https://agrivah.com/mobile/v1")
-        XCTAssertEqual(PilotContract.defaultMobileAPIBaseURL?.scheme, "https")
+        XCTAssertEqual(PilotContract.defaultMobileAPIBaseURL.absoluteString, "https://agrivah.com/mobile/v1")
+        XCTAssertEqual(PilotContract.mobileAPIBaseURL?.scheme, "https")
+    }
+
+    func testDecodesSandboxStaticOTPChallenge() throws {
+        let fixture = """
+        {
+          "challengeId": "49749000-9a8e-43ac-a8d3-8691c4122df8",
+          "delivery": { "channel": "sms", "maskedDestination": "+91******0467" },
+          "expiresAt": "2026-09-01T00:10:00Z",
+          "resendAfterSeconds": 60,
+          "sandboxStaticOtp": true
+        }
+        """
+        let challenge = try JSONDecoder().decode(OTPChallengeResponse.self, from: Data(fixture.utf8))
+        XCTAssertEqual(challenge.sandboxStaticOtp, true)
     }
 }

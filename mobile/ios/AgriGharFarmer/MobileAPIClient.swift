@@ -5,6 +5,7 @@ struct OTPChallengeResponse: Decodable, Equatable {
     let delivery: Delivery
     let expiresAt: String
     let resendAfterSeconds: Int
+    let sandboxStaticOtp: Bool?
 
     struct Delivery: Decodable, Equatable {
         let channel: String

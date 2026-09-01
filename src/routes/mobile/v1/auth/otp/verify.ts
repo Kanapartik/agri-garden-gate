@@ -6,8 +6,13 @@ export const Route = createFileRoute("/mobile/v1/auth/otp/verify")({
     handlers: {
       POST: async ({ request }) => {
         const correlationId = crypto.randomUUID();
-        const { createMobilePublicClient, mobileError, mobileJson, readJsonObject } =
-          await import("@/lib/mobile/mobileApi.server");
+        const {
+          createMobilePublicClient,
+          mobileError,
+          mobileJson,
+          readJsonObject,
+          verifySandboxStaticOtp,
+        } = await import("@/lib/mobile/mobileApi.server");
         const body = await readJsonObject(request);
         const phone = normalizeIndianMobile(body?.["phone"]);
         if (!body || !isUuid(body["challengeId"]) || !phone || !isSixDigitOtp(body["otp"])) {
@@ -15,6 +20,22 @@ export const Route = createFileRoute("/mobile/v1/auth/otp/verify")({
         }
 
         try {
+          const sandbox = await verifySandboxStaticOtp({
+            challengeId: body["challengeId"],
+            phone,
+            otp: body["otp"],
+          });
+          if (sandbox.handled) {
+            if (!sandbox.session) return mobileError("otp_invalid_or_expired", 401, correlationId);
+            return mobileJson({
+              accessToken: sandbox.session.accessToken,
+              refreshToken: "",
+              expiresAt: sandbox.session.expiresAt,
+              userId: sandbox.session.userId,
+              isNewAccount: false,
+            });
+          }
+
           const supabase = createMobilePublicClient();
           const { data, error } = await supabase.auth.verifyOtp({
             phone,

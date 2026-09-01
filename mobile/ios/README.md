@@ -17,9 +17,13 @@ are connected.
 - Authenticated profile refresh: `GET /me`, with bearer tokens stored in the
   iOS Keychain (`whenUnlockedThisDeviceOnly`)
 
-Version `0.2.0` replaces the frozen Kalyan receipt with the signed-in farmer's
+Version `0.2.1` replaces the frozen Kalyan receipt with the signed-in farmer's
 backend profile. The app requests SMS OTP through `/auth/otp/request`, verifies
 it through `/auth/otp/verify`, then refreshes `/me` on launch and on demand.
+When the SMS provider reports a delivery failure, the backend exposes temporary
+code `123456` only for the role-free synthetic pilot farmer. The challenge is
+audited, expires after ten minutes, and automatically stops using the static
+path when SMS delivery succeeds.
 The authorized sandbox account currently returns Dr Sowmini Sunkara, female,
 20 acres, phone masked to suffix `0467`. Identity, land and FPO verification
 remain pending; the account mapping grants none of those decisions.
@@ -52,6 +56,6 @@ the owner's Apple Developer team, signing certificate, and provisioning profile.
 
 - Validate the Supabase SMS provider, India DLT header/template and delivery to
   the enrolled device before a field rollout.
-- Record baseline consent through the server-signed consent endpoint; v0.2.0
+- Record baseline consent through the server-signed consent endpoint; v0.2.1
   continues to retain the existing local pilot consent receipt.
 - Add refresh-token rotation and server logout before long-lived distribution.

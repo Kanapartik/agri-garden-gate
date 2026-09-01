@@ -1,6 +1,7 @@
 export const MOBILE_API_VERSION = "mobile-v1";
 export const MOBILE_PILOT_ID = "pilot-siddipet-raipole-001";
 export const MOBILE_LOCALE = "te-IN";
+export const MOBILE_SANDBOX_STATIC_OTP = "123456";
 
 export function normalizeIndianMobile(value: unknown): string | null {
   if (typeof value !== "string") return null;
@@ -20,6 +21,10 @@ export function maskIndianMobile(phone: string): string {
 
 export function isSixDigitOtp(value: unknown): value is string {
   return typeof value === "string" && /^\d{6}$/.test(value);
+}
+
+export function isSandboxStaticOtp(value: unknown): value is string {
+  return value === MOBILE_SANDBOX_STATIC_OTP;
 }
 
 export function isUuid(value: unknown): value is string {

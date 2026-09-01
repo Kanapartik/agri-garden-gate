@@ -16,14 +16,14 @@ enum PilotContract {
     static let consentVersion = "mobile-consent-2026-08-v1"
     static let policyVersion = "2026-08-baseline-v1"
     static let totalAcres = Decimal(20)
-
-    static let defaultMobileAPIBaseURL = URL(string: "https://agrivah.com/mobile/v1")
+    static let defaultMobileAPIBaseURL = URL(string: "https://agrivah.com/mobile/v1")!
 
     static var mobileAPIBaseURL: URL? {
         guard let raw = Bundle.main.object(forInfoDictionaryKey: "MobileAPIBaseURL") as? String else {
             return defaultMobileAPIBaseURL
         }
-        guard let url = URL(string: raw), url.scheme == "https" else {
+        guard let url = URL(string: raw),
+              url.scheme == "https" else {
             return nil
         }
         return url
