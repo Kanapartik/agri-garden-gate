@@ -6,10 +6,11 @@ export const Route = createFileRoute("/mobile/v1/me")({
     handlers: {
       GET: async ({ request }) => {
         const correlationId = crypto.randomUUID();
-        const { mobileError, mobileJson, requireMobileUser } =
+        const { mobileError, mobileJson, requireMobileProfileUser } =
           await import("@/lib/mobile/mobileApi.server");
         try {
-          const { supabase, user, userId } = await requireMobileUser(request);
+          const { supabase, user, userId, isSandboxStatic } =
+            await requireMobileProfileUser(request);
           const [
             { data: farmer },
             { data: publicProfile },
@@ -64,6 +65,19 @@ export const Route = createFileRoute("/mobile/v1/me")({
             user.updated_at ??
             new Date().toISOString();
           const phoneMasked = user.phone ? maskIndianMobile(user.phone) : "+91******----";
+
+          if (isSandboxStatic) {
+            const { error: auditError } = await supabase.from("audit_events").insert({
+              action: "mobile.profile.read",
+              actor_user_id: userId,
+              decision: "allow",
+              purpose_code: "mobile_pilot_profile_sync",
+              subject_id: userId,
+              subject_type: "auth_user",
+              metadata: { is_synthetic: true, static_otp: true },
+            });
+            if (auditError) throw new Error("mobile_sandbox_audit_failed");
+          }
 
           return mobileJson({
             id: userId,

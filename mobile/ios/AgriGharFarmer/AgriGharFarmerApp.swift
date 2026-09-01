@@ -54,6 +54,7 @@ final class AppModel: ObservableObject {
     @Published var profileUpdatedAt: String?
     @Published var identityVerificationStatus: String?
     @Published var identityVerificationIsSynthetic = false
+    @Published var sandboxStaticOTPActive = false
 
     private let keychain: KeychainStore
     private let apiClient: MobileAPIClient
@@ -126,6 +127,7 @@ final class AppModel: ObservableObject {
         }
         pendingPhone = normalized
         otpInput = ""
+        sandboxStaticOTPActive = false
         if usesDemoOTP {
             pendingChallengeId = "demo"
             screen = .otp
@@ -136,6 +138,7 @@ final class AppModel: ObservableObject {
         do {
             let challenge = try await apiClient.requestOTP(phone: normalized)
             pendingChallengeId = challenge.challengeId
+            sandboxStaticOTPActive = challenge.sandboxStaticOtp == true
             _ = keychain.set(challenge.delivery.maskedDestination, for: "farmer.phone.masked")
             screen = .otp
         } catch {
@@ -256,6 +259,7 @@ final class AppModel: ObservableObject {
         pendingPhone = nil
         phoneInput = ""
         otpInput = ""
+        sandboxStaticOTPActive = false
         farmerName = ""
         gender = .female
         totalExtentAcres = PilotContract.totalAcres
@@ -412,11 +416,13 @@ struct OTPView: View {
                 BrandHeader(
                     eyebrow: "మొబైల్ ధృవీకరణ",
                     title: "OTP నమోదు చేయండి",
-                    subtitle: "\(model.maskedPhone) కు పంపిన 6 అంకెల కోడ్‌ను నమోదు చేయండి."
+                    subtitle: model.sandboxStaticOTPActive
+                        ? "SMS సేవ అందుబాటులో లేదు. సింథటిక్ పైలట్ కోసం తాత్కాలిక కోడ్‌ను నమోదు చేయండి."
+                        : "\(model.maskedPhone) కు పంపిన 6 అంకెల కోడ్‌ను నమోదు చేయండి."
                 )
                 VStack(alignment: .leading, spacing: 14) {
-                    if model.usesDemoOTP {
-                        Label("పైలట్ డెమో OTP: 123456", systemImage: "hammer.fill")
+                    if model.usesDemoOTP || model.sandboxStaticOTPActive {
+                        Label("సాండ్‌బాక్స్ OTP: 123456", systemImage: "hammer.fill")
                             .font(.subheadline.bold())
                             .foregroundStyle(AppTheme.darkGreen)
                             .padding(12)
@@ -438,6 +444,7 @@ struct OTPView: View {
                     PrimaryButton(title: "ధృవీకరించి కొనసాగండి", enabled: !model.isBusy, action: model.verifyOTP)
                     Button("నంబర్ మార్చండి") {
                         model.errorMessage = nil
+                        model.sandboxStaticOTPActive = false
                         model.screen = .login
                     }
                     .frame(maxWidth: .infinity)
