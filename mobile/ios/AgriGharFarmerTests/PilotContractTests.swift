@@ -63,7 +63,7 @@ final class PilotContractTests: XCTestCase {
         XCTAssertEqual(client.baseURL?.scheme, "https")
     }
 
-    func testDefaultMobileAPIUsesCanonicalDomain() {
+    func testDefaultMobileAPIBaseURLIsCanonicalHTTPS() {
         XCTAssertEqual(PilotContract.defaultMobileAPIBaseURL.absoluteString, "https://agrivah.com/mobile/v1")
         XCTAssertEqual(PilotContract.mobileAPIBaseURL?.scheme, "https")
     }
