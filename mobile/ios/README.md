@@ -14,6 +14,7 @@ are connected.
 - Local sensitive state: iOS Keychain (`whenUnlockedThisDeviceOnly`)
 - Mobile API: defaults to `https://agrivah.com/mobile/v1`; an optional
   `MobileAPIBaseURL` bundle value may override it but must be HTTPS.
+- Authenticated profile refresh: `GET /me`, with bearer tokens stored in the
   iOS Keychain (`whenUnlockedThisDeviceOnly`)
 
 Version `0.2.0` replaces the frozen Kalyan receipt with the signed-in farmer's
