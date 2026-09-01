@@ -1,0 +1,206 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.agrighar.example/mobile/consent-contract-v1.schema.json",
+  "title": "AgriGhar mobile consent decision v1",
+  "description": "Client-to-server consent decision envelope. The server derives the subject from the authenticated session and generates the receipt.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractVersion",
+    "policyVersion",
+    "kind",
+    "decision",
+    "purposeCodes",
+    "locale",
+    "channel",
+    "disclosureHashSha256",
+    "displayedAt",
+    "clientContext"
+  ],
+  "properties": {
+    "contractVersion": {
+      "const": "mobile-consent-2026-08-v1"
+    },
+    "policyVersion": {
+      "const": "2026-08-baseline-v1"
+    },
+    "kind": {
+      "enum": ["baseline_platform", "optional_partner", "fpo_purpose"]
+    },
+    "decision": {
+      "enum": ["grant", "revoke"]
+    },
+    "purposeCodes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "account_service",
+          "profile_and_farm_record_management",
+          "security_and_audit",
+          "identity_verification",
+          "land_record_verification",
+          "fpo_membership_verification",
+          "fpo_service_assistance",
+          "agronomic_advisory",
+          "scheme_application_prefill"
+        ]
+      }
+    },
+    "consumerId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "locale": {
+      "enum": ["te-IN", "en-IN"]
+    },
+    "channel": {
+      "enum": [
+        "self_service",
+        "fpo_assisted",
+        "govt_camp_assisted",
+        "field_agent_assisted"
+      ]
+    },
+    "assistedByUserId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "disclosureHashSha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "displayedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "clientContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["platform", "sdkInt", "appVersion", "deviceLocale"],
+      "properties": {
+        "platform": {
+          "const": "android"
+        },
+        "sdkInt": {
+          "type": "integer",
+          "minimum": 31
+        },
+        "appVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "deviceLocale": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 35
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": { "const": "baseline_platform" }
+        },
+        "required": ["kind"]
+      },
+      "then": {
+        "properties": {
+          "purposeCodes": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "account_service",
+                "profile_and_farm_record_management",
+                "security_and_audit"
+              ]
+            },
+            "allOf": [
+              { "contains": { "const": "account_service" } },
+              { "contains": { "const": "profile_and_farm_record_management" } },
+              { "contains": { "const": "security_and_audit" } }
+            ]
+          }
+        },
+        "not": {
+          "required": ["consumerId"]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": { "enum": ["optional_partner", "fpo_purpose"] }
+        },
+        "required": ["kind"]
+      },
+      "then": {
+        "required": ["consumerId"],
+        "properties": {
+          "purposeCodes": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+              "enum": [
+                "identity_verification",
+                "land_record_verification",
+                "fpo_membership_verification",
+                "fpo_service_assistance",
+                "agronomic_advisory",
+                "scheme_application_prefill"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "channel": {
+            "enum": [
+              "fpo_assisted",
+              "govt_camp_assisted",
+              "field_agent_assisted"
+            ]
+          }
+        },
+        "required": ["channel"]
+      },
+      "then": {
+        "required": ["assistedByUserId"]
+      }
+    }
+  ],
+  "examples": [
+    {
+      "contractVersion": "mobile-consent-2026-08-v1",
+      "policyVersion": "2026-08-baseline-v1",
+      "kind": "baseline_platform",
+      "decision": "grant",
+      "purposeCodes": [
+        "account_service",
+        "profile_and_farm_record_management",
+        "security_and_audit"
+      ],
+      "locale": "te-IN",
+      "channel": "self_service",
+      "disclosureHashSha256": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+      "displayedAt": "2026-08-29T10:00:00+05:30",
+      "clientContext": {
+        "platform": "android",
+        "sdkInt": 31,
+        "appVersion": "1.0.0",
+        "deviceLocale": "te-IN"
+      }
+    }
+  ]
+}

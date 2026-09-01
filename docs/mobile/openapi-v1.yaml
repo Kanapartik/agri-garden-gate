@@ -1,0 +1,1098 @@
+openapi: 3.1.0
+info:
+  title: AgriGhar Farmer Mobile API
+  version: 1.0.0-pilot
+  summary: Frozen contract for the Siddipet/Raipole Android farmer pilot.
+  description: |
+    Contract status: FROZEN FOR PILOT IMPLEMENTATION (2026-08-29).
+
+    The API is default-deny and subject-scoped. Except for OTP request/verify
+    and bootstrap, every operation derives the farmer from the bearer token.
+    Client-supplied subject user IDs are prohibited. Identity, land and FPO
+    adapters return evidence/status only; authorized humans retain high-stakes
+    decisions.
+
+    Examples are synthetic and must not be replaced with real farmer PII in Git.
+tags:
+  - name: Bootstrap
+  - name: Authentication
+  - name: Farmer
+  - name: Consent
+  - name: Farms
+  - name: Verification
+paths:
+  /mobile/v1/bootstrap:
+    get:
+      tags: [Bootstrap]
+      operationId: getMobileBootstrap
+      security: []
+      summary: Get supported client, locale, pilot and contract configuration.
+      responses:
+        "200":
+          description: Active mobile configuration.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BootstrapResponse"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /mobile/v1/auth/otp/request:
+    post:
+      tags: [Authentication]
+      operationId: requestPhoneOtp
+      security: []
+      summary: Request an SMS OTP for an Indian mobile number.
+      description: |
+        The response is generic and must not disclose whether the phone already
+        has an account. The server normalizes the number to E.164 and applies
+        resend, attempt, provider and abuse controls.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OtpRequest"
+      responses:
+        "202":
+          description: Challenge accepted for delivery.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OtpChallenge"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+
+  /mobile/v1/auth/otp/verify:
+    post:
+      tags: [Authentication]
+      operationId: verifyPhoneOtp
+      security: []
+      summary: Verify an SMS OTP and establish the farmer session.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OtpVerification"
+      responses:
+        "200":
+          description: OTP verified.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthSession"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+
+  /mobile/v1/auth/session/logout:
+    post:
+      tags: [Authentication]
+      operationId: logoutMobileSession
+      summary: Revoke the current mobile session.
+      responses:
+        "204":
+          description: Session revoked.
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /mobile/v1/me:
+    get:
+      tags: [Farmer]
+      operationId: getMyFarmerProfile
+      summary: Read the authenticated farmer profile and onboarding status.
+      responses:
+        "200":
+          description: Farmer profile.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FarmerProfile"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    put:
+      tags: [Farmer]
+      operationId: putMyFarmerProfile
+      summary: Create or replace editable farmer profile fields.
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FarmerProfileInput"
+      responses:
+        "200":
+          description: Saved profile.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FarmerProfile"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "409":
+          $ref: "#/components/responses/Conflict"
+
+  /mobile/v1/me/consents:
+    get:
+      tags: [Consent]
+      operationId: listMyConsents
+      summary: List the farmer's active and historical consent receipts.
+      responses:
+        "200":
+          description: Consent history owned by the authenticated farmer.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ConsentReceipt"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /mobile/v1/me/consents/decisions:
+    post:
+      tags: [Consent]
+      operationId: recordMyConsentDecision
+      summary: Grant or revoke baseline or one purpose-scoped consent.
+      description: |
+        Body must validate against consent-contract-v1.schema.json. The server
+        derives subject and decision time, verifies the exact disclosure hash,
+        enforces actor=subject, applies the pilot expiry policy, and writes the
+        append-only audit event before returning a signed receipt.
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConsentDecision"
+      responses:
+        "201":
+          description: Consent decision recorded.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConsentReceipt"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "409":
+          $ref: "#/components/responses/Conflict"
+
+  /mobile/v1/me/farms:
+    get:
+      tags: [Farms]
+      operationId: listMyFarms
+      summary: List farm records owned by the authenticated farmer.
+      responses:
+        "200":
+          description: Farmer-owned farm records.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/FarmRecord"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /mobile/v1/me/farms/sync:
+    post:
+      tags: [Farms]
+      operationId: syncMyFarmDrafts
+      summary: Idempotently replay offline farm drafts.
+      description: |
+        clientDraftId is the durable per-draft idempotency key. The server must
+        not silently replace a newer server record or merge two plot references;
+        such cases return conflict for farmer/human review.
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [drafts]
+              properties:
+                drafts:
+                  type: array
+                  minItems: 1
+                  maxItems: 25
+                  items:
+                    $ref: "#/components/schemas/FarmDraft"
+      responses:
+        "200":
+          description: Per-draft sync results.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [results]
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/FarmSyncResult"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /mobile/v1/me/farms/{farmId}:
+    get:
+      tags: [Farms]
+      operationId: getMyFarm
+      summary: Read one farmer-owned farm record.
+      parameters:
+        - $ref: "#/components/parameters/FarmId"
+      responses:
+        "200":
+          description: Farm record.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FarmRecord"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /mobile/v1/me/identity-verification-requests:
+    post:
+      tags: [Verification]
+      operationId: requestMyIdentityVerification
+      summary: Request optional identity verification.
+      description: |
+        Requires active identity_verification consent for the named adapter
+        consumer. Raw Aadhaar numbers, biometrics, OTPs and offline-eKYC packages
+        are not accepted by this API. evidenceRef points to an approved encrypted
+        evidence-upload flow.
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IdentityVerificationRequest"
+      responses:
+        "202":
+          description: Verification queued; no activation decision implied.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VerificationStatus"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /mobile/v1/me/farms/{farmId}/land-verification-requests:
+    post:
+      tags: [Verification]
+      operationId: requestMyLandVerification
+      summary: Request Telangana land-record verification for one farm.
+      description: |
+        Requires active land_record_verification consent. Submitted identifiers
+        remain claims until the adapter returns matched evidence. A mismatch
+        always routes to human review and never overwrites the farmer's draft.
+      parameters:
+        - $ref: "#/components/parameters/FarmId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LandVerificationRequest"
+      responses:
+        "202":
+          description: Land verification queued.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VerificationStatus"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /mobile/v1/me/fpo-membership-verification-requests:
+    post:
+      tags: [Verification]
+      operationId: requestMyFpoMembershipVerification
+      summary: Request verification against an FPO membership register.
+      description: |
+        Requires active fpo_membership_verification consent for this FPO. The
+        public company/FPO registry is organization evidence only; membership
+        status requires the FPO register and authorized officer attestation.
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FpoMembershipVerificationRequest"
+      responses:
+        "202":
+          description: Membership verification queued.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VerificationStatus"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /mobile/v1/me/verification-requests/{verificationId}:
+    get:
+      tags: [Verification]
+      operationId: getMyVerificationStatus
+      summary: Read a farmer-owned verification request and its evidence state.
+      parameters:
+        - name: verificationId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Verification status.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VerificationStatus"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: Client-generated UUID retained across offline retries.
+      schema:
+        type: string
+        format: uuid
+    FarmId:
+      name: farmId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  responses:
+    BadRequest:
+      description: Invalid request; field-safe error codes only.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiError"
+    Unauthorized:
+      description: Missing, invalid or expired session.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiError"
+    Forbidden:
+      description: Purpose consent or server-side authorization denied.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiError"
+    NotFound:
+      description: Record does not exist or is outside the farmer's scope.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiError"
+    Conflict:
+      description: Idempotency, version or farm-record conflict.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiError"
+    TooManyRequests:
+      description: Rate or attempt limit reached.
+      headers:
+        Retry-After:
+          schema:
+            type: integer
+            minimum: 1
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiError"
+    ServiceUnavailable:
+      description: Mobile service temporarily unavailable.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiError"
+
+  schemas:
+    BootstrapResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - apiVersion
+        - pilotId
+        - primaryLocale
+        - fallbackLocale
+        - minimumAndroidSdk
+        - consentContractVersion
+        - baselinePolicyVersion
+      properties:
+        apiVersion:
+          const: mobile-v1
+        pilotId:
+          const: pilot-siddipet-raipole-001
+        primaryLocale:
+          const: te-IN
+        fallbackLocale:
+          const: en-IN
+        minimumAndroidSdk:
+          type: integer
+          const: 31
+        consentContractVersion:
+          const: mobile-consent-2026-08-v1
+        baselinePolicyVersion:
+          const: 2026-08-baseline-v1
+        maintenanceMessage:
+          type: [string, "null"]
+
+    OtpRequest:
+      type: object
+      additionalProperties: false
+      required: [phone, channel, locale]
+      properties:
+        phone:
+          type: string
+          pattern: '^\\+91[6-9][0-9]{9}$'
+          examples: ["+919000000000"]
+        channel:
+          const: sms
+        locale:
+          const: te-IN
+        captchaToken:
+          type: [string, "null"]
+          maxLength: 4096
+
+    OtpChallenge:
+      type: object
+      additionalProperties: false
+      required: [challengeId, delivery, expiresAt, resendAfterSeconds]
+      properties:
+        challengeId:
+          type: string
+          format: uuid
+        delivery:
+          type: object
+          additionalProperties: false
+          required: [channel, maskedDestination]
+          properties:
+            channel:
+              const: sms
+            maskedDestination:
+              type: string
+              examples: ["+91******0000"]
+        expiresAt:
+          type: string
+          format: date-time
+        resendAfterSeconds:
+          type: integer
+          minimum: 1
+
+    OtpVerification:
+      type: object
+      additionalProperties: false
+      required: [challengeId, phone, otp]
+      properties:
+        challengeId:
+          type: string
+          format: uuid
+        phone:
+          type: string
+          pattern: '^\\+91[6-9][0-9]{9}$'
+          examples: ["+919000000000"]
+        otp:
+          type: string
+          pattern: '^[0-9]{6}$'
+          writeOnly: true
+
+    AuthSession:
+      type: object
+      additionalProperties: false
+      required: [accessToken, refreshToken, expiresAt, userId, isNewAccount]
+      properties:
+        accessToken:
+          type: string
+          description: Sensitive bearer credential; return only over TLS and store in Android secure storage.
+        refreshToken:
+          type: string
+          description: Sensitive renewal credential; rotate and store in Android secure storage.
+        expiresAt:
+          type: string
+          format: date-time
+        userId:
+          type: string
+          format: uuid
+        isNewAccount:
+          type: boolean
+
+    FarmerProfileInput:
+      type: object
+      additionalProperties: false
+      required: [fullName, gender, preferredLocale, geography]
+      properties:
+        fullName:
+          type: string
+          minLength: 1
+          maxLength: 120
+        gender:
+          enum: [female, male, non_binary, prefer_not_to_say, self_described]
+        preferredLocale:
+          const: te-IN
+        geography:
+          $ref: "#/components/schemas/Geography"
+
+    FarmerProfile:
+      allOf:
+        - $ref: "#/components/schemas/FarmerProfileInput"
+        - type: object
+          required: [id, phoneMasked, onboardingStatus, updatedAt]
+          properties:
+            id:
+              type: string
+              format: uuid
+            phoneMasked:
+              type: string
+            onboardingStatus:
+              enum: [consent_pending, profile_pending, verification_optional, active, suspended]
+            updatedAt:
+              type: string
+              format: date-time
+            totalExtentAcres:
+              type: [number, "null"]
+              minimum: 0
+            identityVerification:
+              anyOf:
+                - $ref: "#/components/schemas/MobileIdentityVerificationSummary"
+                - type: "null"
+
+    MobileIdentityVerificationSummary:
+      type: object
+      additionalProperties: false
+      required: [id, status, adapter, isSynthetic, requestedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          enum: [pending, manual_review, verified, failed, duplicate_hold]
+        adapter:
+          type: string
+        reasonCategory:
+          type: [string, "null"]
+        isSynthetic:
+          type: boolean
+        requestedAt:
+          type: string
+          format: date-time
+        decidedAt:
+          type: [string, "null"]
+          format: date-time
+
+    Geography:
+      type: object
+      additionalProperties: false
+      required: [countryCode, stateCode, district, mandal]
+      properties:
+        countryCode:
+          const: IN
+        stateCode:
+          const: IN-TG
+        district:
+          const: Siddipet
+        mandal:
+          const: Raipole
+        villageCode:
+          type: [string, "null"]
+          maxLength: 40
+
+    ConsentDecision:
+      type: object
+      description: Must also validate against consent-contract-v1.schema.json.
+      additionalProperties: false
+      required:
+        - contractVersion
+        - policyVersion
+        - kind
+        - decision
+        - purposeCodes
+        - locale
+        - channel
+        - disclosureHashSha256
+        - displayedAt
+        - clientContext
+      properties:
+        contractVersion:
+          const: mobile-consent-2026-08-v1
+        policyVersion:
+          const: 2026-08-baseline-v1
+        kind:
+          enum: [baseline_platform, optional_partner, fpo_purpose]
+        decision:
+          enum: [grant, revoke]
+        purposeCodes:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/ConsentPurposeCode"
+        consumerId:
+          type: string
+          format: uuid
+        locale:
+          enum: [te-IN, en-IN]
+        channel:
+          $ref: "#/components/schemas/OnboardingChannel"
+        assistedByUserId:
+          type: string
+          format: uuid
+        disclosureHashSha256:
+          type: string
+          pattern: '^[a-f0-9]{64}$'
+        displayedAt:
+          type: string
+          format: date-time
+        clientContext:
+          $ref: "#/components/schemas/ClientContext"
+      allOf:
+        - if:
+            properties:
+              kind:
+                const: baseline_platform
+            required: [kind]
+          then:
+            properties:
+              purposeCodes:
+                type: array
+                minItems: 3
+                maxItems: 3
+                uniqueItems: true
+                items:
+                  enum:
+                    - account_service
+                    - profile_and_farm_record_management
+                    - security_and_audit
+                allOf:
+                  - contains:
+                      const: account_service
+                  - contains:
+                      const: profile_and_farm_record_management
+                  - contains:
+                      const: security_and_audit
+            not:
+              required: [consumerId]
+        - if:
+            properties:
+              kind:
+                enum: [optional_partner, fpo_purpose]
+            required: [kind]
+          then:
+            required: [consumerId]
+            properties:
+              purposeCodes:
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  enum:
+                    - identity_verification
+                    - land_record_verification
+                    - fpo_membership_verification
+                    - fpo_service_assistance
+                    - agronomic_advisory
+                    - scheme_application_prefill
+        - if:
+            properties:
+              channel:
+                enum: [fpo_assisted, govt_camp_assisted, field_agent_assisted]
+            required: [channel]
+          then:
+            required: [assistedByUserId]
+
+    ConsentReceipt:
+      type: object
+      additionalProperties: false
+      required:
+        - receiptId
+        - contractVersion
+        - policyVersion
+        - kind
+        - decision
+        - purposeCodes
+        - locale
+        - channel
+        - disclosureHashSha256
+        - decidedAt
+        - expiresAt
+        - auditCorrelationId
+        - receiptSignature
+      properties:
+        receiptId:
+          type: string
+          format: uuid
+        contractVersion:
+          const: mobile-consent-2026-08-v1
+        policyVersion:
+          const: 2026-08-baseline-v1
+        kind:
+          enum: [baseline_platform, optional_partner, fpo_purpose]
+        decision:
+          enum: [grant, revoke]
+        purposeCodes:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/ConsentPurposeCode"
+        consumerId:
+          type: [string, "null"]
+          format: uuid
+        locale:
+          enum: [te-IN, en-IN]
+        channel:
+          $ref: "#/components/schemas/OnboardingChannel"
+        disclosureHashSha256:
+          type: string
+          pattern: '^[a-f0-9]{64}$'
+        decidedAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: [string, "null"]
+          format: date-time
+        auditCorrelationId:
+          type: string
+          format: uuid
+        receiptSignature:
+          type: string
+          description: Server signature over the canonical receipt payload.
+
+    ConsentPurposeCode:
+      type: string
+      enum:
+        - account_service
+        - profile_and_farm_record_management
+        - security_and_audit
+        - identity_verification
+        - land_record_verification
+        - fpo_membership_verification
+        - fpo_service_assistance
+        - agronomic_advisory
+        - scheme_application_prefill
+
+    ClientContext:
+      type: object
+      additionalProperties: false
+      required: [platform, sdkInt, appVersion, deviceLocale]
+      properties:
+        platform:
+          const: android
+        sdkInt:
+          type: integer
+          minimum: 31
+        appVersion:
+          type: string
+          minLength: 1
+          maxLength: 40
+        deviceLocale:
+          type: string
+          minLength: 2
+          maxLength: 35
+
+    OnboardingChannel:
+      type: string
+      enum: [self_service, fpo_assisted, govt_camp_assisted, field_agent_assisted]
+
+    FarmDraft:
+      type: object
+      additionalProperties: false
+      required:
+        - clientDraftId
+        - label
+        - plotReference
+        - totalAreaAcres
+        - cropAllocations
+        - sourceStatus
+        - clientUpdatedAt
+        - channel
+      properties:
+        clientDraftId:
+          type: string
+          minLength: 1
+          maxLength: 100
+        label:
+          type: string
+          minLength: 1
+          maxLength: 100
+        plotReference:
+          type: string
+          minLength: 1
+          maxLength: 120
+          description: Client draft reference; not an official survey reference.
+        villageCode:
+          type: [string, "null"]
+          maxLength: 40
+        totalAreaAcres:
+          type: number
+          exclusiveMinimum: 0
+          maximum: 10000
+        cropAllocations:
+          type: array
+          minItems: 1
+          maxItems: 20
+          items:
+            $ref: "#/components/schemas/CropAllocation"
+        boundary:
+          type: array
+          maxItems: 64
+          items:
+            $ref: "#/components/schemas/BoundaryPoint"
+        sourceStatus:
+          const: self_reported
+        clientUpdatedAt:
+          type: string
+          format: date-time
+        channel:
+          $ref: "#/components/schemas/OnboardingChannel"
+
+    FarmRecord:
+      allOf:
+        - $ref: "#/components/schemas/FarmDraft"
+        - type: object
+          required: [id, syncState, verificationState, officialAreaAcres, updatedAt]
+          properties:
+            id:
+              type: string
+              format: uuid
+            syncState:
+              enum: [synced, conflict]
+            verificationState:
+              enum: [self_reported, pending, matched, mismatch, manual_review, verified]
+            officialAreaAcres:
+              type: [number, "null"]
+              exclusiveMinimum: 0
+            updatedAt:
+              type: string
+              format: date-time
+
+    CropAllocation:
+      type: object
+      additionalProperties: false
+      required: [cropCode, displayName, areaAcres]
+      properties:
+        cropCode:
+          enum: [paddy, maize, cotton]
+        displayName:
+          type: string
+          minLength: 1
+          maxLength: 80
+        areaAcres:
+          type: number
+          exclusiveMinimum: 0
+          maximum: 10000
+
+    BoundaryPoint:
+      type: object
+      additionalProperties: false
+      required: [latitude, longitude]
+      properties:
+        latitude:
+          type: number
+          minimum: -90
+          maximum: 90
+        longitude:
+          type: number
+          minimum: -180
+          maximum: 180
+
+    FarmSyncResult:
+      type: object
+      additionalProperties: false
+      required: [clientDraftId, result, farmId]
+      properties:
+        clientDraftId:
+          type: string
+        result:
+          enum: [inserted, updated, already_current, conflict]
+        farmId:
+          type: [string, "null"]
+          format: uuid
+        conflictReason:
+          type: [string, "null"]
+
+    IdentityVerificationRequest:
+      type: object
+      additionalProperties: false
+      required: [adapter, consentReceiptId, evidenceRef]
+      properties:
+        adapter:
+          enum: [uidai_offline_ekyc, manual_identity_review]
+        consentReceiptId:
+          type: string
+          format: uuid
+        evidenceRef:
+          type: string
+          minLength: 1
+          maxLength: 500
+          description: Opaque approved evidence-store reference, never raw identity data.
+
+    LandVerificationRequest:
+      type: object
+      additionalProperties: false
+      required: [adapter, consentReceiptId, villageCode, surveyReference]
+      properties:
+        adapter:
+          const: tg_bhu_bharati
+        consentReceiptId:
+          type: string
+          format: uuid
+        villageCode:
+          type: string
+          minLength: 1
+          maxLength: 40
+        surveyReference:
+          type: string
+          minLength: 1
+          maxLength: 120
+        ppbReferenceToken:
+          type: [string, "null"]
+          maxLength: 500
+          description: Opaque encrypted token/reference; never expose a raw document number.
+
+    FpoMembershipVerificationRequest:
+      type: object
+      additionalProperties: false
+      required: [adapter, consentReceiptId, fpoRegistrationNumber]
+      properties:
+        adapter:
+          const: fpo_membership_register
+        consentReceiptId:
+          type: string
+          format: uuid
+        fpoRegistrationNumber:
+          const: U01100TG2022PTC158664
+        claimedMemberReference:
+          type: [string, "null"]
+          maxLength: 120
+
+    VerificationStatus:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - verificationType
+        - adapter
+        - status
+        - sourceLabel
+        - requestedAt
+        - requiresHumanReview
+      properties:
+        id:
+          type: string
+          format: uuid
+        verificationType:
+          enum: [identity, land, fpo_membership]
+        adapter:
+          enum:
+            - uidai_offline_ekyc
+            - manual_identity_review
+            - tg_bhu_bharati
+            - fpo_membership_register
+        status:
+          enum: [pending, matched, verified, failed, mismatch, manual_review, duplicate_hold]
+        sourceLabel:
+          type: string
+        reasonCategory:
+          type: [string, "null"]
+        evidenceReferenceHash:
+          type: [string, "null"]
+          pattern: '^[a-f0-9]{64}$'
+        requestedAt:
+          type: string
+          format: date-time
+        decidedAt:
+          type: [string, "null"]
+          format: date-time
+        decidedByRole:
+          type: [string, "null"]
+        requiresHumanReview:
+          type: boolean
+
+    ApiError:
+      type: object
+      additionalProperties: false
+      required: [code, messageKey, correlationId]
+      properties:
+        code:
+          type: string
+          pattern: '^[a-z0-9_]+$'
+        messageKey:
+          type: string
+          description: Localizable key; default mobile rendering is Telugu.
+        correlationId:
+          type: string
+          format: uuid
+        fieldErrors:
+          type: object
+          additionalProperties:
+            type: string
+
+security:
+  - bearerAuth: []
