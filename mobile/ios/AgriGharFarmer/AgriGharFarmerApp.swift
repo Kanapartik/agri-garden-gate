@@ -55,6 +55,7 @@ final class AppModel: ObservableObject {
     @Published var identityVerificationStatus: String?
     @Published var identityVerificationIsSynthetic = false
     @Published var sandboxStaticOTPActive = false
+    @Published var localSandboxOTPActive = false
 
     private let keychain: KeychainStore
     private let apiClient: MobileAPIClient
@@ -76,7 +77,11 @@ final class AppModel: ObservableObject {
         let hasProfile = !(keychain.string(for: "profile.name") ?? "").isEmpty
         let hasSession = !(keychain.string(for: "auth.accessToken") ?? "").isEmpty
         #if DEBUG
-        if ProcessInfo.processInfo.arguments.contains("--preview-sandbox-profile") {
+        if ProcessInfo.processInfo.arguments.contains("--preview-local-sandbox-otp") {
+            self.screen = .otp
+            self.farmerName = ""
+            self.localSandboxOTPActive = true
+        } else if ProcessInfo.processInfo.arguments.contains("--preview-sandbox-profile") {
             self.screen = .home
             self.farmerName = "Dr Sowmini Sunkara"
             self.syncMessage = "బ్యాక్‌ఎండ్ ప్రొఫైల్ సమకాలీకరించబడింది"
@@ -128,6 +133,7 @@ final class AppModel: ObservableObject {
         pendingPhone = normalized
         otpInput = ""
         sandboxStaticOTPActive = false
+        localSandboxOTPActive = false
         if usesDemoOTP {
             pendingChallengeId = "demo"
             screen = .otp
@@ -142,7 +148,14 @@ final class AppModel: ObservableObject {
             _ = keychain.set(challenge.delivery.maskedDestination, for: "farmer.phone.masked")
             screen = .otp
         } catch {
-            errorMessage = error.localizedDescription
+            if PilotContract.isAuthorizedSandboxPilotPhone(normalized) {
+                pendingChallengeId = nil
+                localSandboxOTPActive = true
+                _ = keychain.set(PilotContract.maskedPhone(normalized), for: "farmer.phone.masked")
+                screen = .otp
+            } else {
+                errorMessage = error.localizedDescription
+            }
         }
     }
 
@@ -157,11 +170,21 @@ final class AppModel: ObservableObject {
             return
         }
         if usesDemoOTP {
-            guard otpInput == "123456" else {
+            guard PilotContract.isSandboxStaticOTP(otpInput) else {
                 errorMessage = "డెమో OTP సరిపోలలేదు."
                 return
             }
             screen = .consent
+            return
+        }
+        if localSandboxOTPActive {
+            guard PilotContract.isSandboxStaticOTP(otpInput) else {
+                errorMessage = "సాండ్‌బాక్స్ OTP సరిపోలలేదు."
+                return
+            }
+            activateLocalSandboxProfile()
+            let hasConsent = keychain.string(for: "consent.version") == PilotContract.consentVersion
+            screen = hasConsent ? .home : .consent
             return
         }
         guard let phone = pendingPhone, let challengeId = pendingChallengeId else {
@@ -183,6 +206,26 @@ final class AppModel: ObservableObject {
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    private func activateLocalSandboxProfile() {
+        _ = keychain.remove("auth.accessToken")
+        _ = keychain.remove("auth.refreshToken")
+        _ = keychain.remove("auth.expiresAt")
+        farmerName = PilotContract.sandboxFarmerName
+        gender = Gender(rawValue: PilotContract.sandboxFarmerGender) ?? .female
+        totalExtentAcres = PilotContract.totalAcres
+        profileUpdatedAt = nil
+        identityVerificationStatus = nil
+        identityVerificationIsSynthetic = false
+        _ = keychain.set(farmerName, for: "profile.name")
+        _ = keychain.set(gender.rawValue, for: "profile.gender")
+        if let pendingPhone {
+            _ = keychain.set(PilotContract.maskedPhone(pendingPhone), for: "farmer.phone.masked")
+        }
+        syncMessage = "స్థానిక సాండ్‌బాక్స్ ప్రొఫైల్ • బ్యాక్‌ఎండ్ సమకాలీకరణ లేదు"
+        pendingChallengeId = nil
+        errorMessage = nil
     }
 
     func acceptConsent() {
@@ -212,6 +255,11 @@ final class AppModel: ObservableObject {
     }
 
     func refreshAuthenticatedProfile() async {
+        if localSandboxOTPActive {
+            syncMessage = "స్థానిక సాండ్‌బాక్స్ ప్రొఫైల్ • బ్యాక్‌ఎండ్ సమకాలీకరణ లేదు"
+            errorMessage = nil
+            return
+        }
         guard apiClient.isConfigured,
               let accessToken = keychain.string(for: "auth.accessToken"),
               !accessToken.isEmpty else { return }
@@ -260,6 +308,7 @@ final class AppModel: ObservableObject {
         phoneInput = ""
         otpInput = ""
         sandboxStaticOTPActive = false
+        localSandboxOTPActive = false
         farmerName = ""
         gender = .female
         totalExtentAcres = PilotContract.totalAcres
@@ -282,7 +331,7 @@ private enum AppTheme {
     static let green = Color(red: 0.10, green: 0.42, blue: 0.22)
     static let darkGreen = Color(red: 0.05, green: 0.24, blue: 0.13)
     static let leaf = Color(red: 0.78, green: 0.90, blue: 0.72)
-    static let cream = Color(red: 0.97, green: 0.95, blue: 0.88)
+    static let cream = Color(red: 0.984, green: 0.973, blue: 0.914)
     static let gold = Color(red: 0.93, green: 0.65, blue: 0.18)
 }
 
@@ -314,19 +363,12 @@ struct BrandHeader: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 10) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 13).fill(AppTheme.green)
-                    Image(systemName: "leaf.fill")
-                        .font(.title2)
-                        .foregroundStyle(.white)
-                }
-                .frame(width: 48, height: 48)
-                VStack(alignment: .leading, spacing: 1) {
-                    Text("అగ్రిఘర్").font(.title3.bold()).foregroundStyle(AppTheme.darkGreen)
-                    Text("AGRI GHAR FARMER").font(.caption2.bold()).tracking(1.1).foregroundStyle(AppTheme.green)
-                }
-            }
+            Image("AgrivahBrandLockup")
+                .resizable()
+                .scaledToFit()
+                .frame(maxWidth: .infinity)
+                .frame(height: 138)
+                .accessibilityLabel("AGRIVAH — Connect, Collaborate, Transform")
             Text(eyebrow.uppercased()).font(.caption.bold()).tracking(1).foregroundStyle(AppTheme.green)
             Text(title).font(.largeTitle.bold()).foregroundStyle(AppTheme.darkGreen)
             Text(subtitle).font(.subheadline).foregroundStyle(.secondary)
@@ -418,17 +460,24 @@ struct OTPView: View {
                     title: "OTP నమోదు చేయండి",
                     subtitle: model.sandboxStaticOTPActive
                         ? "SMS సేవ అందుబాటులో లేదు. సింథటిక్ పైలట్ కోసం తాత్కాలిక కోడ్‌ను నమోదు చేయండి."
+                        : model.localSandboxOTPActive
+                        ? "సేవ అందుబాటులో లేదు. అధీకృత సింథటిక్ పైలట్ కోసం పరికరం-స్థాయి కోడ్‌ను నమోదు చేయండి."
                         : "\(model.maskedPhone) కు పంపిన 6 అంకెల కోడ్‌ను నమోదు చేయండి."
                 )
                 VStack(alignment: .leading, spacing: 14) {
-                    if model.usesDemoOTP || model.sandboxStaticOTPActive {
-                        Label("సాండ్‌బాక్స్ OTP: 123456", systemImage: "hammer.fill")
+                    if model.usesDemoOTP || model.sandboxStaticOTPActive || model.localSandboxOTPActive {
+                        Label("సాండ్‌బాక్స్ OTP: \(PilotContract.sandboxStaticOTP)", systemImage: "hammer.fill")
                             .font(.subheadline.bold())
                             .foregroundStyle(AppTheme.darkGreen)
                             .padding(12)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background(AppTheme.leaf.opacity(0.65))
                             .clipShape(RoundedRectangle(cornerRadius: 12))
+                        if model.localSandboxOTPActive {
+                            Text("ఇది ఈ పరికరంలో మాత్రమే పనిచేస్తుంది. బ్యాక్‌ఎండ్ సెషన్ లేదా SMS ధృవీకరణను సృష్టించదు.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                     TextField("000000", text: $model.otpInput)
                         .keyboardType(.numberPad)
@@ -445,6 +494,7 @@ struct OTPView: View {
                     Button("నంబర్ మార్చండి") {
                         model.errorMessage = nil
                         model.sandboxStaticOTPActive = false
+                        model.localSandboxOTPActive = false
                         model.screen = .login
                     }
                     .frame(maxWidth: .infinity)
@@ -613,9 +663,17 @@ struct HomeView: View {
                         Label("బ్యాక్‌ఎండ్ వివరాలు రిఫ్రెష్ అవుతున్నాయి", systemImage: "arrow.triangle.2.circlepath")
                             .font(.caption).foregroundStyle(.secondary)
                     } else if let message = model.syncMessage {
-                        Label(message, systemImage: "checkmark.icloud.fill")
-                            .font(.caption.bold()).foregroundStyle(AppTheme.green)
-                        Text("ఈ రైతుకు గుర్తింపు, భూమి మరియు FPO ధృవీకరణలు ఇంకా పెండింగ్‌లో ఉన్నాయి.")
+                        Label(
+                            message,
+                            systemImage: model.localSandboxOTPActive
+                                ? "exclamationmark.triangle.fill"
+                                : "checkmark.icloud.fill"
+                        )
+                            .font(.caption.bold())
+                            .foregroundStyle(model.localSandboxOTPActive ? Color.orange : AppTheme.green)
+                        Text(model.localSandboxOTPActive
+                            ? "SMS లేదా బ్యాక్‌ఎండ్ సాండ్‌బాక్స్ సేవ అందుబాటులోకి వచ్చే వరకు ప్రొఫైల్ నవీకరణలు ఈ లాగిన్‌లో సమకాలీకరించబడవు."
+                            : "ఈ రైతుకు గుర్తింపు, భూమి మరియు FPO ధృవీకరణలు ఇంకా పెండింగ్‌లో ఉన్నాయి.")
                             .font(.caption).foregroundStyle(.secondary)
                     } else {
                         Text("సైన్ ఇన్ చేసిన రైతు ప్రొఫైల్‌ను బ్యాక్‌ఎండ్ నుంచి రిఫ్రెష్ చేయండి. అధికారిక ఆధారాలు లేకుండా యాప్ ధృవీకరణ పూర్తయిందని చూపదు.")

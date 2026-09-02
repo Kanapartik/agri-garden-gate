@@ -5,7 +5,7 @@ Status: **implemented pilot companion**
 Implemented on: 2026-08-29
 
 The native iOS app is a presentation and secure-local-state companion to the
-frozen Siddipet/Raipole mobile contracts. Version `0.2.1` consumes the additive
+frozen Siddipet/Raipole mobile contracts. Version `0.2.2` consumes the additive
 authenticated farmer-profile fields in `/mobile/v1/me`.
 
 ## Decisions
@@ -28,12 +28,16 @@ authenticated farmer-profile fields in `/mobile/v1/me`.
   protection and are never logged.
 - Identity, land, and FPO membership are always shown as pending until an
   authoritative adapter returns a server-verifiable result.
-- Version `0.2.1` removes the frozen Kalyan verification receipt. The authorized
+- Version `0.2.2` keeps the obsolete frozen verification receipt removed. The authorized
   sandbox farmer mapping returns Dr Sowmini Sunkara, female, 20 acres and masked
   phone suffix `0467`. Identity, land and FPO states remain pending.
-- `[VALIDATE]` Temporary static OTP `123456` is accepted only after SMS delivery
-  fails, for the role-free synthetic pilot farmer, through an audited ten-minute
-  challenge. The fallback stops automatically once SMS delivery succeeds.
+- `[VALIDATE]` Until SMS delivery is configured, iOS version `0.2.2` accepts
+  temporary code `123456` only after an OTP service failure and only for the
+  explicitly authorized synthetic pilot phone. This device-local path is matched
+  by a one-way phone digest, creates no backend session, grants no API access and
+  is visibly labelled as offline. Remove it after SMS delivery is accepted.
+- The supplied Agrivah lockup is used in the screen header and the circular mark
+  is used as the iOS application icon.
 
 ## [VALIDATE] before physical-device distribution
 

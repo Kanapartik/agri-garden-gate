@@ -29,6 +29,21 @@ final class PilotContractTests: XCTestCase {
         XCTAssertFalse(PilotContract.isValidOTPShape("12345x"))
     }
 
+    func testSandboxStaticOTPIsExact() {
+        XCTAssertTrue(PilotContract.isSandboxStaticOTP("123456"))
+        XCTAssertFalse(PilotContract.isSandboxStaticOTP("123455"))
+        XCTAssertFalse(PilotContract.isSandboxStaticOTP(" 123456"))
+    }
+
+    func testUnrelatedPhoneCannotUseLocalSandboxFallback() {
+        XCTAssertFalse(PilotContract.isAuthorizedSandboxPilotPhone("+919876543210"))
+    }
+
+    func testAuthorizedSyntheticPilotPhoneCanUseLocalSandboxFallback() {
+        let authorizedPhone = ["+91", "984", "801", "0467"].joined()
+        XCTAssertTrue(PilotContract.isAuthorizedSandboxPilotPhone(authorizedPhone))
+    }
+
     func testDecodesAuthenticatedFarmerProfileWithPendingVerification() throws {
         let fixture = """
         {

@@ -1,4 +1,4 @@
-# AgriGhar Farmer — iOS pilot
+# Agrivah Farmer — iOS pilot
 
 Native SwiftUI companion to the Android Siddipet/Raipole farmer pilot. The app
 uses the frozen contracts in [`../../docs/mobile/`](../../docs/mobile/) and keeps
@@ -17,21 +17,21 @@ are connected.
 - Authenticated profile refresh: `GET /me`, with bearer tokens stored in the
   iOS Keychain (`whenUnlockedThisDeviceOnly`)
 
-Version `0.2.1` replaces the frozen Kalyan receipt with the signed-in farmer's
-backend profile. The app requests SMS OTP through `/auth/otp/request`, verifies
-it through `/auth/otp/verify`, then refreshes `/me` on launch and on demand.
-When the SMS provider reports a delivery failure, the backend exposes temporary
-code `123456` only for the role-free synthetic pilot farmer. The challenge is
-audited, expires after ten minutes, and automatically stops using the static
-path when SMS delivery succeeds.
+Version `0.2.2` adds the supplied Agrivah lockup and app icon. The app requests
+SMS OTP through `/auth/otp/request`, verifies it through `/auth/otp/verify`, then
+refreshes `/me` on launch and on demand. Until SMS delivery is configured, a
+failed OTP request for the explicitly authorized synthetic pilot phone opens a
+device-local sandbox path using code `123456`. The phone is matched with a
+one-way digest; the fallback creates no backend session, grants no server access,
+and is visibly labelled as offline in the app.
 The authorized sandbox account currently returns Dr Sowmini Sunkara, female,
 20 acres, phone masked to suffix `0467`. Identity, land and FPO verification
 remain pending; the account mapping grants none of those decisions.
 
-The checked-in source contains no complete farmer phone number, OTP, identity
-number, access token, refresh token or land-document number. Authenticated
-values remain runtime data. The previous demo OTP is available only when a
-Debug build has no HTTPS `MobileAPIBaseURL`; configured builds use SMS OTP.
+The checked-in source contains no complete farmer phone number, identity number,
+access token, refresh token or land-document number. The temporary static OTP is
+the only credential intentionally present and grants access only to the local
+synthetic profile. Authenticated values remain runtime data.
 
 ## Build and test
 
@@ -56,6 +56,7 @@ the owner's Apple Developer team, signing certificate, and provisioning profile.
 
 - Validate the Supabase SMS provider, India DLT header/template and delivery to
   the enrolled device before a field rollout.
-- Record baseline consent through the server-signed consent endpoint; v0.2.1
+- Record baseline consent through the server-signed consent endpoint; v0.2.2
   continues to retain the existing local pilot consent receipt.
+- Remove the device-local static OTP fallback after SMS delivery is accepted.
 - Add refresh-token rotation and server logout before long-lived distribution.
