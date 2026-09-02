@@ -272,6 +272,11 @@ public final class MainActivity extends Activity {
         card.addView(Ui.small(this, getString(R.string.fpo_label)));
         content.addView(card);
 
+        content.addView(Ui.space(this, 16));
+        content.addView(snapshotGroup("వెబ్ ప్రొఫైల్ వివరాలు", PilotContract.PROFILE_DETAILS));
+        content.addView(Ui.space(this, 16));
+        content.addView(snapshotGroup("పత్రాలు", PilotContract.PROFILE_DOCUMENTS));
+
         content.addView(Ui.space(this, 18));
         Button save = Ui.primaryButton(this, getString(R.string.save_profile));
         save.setOnClickListener(view -> {
@@ -327,20 +332,22 @@ public final class MainActivity extends Activity {
         content.addView(Ui.space(this, 22));
         content.addView(statusRow());
         content.addView(Ui.space(this, 24));
-        content.addView(Ui.sectionTitle(this, getString(R.string.quick_actions)));
+        content.addView(Ui.sectionTitle(this, "రైతు సేవలు"));
         content.addView(Ui.space(this, 10));
 
-        Button farm = Ui.primaryButton(this, getString(R.string.view_farm));
-        farm.setOnClickListener(view -> showFarm());
-        content.addView(farm);
-        content.addView(Ui.space(this, 10));
-        Button consent = Ui.secondaryButton(this, getString(R.string.manage_consent));
-        consent.setOnClickListener(view -> showConsentCenter());
-        content.addView(consent);
-        content.addView(Ui.space(this, 10));
-        Button profile = Ui.secondaryButton(this, getString(R.string.edit_profile));
-        profile.setOnClickListener(view -> showProfile(true));
-        content.addView(profile);
+        LinearLayout menu = Ui.card(this);
+        addMenuButton(menu, "నా ప్రొఫైల్", "My profile", () -> showProfile(true));
+        addMenuButton(menu, "నా ఆన్‌బోర్డింగ్", "My onboarding", this::showOnboarding);
+        addMenuButton(menu, "నా పొలం", "My farm", this::showFarm);
+        addMenuButton(menu, "పొలం చరిత్ర", "My farm history", this::showFarmHistory);
+        addMenuButton(menu, "పొలం ఇంటెలిజెన్స్", "Farm intelligence", this::showIntelligence);
+        addMenuButton(menu, "శిక్షణ", "Training", this::showTraining);
+        addMenuButton(menu, "ఇన్‌పుట్స్ & రక్షణ", "Inputs & protection", this::showInputs);
+        addMenuButton(menu, "నేల సంరక్షణ", "Soil care", this::showSoilCare);
+        addMenuButton(menu, "అనుమతి", "Consent", this::showConsentCenter);
+        addMenuButton(menu, "పథకాలు", "Schemes", this::showSchemes);
+        addMenuButton(menu, "మార్కెట్‌ప్లేస్", "Marketplace", this::showMarketplace);
+        content.addView(menu);
         content.addView(Ui.space(this, 10));
         Button signOut = Ui.textButton(this, getString(R.string.sign_out));
         signOut.setOnClickListener(view -> confirmSignOut());
@@ -402,6 +409,141 @@ public final class MainActivity extends Activity {
             getString(R.string.verification_needs_api)
         ));
         content.addView(verify);
+        setContentView(page.root());
+    }
+
+    private void showOnboarding() {
+        showSnapshotScreen(
+            "నా ఆన్‌బోర్డింగ్",
+            "వెబ్‌లో ఉన్న పాత్ర దరఖాస్తులు మరియు ప్రస్తుత స్థితి.",
+            PilotContract.ONBOARDING_APPLICATIONS,
+            "ఆరు దరఖాస్తులు డ్రాఫ్ట్‌లో ఉన్నాయి; ఏదీ సమర్పించబడలేదు."
+        );
+    }
+
+    private void showFarmHistory() {
+        Ui.Page page = Ui.page(this);
+        LinearLayout content = page.content();
+        addBackHeader(content, this::showHome);
+        addPageIntro(content, "B2A · MY FARM HISTORY", "పొలం చరిత్ర",
+            "2022–2026 సింథటిక్ రైతు రికార్డులు; ఖర్చు, దిగుబడి, ధర మరియు ఆదాయం.");
+
+        for (PilotContract.FarmHistoryItem item : PilotContract.FARM_HISTORY) {
+            LinearLayout card = Ui.card(this);
+            card.addView(Ui.small(this, item.season()));
+            card.addView(Ui.space(this, 3));
+            card.addView(Ui.sectionTitle(this, item.crop() + " • " + item.acres()));
+            card.addView(Ui.space(this, 9));
+            card.addView(Ui.body(this, "ఖర్చు " + item.cost() + "  •  దిగుబడి " + item.yieldAmount()));
+            card.addView(Ui.body(this, "ధర " + item.price() + "  •  ఆదాయం " + item.revenue()));
+            card.addView(Ui.space(this, 7));
+            card.addView(Ui.small(this, item.note()));
+            content.addView(card);
+            content.addView(Ui.space(this, 12));
+        }
+
+        content.addView(snapshotGroup("బీమా చరిత్ర", PilotContract.INSURANCE_SNAPSHOTS));
+        content.addView(Ui.space(this, 8));
+        content.addView(Ui.small(this, "Sunrise FPO channel desk — PMFBY enrolment (synthetic)"));
+        setContentView(page.root());
+    }
+
+    private void showIntelligence() {
+        showSnapshotScreen(
+            "పొలం ఇంటెలిజెన్స్",
+            "Location, weather, soil, crop planning, market, value-add, outcome planner మరియు nearby help.",
+            PilotContract.INTELLIGENCE_SECTIONS,
+            "OBSERVED, FORECAST లేదా DERIVED లేబుళ్లను గమనించండి. ఈ snapshotలో market prices synthetic observed; ఇతర సమాచారం derived/reference data."
+        );
+    }
+
+    private void showTraining() {
+        Ui.Page page = Ui.page(this);
+        LinearLayout content = page.content();
+        addBackHeader(content, this::showHome);
+        addPageIntro(content, "B2B · FARMER PRACTICE LIBRARY", "Farmer training",
+            "విత్తడం నుంచి విలువ సృష్టి వరకు దశల వారీ మార్గదర్శనం. పూర్తి చేసిన పాఠాన్ని గుర్తించండి.");
+
+        for (PilotContract.TrainingModule module : PilotContract.TRAINING_MODULES) {
+            LinearLayout card = Ui.card(this);
+            TextView stage = Ui.small(this, module.stage());
+            stage.setTextColor(Ui.GREEN_700);
+            card.addView(stage);
+            card.addView(Ui.space(this, 5));
+            card.addView(Ui.sectionTitle(this, module.title()));
+            card.addView(Ui.space(this, 7));
+            card.addView(Ui.body(this, module.summary()));
+            card.addView(Ui.space(this, 10));
+            card.addView(Ui.divider(this));
+            TextView progress = Ui.small(this, "0/" + module.lessons().size() + " completed • in progress");
+            int[] completed = {0};
+            for (String lesson : module.lessons()) {
+                CheckBox check = consentCheckBox(lesson);
+                check.setOnCheckedChangeListener((button, checked) -> {
+                    completed[0] += checked ? 1 : -1;
+                    progress.setText(completed[0] + "/" + module.lessons().size()
+                        + " completed • " + (completed[0] == module.lessons().size() ? "complete" : "in progress"));
+                });
+                card.addView(check);
+            }
+            card.addView(Ui.space(this, 7));
+            card.addView(progress);
+            content.addView(card);
+            content.addView(Ui.space(this, 12));
+        }
+        content.addView(Ui.small(this,
+            "ఈ పైలట్ బిల్డ్‌లో completion మార్పులు పరికరం-స్థాయి మాత్రమే; backend sync ఇంకా అమలు కాలేదు."));
+        setContentView(page.root());
+    }
+
+    private void showInputs() {
+        showSnapshotScreen(
+            "ఇన్‌పుట్స్ & రక్షణ",
+            "Paddy, Chilli మరియు Cotton కోసం web catalogueలో ఉన్న nutrient మరియు protection guidance.",
+            PilotContract.INPUT_GUIDANCE,
+            "మోతాదులు ప్రతి హెక్టారుకు reference values. నేల పరీక్ష, పంట దశ, స్థానిక label మరియు అధీకృత వ్యవసాయ నిపుణుడి నిర్ణయం లేకుండా వర్తింపజేయవద్దు."
+        );
+    }
+
+    private void showSoilCare() {
+        showSnapshotScreen(
+            "నేల సంరక్షణ",
+            "Web soil-care catalogueలోని ఎనిమిది retention practices.",
+            PilotContract.SOIL_PRACTICES,
+            "Gypsum లేదా lime వంటి amendments కోసం soil-lab ఫలితం తప్పనిసరి."
+        );
+    }
+
+    private void showSchemes() {
+        showSnapshotScreen(
+            "పథకాలు",
+            "Web scheme discoveryలో కనిపించే catalogue మరియు Ramesh యొక్క application status.",
+            PilotContract.SCHEMES,
+            "Eligibility checks synthetic/preliminary మాత్రమే; ప్రభుత్వ అర్హత లేదా ఆమోదంగా పరిగణించవద్దు."
+        );
+    }
+
+    private void showMarketplace() {
+        showSnapshotScreen(
+            "మార్కెట్‌ప్లేస్",
+            "Farmer marketplace profile, listings, RFQs, quotes, orders మరియు disputes.",
+            PilotContract.MARKETPLACE_STATE,
+            "ప్రస్తుత web farmer accountలో marketplace activity లేదు. Activation చేయకుండా mobile app కూడా empty stateనే చూపుతుంది."
+        );
+    }
+
+    private void showSnapshotScreen(String title, String subtitle,
+                                    java.util.List<PilotContract.SnapshotItem> items,
+                                    String footer) {
+        Ui.Page page = Ui.page(this);
+        LinearLayout content = page.content();
+        addBackHeader(content, this::showHome);
+        addPageIntro(content, "AGRIVAH · WEB PARITY", title, subtitle);
+        for (PilotContract.SnapshotItem item : items) {
+            content.addView(snapshotCard(item));
+            content.addView(Ui.space(this, 12));
+        }
+        content.addView(Ui.small(this, footer));
         setContentView(page.root());
     }
 
@@ -476,6 +618,61 @@ public final class MainActivity extends Activity {
         bar.addView(empty, new LinearLayout.LayoutParams(0, Ui.dp(this, 9), remaining));
         wrapper.addView(bar);
         return wrapper;
+    }
+
+    private void addMenuButton(LinearLayout menu, String title, String subtitle, Runnable action) {
+        Button button = Ui.textButton(this, title + "\n" + subtitle + "   ›");
+        button.setTextSize(16);
+        button.setTextColor(Ui.TEXT);
+        button.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+        button.setPadding(0, Ui.dp(this, 8), 0, Ui.dp(this, 8));
+        button.setOnClickListener(view -> action.run());
+        menu.addView(button);
+        menu.addView(Ui.divider(this));
+    }
+
+    private void addPageIntro(LinearLayout content, String eyebrow, String title, String subtitle) {
+        content.addView(Ui.space(this, 18));
+        TextView label = Ui.small(this, eyebrow);
+        label.setTextColor(Ui.GREEN_700);
+        content.addView(label);
+        content.addView(Ui.space(this, 7));
+        content.addView(Ui.title(this, title));
+        content.addView(Ui.space(this, 7));
+        content.addView(Ui.body(this, subtitle));
+        content.addView(Ui.space(this, 18));
+    }
+
+    private LinearLayout snapshotGroup(String title, java.util.List<PilotContract.SnapshotItem> items) {
+        LinearLayout card = Ui.card(this);
+        card.addView(Ui.sectionTitle(this, title));
+        card.addView(Ui.space(this, 10));
+        for (int i = 0; i < items.size(); i += 1) {
+            PilotContract.SnapshotItem item = items.get(i);
+            card.addView(snapshotItemContent(item));
+            if (i < items.size() - 1) {
+                card.addView(Ui.space(this, 9));
+                card.addView(Ui.divider(this));
+                card.addView(Ui.space(this, 9));
+            }
+        }
+        return card;
+    }
+
+    private LinearLayout snapshotCard(PilotContract.SnapshotItem item) {
+        LinearLayout card = Ui.card(this);
+        card.addView(snapshotItemContent(item));
+        return card;
+    }
+
+    private LinearLayout snapshotItemContent(PilotContract.SnapshotItem item) {
+        LinearLayout content = Ui.vertical(this);
+        content.addView(Ui.sectionTitle(this, item.title()));
+        content.addView(Ui.space(this, 6));
+        content.addView(Ui.body(this, item.detail()));
+        content.addView(Ui.space(this, 5));
+        content.addView(Ui.small(this, item.meta()));
+        return content;
     }
 
     private LinearLayout statusRow() {

@@ -13,6 +13,12 @@ Native Android application for the Agrivah farmer pilot.
 - 18.20-acre crop plan: Paddy 8.40 acres, Chilli 5.60 acres, Cotton 4.20 acres.
 - Parcel references and centroids for `GNT-KAZA-114/2`, `GNT-KAZA-98/1`, and
   `GNT-KAZA-77/4`.
+- Farmer workspace parity with the web application: profile, onboarding, farm,
+  farm history, farm intelligence, training, inputs and protection, soil care,
+  consent, schemes, and marketplace.
+- Current web snapshot content includes 10 crop-history records, two insurance
+  snapshots, five training modules (12 lessons), eight intelligence categories,
+  eight soil practices, four schemes and the current empty marketplace state.
 - Offline draft save, consent withdrawal, local-data deletion, and clear
   self-reported/pending verification states.
 - No full phone number, Aadhaar number, OTP token, API secret, or production
@@ -24,8 +30,8 @@ The generated debug APK is intentionally marked **Pilot Demo**. Enter any valid
 Indian mobile number and use OTP `123456`. The complete number is held only in
 memory for the OTP screen; only its masked form is stored.
 
-Version `0.2.0-pilot` replaces an existing demo profile with the current
-Guntur/Kaza snapshot once after upgrade. It does not link the phone login to the
+Version `0.3.0-pilot` replaces an existing demo profile with the current
+Guntur/Kaza web-parity snapshot once after upgrade. It does not link the phone login to the
 web farmer's separate email auth subject and does not write to the production
 database.
 

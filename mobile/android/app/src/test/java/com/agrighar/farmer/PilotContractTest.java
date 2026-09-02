@@ -37,6 +37,19 @@ public class PilotContractTest {
     }
 
     @Test
+    public void webParitySnapshotContainsEveryFarmerWorkspace() {
+        assertEquals(10, PilotContract.FARM_HISTORY.size());
+        assertEquals(2, PilotContract.INSURANCE_SNAPSHOTS.size());
+        assertEquals(8, PilotContract.INTELLIGENCE_SECTIONS.size());
+        assertEquals(5, PilotContract.TRAINING_MODULES.size());
+        assertEquals(12, PilotContract.TRAINING_MODULES.stream()
+            .mapToInt(module -> module.lessons().size()).sum());
+        assertEquals(8, PilotContract.SOIL_PRACTICES.size());
+        assertEquals(4, PilotContract.SCHEMES.size());
+        assertEquals("Not activated", PilotContract.MARKETPLACE_STATE.get(0).detail());
+    }
+
+    @Test
     public void otpShapeRequiresExactlySixDigits() {
         assertTrue(PilotContract.isOtpShapeValid("123456"));
         assertFalse(PilotContract.isOtpShapeValid("12345"));

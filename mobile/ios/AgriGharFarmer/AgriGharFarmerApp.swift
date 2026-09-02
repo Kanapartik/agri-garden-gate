@@ -18,7 +18,8 @@ struct AgriGharFarmerApp: App {
 @MainActor
 final class AppModel: ObservableObject {
     enum Screen {
-        case login, otp, consent, profile, home, farm, consentCenter
+        case login, otp, consent, profile, home, onboarding, farm, farmHistory
+        case intelligence, training, inputs, soilCare, consentCenter, schemes, marketplace
     }
 
     enum Gender: String, CaseIterable, Identifiable {
@@ -371,8 +372,16 @@ struct RootView: View {
             case .consent: ConsentView()
             case .profile: ProfileView()
             case .home: HomeView()
+            case .onboarding: OnboardingView()
             case .farm: FarmView()
+            case .farmHistory: FarmHistoryView()
+            case .intelligence: IntelligenceView()
+            case .training: TrainingView()
+            case .inputs: InputsView()
+            case .soilCare: SoilCareView()
             case .consentCenter: ConsentCenterView()
+            case .schemes: SchemesView()
+            case .marketplace: MarketplaceView()
             }
         }
         .animation(.easeInOut(duration: 0.2), value: String(describing: model.screen))
@@ -611,6 +620,22 @@ struct ProfileView: View {
                     PrimaryButton(title: "ప్రొఫైల్ సేవ్ చేయండి", action: model.saveProfile)
                 }
                 .cardStyle()
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("వెబ్ ప్రొఫైల్ వివరాలు").font(.title3.bold())
+                    ForEach(PilotContract.profileDetails) { item in
+                        SnapshotRow(item: item)
+                        if item.id != PilotContract.profileDetails.last?.id { Divider() }
+                    }
+                }
+                .cardStyle()
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("పత్రాలు").font(.title3.bold())
+                    ForEach(PilotContract.profileDocuments) { item in
+                        SnapshotRow(item: item)
+                        if item.id != PilotContract.profileDocuments.last?.id { Divider() }
+                    }
+                }
+                .cardStyle()
                 Text("పూర్తి ఫోన్ నంబర్, ఆధార్ లేదా భూమి పత్రాల సంఖ్యలు యాప్ సోర్స్‌లో నిల్వ చేయబడవు.")
                     .font(.footnote).foregroundStyle(.secondary)
             }
@@ -707,13 +732,53 @@ struct HomeView: View {
                 }
                 .cardStyle()
 
-                PrimaryButton(title: "పొలం వివరాలు తెరవండి") {
-                    model.screen = .farm
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("రైతు సేవలు").font(.title3.bold())
+                    FarmerMenuButton(icon: "person.text.rectangle", title: "నా ప్రొఫైల్", subtitle: "My profile") { model.screen = .profile }
+                    FarmerMenuButton(icon: "checklist", title: "నా ఆన్‌బోర్డింగ్", subtitle: "My onboarding") { model.screen = .onboarding }
+                    FarmerMenuButton(icon: "map.fill", title: "నా పొలం", subtitle: "My farm") { model.screen = .farm }
+                    FarmerMenuButton(icon: "clock.arrow.circlepath", title: "పొలం చరిత్ర", subtitle: "My farm history") { model.screen = .farmHistory }
+                    FarmerMenuButton(icon: "chart.xyaxis.line", title: "పొలం ఇంటెలిజెన్స్", subtitle: "Farm intelligence") { model.screen = .intelligence }
+                    FarmerMenuButton(icon: "book.closed.fill", title: "శిక్షణ", subtitle: "Training") { model.screen = .training }
+                    FarmerMenuButton(icon: "cross.case.fill", title: "ఇన్‌పుట్స్ & రక్షణ", subtitle: "Inputs & protection") { model.screen = .inputs }
+                    FarmerMenuButton(icon: "leaf.fill", title: "నేల సంరక్షణ", subtitle: "Soil care") { model.screen = .soilCare }
+                    FarmerMenuButton(icon: "hand.raised.fill", title: "అనుమతి", subtitle: "Consent") { model.screen = .consentCenter }
+                    FarmerMenuButton(icon: "doc.text.magnifyingglass", title: "పథకాలు", subtitle: "Schemes") { model.screen = .schemes }
+                    FarmerMenuButton(icon: "storefront.fill", title: "మార్కెట్‌ప్లేస్", subtitle: "Marketplace") { model.screen = .marketplace }
                 }
+                .cardStyle()
             }
             .padding(22)
         }
         .refreshable { await model.refreshAuthenticatedProfile() }
+    }
+}
+
+struct FarmerMenuButton: View {
+    let icon: String
+    let title: String
+    let subtitle: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 13) {
+                Image(systemName: icon)
+                    .frame(width: 36, height: 36)
+                    .foregroundStyle(AppTheme.green)
+                    .background(AppTheme.leaf.opacity(0.55))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title).font(.headline).foregroundStyle(AppTheme.darkGreen)
+                    Text(subtitle).font(.caption).foregroundStyle(.secondary)
+                }
+                Spacer()
+                Image(systemName: "chevron.right").foregroundStyle(.secondary)
+            }
+            .padding(.vertical, 4)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 }
 
@@ -837,6 +902,272 @@ struct FarmView: View {
                 .cardStyle()
             }
             .padding(22)
+        }
+    }
+}
+
+struct OnboardingView: View {
+    @EnvironmentObject private var model: AppModel
+
+    var body: some View {
+        SnapshotListView(
+            title: "నా ఆన్‌బోర్డింగ్",
+            subtitle: "వెబ్‌లో ఉన్న పాత్ర దరఖాస్తులు మరియు ప్రస్తుత స్థితి.",
+            items: PilotContract.onboardingApplications,
+            footer: "ఆరు దరఖాస్తులు డ్రాఫ్ట్‌లో ఉన్నాయి; ఏదీ సమర్పించబడలేదు.",
+            back: { model.screen = .home }
+        )
+    }
+}
+
+struct FarmHistoryView: View {
+    @EnvironmentObject private var model: AppModel
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 18) {
+                PageBar(title: "పొలం చరిత్ర") { model.screen = .home }
+                PageIntro(
+                    eyebrow: "B2A · MY FARM HISTORY",
+                    title: "గత పంటలు ఒకేచోట",
+                    subtitle: "2022–2026 సింథటిక్ రైతు రికార్డులు; ఖర్చు, దిగుబడి, ధర మరియు ఆదాయం."
+                )
+                ForEach(PilotContract.farmHistory) { item in
+                    VStack(alignment: .leading, spacing: 9) {
+                        HStack(alignment: .firstTextBaseline) {
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text(item.season).font(.caption.bold()).foregroundStyle(AppTheme.green)
+                                Text(item.crop).font(.title3.bold())
+                            }
+                            Spacer()
+                            Text(item.acres).font(.subheadline.bold())
+                        }
+                        HStack {
+                            HistoryMetric(label: "ఖర్చు", value: item.cost)
+                            HistoryMetric(label: "దిగుబడి", value: item.yield)
+                        }
+                        HStack {
+                            HistoryMetric(label: "ధర", value: item.price)
+                            HistoryMetric(label: "ఆదాయం", value: item.revenue)
+                        }
+                        Text(item.note).font(.footnote).foregroundStyle(.secondary)
+                    }
+                    .cardStyle()
+                }
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("బీమా చరిత్ర").font(.title3.bold())
+                    ForEach(PilotContract.insuranceSnapshots) { item in
+                        SnapshotRow(item: item)
+                        if item.id != PilotContract.insuranceSnapshots.last?.id { Divider() }
+                    }
+                    Text("Sunrise FPO channel desk — PMFBY enrolment (synthetic)")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+                .cardStyle()
+            }
+            .padding(22)
+        }
+    }
+}
+
+struct HistoryMetric: View {
+    let label: String
+    let value: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(label).font(.caption).foregroundStyle(.secondary)
+            Text(value).font(.subheadline.bold()).foregroundStyle(AppTheme.darkGreen)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+struct IntelligenceView: View {
+    @EnvironmentObject private var model: AppModel
+
+    var body: some View {
+        SnapshotListView(
+            title: "పొలం ఇంటెలిజెన్స్",
+            subtitle: "Location, weather, soil, crop planning, market, value-add, outcome planner మరియు nearby help.",
+            items: PilotContract.intelligenceSections,
+            footer: "OBSERVED, FORECAST లేదా DERIVED లేబుళ్లను గమనించండి. ఈ స్నాప్‌షాట్‌లో మార్కెట్ ధరలు మాత్రమే synthetic observed; ఇతర వివరణలు derived/reference data.",
+            back: { model.screen = .home }
+        )
+    }
+}
+
+struct TrainingView: View {
+    @EnvironmentObject private var model: AppModel
+    @State private var completedLessons: Set<String> = []
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 18) {
+                PageBar(title: "రైతు శిక్షణ") { model.screen = .home }
+                PageIntro(
+                    eyebrow: "B2B · FARMER PRACTICE LIBRARY",
+                    title: "Farmer training",
+                    subtitle: "విత్తడం నుంచి విలువ సృష్టి వరకు దశల వారీ మార్గదర్శనం. పూర్తి చేసిన పాఠాన్ని గుర్తించండి."
+                )
+                ForEach(PilotContract.trainingModules) { module in
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text(module.stage).font(.caption.bold()).tracking(1).foregroundStyle(AppTheme.green)
+                        Text(module.title).font(.title3.bold())
+                        Text(module.summary).font(.subheadline).foregroundStyle(.secondary)
+                        Divider()
+                        ForEach(Array(module.lessons.enumerated()), id: \.offset) { index, lesson in
+                            let lessonID = "\(module.id)-\(index)"
+                            Button {
+                                if completedLessons.contains(lessonID) {
+                                    completedLessons.remove(lessonID)
+                                } else {
+                                    completedLessons.insert(lessonID)
+                                }
+                            } label: {
+                                HStack(alignment: .top, spacing: 10) {
+                                    Image(systemName: completedLessons.contains(lessonID) ? "checkmark.circle.fill" : "circle")
+                                        .foregroundStyle(AppTheme.green)
+                                    Text(lesson).foregroundStyle(.primary)
+                                    Spacer()
+                                }
+                                .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                        }
+                        let completed = module.lessons.indices.filter { completedLessons.contains("\(module.id)-\($0)") }.count
+                        Text("\(completed)/\(module.lessons.count) completed • \(completed == module.lessons.count ? "complete" : "in progress")")
+                            .font(.caption.bold()).foregroundStyle(completed == module.lessons.count ? AppTheme.green : .secondary)
+                    }
+                    .cardStyle()
+                }
+                Text("ఈ పైలట్ బిల్డ్‌లో completion మార్పులు పరికరం-స్థాయి మాత్రమే; backend sync ఇంకా అమలు కాలేదు.")
+                    .font(.footnote).foregroundStyle(.secondary)
+            }
+            .padding(22)
+        }
+    }
+}
+
+struct InputsView: View {
+    @EnvironmentObject private var model: AppModel
+
+    var body: some View {
+        SnapshotListView(
+            title: "ఇన్‌పుట్స్ & రక్షణ",
+            subtitle: "Paddy, Chilli మరియు Cotton కోసం web catalogueలో ఉన్న nutrient మరియు protection guidance.",
+            items: PilotContract.inputGuidance,
+            footer: "మోతాదులు ప్రతి హెక్టారుకు reference values. నేల పరీక్ష, పంట దశ, స్థానిక లేబుల్ మరియు అధీకృత వ్యవసాయ నిపుణుడి నిర్ణయం లేకుండా వర్తింపజేయవద్దు.",
+            back: { model.screen = .home }
+        )
+    }
+}
+
+struct SoilCareView: View {
+    @EnvironmentObject private var model: AppModel
+
+    var body: some View {
+        SnapshotListView(
+            title: "నేల సంరక్షణ",
+            subtitle: "Web soil-care catalogueలోని ఎనిమిది retention practices.",
+            items: PilotContract.soilPractices,
+            footer: "Gypsum లేదా lime వంటి amendments కోసం soil-lab ఫలితం తప్పనిసరి.",
+            back: { model.screen = .home }
+        )
+    }
+}
+
+struct SchemesView: View {
+    @EnvironmentObject private var model: AppModel
+
+    var body: some View {
+        SnapshotListView(
+            title: "పథకాలు",
+            subtitle: "Web scheme discoveryలో కనిపించే catalogue మరియు Ramesh యొక్క application status.",
+            items: PilotContract.schemes,
+            footer: "Eligibility checks synthetic/preliminary మాత్రమే; ప్రభుత్వ అర్హత లేదా ఆమోదంగా పరిగణించవద్దు.",
+            back: { model.screen = .home }
+        )
+    }
+}
+
+struct MarketplaceView: View {
+    @EnvironmentObject private var model: AppModel
+
+    var body: some View {
+        SnapshotListView(
+            title: "మార్కెట్‌ప్లేస్",
+            subtitle: "Farmer marketplace profile, listings, RFQs, quotes, orders మరియు disputes.",
+            items: PilotContract.marketplaceState,
+            footer: "ప్రస్తుత web farmer accountలో marketplace activity లేదు. Activation చేయకుండా mobile app కూడా empty stateనే చూపుతుంది.",
+            back: { model.screen = .home }
+        )
+    }
+}
+
+struct SnapshotListView: View {
+    let title: String
+    let subtitle: String
+    let items: [SnapshotItem]
+    let footer: String
+    let back: () -> Void
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 18) {
+                PageBar(title: title, back: back)
+                PageIntro(eyebrow: "AGRIVAH · WEB PARITY", title: title, subtitle: subtitle)
+                ForEach(items) { item in
+                    SnapshotCard(item: item)
+                }
+                Text(footer).font(.footnote).foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(22)
+        }
+    }
+}
+
+struct PageIntro: View {
+    let eyebrow: String
+    let title: String
+    let subtitle: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(eyebrow).font(.caption.bold()).tracking(1).foregroundStyle(AppTheme.green)
+            Text(title).font(.largeTitle.bold()).foregroundStyle(AppTheme.darkGreen)
+            Text(subtitle).font(.subheadline).foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+struct SnapshotCard: View {
+    let item: SnapshotItem
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(item.title).font(.title3.bold()).foregroundStyle(AppTheme.darkGreen)
+            Text(item.detail).font(.subheadline)
+            Text(item.meta).font(.footnote).foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .cardStyle()
+    }
+}
+
+struct SnapshotRow: View {
+    let item: SnapshotItem
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(alignment: .firstTextBaseline) {
+                Text(item.title).font(.subheadline.bold())
+                Spacer()
+                Text(item.detail).font(.subheadline).multilineTextAlignment(.trailing)
+            }
+            Text(item.meta).font(.caption).foregroundStyle(.secondary)
         }
     }
 }

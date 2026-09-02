@@ -18,9 +18,13 @@ are connected.
 - Authenticated profile refresh: `GET /me`, with bearer tokens stored in the
   iOS Keychain (`whenUnlockedThisDeviceOnly`)
 
-Version `0.2.3` retains the supplied Agrivah lockup and app icon and updates the
-device-local synthetic profile to the web farmer snapshot captured on 1 September
-2026. The app requests
+Version `0.3.0` retains the supplied Agrivah lockup and app icon and includes the
+same farmer workspaces available in the web application: profile, onboarding,
+farm, farm history, farm intelligence, training, inputs and protection, soil
+care, consent, schemes, and marketplace. The current snapshot includes 10 crop
+history records, two insurance snapshots, five training modules (12 lessons),
+eight intelligence categories, eight soil practices, four schemes and the web
+account's empty marketplace state. The app requests
 SMS OTP through `/auth/otp/request`, verifies it through `/auth/otp/verify`, then
 refreshes `/me` on launch and on demand. Until SMS delivery is configured, a
 failed OTP request for the explicitly authorized synthetic pilot phone opens a
@@ -62,7 +66,7 @@ the owner's Apple Developer team, signing certificate, and provisioning profile.
 
 - Validate the Supabase SMS provider, India DLT header/template and delivery to
   the enrolled device before a field rollout.
-- Record baseline consent through the server-signed consent endpoint; v0.2.3
+- Record baseline consent through the server-signed consent endpoint; v0.3.0
   continues to retain the existing local pilot consent receipt.
 - Remove the device-local static OTP fallback after SMS delivery is accepted.
 - Add refresh-token rotation and server logout before long-lived distribution.

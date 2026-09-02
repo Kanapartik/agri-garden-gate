@@ -30,6 +30,17 @@ final class PilotContractTests: XCTestCase {
         )
     }
 
+    func testWebParitySnapshotContainsEveryFarmerWorkspace() {
+        XCTAssertEqual(PilotContract.farmHistory.count, 10)
+        XCTAssertEqual(PilotContract.insuranceSnapshots.count, 2)
+        XCTAssertEqual(PilotContract.intelligenceSections.count, 8)
+        XCTAssertEqual(PilotContract.trainingModules.count, 5)
+        XCTAssertEqual(PilotContract.trainingModules.flatMap(\.lessons).count, 12)
+        XCTAssertEqual(PilotContract.soilPractices.count, 8)
+        XCTAssertEqual(PilotContract.schemes.count, 4)
+        XCTAssertEqual(PilotContract.marketplaceState.map(\.detail), ["Not activated", "0", "0", "0"])
+    }
+
     func testOTPShapeRequiresExactlySixDigits() {
         XCTAssertTrue(PilotContract.isValidOTPShape("123456"))
         XCTAssertFalse(PilotContract.isValidOTPShape("12345"))
