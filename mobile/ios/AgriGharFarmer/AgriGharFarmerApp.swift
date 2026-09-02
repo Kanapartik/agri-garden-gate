@@ -74,8 +74,19 @@ final class AppModel: ObservableObject {
         self.keychain = keychain
         self.apiClient = apiClient
         let hasConsent = keychain.string(for: "consent.version") == PilotContract.consentVersion
-        let hasProfile = !(keychain.string(for: "profile.name") ?? "").isEmpty
         let hasSession = !(keychain.string(for: "auth.accessToken") ?? "").isEmpty
+        let storedMaskedPhone = keychain.string(for: "farmer.phone.masked") ?? ""
+        let shouldMigrateLocalSnapshot = !hasSession
+            && storedMaskedPhone.hasSuffix("0467")
+            && keychain.string(for: "profile.snapshotVersion") != PilotContract.snapshotVersion
+        if shouldMigrateLocalSnapshot {
+            _ = keychain.set(PilotContract.sandboxFarmerName, for: "profile.name")
+            _ = keychain.set(PilotContract.sandboxFarmerGender, for: "profile.gender")
+            _ = keychain.set(PilotContract.snapshotVersion, for: "profile.snapshotVersion")
+        }
+        let hasLocalSnapshot = !hasSession
+            && keychain.string(for: "profile.snapshotVersion") == PilotContract.snapshotVersion
+        let hasProfile = !(keychain.string(for: "profile.name") ?? "").isEmpty
         #if DEBUG
         if ProcessInfo.processInfo.arguments.contains("--preview-local-sandbox-otp") {
             self.screen = .otp
@@ -83,21 +94,33 @@ final class AppModel: ObservableObject {
             self.localSandboxOTPActive = true
         } else if ProcessInfo.processInfo.arguments.contains("--preview-sandbox-profile") {
             self.screen = .home
-            self.farmerName = "Dr Sowmini Sunkara"
-            self.syncMessage = "బ్యాక్‌ఎండ్ ప్రొఫైల్ సమకాలీకరించబడింది"
+            self.farmerName = PilotContract.sandboxFarmerName
+            self.gender = .male
+            self.localSandboxOTPActive = true
+            self.syncMessage = "వెబ్ రైతు డేటా సింథటిక్ స్నాప్‌షాట్ స్థానికంగా లోడ్ అయింది"
         } else {
-            self.screen = apiClient.isConfigured && !hasSession
+            self.screen = apiClient.isConfigured && !hasSession && !hasLocalSnapshot
                 ? .login
                 : (hasConsent ? (hasProfile ? .home : .profile) : .login)
             self.farmerName = keychain.string(for: "profile.name") ?? ""
         }
         #else
-        self.screen = apiClient.isConfigured && !hasSession
+        self.screen = apiClient.isConfigured && !hasSession && !hasLocalSnapshot
             ? .login
             : (hasConsent ? (hasProfile ? .home : .profile) : .login)
         self.farmerName = keychain.string(for: "profile.name") ?? ""
         #endif
         self.gender = Gender(rawValue: keychain.string(for: "profile.gender") ?? "") ?? .female
+        if hasLocalSnapshot {
+            self.totalExtentAcres = PilotContract.totalAcres
+            self.localSandboxOTPActive = true
+            self.syncMessage = "వెబ్ రైతు డేటా సింథటిక్ స్నాప్‌షాట్ స్థానికంగా లోడ్ అయింది"
+        }
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("--preview-sandbox-profile") {
+            self.gender = .male
+        }
+        #endif
         self.villageDraft = keychain.string(for: "farm.village.draft") ?? ""
         self.farmNoteDraft = keychain.string(for: "farm.note.draft") ?? ""
     }
@@ -220,10 +243,11 @@ final class AppModel: ObservableObject {
         identityVerificationIsSynthetic = false
         _ = keychain.set(farmerName, for: "profile.name")
         _ = keychain.set(gender.rawValue, for: "profile.gender")
+        _ = keychain.set(PilotContract.snapshotVersion, for: "profile.snapshotVersion")
         if let pendingPhone {
             _ = keychain.set(PilotContract.maskedPhone(pendingPhone), for: "farmer.phone.masked")
         }
-        syncMessage = "స్థానిక సాండ్‌బాక్స్ ప్రొఫైల్ • బ్యాక్‌ఎండ్ సమకాలీకరణ లేదు"
+        syncMessage = "వెబ్ రైతు డేటా సింథటిక్ స్నాప్‌షాట్ స్థానికంగా లోడ్ అయింది"
         pendingChallengeId = nil
         errorMessage = nil
     }
@@ -256,7 +280,7 @@ final class AppModel: ObservableObject {
 
     func refreshAuthenticatedProfile() async {
         if localSandboxOTPActive {
-            syncMessage = "స్థానిక సాండ్‌బాక్స్ ప్రొఫైల్ • బ్యాక్‌ఎండ్ సమకాలీకరణ లేదు"
+            syncMessage = "వెబ్ రైతు డేటా సింథటిక్ స్నాప్‌షాట్ స్థానికంగా లోడ్ అయింది"
             errorMessage = nil
             return
         }
@@ -417,7 +441,7 @@ struct LoginView: View {
         ScrollView {
             VStack(spacing: 22) {
                 BrandHeader(
-                    eyebrow: "సిద్దిపేట పైలట్",
+                    eyebrow: "గుంటూరు సింథటిక్ పైలట్",
                     title: "రైతు సేవలకు స్వాగతం",
                     subtitle: "మీ మొబైల్ నంబర్‌తో సురక్షితంగా ప్రారంభించండి."
                 )
@@ -625,9 +649,9 @@ struct HomeView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("సిద్దిపేట రైతు పైలట్").font(.headline)
-                    Text("రాయపోల్ మండలం • \(model.totalExtentText) ఎకరాలు").font(.title3.bold())
-                    Text("Rayapole Women Farmer Producer Company Limited")
+                    Text("గుంటూరు రైతు డేటా స్నాప్‌షాట్").font(.headline)
+                    Text("\(PilotContract.pilotCluster) • \(model.totalExtentText) ఎకరాలు").font(.title3.bold())
+                    Text(PilotContract.pilotFPO)
                         .font(.footnote).foregroundStyle(.secondary)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -642,7 +666,8 @@ struct HomeView: View {
                     HStack {
                         Text("పంటల ప్రణాళిక").font(.title3.bold())
                         Spacer()
-                        Text("మొత్తం 20 ఎకరాలు").font(.caption.bold()).foregroundStyle(AppTheme.green)
+                        Text("మొత్తం \(PilotContract.acresText(PilotContract.totalAcres)) ఎకరాలు")
+                            .font(.caption.bold()).foregroundStyle(AppTheme.green)
                     }
                     ForEach(PilotContract.crops) { crop in
                         CropRow(crop: crop)
@@ -658,7 +683,7 @@ struct HomeView: View {
                         state: model.identityBadgeState
                     )
                     VerificationRow(icon: "map", title: "భూమి రికార్డు", state: .pending)
-                    VerificationRow(icon: "person.3", title: "FPO సభ్యత్వం", state: .pending)
+                    VerificationRow(icon: "person.3", title: "FPO సభ్యత్వం", state: .syntheticActive)
                     if model.isSyncing {
                         Label("బ్యాక్‌ఎండ్ వివరాలు రిఫ్రెష్ అవుతున్నాయి", systemImage: "arrow.triangle.2.circlepath")
                             .font(.caption).foregroundStyle(.secondary)
@@ -672,7 +697,7 @@ struct HomeView: View {
                             .font(.caption.bold())
                             .foregroundStyle(model.localSandboxOTPActive ? Color.orange : AppTheme.green)
                         Text(model.localSandboxOTPActive
-                            ? "SMS లేదా బ్యాక్‌ఎండ్ సాండ్‌బాక్స్ సేవ అందుబాటులోకి వచ్చే వరకు ప్రొఫైల్ నవీకరణలు ఈ లాగిన్‌లో సమకాలీకరించబడవు."
+                            ? "01-09-2026 నాటి వెబ్ డేటా ఈ పరికరంలో మాత్రమే ఉంది. ఫోన్ లాగిన్ మరియు వెబ్ ఈమెయిల్ ఖాతా ఇంకా ఒకే బ్యాక్‌ఎండ్ గుర్తింపుగా లింక్ కాలేదు."
                             : "ఈ రైతుకు గుర్తింపు, భూమి మరియు FPO ధృవీకరణలు ఇంకా పెండింగ్‌లో ఉన్నాయి.")
                             .font(.caption).foregroundStyle(.secondary)
                     } else {
@@ -702,8 +727,11 @@ struct CropRow: View {
                 Spacer()
                 Text("\(PilotContract.acresText(crop.acres)) ఎకరాలు").font(.subheadline)
             }
-            ProgressView(value: NSDecimalNumber(decimal: crop.acres).doubleValue, total: 20)
-                .tint(crop.code == "PADDY" ? AppTheme.green : (crop.code == "MAIZE" ? AppTheme.gold : Color.indigo))
+            ProgressView(
+                value: NSDecimalNumber(decimal: crop.acres).doubleValue,
+                total: NSDecimalNumber(decimal: PilotContract.totalAcres).doubleValue
+            )
+                .tint(crop.code == "PADDY" ? AppTheme.green : (crop.code == "CHILLI" ? AppTheme.gold : Color.indigo))
         }
     }
 }
@@ -712,19 +740,21 @@ enum VerificationBadgeState {
     case pending
     case verified
     case sandboxVerified
+    case syntheticActive
 
     var title: String {
         switch self {
         case .pending: return "పెండింగ్"
         case .verified: return "ధృవీకరించబడింది"
         case .sandboxVerified: return "ధృవీకరించబడింది • శాండ్‌బాక్స్"
+        case .syntheticActive: return "యాక్టివ్ • సింథటిక్"
         }
     }
 
     var foreground: Color {
         switch self {
         case .pending: return .orange
-        case .verified, .sandboxVerified: return AppTheme.green
+        case .verified, .sandboxVerified, .syntheticActive: return AppTheme.green
         }
     }
 
@@ -756,8 +786,32 @@ struct FarmView: View {
             VStack(spacing: 18) {
                 PageBar(title: "పొలం వివరాలు") { model.screen = .home }
                 VStack(alignment: .leading, spacing: 12) {
-                    Label("20 ఎకరాల పైలట్ ప్రణాళిక", systemImage: "map.fill").font(.title3.bold())
-                    Text("వరి 10 • మొక్కజొన్న 5 • పత్తి 5").foregroundStyle(.secondary)
+                    Label("\(PilotContract.acresText(PilotContract.totalAcres)) ఎకరాల సింథటిక్ స్నాప్‌షాట్", systemImage: "map.fill")
+                        .font(.title3.bold())
+                    Text("\(PilotContract.pilotDistrict) • \(PilotContract.pilotState)")
+                        .foregroundStyle(.secondary)
+                    Text("Village code: \(PilotContract.pilotVillageCode) • Mandal: నమోదు కాలేదు")
+                        .font(.footnote).foregroundStyle(.secondary)
+                    Divider()
+                    ForEach(PilotContract.crops) { crop in
+                        VStack(alignment: .leading, spacing: 4) {
+                            HStack {
+                                Text(crop.parcelName).font(.headline)
+                                Spacer()
+                                Text("\(PilotContract.acresText(crop.acres)) ఎకరాలు").font(.subheadline.bold())
+                            }
+                            Text("\(crop.nameTelugu) / \(crop.nameEnglish) • \(crop.plotReference)")
+                                .font(.subheadline).foregroundStyle(.secondary)
+                            Text("Centroid: \(crop.centroid)")
+                                .font(.caption).foregroundStyle(.secondary)
+                        }
+                        if crop.id != PilotContract.crops.last?.id { Divider() }
+                    }
+                    Divider()
+                    Text("Irrigation: \(PilotContract.irrigation) • Ownership: \(PilotContract.ownership)")
+                        .font(.footnote).foregroundStyle(.secondary)
+                    Text("FPO: \(PilotContract.pilotFPO) • \(PilotContract.pilotMembershipNumber)")
+                        .font(.footnote).foregroundStyle(.secondary)
                     Divider()
                     Text("గ్రామం / క్లస్టర్ (డ్రాఫ్ట్)").font(.headline)
                     TextField("గ్రామం పేరు", text: $model.villageDraft)

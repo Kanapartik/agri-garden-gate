@@ -5,7 +5,7 @@ The native farmer pilots live in:
 - [`android/`](./android/) — Android 12 and later
 - [`ios/`](./ios/) — iOS 17 and later
 
-Both implement the Siddipet/Raipole contract in
+Both implement the current Guntur/Kaza synthetic farmer snapshot and the contracts in
 [`../docs/mobile/`](../docs/mobile/) without changing the frozen `/mobile/v1`
 API or consent envelopes.
 

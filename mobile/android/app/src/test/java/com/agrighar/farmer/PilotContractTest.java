@@ -28,9 +28,12 @@ public class PilotContractTest {
     }
 
     @Test
-    public void pilotCropAllocationBalancesToTwentyAcres() {
+    public void pilotCropAllocationMatchesGunturKazaSnapshot() {
         assertTrue(PilotContract.isPilotCropPlanBalanced());
-        assertEquals("20.00", PilotContract.allocatedAcres().toPlainString());
+        assertEquals("18.20", PilotContract.allocatedAcres().toPlainString());
+        assertEquals("GNT-KAZA-114/2", PilotContract.PILOT_CROPS.get(0).plotReference());
+        assertEquals("GNT-KAZA-98/1", PilotContract.PILOT_CROPS.get(1).plotReference());
+        assertEquals("GNT-KAZA-77/4", PilotContract.PILOT_CROPS.get(2).plotReference());
     }
 
     @Test
@@ -40,4 +43,3 @@ public class PilotContractTest {
         assertFalse(PilotContract.isOtpShapeValid("abcdef"));
     }
 }
-

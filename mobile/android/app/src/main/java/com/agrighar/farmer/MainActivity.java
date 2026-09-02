@@ -33,6 +33,7 @@ public final class MainActivity extends Activity {
     private static final String KEY_RECEIPT = "baseline_consent_receipt";
     private static final String KEY_PROFILE_NAME = "profile_name";
     private static final String KEY_PROFILE_GENDER = "profile_gender";
+    private static final String KEY_SNAPSHOT_VERSION = "profile_snapshot_version";
     private static final String KEY_DRAFT_SAVED_AT = "draft_saved_at";
 
     private static final String DEMO_OTP = "123456";
@@ -53,6 +54,9 @@ public final class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         store = new SecureStore(this);
+        if (BuildConfig.PILOT_DEMO_MODE && store.getBoolean(KEY_SESSION, false)) {
+            applyPilotSnapshot();
+        }
         routeFromState();
     }
 
@@ -145,6 +149,7 @@ public final class MainActivity extends Activity {
             }
             store.putBoolean(KEY_SESSION, true);
             store.putString(KEY_PHONE_MASKED, masked);
+            applyPilotSnapshot();
             pendingPhone = null;
             showConsent();
         });
@@ -302,6 +307,8 @@ public final class MainActivity extends Activity {
         landCard.addView(Ui.metric(this, getString(R.string.acres_value)));
         landCard.addView(Ui.space(this, 8));
         landCard.addView(Ui.small(this, getString(R.string.location_label)));
+        landCard.addView(Ui.space(this, 8));
+        landCard.addView(Ui.pill(this, getString(R.string.snapshot_note), true));
         content.addView(landCard);
 
         content.addView(Ui.space(this, 22));
@@ -358,8 +365,17 @@ public final class MainActivity extends Activity {
         card.addView(Ui.space(this, 14));
         for (PilotContract.CropAllocation crop : PilotContract.PILOT_CROPS) {
             card.addView(cropRow(crop));
+            card.addView(Ui.space(this, 5));
+            card.addView(Ui.small(this, getString(
+                R.string.parcel_details,
+                crop.parcelName(),
+                crop.plotReference(),
+                crop.centroid()
+            )));
             card.addView(Ui.space(this, 12));
         }
+        card.addView(Ui.small(this, getString(R.string.farm_metadata)));
+        card.addView(Ui.space(this, 8));
         card.addView(Ui.pill(this, getString(R.string.self_reported), true));
         content.addView(card);
 
@@ -429,7 +445,7 @@ public final class MainActivity extends Activity {
     private LinearLayout cropRow(PilotContract.CropAllocation crop) {
         LinearLayout wrapper = Ui.vertical(this);
         LinearLayout labels = Ui.horizontal(this);
-        TextView name = Ui.label(this, crop.teluguName());
+        TextView name = Ui.label(this, crop.teluguName() + " / " + crop.englishName());
         name.setLayoutParams(Ui.weighted(1));
         labels.addView(name);
         TextView acres = Ui.label(this, getString(R.string.acres_format, crop.areaAcres().toPlainString()));
@@ -478,8 +494,8 @@ public final class MainActivity extends Activity {
 
         LinearLayout membership = miniStatusCard(
             getString(R.string.membership_status),
-            getString(R.string.verification_pending),
-            true
+            getString(R.string.fpo_synthetic_active),
+            false
         );
         membership.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         row.addView(membership);
@@ -586,6 +602,15 @@ public final class MainActivity extends Activity {
         store.clear();
         pendingPhone = null;
         showLogin();
+    }
+
+    private void applyPilotSnapshot() {
+        if (PilotContract.SNAPSHOT_VERSION.equals(store.getString(KEY_SNAPSHOT_VERSION, ""))) {
+            return;
+        }
+        store.putString(KEY_PROFILE_NAME, PilotContract.SNAPSHOT_FARMER_NAME);
+        store.putString(KEY_PROFILE_GENDER, PilotContract.SNAPSHOT_FARMER_GENDER);
+        store.putString(KEY_SNAPSHOT_VERSION, PilotContract.SNAPSHOT_VERSION);
     }
 
     private void showInfo(String title, String message) {

@@ -6,6 +6,9 @@ struct CropAllocation: Identifiable, Equatable {
     let nameTelugu: String
     let nameEnglish: String
     let acres: Decimal
+    let parcelName: String
+    let plotReference: String
+    let centroid: String
 
     var id: String { code }
 }
@@ -16,10 +19,21 @@ enum PilotContract {
     static let apiPrefix = "/mobile/v1"
     static let consentVersion = "mobile-consent-2026-08-v1"
     static let policyVersion = "2026-08-baseline-v1"
-    static let totalAcres = Decimal(20)
+    static let snapshotVersion = "guntur-kaza-2026-09-01-v1"
+    static let snapshotCapturedAt = "01-09-2026"
+    static let totalAcres = Decimal(string: "18.20")!
     static let sandboxStaticOTP = "123456"
-    static let sandboxFarmerName = "Dr Sowmini Sunkara"
-    static let sandboxFarmerGender = "female"
+    static let sandboxFarmerName = "Ramesh Naidu Vemuri"
+    static let sandboxFarmerGender = "male"
+    static let pilotDistrict = "గుంటూరు (సింథటిక్)"
+    static let pilotState = "ఆంధ్రప్రదేశ్ (సింథటిక్)"
+    static let pilotCluster = "కాజా క్లస్టర్"
+    static let pilotVillageCode = "IN-AP-GNT"
+    static let pilotFPO = "Guntur Chilli Growers FPO"
+    static let pilotMembershipNumber = "SFPO/2023/0114"
+    static let pilotMemberReference = "MBR-DEMO-0001"
+    static let irrigation = "Borewell + canal"
+    static let ownership = "owner"
     static let defaultMobileAPIBaseURL = URL(string: "https://agrivah.com/mobile/v1")!
 
     // SHA-256 of the normalized, explicitly authorized synthetic pilot phone.
@@ -39,9 +53,33 @@ enum PilotContract {
     }
 
     static let crops: [CropAllocation] = [
-        CropAllocation(code: "PADDY", nameTelugu: "వరి", nameEnglish: "Paddy", acres: 10),
-        CropAllocation(code: "MAIZE", nameTelugu: "మొక్కజొన్న", nameEnglish: "Maize", acres: 5),
-        CropAllocation(code: "COTTON", nameTelugu: "పత్తి", nameEnglish: "Cotton", acres: 5)
+        CropAllocation(
+            code: "PADDY",
+            nameTelugu: "వరి",
+            nameEnglish: "Paddy",
+            acres: Decimal(string: "8.40")!,
+            parcelName: "Paddy field east",
+            plotReference: "GNT-KAZA-114/2",
+            centroid: "16.3072, 80.4482"
+        ),
+        CropAllocation(
+            code: "CHILLI",
+            nameTelugu: "మిరప",
+            nameEnglish: "Chilli",
+            acres: Decimal(string: "5.60")!,
+            parcelName: "Chilli block A",
+            plotReference: "GNT-KAZA-98/1",
+            centroid: "16.2951, 80.4715"
+        ),
+        CropAllocation(
+            code: "COTTON",
+            nameTelugu: "పత్తి",
+            nameEnglish: "Cotton",
+            acres: Decimal(string: "4.20")!,
+            parcelName: "Cotton stretch (west)",
+            plotReference: "GNT-KAZA-77/4",
+            centroid: "16.3216, 80.4103"
+        )
     ]
 
     static var allocatedAcres: Decimal {
@@ -91,6 +129,6 @@ enum PilotContract {
     }
 
     static func acresText(_ value: Decimal) -> String {
-        NSDecimalNumber(decimal: value).stringValue
+        String(format: "%.2f", NSDecimalNumber(decimal: value).doubleValue)
     }
 }

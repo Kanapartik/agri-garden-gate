@@ -1,6 +1,6 @@
 # AgriGhar Farmer — Android pilot
 
-Native Android application for the Siddipet/Raipole farmer pilot.
+Native Android application for the Agrivah farmer pilot.
 
 ## Included in this APK
 
@@ -9,17 +9,25 @@ Native Android application for the Siddipet/Raipole farmer pilot.
 - Phone-number validation and an explicitly labelled demo OTP flow.
 - Farmer-owned baseline consent with contract/policy versions.
 - Keystore-backed AES/GCM encryption for locally stored profile and draft state.
-- 20-acre crop plan: Paddy 10 acres, Maize 5 acres, Cotton 5 acres.
+- Synthetic web snapshot: Ramesh Naidu Vemuri, Guntur/Kaza, Andhra Pradesh.
+- 18.20-acre crop plan: Paddy 8.40 acres, Chilli 5.60 acres, Cotton 4.20 acres.
+- Parcel references and centroids for `GNT-KAZA-114/2`, `GNT-KAZA-98/1`, and
+  `GNT-KAZA-77/4`.
 - Offline draft save, consent withdrawal, local-data deletion, and clear
   self-reported/pending verification states.
-- No real farmer name, full phone number, Aadhaar number, OTP token, API secret,
-  or production credential in source control or the APK.
+- No full phone number, Aadhaar number, OTP token, API secret, or production
+  credential in source control or the APK. The named farmer record is synthetic.
 
 ## Pilot login
 
 The generated debug APK is intentionally marked **Pilot Demo**. Enter any valid
 Indian mobile number and use OTP `123456`. The complete number is held only in
 memory for the OTP screen; only its masked form is stored.
+
+Version `0.2.0-pilot` replaces an existing demo profile with the current
+Guntur/Kaza snapshot once after upgrade. It does not link the phone login to the
+web farmer's separate email auth subject and does not write to the production
+database.
 
 This demo OTP is compiled only into the debug build. The release build disables
 demo mode and must not be distributed until `/mobile/v1/auth/otp/request` and

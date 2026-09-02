@@ -13,11 +13,11 @@ android {
         applicationId = "com.agrighar.farmer"
         minSdk = 31
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.1.0-pilot"
+        versionCode = 2
+        versionName = "0.2.0-pilot"
 
         buildConfigField("String", "MOBILE_API_BASE_URL", "\"${mobileApiBaseUrl.get()}\"")
-        buildConfigField("String", "PILOT_ID", "\"pilot-siddipet-raipole-001\"")
+        buildConfigField("String", "PILOT_ID", "\"pilot-guntur-kaza-synthetic-001\"")
         buildConfigField("String", "CONSENT_CONTRACT_VERSION", "\"mobile-consent-2026-08-v1\"")
         buildConfigField("String", "BASELINE_POLICY_VERSION", "\"2026-08-baseline-v1\"")
     }

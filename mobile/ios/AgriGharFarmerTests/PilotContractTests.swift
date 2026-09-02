@@ -17,10 +17,17 @@ final class PilotContractTests: XCTestCase {
         XCTAssertEqual(PilotContract.maskedPhone("+919876543210"), "+91 ••••••3210")
     }
 
-    func testPilotCropPlanBalancesToTwentyAcres() {
+    func testPilotCropPlanMatchesGunturKazaSnapshot() {
         XCTAssertTrue(PilotContract.cropPlanIsBalanced)
-        XCTAssertEqual(PilotContract.allocatedAcres, Decimal(20))
-        XCTAssertEqual(PilotContract.crops.map(\.acres), [Decimal(10), Decimal(5), Decimal(5)])
+        XCTAssertEqual(PilotContract.allocatedAcres, Decimal(string: "18.20"))
+        XCTAssertEqual(
+            PilotContract.crops.map(\.acres),
+            [Decimal(string: "8.40")!, Decimal(string: "5.60")!, Decimal(string: "4.20")!]
+        )
+        XCTAssertEqual(
+            PilotContract.crops.map(\.plotReference),
+            ["GNT-KAZA-114/2", "GNT-KAZA-98/1", "GNT-KAZA-77/4"]
+        )
     }
 
     func testOTPShapeRequiresExactlySixDigits() {
