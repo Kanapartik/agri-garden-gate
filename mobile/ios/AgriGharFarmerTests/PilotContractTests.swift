@@ -71,6 +71,36 @@ final class PilotContractTests: XCTestCase {
         XCTAssertEqual(AppLanguage.english.nativeName, "English")
     }
 
+    func testFarmerContentFollowsSelectedLanguage() {
+        XCTAssertEqual(PilotContentLocalization.text("Paddy field east", language: .telugu), "తూర్పు వరి పొలం")
+        XCTAssertEqual(PilotContentLocalization.text("Paddy", language: .hindi), "धान")
+        XCTAssertEqual(PilotContentLocalization.text("Paddy", language: .tamil), "நெல்")
+        XCTAssertEqual(PilotContentLocalization.text("Paddy", language: .english), "Paddy")
+        XCTAssertEqual(
+            PilotContentLocalization.text("Land preparation and sowing", language: .telugu),
+            "భూమి తయారీ మరియు విత్తడం"
+        )
+        XCTAssertEqual(
+            PilotContentLocalization.text("2026 Kharif", language: .telugu),
+            "2026 ఖరీఫ్"
+        )
+        XCTAssertEqual(
+            PilotContentLocalization.text("8.40 ac", language: .telugu),
+            "8.40 ఎకరాలు"
+        )
+    }
+
+    func testEveryTrainingModuleHasTeluguContent() {
+        for module in PilotContract.trainingModules {
+            XCTAssertNotEqual(PilotContentLocalization.text(module.stage, language: .telugu), module.stage)
+            XCTAssertNotEqual(PilotContentLocalization.text(module.title, language: .telugu), module.title)
+            XCTAssertNotEqual(PilotContentLocalization.text(module.summary, language: .telugu), module.summary)
+            for lesson in module.lessons {
+                XCTAssertNotEqual(PilotContentLocalization.text(lesson, language: .telugu), lesson)
+            }
+        }
+    }
+
     func testOTPShapeRequiresExactlySixDigits() {
         XCTAssertTrue(PilotContract.isValidOTPShape("123456"))
         XCTAssertFalse(PilotContract.isValidOTPShape("12345"))

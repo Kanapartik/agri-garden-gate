@@ -100,6 +100,11 @@ final class AppModel: ObservableObject {
             self.farmerName = PilotContract.sandboxFarmerName
             self.gender = .male
             self.localSandboxOTPActive = true
+        } else if ProcessInfo.processInfo.arguments.contains("--preview-training") {
+            self.screen = .training
+            self.farmerName = PilotContract.sandboxFarmerName
+            self.gender = .male
+            self.localSandboxOTPActive = true
         } else if ProcessInfo.processInfo.arguments.contains("--preview-history") {
             self.screen = .farmHistory
             self.farmerName = PilotContract.sandboxFarmerName
@@ -142,6 +147,7 @@ final class AppModel: ObservableObject {
         if ProcessInfo.processInfo.arguments.contains("--preview-sandbox-profile")
             || ProcessInfo.processInfo.arguments.contains("--preview-profile")
             || ProcessInfo.processInfo.arguments.contains("--preview-intelligence")
+            || ProcessInfo.processInfo.arguments.contains("--preview-training")
             || ProcessInfo.processInfo.arguments.contains("--preview-history") {
             self.gender = .male
         }
@@ -175,6 +181,10 @@ final class AppModel: ObservableObject {
         case .tamil: return tamil
         case .english: return english
         }
+    }
+
+    func contentText(_ source: String) -> String {
+        PilotContentLocalization.text(source, language: language)
     }
 
     func genderTitle(_ value: Gender) -> String {
@@ -1010,7 +1020,7 @@ struct CropRow: View {
     var body: some View {
         VStack(spacing: 7) {
             HStack {
-                Text("\(crop.nameTelugu) / \(crop.nameEnglish)").font(.subheadline.bold())
+                Text(model.contentText(crop.nameEnglish)).font(.subheadline.bold())
                 Spacer()
                 Text("\(PilotContract.acresText(crop.acres)) \(model.text("ఎకరాలు", "एकड़", "ஏக்கர்", "acres"))").font(.subheadline)
             }
@@ -1029,12 +1039,13 @@ enum VerificationBadgeState {
     case sandboxVerified
     case syntheticActive
 
-    var title: String {
+    @MainActor
+    func title(using model: AppModel) -> String {
         switch self {
-        case .pending: return "పెండింగ్"
-        case .verified: return "ధృవీకరించబడింది"
-        case .sandboxVerified: return "ధృవీకరించబడింది • శాండ్‌బాక్స్"
-        case .syntheticActive: return "యాక్టివ్ • సింథటిక్"
+        case .pending: return model.text("పెండింగ్", "लंबित", "நிலுவையில்", "Pending")
+        case .verified: return model.text("ధృవీకరించబడింది", "सत्यापित", "சரிபார்க்கப்பட்டது", "Verified")
+        case .sandboxVerified: return model.text("ధృవీకరించబడింది • శాండ్‌బాక్స్", "सत्यापित • सैंडबॉक्स", "சரிபார்க்கப்பட்டது • சாண்ட்பாக்ஸ்", "Verified • sandbox")
+        case .syntheticActive: return model.text("యాక్టివ్ • సింథటిక్", "सक्रिय • सिंथेटिक", "செயலில் • செயற்கை", "Active • synthetic")
         }
     }
 
@@ -1049,6 +1060,7 @@ enum VerificationBadgeState {
 }
 
 struct VerificationRow: View {
+    @EnvironmentObject private var model: AppModel
     let icon: String
     let title: String
     let state: VerificationBadgeState
@@ -1058,7 +1070,7 @@ struct VerificationRow: View {
             Image(systemName: icon).frame(width: 24).foregroundStyle(AppTheme.green)
             Text(title)
             Spacer()
-            Text(state.title).font(.caption.bold()).foregroundStyle(state.foreground)
+            Text(state.title(using: model)).font(.caption.bold()).foregroundStyle(state.foreground)
                 .padding(.horizontal, 9).padding(.vertical, 5)
                 .background(state.background).clipShape(Capsule())
         }
@@ -1075,7 +1087,7 @@ struct FarmView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     Label("\(PilotContract.acresText(PilotContract.totalAcres)) \(model.text("ఎకరాల సింథటిక్ స్నాప్‌షాట్", "एकड़ का सिंथेटिक स्नैपशॉट", "ஏக்கர் செயற்கை நிலைப்படம்", "acre synthetic snapshot"))", systemImage: "map.fill")
                         .font(.title3.bold())
-                    Text("\(PilotContract.pilotDistrict) • \(PilotContract.pilotState)")
+                    Text("\(model.contentText(PilotContract.pilotDistrict)) • \(model.contentText(PilotContract.pilotState))")
                         .foregroundStyle(.secondary)
                     Text("\(model.text("గ్రామ కోడ్", "गाँव कोड", "கிராமக் குறியீடு", "Village code")): \(PilotContract.pilotVillageCode) • \(model.text("మండలం: నమోదు కాలేదు", "मंडल: दर्ज नहीं", "மண்டலம்: பதிவு செய்யப்படவில்லை", "Mandal: not recorded"))")
                         .font(.footnote).foregroundStyle(.secondary)
@@ -1083,11 +1095,11 @@ struct FarmView: View {
                     ForEach(PilotContract.crops) { crop in
                         VStack(alignment: .leading, spacing: 4) {
                             HStack {
-                                Text(crop.parcelName).font(.headline)
+                                Text(model.contentText(crop.parcelName)).font(.headline)
                                 Spacer()
                                 Text("\(PilotContract.acresText(crop.acres)) \(model.text("ఎకరాలు", "एकड़", "ஏக்கர்", "acres"))").font(.subheadline.bold())
                             }
-                            Text("\(crop.nameTelugu) / \(crop.nameEnglish) • \(crop.plotReference)")
+                            Text("\(model.contentText(crop.nameEnglish)) • \(crop.plotReference)")
                                 .font(.subheadline).foregroundStyle(.secondary)
                             Text("\(model.text("కేంద్ర బిందువు", "केंद्र बिंदु", "மையப்புள்ளி", "Centroid")): \(crop.centroid)")
                                 .font(.caption).foregroundStyle(.secondary)
@@ -1095,9 +1107,9 @@ struct FarmView: View {
                         if crop.id != PilotContract.crops.last?.id { Divider() }
                     }
                     Divider()
-                    Text("\(model.text("నీటిపారుదల", "सिंचाई", "பாசனம்", "Irrigation")): \(PilotContract.irrigation) • \(model.text("యాజమాన్యం", "स्वामित्व", "உரிமை", "Ownership")): \(PilotContract.ownership)")
+                    Text("\(model.text("నీటిపారుదల", "सिंचाई", "பாசனம்", "Irrigation")): \(model.contentText(PilotContract.irrigation)) • \(model.text("యాజమాన్యం", "स्वामित्व", "உரிமை", "Ownership")): \(model.contentText(PilotContract.ownership))")
                         .font(.footnote).foregroundStyle(.secondary)
-                    Text("FPO: \(PilotContract.pilotFPO) • \(PilotContract.pilotMembershipNumber)")
+                    Text("FPO: \(model.contentText(PilotContract.pilotFPO)) • \(PilotContract.pilotMembershipNumber)")
                         .font(.footnote).foregroundStyle(.secondary)
                     Divider()
                     Text(model.text("గ్రామం / క్లస్టర్ (డ్రాఫ్ట్)", "गाँव / क्लस्टर (ड्राफ्ट)", "கிராமம் / குழுமம் (வரைவு)", "Village / cluster (draft)")).font(.headline)
@@ -1234,7 +1246,7 @@ struct FarmHistoryView: View {
             VStack(spacing: 16) {
                 PageBar(title: model.text("పొలం చరిత్ర", "खेत इतिहास", "பண்ணை வரலாறு", "Farm history")) { model.screen = .home }
                 PageIntro(
-                    eyebrow: "B2A · MY FARM HISTORY",
+                    eyebrow: model.text("B2A · నా పొలం చరిత్ర", "B2A · मेरा खेत इतिहास", "B2A · என் பண்ணை வரலாறு", "B2A · MY FARM HISTORY"),
                     title: model.text("నా పొలం రికార్డులు", "मेरे खेत के रिकॉर्ड", "என் பண்ணைப் பதிவுகள்", "My farm records"),
                     subtitle: model.text("సారాంశం, ఐదేళ్ల పంటలు, ప్రాంత పోలిక, ప్రణాళిక, బీమా మరియు సేవలను విభాగం వారీగా చూడండి.", "सारांश, पाँच वर्षों की फसलें, क्षेत्र तुलना, योजना, बीमा और सेवाएँ अलग-अलग देखें।", "சுருக்கம், ஐந்தாண்டுப் பயிர்கள், பகுதி ஒப்பீடு, திட்டம், காப்பீடு மற்றும் சேவைகளைப் பிரிவாகப் பார்க்கவும்.", "Explore the summary, five-year crops, area comparison, plan, insurance and services by section.")
                 )
@@ -1291,7 +1303,7 @@ struct FarmHistoryView: View {
     private var historyOverview: some View {
         VStack(spacing: 12) {
             HStack(spacing: 10) {
-                CompactMetric(value: "18.20 ac", label: model.text("మొత్తం విస్తీర్ణం", "कुल क्षेत्र", "மொத்த பரப்பு", "Total extent"), icon: "map.fill")
+                CompactMetric(value: model.contentText("18.20 ac"), label: model.text("మొత్తం విస్తీర్ణం", "कुल क्षेत्र", "மொத்த பரப்பு", "Total extent"), icon: "map.fill")
                 CompactMetric(value: "5", label: model.text("ఏళ్లు", "वर्ष", "ஆண்டுகள்", "Years covered"), icon: "calendar")
             }
             HStack(spacing: 10) {
@@ -1305,10 +1317,10 @@ struct FarmHistoryView: View {
                         HStack {
                             Text(String(year.id)).font(.headline).foregroundStyle(AppTheme.green)
                             Spacer()
-                            Text(year.crops).font(.subheadline.bold())
+                            Text(model.contentText(year.crops)).font(.subheadline.bold())
                         }
                         HStack {
-                            HistoryMetric(label: model.text("ఎకరాలు", "एकड़", "ஏக்கர்", "Acres"), value: year.acres)
+                            HistoryMetric(label: model.text("ఎకరాలు", "एकड़", "ஏக்கர்", "Acres"), value: model.contentText(year.acres))
                             HistoryMetric(label: model.text("నికర/ఎకరం", "शुद्ध/एकड़", "நிகர/ஏக்கர்", "Net/acre"), value: year.netPerAcre)
                         }
                         Text(model.text("ఖర్చు", "लागत", "செலவு", "Cost") + " " + year.cost + " • " + model.text("ఆదాయం", "आय", "வருவாய்", "Revenue") + " " + year.revenue)
@@ -1327,21 +1339,21 @@ struct FarmHistoryView: View {
                 VStack(alignment: .leading, spacing: 9) {
                     HStack(alignment: .firstTextBaseline) {
                         VStack(alignment: .leading, spacing: 3) {
-                            Text(item.season).font(.caption.bold()).foregroundStyle(AppTheme.green)
-                            Text(item.crop).font(.title3.bold())
+                            Text(model.contentText(item.season)).font(.caption.bold()).foregroundStyle(AppTheme.green)
+                            Text(model.contentText(item.crop)).font(.title3.bold())
                         }
                         Spacer()
-                        Text(item.acres).font(.subheadline.bold())
+                        Text(model.contentText(item.acres)).font(.subheadline.bold())
                     }
                     HStack {
                         HistoryMetric(label: model.text("ఖర్చు", "लागत", "செலவு", "Cost"), value: item.cost)
-                        HistoryMetric(label: model.text("దిగుబడి", "उपज", "விளைச்சல்", "Yield"), value: item.yield)
+                        HistoryMetric(label: model.text("దిగుబడి", "उपज", "விளைச்சல்", "Yield"), value: model.contentText(item.yield))
                     }
                     HStack {
-                        HistoryMetric(label: model.text("ధర", "मूल्य", "விலை", "Price"), value: item.price)
+                        HistoryMetric(label: model.text("ధర", "मूल्य", "விலை", "Price"), value: model.contentText(item.price))
                         HistoryMetric(label: model.text("ఆదాయం", "आय", "வருவாய்", "Revenue"), value: item.revenue)
                     }
-                    Text(item.note).font(.footnote).foregroundStyle(.secondary)
+                    Text(model.contentText(item.note)).font(.footnote).foregroundStyle(.secondary)
                 }
                 .cardStyle()
             }
@@ -1426,7 +1438,7 @@ struct IntelligenceView: View {
             VStack(spacing: 16) {
                 PageBar(title: model.text("పొలం సమాచారం", "खेत की जानकारी", "பண்ணை தகவல்", "Farm intelligence")) { model.screen = .home }
                 PageIntro(
-                    eyebrow: "B2A · MY FARM INTELLIGENCE",
+                    eyebrow: model.text("B2A · నా పొలం సమాచారం", "B2A · मेरे खेत की जानकारी", "B2A · என் பண்ணை தகவல்", "B2A · MY FARM INTELLIGENCE"),
                     title: model.text("మీ పొలం గురించి ఒకే చోట", "आपके खेत की जानकारी एक जगह", "உங்கள் பண்ணை பற்றி ஒரே இடத்தில்", "Everything about your farm, in one place"),
                     subtitle: model.text("విభాగాన్ని ఎంచుకుని స్థానం, వాతావరణం, నేల, పంట, మార్కెట్ మరియు సహాయ డేటాను చూడండి.", "स्थान, मौसम, मिट्टी, फसल, बाज़ार और सहायता डेटा देखने के लिए भाग चुनें।", "இடம், வானிலை, மண், பயிர், சந்தை மற்றும் உதவித் தரவைப் பார்க்கப் பிரிவைத் தேர்ந்தெடுக்கவும்.", "Choose a section to view location, weather, soil, crop, market and help data.")
                 )
@@ -1458,7 +1470,7 @@ struct IntelligenceView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     ForEach(PilotContract.crops) { crop in
-                        SectionPill(title: "\(crop.nameEnglish) · \(crop.plotReference)", selected: selectedParcelID == crop.id) {
+                        SectionPill(title: "\(model.contentText(crop.nameEnglish)) · \(crop.plotReference)", selected: selectedParcelID == crop.id) {
                             selectedParcelID = crop.id
                         }
                     }
@@ -1496,8 +1508,8 @@ struct IntelligenceView: View {
         VStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 10) {
                 Text(model.text("ఎంచుకున్న పొలం", "चुना हुआ खेत", "தேர்ந்தெடுத்த பண்ணை", "Selected parcel")).font(.title3.bold())
-                DetailRow(label: model.text("పార్సెల్", "पार्सल", "நிலத்துண்டு", "Parcel"), value: selectedParcel.parcelName)
-                DetailRow(label: model.text("పంట / విస్తీర్ణం", "फसल / क्षेत्र", "பயிர் / பரப்பு", "Crop / extent"), value: "\(selectedParcel.nameEnglish) • \(PilotContract.acresText(selectedParcel.acres)) ac")
+                DetailRow(label: model.text("పార్సెల్", "पार्सल", "நிலத்துண்டு", "Parcel"), value: model.contentText(selectedParcel.parcelName))
+                DetailRow(label: model.text("పంట / విస్తీర్ణం", "फसल / क्षेत्र", "பயிர் / பரப்பு", "Crop / extent"), value: model.contentText("\(selectedParcel.nameEnglish) • \(PilotContract.acresText(selectedParcel.acres)) ac"))
                 DetailRow(label: model.text("ప్లాట్ సూచన", "प्लॉट संदर्भ", "நிலக் குறிப்பு", "Plot reference"), value: selectedParcel.plotReference)
                 DetailRow(label: model.text("కేంద్ర బిందువు", "केंद्र बिंदु", "மையப்புள்ளி", "Centroid"), value: selectedParcel.centroid)
             }
@@ -1529,21 +1541,21 @@ struct IntelligenceView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(quote.crop).font(.title3.bold())
-                            Text("\(quote.variety) • \(quote.grade)").font(.caption).foregroundStyle(.secondary)
+                            Text(model.contentText(quote.crop)).font(.title3.bold())
+                            Text("\(model.contentText(quote.variety)) • \(model.contentText(quote.grade))").font(.caption).foregroundStyle(.secondary)
                         }
                         Spacer()
-                        DataBadge(text: "OBSERVED", color: AppTheme.green)
+                        DataBadge(text: model.contentText("OBSERVED"), color: AppTheme.green)
                     }
                     HStack {
-                        HistoryMetric(label: model.text("కనిష్టం", "न्यूनतम", "குறைந்தபட்சம்", "Minimum"), value: quote.minimumPrice)
-                        HistoryMetric(label: model.text("మోడల్", "मॉडल", "மாதிரி", "Modal"), value: quote.modalPrice)
+                        HistoryMetric(label: model.text("కనిష్టం", "न्यूनतम", "குறைந்தபட்சம்", "Minimum"), value: model.contentText(quote.minimumPrice))
+                        HistoryMetric(label: model.text("మోడల్", "मॉडल", "மாதிரி", "Modal"), value: model.contentText(quote.modalPrice))
                     }
                     HStack {
-                        HistoryMetric(label: model.text("గరిష్టం", "अधिकतम", "அதிகபட்சம்", "Maximum"), value: quote.maximumPrice)
-                        HistoryMetric(label: model.text("రాకలు", "आवक", "வரத்து", "Arrivals"), value: quote.arrivals)
+                        HistoryMetric(label: model.text("గరిష్టం", "अधिकतम", "அதிகபட்சம்", "Maximum"), value: model.contentText(quote.maximumPrice))
+                        HistoryMetric(label: model.text("రాకలు", "आवक", "வரத்து", "Arrivals"), value: model.contentText(quote.arrivals))
                     }
-                    Text("Guntur Mandi • 17-08-2026 • \(quote.source)").font(.caption).foregroundStyle(.secondary)
+                    Text(model.text("గుంటూరు మార్కెట్ • 17-08-2026 • మూలం: \(quote.source)", "गुंटूर मंडी • 17-08-2026 • स्रोत: \(quote.source)", "குண்டூர் சந்தை • 17-08-2026 • மூலம்: \(quote.source)", "Guntur Mandi • 17-08-2026 • source: \(quote.source)")).font(.caption).foregroundStyle(.secondary)
                 }
                 .cardStyle()
             }
@@ -1555,17 +1567,17 @@ struct IntelligenceView: View {
             HStack {
                 Text(model.text("వరి ప్రాసెసింగ్ మార్గం", "धान प्रसंस्करण मार्ग", "நெல் செயலாக்கப் பாதை", "Paddy processing path")).font(.title3.bold())
                 Spacer()
-                DataBadge(text: "DERIVED", color: AppTheme.gold)
+                DataBadge(text: model.contentText("DERIVED"), color: AppTheme.gold)
             }
             ForEach(PilotContract.valueAddSteps) { step in
                 HStack(alignment: .top, spacing: 12) {
                     Text(String(step.id)).font(.headline).foregroundStyle(.white)
                         .frame(width: 32, height: 32).background(AppTheme.green).clipShape(Circle())
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("\(step.input) → \(step.output)").font(.headline)
-                        Text("\(model.text("రికవరీ", "रिकवरी", "மீட்பு", "Recovery")) \(step.recovery) • \(model.text("ఖర్చు", "लागत", "செலவு", "Cost")) \(step.processingCost)")
+                        Text("\(model.contentText(step.input)) → \(model.contentText(step.output))").font(.headline)
+                        Text("\(model.text("రికవరీ", "रिकवरी", "மீட்பு", "Recovery")) \(step.recovery) • \(model.text("ఖర్చు", "लागत", "செலவு", "Cost")) \(model.contentText(step.processingCost))")
                             .font(.subheadline)
-                        Text(step.byProducts).font(.caption).foregroundStyle(.secondary)
+                        Text(model.contentText(step.byProducts)).font(.caption).foregroundStyle(.secondary)
                     }
                 }
                 if step.id != PilotContract.valueAddSteps.last?.id { Divider() }
@@ -1581,13 +1593,13 @@ struct IntelligenceView: View {
             ForEach(PilotContract.outcomeScenarios) { scenario in
                 VStack(alignment: .leading, spacing: 9) {
                     HStack {
-                        Text("\(scenario.label) · Paddy 8.40 ac").font(.title3.bold())
+                        Text(model.contentText("\(scenario.label) · Paddy 8.40 ac")).font(.title3.bold())
                         Spacer()
-                        DataBadge(text: "DERIVED", color: AppTheme.gold)
+                        DataBadge(text: model.contentText("DERIVED"), color: AppTheme.gold)
                     }
                     HStack {
-                        HistoryMetric(label: model.text("దిగుబడి", "उपज", "விளைச்சல்", "Yield"), value: scenario.yield)
-                        HistoryMetric(label: model.text("అమ్మకం ధర", "बिक्री मूल्य", "விற்பனை விலை", "Selling price"), value: scenario.sellingPrice)
+                        HistoryMetric(label: model.text("దిగుబడి", "उपज", "விளைச்சல்", "Yield"), value: model.contentText(scenario.yield))
+                        HistoryMetric(label: model.text("అమ్మకం ధర", "बिक्री मूल्य", "விற்பனை விலை", "Selling price"), value: model.contentText(scenario.sellingPrice))
                     }
                     HStack {
                         HistoryMetric(label: model.text("మొత్తం ఖర్చు", "कुल लागत", "மொத்த செலவு", "Total cost"), value: scenario.totalCost)
@@ -1595,7 +1607,7 @@ struct IntelligenceView: View {
                     }
                     HStack {
                         HistoryMetric(label: model.text("నికర ఆదాయం", "शुद्ध आय", "நிகர வருவாய்", "Net income"), value: scenario.netIncome)
-                        HistoryMetric(label: model.text("బ్రేక్-ఈవెన్", "ब्रेक-ईवन", "சமநிலை", "Break-even"), value: scenario.breakEven)
+                        HistoryMetric(label: model.text("బ్రేక్-ఈవెన్", "ब्रेक-ईवन", "சமநிலை", "Break-even"), value: model.contentText(scenario.breakEven))
                     }
                 }
                 .cardStyle()
@@ -1699,14 +1711,14 @@ struct NearbyFacilitiesContent: View {
                 VStack(alignment: .leading, spacing: 7) {
                     HStack(alignment: .top) {
                         VStack(alignment: .leading, spacing: 3) {
-                            Text(facility.category.uppercased()).font(.caption.bold()).tracking(0.7).foregroundStyle(AppTheme.green)
-                            Text(facility.name).font(.headline)
+                            Text(model.contentText(facility.category).uppercased()).font(.caption.bold()).tracking(0.7).foregroundStyle(AppTheme.green)
+                            Text(model.contentText(facility.name)).font(.headline)
                         }
                         Spacer()
                         Text(facility.distance).font(.caption.bold()).foregroundStyle(AppTheme.darkGreen)
                     }
-                    Label(facility.contact, systemImage: "person.crop.circle").font(.subheadline)
-                    Text(facility.source).font(.caption).foregroundStyle(.secondary)
+                    Label(model.contentText(facility.contact), systemImage: "person.crop.circle").font(.subheadline)
+                    Text(model.contentText(facility.source)).font(.caption).foregroundStyle(.secondary)
                 }
                 .cardStyle()
             }
@@ -1725,15 +1737,15 @@ struct TrainingView: View {
             VStack(spacing: 18) {
                 PageBar(title: model.text("రైతు శిక్షణ", "किसान प्रशिक्षण", "விவசாயி பயிற்சி", "Farmer training")) { model.screen = .home }
                 PageIntro(
-                    eyebrow: "B2B · FARMER PRACTICE LIBRARY",
+                    eyebrow: model.text("B2B · రైతు అభ్యాస గ్రంథాలయం", "B2B · किसान अभ्यास पुस्तकालय", "B2B · விவசாயி பயிற்சி நூலகம்", "B2B · FARMER PRACTICE LIBRARY"),
                     title: model.text("రైతు శిక్షణ", "किसान प्रशिक्षण", "விவசாயி பயிற்சி", "Farmer training"),
                     subtitle: model.text("విత్తడం నుంచి విలువ సృష్టి వరకు దశల వారీ మార్గదర్శనం. పూర్తి చేసిన పాఠాన్ని గుర్తించండి.", "बुवाई से मूल्य सृजन तक चरणबद्ध मार्गदर्शन। पूरा पाठ चिन्हित करें।", "விதைப்பிலிருந்து மதிப்பூட்டல் வரை படிப்படியான வழிகாட்டல். முடித்த பாடத்தைக் குறிக்கவும்.", "Step-by-step guidance from sowing to value creation. Mark completed lessons.")
                 )
                 ForEach(PilotContract.trainingModules) { module in
                     VStack(alignment: .leading, spacing: 10) {
-                        Text(module.stage).font(.caption.bold()).tracking(1).foregroundStyle(AppTheme.green)
-                        Text(module.title).font(.title3.bold())
-                        Text(module.summary).font(.subheadline).foregroundStyle(.secondary)
+                        Text(model.contentText(module.stage)).font(.caption.bold()).tracking(1).foregroundStyle(AppTheme.green)
+                        Text(model.contentText(module.title)).font(.title3.bold())
+                        Text(model.contentText(module.summary)).font(.subheadline).foregroundStyle(.secondary)
                         Divider()
                         ForEach(Array(module.lessons.enumerated()), id: \.offset) { index, lesson in
                             let lessonID = "\(module.id)-\(index)"
@@ -1747,7 +1759,7 @@ struct TrainingView: View {
                                 HStack(alignment: .top, spacing: 10) {
                                     Image(systemName: completedLessons.contains(lessonID) ? "checkmark.circle.fill" : "circle")
                                         .foregroundStyle(AppTheme.green)
-                                    Text(lesson).foregroundStyle(.primary)
+                                    Text(model.contentText(lesson)).foregroundStyle(.primary)
                                     Spacer()
                                 }
                                 .contentShape(Rectangle())
@@ -1863,13 +1875,14 @@ struct PageIntro: View {
 }
 
 struct SnapshotCard: View {
+    @EnvironmentObject private var model: AppModel
     let item: SnapshotItem
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(item.title).font(.title3.bold()).foregroundStyle(AppTheme.darkGreen)
-            Text(item.detail).font(.subheadline)
-            Text(item.meta).font(.footnote).foregroundStyle(.secondary)
+            Text(model.contentText(item.title)).font(.title3.bold()).foregroundStyle(AppTheme.darkGreen)
+            Text(model.contentText(item.detail)).font(.subheadline)
+            Text(model.contentText(item.meta)).font(.footnote).foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .cardStyle()
@@ -1877,16 +1890,17 @@ struct SnapshotCard: View {
 }
 
 struct SnapshotRow: View {
+    @EnvironmentObject private var model: AppModel
     let item: SnapshotItem
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(alignment: .firstTextBaseline) {
-                Text(item.title).font(.subheadline.bold())
+                Text(model.contentText(item.title)).font(.subheadline.bold())
                 Spacer()
-                Text(item.detail).font(.subheadline).multilineTextAlignment(.trailing)
+                Text(model.contentText(item.detail)).font(.subheadline).multilineTextAlignment(.trailing)
             }
-            Text(item.meta).font(.caption).foregroundStyle(.secondary)
+            Text(model.contentText(item.meta)).font(.caption).foregroundStyle(.secondary)
         }
     }
 }

@@ -19,7 +19,7 @@ are connected.
 - Authenticated profile refresh: `GET /me`, with bearer tokens stored in the
   iOS Keychain (`whenUnlockedThisDeviceOnly`)
 
-Version `0.5.0` retains the supplied Agrivah lockup and app icon and includes the
+Version `0.5.1` retains the supplied Agrivah lockup and app icon and includes the
 same farmer workspaces available in the web application: profile, onboarding,
 farm, farm history, farm intelligence, training, inputs and protection, soil
 care, consent, schemes, and marketplace. Farm Intelligence now exposes the web
@@ -34,7 +34,13 @@ account's empty marketplace state. A redesigned dashboard provides farm
 metrics, a horizontally scrollable seven-day synthetic weather outlook,
 rainfall advisory, quick actions, and persistent bottom navigation so the main
 areas do not require scrolling to the bottom of a long menu. The forecast is
-clearly labelled synthetic and is not a live authoritative weather feed. The app requests
+clearly labelled synthetic and is not a live authoritative weather feed.
+The selected app language is also applied to farmer content rather than only
+navigation: Telugu now covers parcel and crop names, seasons, five-year notes,
+intelligence records, training stages and lessons, input/soil guidance, scheme
+states, market/value-add labels and nearby-service descriptions. Identifiers,
+source-system codes, chemical abbreviations and registered names remain
+unchanged where translation would alter their meaning. The app requests
 SMS OTP through `/auth/otp/request`, verifies it through `/auth/otp/verify`, then
 refreshes `/me` on launch and on demand. Until SMS delivery is configured, a
 failed OTP request for the explicitly authorized synthetic pilot phone opens a
@@ -76,7 +82,7 @@ the owner's Apple Developer team, signing certificate, and provisioning profile.
 
 - Validate the Supabase SMS provider, India DLT header/template and delivery to
   the enrolled device before a field rollout.
-- Record baseline consent through the server-signed consent endpoint; v0.5.0
+- Record baseline consent through the server-signed consent endpoint; v0.5.1
   continues to retain the existing local pilot consent receipt.
 - Remove the device-local static OTP fallback after SMS delivery is accepted.
 - Add refresh-token rotation and server logout before long-lived distribution.
