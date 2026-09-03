@@ -49,6 +49,56 @@ struct WeatherDay: Identifiable, Equatable {
     let symbol: String
 }
 
+struct MarketQuote: Identifiable, Equatable {
+    let id: String
+    let crop: String
+    let variety: String
+    let grade: String
+    let minimumPrice: String
+    let modalPrice: String
+    let maximumPrice: String
+    let arrivals: String
+    let source: String
+}
+
+struct ValueAddStep: Identifiable, Equatable {
+    let id: Int
+    let input: String
+    let output: String
+    let recovery: String
+    let processingCost: String
+    let byProducts: String
+}
+
+struct OutcomeScenario: Identifiable, Equatable {
+    let id: String
+    let label: String
+    let yield: String
+    let sellingPrice: String
+    let totalCost: String
+    let grossIncome: String
+    let netIncome: String
+    let breakEven: String
+}
+
+struct NearbyFacility: Identifiable, Equatable {
+    let id: String
+    let category: String
+    let name: String
+    let distance: String
+    let contact: String
+    let source: String
+}
+
+struct HistoryYearSummary: Identifiable, Equatable {
+    let id: Int
+    let crops: String
+    let acres: String
+    let cost: String
+    let revenue: String
+    let netPerAcre: String
+}
+
 enum AppLanguage: String, CaseIterable, Identifiable {
     case telugu = "te"
     case hindi = "hi"
@@ -74,7 +124,7 @@ enum PilotContract {
     static let apiPrefix = "/mobile/v1"
     static let consentVersion = "mobile-consent-2026-08-v1"
     static let policyVersion = "2026-08-baseline-v1"
-    static let snapshotVersion = "guntur-kaza-dashboard-weather-2026-09-02-v1"
+    static let snapshotVersion = "guntur-kaza-ios-intelligence-history-2026-09-03-v1"
     static let snapshotCapturedAt = "01-09-2026"
     static let totalAcres = Decimal(string: "18.20")!
     static let sandboxStaticOTP = "123456"
@@ -187,6 +237,83 @@ enum PilotContract {
         SnapshotItem(id: "value-add", title: "Value-add", detail: "Paddy → cleaned/dried paddy → brown rice → polished rice", meta: "Recovery 96% → 78% → 92%; assumptions require validation."),
         SnapshotItem(id: "outcome", title: "Outcome planner", detail: "Costs, yield and price scenarios are derived", meta: "No recommendation replaces an authorised human decision."),
         SnapshotItem(id: "nearby", title: "Nearby & help", detail: "Soil lab • logistics • drone service • machinery hiring", meta: "Four synthetic Guntur service records; contacts are service-desk labels only.")
+    ]
+
+    static let locationDetails: [SnapshotItem] = [
+        SnapshotItem(id: "village", title: "Village", detail: pilotVillageCode, meta: "Synthetic location code"),
+        SnapshotItem(id: "mandal", title: "Block / mandal", detail: "Not recorded", meta: "Farmer profile gap"),
+        SnapshotItem(id: "district", title: "District", detail: "Guntur (synthetic)", meta: "synthetic:icar-crida-district-profile"),
+        SnapshotItem(id: "state", title: "State", detail: "Andhra Pradesh (synthetic)", meta: "synthetic:icar-crida-district-profile"),
+        SnapshotItem(id: "centroid", title: "Centroid", detail: "16.3072, 80.4482", meta: "Selected parcel: GNT-KAZA-114/2"),
+        SnapshotItem(id: "zone", title: "Agro-climatic zone", detail: "Andhra Pradesh synthetic agro-climatic zone", meta: "VALIDATE mapping before field use")
+    ]
+
+    static let seasonDetails: [SnapshotItem] = [
+        SnapshotItem(id: "season", title: "Season basis", detail: "Kharif (monsoon)", meta: "Sowing Jun–Jul • harvest Oct–Nov"),
+        SnapshotItem(id: "major-soils", title: "Major soils", detail: "Mixed red and black soils", meta: "Location-derived synthetic district reference"),
+        SnapshotItem(id: "common-irrigation", title: "Common irrigation", detail: "Borewell, rainfed", meta: "District reference; farmer record says borewell + canal")
+    ]
+
+    static let soilSnapshot: [SnapshotItem] = [
+        SnapshotItem(id: "test", title: "Farmer soil test", detail: "Not linked", meta: "No Soil Health Card or laboratory result is available"),
+        SnapshotItem(id: "soil-type", title: "Major soil types", detail: "Mixed red and black soils", meta: "Location-derived"),
+        SnapshotItem(id: "texture", title: "Typical texture", detail: "Loam", meta: "Synthetic district reference; confirm by lab test"),
+        SnapshotItem(id: "ph", title: "Typical pH range", detail: "6.5–8.2", meta: "Reference range, not a parcel reading"),
+        SnapshotItem(id: "carbon", title: "Organic carbon", detail: "0.35–0.62%", meta: "Reference range, not a parcel reading")
+    ]
+
+    static let cropPlanningSnapshot: [SnapshotItem] = [
+        SnapshotItem(id: "paddy-plan", title: "Paddy • GNT-KAZA-114/2", detail: "8.40 ac • suitability 86/100", meta: "DERIVED: climate, soil, irrigation and market factors"),
+        SnapshotItem(id: "chilli-plan", title: "Chilli • GNT-KAZA-98/1", detail: "5.60 ac • suitability 78/100", meta: "DERIVED: climate, soil, irrigation and market factors"),
+        SnapshotItem(id: "cotton-plan", title: "Cotton • GNT-KAZA-77/4", detail: "4.20 ac • suitability 74/100", meta: "DERIVED: climate, soil, irrigation and market factors")
+    ]
+
+    static let marketQuotes: [MarketQuote] = [
+        MarketQuote(id: "paddy", crop: "Paddy", variety: "MTU-1061", grade: "FAQ", minimumPrice: "₹2,020/q", modalPrice: "₹2,150/q", maximumPrice: "₹2,230/q", arrivals: "1,720 q", source: "synthetic:agmarknet"),
+        MarketQuote(id: "chilli", crop: "Chilli", variety: "Teja", grade: "Grade-1", minimumPrice: "₹14,500/q", modalPrice: "₹16,200/q", maximumPrice: "₹17,800/q", arrivals: "620 q", source: "synthetic:enam"),
+        MarketQuote(id: "cotton", crop: "Cotton", variety: "Medium Staple", grade: "FAQ", minimumPrice: "₹6,900/q", modalPrice: "₹7,350/q", maximumPrice: "₹7,700/q", arrivals: "760 q", source: "synthetic:agmarknet")
+    ]
+
+    static let valueAddSteps: [ValueAddStep] = [
+        ValueAddStep(id: 1, input: "Paddy", output: "Cleaned & dried paddy", recovery: "96%", processingCost: "₹120/q", byProducts: "Chaff 4%"),
+        ValueAddStep(id: 2, input: "Cleaned & dried paddy", output: "Brown rice", recovery: "78%", processingCost: "₹150/q", byProducts: "Husk 20% • ₹180/q"),
+        ValueAddStep(id: 3, input: "Brown rice", output: "Polished rice", recovery: "92%", processingCost: "₹210/q", byProducts: "Bran 6% • ₹2,200/q; broken rice 2% • ₹1,900/q")
+    ]
+
+    static let outcomeScenarios: [OutcomeScenario] = [
+        OutcomeScenario(id: "low", label: "Low", yield: "176 q", sellingPrice: "₹2,020/q", totalCost: "₹2,68,800", grossIncome: "₹3,55,520", netIncome: "₹86,720", breakEven: "₹1,527/q • 133.1 q"),
+        OutcomeScenario(id: "base", label: "Base", yield: "198 q", sellingPrice: "₹2,150/q", totalCost: "₹2,68,800", grossIncome: "₹4,25,700", netIncome: "₹1,56,900", breakEven: "₹1,358/q • 125.0 q"),
+        OutcomeScenario(id: "high", label: "High", yield: "218 q", sellingPrice: "₹2,230/q", totalCost: "₹2,68,800", grossIncome: "₹4,86,140", netIncome: "₹2,17,340", breakEven: "₹1,233/q • 120.5 q")
+    ]
+
+    static let nearbyFacilities: [NearbyFacility] = [
+        NearbyFacility(id: "fpo", category: "FPO", name: "Guntur Chilli FPO", distance: "~1 km", contact: "FPO CEO desk", source: "Synthetic directory"),
+        NearbyFacility(id: "soil-lab", category: "Soil testing", name: "District Soil Testing Lab, Guntur", distance: "~1 km", contact: "Lab in-charge", source: "Synthetic directory"),
+        NearbyFacility(id: "kvk", category: "Extension", name: "KVK Lam, Guntur", distance: "~4 km", contact: "Extension scientist", source: "Synthetic directory"),
+        NearbyFacility(id: "machinery", category: "Machinery", name: "Guntur Custom Hiring Centre", distance: "~4 km", contact: "CHC manager", source: "Synthetic directory"),
+        NearbyFacility(id: "logistics", category: "Logistics", name: "Guntur Agri Logistics", distance: "~1 km", contact: "Dispatch desk", source: "Synthetic directory")
+    ]
+
+    static let historyYearSummaries: [HistoryYearSummary] = [
+        HistoryYearSummary(id: 2026, crops: "Paddy, Cotton", acres: "12.60 ac", cost: "₹1,07,900", revenue: "₹7,73,520", netPerAcre: "₹52,827"),
+        HistoryYearSummary(id: 2025, crops: "Cotton, Chilli", acres: "9.80 ac", cost: "₹1,49,400", revenue: "₹17,49,950", netPerAcre: "₹1,63,321"),
+        HistoryYearSummary(id: 2024, crops: "Paddy, Maize", acres: "12.60 ac", cost: "₹78,500", revenue: "₹6,26,260", netPerAcre: "₹43,473"),
+        HistoryYearSummary(id: 2023, crops: "Paddy, Chilli", acres: "14.00 ac", cost: "₹1,43,800", revenue: "₹14,85,600", netPerAcre: "₹95,843"),
+        HistoryYearSummary(id: 2022, crops: "Paddy, Maize", acres: "14.00 ac", cost: "₹81,800", revenue: "₹6,20,400", netPerAcre: "₹38,471")
+    ]
+
+    static let areaCropComparison: [SnapshotItem] = [
+        SnapshotItem(id: "area-paddy", title: "Paddy", detail: "Area adoption 34% • farmer 23.6 q/ac", meta: "Typical 22 q/ac • ₹31–32k/ac • ₹2,050–2,150/q"),
+        SnapshotItem(id: "area-chilli", title: "Chilli", detail: "Area adoption 12% • farmer 20.0 q/ac", meta: "Typical 20 q/ac • ₹78k/ac • about ₹12,500/q"),
+        SnapshotItem(id: "area-cotton", title: "Cotton", detail: "Area adoption 22% • farmer 10.0 q/ac", meta: "Typical 9 q/ac • ₹34–36k/ac • about ₹7,200/q")
+    ]
+
+    static let nextSeasonPlan: [SnapshotItem] = [
+        SnapshotItem(id: "allocation", title: "Draft allocation", detail: "Paddy 8.40 ac • Chilli 5.60 ac • Cotton 4.20 ac", meta: "18.20 acres allocated; farmer confirmation required"),
+        SnapshotItem(id: "soil-readiness", title: "Soil-test readiness", detail: "Action needed", meta: "No parcel-level laboratory result is linked"),
+        SnapshotItem(id: "water-readiness", title: "Water plan", detail: "Borewell + canal recorded", meta: "Confirm seasonal availability before sowing"),
+        SnapshotItem(id: "insurance-readiness", title: "Insurance review", detail: "Pending", meta: "Check notified crop, dates and sum insured with an authorised desk"),
+        SnapshotItem(id: "market-readiness", title: "Market reference", detail: "Guntur Mandi snapshot available", meta: "Synthetic observed prices dated 17-08-2026")
     ]
 
     static let trainingModules: [TrainingModule] = [

@@ -19,11 +19,16 @@ are connected.
 - Authenticated profile refresh: `GET /me`, with bearer tokens stored in the
   iOS Keychain (`whenUnlockedThisDeviceOnly`)
 
-Version `0.4.0` retains the supplied Agrivah lockup and app icon and includes the
+Version `0.5.0` retains the supplied Agrivah lockup and app icon and includes the
 same farmer workspaces available in the web application: profile, onboarding,
 farm, farm history, farm intelligence, training, inputs and protection, soil
-care, consent, schemes, and marketplace. The current snapshot includes 10 crop
-history records, two insurance snapshots, five training modules (12 lessons),
+care, consent, schemes, and marketplace. Farm Intelligence now exposes the web
+submenus—Location & season, Weather, Soil, Crop planning, Market, Value-add,
+Outcome planner, and Nearby & help—with parcel selection and detailed source-
+labelled data. Farm History now exposes Command centre, My 5-year history, What
+my area grows, Next season plan, Insurance corner, and Services near me instead
+of one long record list. The current snapshot includes 10 crop history records,
+five annual summaries, two insurance snapshots, five training modules (12 lessons),
 eight intelligence categories, eight soil practices, four schemes and the web
 account's empty marketplace state. A redesigned dashboard provides farm
 metrics, a horizontally scrollable seven-day synthetic weather outlook,
@@ -71,7 +76,7 @@ the owner's Apple Developer team, signing certificate, and provisioning profile.
 
 - Validate the Supabase SMS provider, India DLT header/template and delivery to
   the enrolled device before a field rollout.
-- Record baseline consent through the server-signed consent endpoint; v0.4.0
+- Record baseline consent through the server-signed consent endpoint; v0.5.0
   continues to retain the existing local pilot consent receipt.
 - Remove the device-local static OTP fallback after SMS delivery is accepted.
 - Add refresh-token rotation and server logout before long-lived distribution.

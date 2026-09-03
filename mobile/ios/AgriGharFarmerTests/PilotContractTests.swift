@@ -47,6 +47,24 @@ final class PilotContractTests: XCTestCase {
         XCTAssertEqual(PilotContract.weatherForecast[1].rainfallMm, 16.0, accuracy: 0.01)
     }
 
+    func testFarmIntelligenceContainsDataForEveryWebSubmenu() {
+        XCTAssertEqual(PilotContract.locationDetails.count, 6)
+        XCTAssertEqual(PilotContract.seasonDetails.count, 3)
+        XCTAssertEqual(PilotContract.soilSnapshot.count, 5)
+        XCTAssertEqual(PilotContract.cropPlanningSnapshot.count, 3)
+        XCTAssertEqual(PilotContract.marketQuotes.count, 3)
+        XCTAssertEqual(PilotContract.valueAddSteps.count, 3)
+        XCTAssertEqual(PilotContract.outcomeScenarios.map(\.id), ["low", "base", "high"])
+        XCTAssertEqual(PilotContract.nearbyFacilities.count, 5)
+    }
+
+    func testFarmHistoryContainsWebSectionSnapshots() {
+        XCTAssertEqual(PilotContract.historyYearSummaries.map(\.id), [2026, 2025, 2024, 2023, 2022])
+        XCTAssertEqual(PilotContract.areaCropComparison.count, 3)
+        XCTAssertEqual(PilotContract.nextSeasonPlan.count, 5)
+        XCTAssertEqual(PilotContract.insuranceSnapshots.count, 2)
+    }
+
     func testSupportedLanguagesHaveIndianLocales() {
         XCTAssertEqual(AppLanguage.allCases.map(\.rawValue), ["te", "hi", "ta", "en"])
         XCTAssertEqual(AppLanguage.tamil.localeIdentifier, "ta-IN")

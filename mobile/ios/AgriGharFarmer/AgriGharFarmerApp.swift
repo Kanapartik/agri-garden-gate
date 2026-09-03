@@ -95,7 +95,17 @@ final class AppModel: ObservableObject {
            let previewLanguage = AppLanguage(rawValue: String(languageArgument.dropFirst("--preview-language=".count))) {
             self.language = previewLanguage
         }
-        if ProcessInfo.processInfo.arguments.contains("--preview-profile") {
+        if ProcessInfo.processInfo.arguments.contains("--preview-intelligence") {
+            self.screen = .intelligence
+            self.farmerName = PilotContract.sandboxFarmerName
+            self.gender = .male
+            self.localSandboxOTPActive = true
+        } else if ProcessInfo.processInfo.arguments.contains("--preview-history") {
+            self.screen = .farmHistory
+            self.farmerName = PilotContract.sandboxFarmerName
+            self.gender = .male
+            self.localSandboxOTPActive = true
+        } else if ProcessInfo.processInfo.arguments.contains("--preview-profile") {
             self.screen = .profile
             self.farmerName = PilotContract.sandboxFarmerName
             self.gender = .male
@@ -130,7 +140,9 @@ final class AppModel: ObservableObject {
         }
         #if DEBUG
         if ProcessInfo.processInfo.arguments.contains("--preview-sandbox-profile")
-            || ProcessInfo.processInfo.arguments.contains("--preview-profile") {
+            || ProcessInfo.processInfo.arguments.contains("--preview-profile")
+            || ProcessInfo.processInfo.arguments.contains("--preview-intelligence")
+            || ProcessInfo.processInfo.arguments.contains("--preview-history") {
             self.gender = .male
         }
         #endif
@@ -1195,53 +1207,175 @@ struct OnboardingView: View {
     }
 }
 
+private enum FarmHistorySection: String, CaseIterable, Identifiable {
+    case overview, fiveYears, area, nextSeason, insurance, services
+
+    var id: String { rawValue }
+
+    @MainActor
+    func title(using model: AppModel) -> String {
+        switch self {
+        case .overview: return model.text("నిర్వహణ కేంద్రం", "कमांड सेंटर", "கட்டுப்பாட்டு மையம்", "Command centre")
+        case .fiveYears: return model.text("నా 5 ఏళ్ల చరిత్ర", "मेरा 5-वर्ष इतिहास", "என் 5 ஆண்டு வரலாறு", "My 5-year history")
+        case .area: return model.text("నా ప్రాంత పంటలు", "मेरे क्षेत्र की फसलें", "என் பகுதி பயிர்கள்", "What my area grows")
+        case .nextSeason: return model.text("తదుపరి సీజన్", "अगला सीज़न", "அடுத்த பருவம்", "Next season plan")
+        case .insurance: return model.text("బీమా", "बीमा", "காப்பீடு", "Insurance corner")
+        case .services: return model.text("సమీప సేవలు", "नज़दीकी सेवाएँ", "அருகிலுள்ள சேவைகள்", "Services near me")
+        }
+    }
+}
+
 struct FarmHistoryView: View {
     @EnvironmentObject private var model: AppModel
+    @State private var selectedSection: FarmHistorySection = .overview
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 18) {
+            VStack(spacing: 16) {
                 PageBar(title: model.text("పొలం చరిత్ర", "खेत इतिहास", "பண்ணை வரலாறு", "Farm history")) { model.screen = .home }
                 PageIntro(
                     eyebrow: "B2A · MY FARM HISTORY",
-                    title: model.text("గత పంటలు ఒకేచోట", "पिछली फसलें एक जगह", "முந்தைய பயிர்கள் ஒரே இடத்தில்", "Past crops in one place"),
-                    subtitle: model.text("2022–2026 సింథటిక్ రైతు రికార్డులు; ఖర్చు, దిగుబడి, ధర మరియు ఆదాయం.", "2022–2026 सिंथेटिक किसान रिकॉर्ड: लागत, उपज, मूल्य और आय।", "2022–2026 செயற்கை விவசாயி பதிவுகள்: செலவு, விளைச்சல், விலை மற்றும் வருவாய்.", "Synthetic 2022–2026 farmer records: cost, yield, price and revenue.")
+                    title: model.text("నా పొలం రికార్డులు", "मेरे खेत के रिकॉर्ड", "என் பண்ணைப் பதிவுகள்", "My farm records"),
+                    subtitle: model.text("సారాంశం, ఐదేళ్ల పంటలు, ప్రాంత పోలిక, ప్రణాళిక, బీమా మరియు సేవలను విభాగం వారీగా చూడండి.", "सारांश, पाँच वर्षों की फसलें, क्षेत्र तुलना, योजना, बीमा और सेवाएँ अलग-अलग देखें।", "சுருக்கம், ஐந்தாண்டுப் பயிர்கள், பகுதி ஒப்பீடு, திட்டம், காப்பீடு மற்றும் சேவைகளைப் பிரிவாகப் பார்க்கவும்.", "Explore the summary, five-year crops, area comparison, plan, insurance and services by section.")
                 )
-                ForEach(PilotContract.farmHistory) { item in
-                    VStack(alignment: .leading, spacing: 9) {
-                        HStack(alignment: .firstTextBaseline) {
-                            VStack(alignment: .leading, spacing: 3) {
-                                Text(item.season).font(.caption.bold()).foregroundStyle(AppTheme.green)
-                                Text(item.crop).font(.title3.bold())
-                            }
-                            Spacer()
-                            Text(item.acres).font(.subheadline.bold())
-                        }
-                        HStack {
-                            HistoryMetric(label: model.text("ఖర్చు", "लागत", "செலவு", "Cost"), value: item.cost)
-                            HistoryMetric(label: model.text("దిగుబడి", "उपज", "விளைச்சல்", "Yield"), value: item.yield)
-                        }
-                        HStack {
-                            HistoryMetric(label: model.text("ధర", "मूल्य", "விலை", "Price"), value: item.price)
-                            HistoryMetric(label: model.text("ఆదాయం", "आय", "வருவாய்", "Revenue"), value: item.revenue)
-                        }
-                        Text(item.note).font(.footnote).foregroundStyle(.secondary)
-                    }
-                    .cardStyle()
-                }
-                VStack(alignment: .leading, spacing: 12) {
-                    Text(model.text("బీమా చరిత్ర", "बीमा इतिहास", "காப்பீட்டு வரலாறு", "Insurance history")).font(.title3.bold())
-                    ForEach(PilotContract.insuranceSnapshots) { item in
-                        SnapshotRow(item: item)
-                        if item.id != PilotContract.insuranceSnapshots.last?.id { Divider() }
-                    }
-                    Text("Sunrise FPO channel desk — PMFBY enrolment (synthetic)")
-                        .font(.caption).foregroundStyle(.secondary)
-                }
-                .cardStyle()
+                farmHistoryPicker
+                farmHistoryContent
+                SourceDisclosure(text: model.text("ఈ విభాగంలోని రైతు మరియు ప్రాంత డేటా సింథటిక్ పైలట్ స్నాప్‌షాట్. ఇది ప్రభుత్వ రికార్డు కాదు.", "इस भाग का किसान और क्षेत्र डेटा सिंथेटिक पायलट स्नैपशॉट है; यह सरकारी रिकॉर्ड नहीं है।", "இந்தப் பிரிவின் விவசாயி மற்றும் பகுதி தரவு செயற்கை முன்னோட்ட நிலைப்படம்; இது அரசு பதிவு அல்ல.", "Farmer and area data in this section is a synthetic pilot snapshot, not a government record."))
             }
             .padding(22)
         }
+    }
+
+    private var farmHistoryPicker: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(FarmHistorySection.allCases) { section in
+                    SectionPill(title: section.title(using: model), selected: selectedSection == section) {
+                        withAnimation(.easeInOut(duration: 0.18)) { selectedSection = section }
+                    }
+                }
+            }
+        }
+        .accessibilityIdentifier("farmHistorySubmenu")
+    }
+
+    @ViewBuilder
+    private var farmHistoryContent: some View {
+        switch selectedSection {
+        case .overview:
+            historyOverview
+        case .fiveYears:
+            historyRecords
+        case .area:
+            snapshotGroup(
+                title: model.text("నా ప్రాంతం ఏమి పండిస్తుంది", "मेरा क्षेत्र क्या उगाता है", "என் பகுதி என்ன பயிரிடுகிறது", "What my area grows"),
+                subtitle: model.text("గుంటూరు జిల్లా సింథటిక్ బేస్‌లైన్‌తో రైతు దిగుబడి పోలిక.", "गुंटूर जिला सिंथेटिक बेसलाइन से किसान उपज की तुलना।", "குண்டூர் மாவட்ட செயற்கை அடிப்படையுடன் விவசாயி விளைச்சல் ஒப்பீடு.", "Farmer yield compared with a synthetic Guntur district baseline."),
+                items: PilotContract.areaCropComparison
+            )
+        case .nextSeason:
+            snapshotGroup(
+                title: model.text("తదుపరి సీజన్ ప్రణాళిక", "अगले सीज़न की योजना", "அடுத்த பருவத் திட்டம்", "Next season plan"),
+                subtitle: model.text("రైతు నిర్ధారణకు ముందు సిద్ధత మరియు లోపాలను చూడండి.", "किसान की पुष्टि से पहले तैयारी और कमियाँ देखें।", "விவசாயி உறுதிப்படுத்துவதற்கு முன் தயார்நிலை மற்றும் குறைகளைப் பார்க்கவும்.", "Review readiness and gaps before farmer confirmation."),
+                items: PilotContract.nextSeasonPlan
+            )
+        case .insurance:
+            insuranceHistory
+        case .services:
+            NearbyFacilitiesContent(
+                title: model.text("నా దగ్గర సేవలు", "मेरे पास सेवाएँ", "எனக்கு அருகிலுள்ள சேவைகள்", "Services near me"),
+                subtitle: model.text("కనుగొనడానికి మాత్రమే; బుకింగ్ లేదా చెల్లింపు కాదు.", "केवल खोज के लिए; बुकिंग या भुगतान नहीं।", "கண்டறிதலுக்கு மட்டும்; முன்பதிவு அல்லது கட்டணம் அல்ல.", "Discovery only; this is not booking or payment.")
+            )
+        }
+    }
+
+    private var historyOverview: some View {
+        VStack(spacing: 12) {
+            HStack(spacing: 10) {
+                CompactMetric(value: "18.20 ac", label: model.text("మొత్తం విస్తీర్ణం", "कुल क्षेत्र", "மொத்த பரப்பு", "Total extent"), icon: "map.fill")
+                CompactMetric(value: "5", label: model.text("ఏళ్లు", "वर्ष", "ஆண்டுகள்", "Years covered"), icon: "calendar")
+            }
+            HStack(spacing: 10) {
+                CompactMetric(value: "2025", label: model.text("ఉత్తమ సంవత్సరం", "सर्वश्रेष्ठ वर्ष", "சிறந்த ஆண்டு", "Best year"), icon: "star.fill")
+                CompactMetric(value: "10", label: model.text("పంట రికార్డులు", "फसल रिकॉर्ड", "பயிர் பதிவுகள்", "Crop records"), icon: "list.bullet.rectangle")
+            }
+            VStack(alignment: .leading, spacing: 12) {
+                Text(model.text("ఏడాది సారాంశం", "वर्ष सारांश", "ஆண்டு சுருக்கம்", "Year summary")).font(.title3.bold())
+                ForEach(PilotContract.historyYearSummaries) { year in
+                    VStack(alignment: .leading, spacing: 7) {
+                        HStack {
+                            Text(String(year.id)).font(.headline).foregroundStyle(AppTheme.green)
+                            Spacer()
+                            Text(year.crops).font(.subheadline.bold())
+                        }
+                        HStack {
+                            HistoryMetric(label: model.text("ఎకరాలు", "एकड़", "ஏக்கர்", "Acres"), value: year.acres)
+                            HistoryMetric(label: model.text("నికర/ఎకరం", "शुद्ध/एकड़", "நிகர/ஏக்கர்", "Net/acre"), value: year.netPerAcre)
+                        }
+                        Text(model.text("ఖర్చు", "लागत", "செலவு", "Cost") + " " + year.cost + " • " + model.text("ఆదాయం", "आय", "வருவாய்", "Revenue") + " " + year.revenue)
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
+                    if year.id != PilotContract.historyYearSummaries.last?.id { Divider() }
+                }
+            }
+            .cardStyle()
+        }
+    }
+
+    private var historyRecords: some View {
+        VStack(spacing: 12) {
+            ForEach(PilotContract.farmHistory) { item in
+                VStack(alignment: .leading, spacing: 9) {
+                    HStack(alignment: .firstTextBaseline) {
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text(item.season).font(.caption.bold()).foregroundStyle(AppTheme.green)
+                            Text(item.crop).font(.title3.bold())
+                        }
+                        Spacer()
+                        Text(item.acres).font(.subheadline.bold())
+                    }
+                    HStack {
+                        HistoryMetric(label: model.text("ఖర్చు", "लागत", "செலவு", "Cost"), value: item.cost)
+                        HistoryMetric(label: model.text("దిగుబడి", "उपज", "விளைச்சல்", "Yield"), value: item.yield)
+                    }
+                    HStack {
+                        HistoryMetric(label: model.text("ధర", "मूल्य", "விலை", "Price"), value: item.price)
+                        HistoryMetric(label: model.text("ఆదాయం", "आय", "வருவாய்", "Revenue"), value: item.revenue)
+                    }
+                    Text(item.note).font(.footnote).foregroundStyle(.secondary)
+                }
+                .cardStyle()
+            }
+        }
+    }
+
+    private var insuranceHistory: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text(model.text("బీమా మూల", "बीमा कॉर्नर", "காப்பீட்டு பகுதி", "Insurance corner")).font(.title3.bold())
+            ForEach(PilotContract.insuranceSnapshots) { item in
+                SnapshotRow(item: item)
+                if item.id != PilotContract.insuranceSnapshots.last?.id { Divider() }
+            }
+            Divider()
+            Text(model.text("2026 సూచన", "2026 संकेत", "2026 குறிப்பு", "2026 indication")).font(.headline)
+            Text(model.text("8.40 ఎకరాల వరికి అంచనా బీమా మొత్తం ₹3,78,000; రైతు వాటా ₹7,560.", "8.40 एकड़ धान के लिए अनुमानित बीमित राशि ₹3,78,000; किसान हिस्सा ₹7,560।", "8.40 ஏக்கர் நெல்லுக்கான மதிப்பிடப்பட்ட காப்பீடு ₹3,78,000; விவசாயி பங்கு ₹7,560.", "For 8.40 acres of paddy: indicative sum insured ₹3,78,000; farmer share ₹7,560."))
+                .font(.subheadline)
+            Text(model.text("అధీకృత బీమా డెస్క్ వద్ద నోటిఫైడ్ పంట, తేదీలు మరియు ప్రీమియంను నిర్ధారించండి.", "अधिकृत बीमा डेस्क पर अधिसूचित फसल, तारीख और प्रीमियम की पुष्टि करें।", "அங்கீகரிக்கப்பட்ட காப்பீட்டு மையத்தில் அறிவிக்கப்பட்ட பயிர், தேதி மற்றும் பிரீமியத்தை உறுதிப்படுத்தவும்.", "Confirm the notified crop, dates and premium with an authorised insurance desk."))
+                .font(.caption).foregroundStyle(.secondary)
+        }
+        .cardStyle()
+    }
+
+    private func snapshotGroup(title: String, subtitle: String, items: [SnapshotItem]) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text(title).font(.title3.bold())
+            Text(subtitle).font(.subheadline).foregroundStyle(.secondary)
+            Divider()
+            ForEach(items) { item in
+                SnapshotRow(item: item)
+                if item.id != items.last?.id { Divider() }
+            }
+        }
+        .cardStyle()
     }
 }
 
@@ -1258,17 +1392,327 @@ struct HistoryMetric: View {
     }
 }
 
+private enum IntelligenceSection: String, CaseIterable, Identifiable {
+    case location, weather, soil, cropPlanning, market, valueAdd, outcome, nearby
+
+    var id: String { rawValue }
+
+    @MainActor
+    func title(using model: AppModel) -> String {
+        switch self {
+        case .location: return model.text("స్థానం & సీజన్", "स्थान और सीज़न", "இடம் & பருவம்", "Location & season")
+        case .weather: return model.text("వాతావరణం", "मौसम", "வானிலை", "Weather")
+        case .soil: return model.text("నేల", "मिट्टी", "மண்", "Soil")
+        case .cropPlanning: return model.text("పంట ప్రణాళిక", "फसल योजना", "பயிர்த் திட்டம்", "Crop planning")
+        case .market: return model.text("మార్కెట్", "बाज़ार", "சந்தை", "Market")
+        case .valueAdd: return model.text("విలువ జోడింపు", "मूल्य-वर्धन", "மதிப்பூட்டல்", "Value-add")
+        case .outcome: return model.text("ఫలిత ప్రణాళిక", "परिणाम योजना", "விளைவு திட்டம்", "Outcome planner")
+        case .nearby: return model.text("సమీప సహాయం", "नज़दीकी मदद", "அருகிலுள்ள உதவி", "Nearby & help")
+        }
+    }
+}
+
 struct IntelligenceView: View {
     @EnvironmentObject private var model: AppModel
+    @State private var selectedSection: IntelligenceSection = .location
+    @State private var selectedParcelID = PilotContract.crops.first?.id ?? "PADDY"
+
+    private var selectedParcel: CropAllocation {
+        PilotContract.crops.first(where: { $0.id == selectedParcelID }) ?? PilotContract.crops[0]
+    }
 
     var body: some View {
-        SnapshotListView(
-            title: model.text("పొలం సమాచారం", "खेत की जानकारी", "பண்ணை தகவல்", "Farm intelligence"),
-            subtitle: model.text("స్థానం, వాతావరణం, నేల, పంట ప్రణాళిక, మార్కెట్, విలువ జోడింపు, ఫలిత ప్రణాళిక మరియు సమీప సహాయం.", "स्थान, मौसम, मिट्टी, फसल योजना, बाज़ार, मूल्य-वर्धन, परिणाम योजना और नज़दीकी सहायता।", "இடம், வானிலை, மண், பயிர்த் திட்டம், சந்தை, மதிப்பூட்டல், விளைவு திட்டம் மற்றும் அருகிலுள்ள உதவி.", "Location, weather, soil, crop planning, market, value-add, outcome planning and nearby help."),
-            items: PilotContract.intelligenceSections,
-            footer: model.text("పరిశీలించిన, అంచనా లేదా ఉత్పన్న లేబుళ్లను గమనించండి. మార్కెట్ ధరలు సింథటిక్ పరిశీలనలు; ఇతర వివరాలు ఉత్పన్న/సూచన డేటా.", "देखा गया, पूर्वानुमान या व्युत्पन्न लेबल देखें। बाज़ार मूल्य सिंथेटिक अवलोकन हैं; अन्य विवरण व्युत्पन्न/संदर्भ डेटा हैं।", "கவனிக்கப்பட்டது, முன்னறிவிப்பு அல்லது பெறப்பட்டது என்ற குறிச்சொற்களைப் பார்க்கவும். சந்தை விலைகள் செயற்கை கண்காணிப்புகள்; மற்றவை பெறப்பட்ட/குறிப்பு தரவு.", "Note OBSERVED, FORECAST or DERIVED labels. Market prices are synthetic observations; other details are derived/reference data."),
-            back: { model.screen = .home }
-        )
+        ScrollView {
+            VStack(spacing: 16) {
+                PageBar(title: model.text("పొలం సమాచారం", "खेत की जानकारी", "பண்ணை தகவல்", "Farm intelligence")) { model.screen = .home }
+                PageIntro(
+                    eyebrow: "B2A · MY FARM INTELLIGENCE",
+                    title: model.text("మీ పొలం గురించి ఒకే చోట", "आपके खेत की जानकारी एक जगह", "உங்கள் பண்ணை பற்றி ஒரே இடத்தில்", "Everything about your farm, in one place"),
+                    subtitle: model.text("విభాగాన్ని ఎంచుకుని స్థానం, వాతావరణం, నేల, పంట, మార్కెట్ మరియు సహాయ డేటాను చూడండి.", "स्थान, मौसम, मिट्टी, फसल, बाज़ार और सहायता डेटा देखने के लिए भाग चुनें।", "இடம், வானிலை, மண், பயிர், சந்தை மற்றும் உதவித் தரவைப் பார்க்கப் பிரிவைத் தேர்ந்தெடுக்கவும்.", "Choose a section to view location, weather, soil, crop, market and help data.")
+                )
+                intelligencePicker
+                parcelPicker
+                intelligenceContent
+                SourceDisclosure(text: model.text("OBSERVED, FORECAST లేదా DERIVED లేబుళ్లను చూడండి. పైలట్ డేటా సింథటిక్; స్థానిక నిపుణుడి నిర్ణయానికి ప్రత్యామ్నాయం కాదు.", "OBSERVED, FORECAST या DERIVED लेबल देखें। पायलट डेटा सिंथेटिक है और स्थानीय विशेषज्ञ के निर्णय का विकल्प नहीं है।", "OBSERVED, FORECAST அல்லது DERIVED குறிச்சொற்களைப் பார்க்கவும். முன்னோட்டத் தரவு செயற்கையானது; உள்ளூர் நிபுணரின் முடிவுக்கு மாற்றல்ல.", "Check the OBSERVED, FORECAST or DERIVED label. Pilot data is synthetic and does not replace a local expert decision."))
+            }
+            .padding(22)
+        }
+    }
+
+    private var intelligencePicker: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(IntelligenceSection.allCases) { section in
+                    SectionPill(title: section.title(using: model), selected: selectedSection == section) {
+                        withAnimation(.easeInOut(duration: 0.18)) { selectedSection = section }
+                    }
+                }
+            }
+        }
+        .accessibilityIdentifier("intelligenceSubmenu")
+    }
+
+    private var parcelPicker: some View {
+        VStack(alignment: .leading, spacing: 7) {
+            Text(model.text("పార్సెల్", "पार्सल", "நிலத்துண்டு", "Parcel")).font(.caption.bold()).foregroundStyle(.secondary)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(PilotContract.crops) { crop in
+                        SectionPill(title: "\(crop.nameEnglish) · \(crop.plotReference)", selected: selectedParcelID == crop.id) {
+                            selectedParcelID = crop.id
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var intelligenceContent: some View {
+        switch selectedSection {
+        case .location:
+            locationContent
+        case .weather:
+            weatherContent
+        case .soil:
+            snapshotGroup(title: model.text("నేల స్థితి", "मिट्टी की स्थिति", "மண் நிலை", "Soil status"), items: PilotContract.soilSnapshot)
+        case .cropPlanning:
+            snapshotGroup(title: model.text("పంట అనుకూలత", "फसल उपयुक्तता", "பயிர் பொருத்தம்", "Crop suitability"), items: PilotContract.cropPlanningSnapshot)
+        case .market:
+            marketContent
+        case .valueAdd:
+            valueAddContent
+        case .outcome:
+            outcomeContent
+        case .nearby:
+            NearbyFacilitiesContent(
+                title: model.text("సమీపంలో & సహాయం", "आस-पास और मदद", "அருகில் & உதவி", "Nearby & help"),
+                subtitle: model.text("నేల పరీక్ష, విస్తరణ, యంత్రాలు మరియు లాజిస్టిక్స్ కోసం సింథటిక్ డైరెక్టరీ.", "मिट्टी जाँच, विस्तार, मशीनरी और लॉजिस्टिक्स की सिंथेटिक डायरेक्टरी।", "மண் சோதனை, விரிவாக்கம், இயந்திரங்கள் மற்றும் போக்குவரத்துக்கான செயற்கை அடைவு.", "Synthetic directory for soil testing, extension, machinery and logistics.")
+            )
+        }
+    }
+
+    private var locationContent: some View {
+        VStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 10) {
+                Text(model.text("ఎంచుకున్న పొలం", "चुना हुआ खेत", "தேர்ந்தெடுத்த பண்ணை", "Selected parcel")).font(.title3.bold())
+                DetailRow(label: model.text("పార్సెల్", "पार्सल", "நிலத்துண்டு", "Parcel"), value: selectedParcel.parcelName)
+                DetailRow(label: model.text("పంట / విస్తీర్ణం", "फसल / क्षेत्र", "பயிர் / பரப்பு", "Crop / extent"), value: "\(selectedParcel.nameEnglish) • \(PilotContract.acresText(selectedParcel.acres)) ac")
+                DetailRow(label: model.text("ప్లాట్ సూచన", "प्लॉट संदर्भ", "நிலக் குறிப்பு", "Plot reference"), value: selectedParcel.plotReference)
+                DetailRow(label: model.text("కేంద్ర బిందువు", "केंद्र बिंदु", "மையப்புள்ளி", "Centroid"), value: selectedParcel.centroid)
+            }
+            .cardStyle()
+            snapshotGroup(title: model.text("పరిష్కరించిన స్థానం", "निर्धारित स्थान", "தீர்மானிக்கப்பட்ட இடம்", "Resolved location"), items: PilotContract.locationDetails.filter { $0.id != "centroid" })
+            snapshotGroup(title: model.text("సీజన్ ఆధారం", "सीज़न आधार", "பருவ அடிப்படை", "Season basis"), items: PilotContract.seasonDetails)
+        }
+    }
+
+    private var weatherContent: some View {
+        VStack(spacing: 12) {
+            WeatherDashboardCard()
+            VStack(alignment: .leading, spacing: 10) {
+                Label(model.text("పొలం సూచనలు", "खेत सलाह", "பண்ணை ஆலோசனைகள்", "Field advisories"), systemImage: "exclamationmark.triangle.fill")
+                    .font(.title3.bold()).foregroundStyle(AppTheme.darkGreen)
+                AdvisoryRow(text: model.text("ఇటీవలి వర్షం నమోదైంది—నీటిపారుదలను ఆపి డ్రైనేజీని తనిఖీ చేయండి.", "हाल की वर्षा दर्ज हुई—सिंचाई रोकें और जल निकासी जाँचें।", "சமீப மழை பதிவானது—பாசனத்தை நிறுத்தி வடிகாலைச் சரிபார்க்கவும்.", "Recent rainfall recorded—hold irrigation and check drainage."))
+                AdvisoryRow(text: model.text("భారీ వర్షం సంభవించవచ్చు; కోత లేదా స్ప్రే పనులను స్థానిక సూచనతో ప్లాన్ చేయండి.", "भारी वर्षा संभव है; कटाई या छिड़काव स्थानीय सलाह से तय करें।", "கனமழை வாய்ப்பு உள்ளது; அறுவடை அல்லது தெளிப்பை உள்ளூர் ஆலோசனையுடன் திட்டமிடவும்.", "Heavy rain is possible; plan harvest or spraying with local advice."))
+                AdvisoryRow(text: model.text("38°C పైగా వేడి ఒత్తిడి ఉండవచ్చు; ఉదయం పొలం పరిశీలించండి.", "38°C से ऊपर गर्मी का तनाव हो सकता है; सुबह खेत देखें।", "38°C மேல் வெப்ப அழுத்தம் இருக்கலாம்; காலையில் வயலைப் பார்வையிடவும்.", "Heat stress is possible above 38°C; inspect the field in the morning."))
+                Text(model.text("జిల్లా/బ్లాక్ స్థాయి సింథటిక్ అంచనా—KVK లేదా విస్తరణ కేంద్రంతో నిర్ధారించండి.", "जिला/ब्लॉक स्तर का सिंथेटिक पूर्वानुमान—KVK या विस्तार केंद्र से पुष्टि करें।", "மாவட்ட/வட்டார செயற்கை முன்னறிவிப்பு—KVK அல்லது விரிவாக்க மையத்துடன் உறுதிப்படுத்தவும்.", "District/block-level synthetic forecast—confirm with the KVK or extension centre."))
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+            .cardStyle()
+        }
+    }
+
+    private var marketContent: some View {
+        VStack(spacing: 12) {
+            ForEach(PilotContract.marketQuotes) { quote in
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(quote.crop).font(.title3.bold())
+                            Text("\(quote.variety) • \(quote.grade)").font(.caption).foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        DataBadge(text: "OBSERVED", color: AppTheme.green)
+                    }
+                    HStack {
+                        HistoryMetric(label: model.text("కనిష్టం", "न्यूनतम", "குறைந்தபட்சம்", "Minimum"), value: quote.minimumPrice)
+                        HistoryMetric(label: model.text("మోడల్", "मॉडल", "மாதிரி", "Modal"), value: quote.modalPrice)
+                    }
+                    HStack {
+                        HistoryMetric(label: model.text("గరిష్టం", "अधिकतम", "அதிகபட்சம்", "Maximum"), value: quote.maximumPrice)
+                        HistoryMetric(label: model.text("రాకలు", "आवक", "வரத்து", "Arrivals"), value: quote.arrivals)
+                    }
+                    Text("Guntur Mandi • 17-08-2026 • \(quote.source)").font(.caption).foregroundStyle(.secondary)
+                }
+                .cardStyle()
+            }
+        }
+    }
+
+    private var valueAddContent: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text(model.text("వరి ప్రాసెసింగ్ మార్గం", "धान प्रसंस्करण मार्ग", "நெல் செயலாக்கப் பாதை", "Paddy processing path")).font(.title3.bold())
+                Spacer()
+                DataBadge(text: "DERIVED", color: AppTheme.gold)
+            }
+            ForEach(PilotContract.valueAddSteps) { step in
+                HStack(alignment: .top, spacing: 12) {
+                    Text(String(step.id)).font(.headline).foregroundStyle(.white)
+                        .frame(width: 32, height: 32).background(AppTheme.green).clipShape(Circle())
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("\(step.input) → \(step.output)").font(.headline)
+                        Text("\(model.text("రికవరీ", "रिकवरी", "மீட்பு", "Recovery")) \(step.recovery) • \(model.text("ఖర్చు", "लागत", "செலவு", "Cost")) \(step.processingCost)")
+                            .font(.subheadline)
+                        Text(step.byProducts).font(.caption).foregroundStyle(.secondary)
+                    }
+                }
+                if step.id != PilotContract.valueAddSteps.last?.id { Divider() }
+            }
+            Text(model.text("రికవరీ, ఖర్చు మరియు ఉప ఉత్పత్తి ధరలు సన్నివేశ అనుమానాలు; ప్రాసెసర్‌తో ధృవీకరించండి.", "रिकवरी, लागत और उप-उत्पाद मूल्य परिदृश्य मान्यताएँ हैं; प्रोसेसर से पुष्टि करें।", "மீட்பு, செலவு மற்றும் துணைத் தயாரிப்பு விலைகள் நிலைமைக் கணிப்புகள்; செயலாக்குநருடன் உறுதிப்படுத்தவும்.", "Recovery, cost and by-product prices are scenario assumptions; confirm with a processor."))
+                .font(.caption).foregroundStyle(.secondary)
+        }
+        .cardStyle()
+    }
+
+    private var outcomeContent: some View {
+        VStack(spacing: 12) {
+            ForEach(PilotContract.outcomeScenarios) { scenario in
+                VStack(alignment: .leading, spacing: 9) {
+                    HStack {
+                        Text("\(scenario.label) · Paddy 8.40 ac").font(.title3.bold())
+                        Spacer()
+                        DataBadge(text: "DERIVED", color: AppTheme.gold)
+                    }
+                    HStack {
+                        HistoryMetric(label: model.text("దిగుబడి", "उपज", "விளைச்சல்", "Yield"), value: scenario.yield)
+                        HistoryMetric(label: model.text("అమ్మకం ధర", "बिक्री मूल्य", "விற்பனை விலை", "Selling price"), value: scenario.sellingPrice)
+                    }
+                    HStack {
+                        HistoryMetric(label: model.text("మొత్తం ఖర్చు", "कुल लागत", "மொத்த செலவு", "Total cost"), value: scenario.totalCost)
+                        HistoryMetric(label: model.text("స్థూల ఆదాయం", "सकल आय", "மொத்த வருவாய்", "Gross income"), value: scenario.grossIncome)
+                    }
+                    HStack {
+                        HistoryMetric(label: model.text("నికర ఆదాయం", "शुद्ध आय", "நிகர வருவாய்", "Net income"), value: scenario.netIncome)
+                        HistoryMetric(label: model.text("బ్రేక్-ఈవెన్", "ब्रेक-ईवन", "சமநிலை", "Break-even"), value: scenario.breakEven)
+                    }
+                }
+                .cardStyle()
+            }
+            Text(model.text("ఇవి హామీలు కావు. వాస్తవ ఖర్చులు, దిగుబడి, మార్కెట్ ధర మరియు రైతు నిర్ణయాన్ని ఉపయోగించండి.", "ये गारंटी नहीं हैं। वास्तविक लागत, उपज, बाज़ार मूल्य और किसान के निर्णय का उपयोग करें।", "இவை உத்தரவாதங்கள் அல்ல. உண்மை செலவு, விளைச்சல், சந்தை விலை மற்றும் விவசாயி முடிவைப் பயன்படுத்தவும்.", "These are not guarantees. Use actual costs, yield, market price and the farmer's decision."))
+                .font(.footnote).foregroundStyle(.secondary)
+        }
+    }
+
+    private func snapshotGroup(title: String, items: [SnapshotItem]) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text(title).font(.title3.bold())
+            ForEach(items) { item in
+                SnapshotRow(item: item)
+                if item.id != items.last?.id { Divider() }
+            }
+        }
+        .cardStyle()
+    }
+}
+
+struct SectionPill: View {
+    let title: String
+    let selected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Text(title).font(.subheadline.bold()).lineLimit(1)
+                .padding(.horizontal, 13).padding(.vertical, 9)
+                .foregroundStyle(selected ? Color.white : AppTheme.darkGreen)
+                .background(selected ? AppTheme.green : Color.white)
+                .clipShape(Capsule())
+                .overlay(Capsule().stroke(AppTheme.green.opacity(selected ? 0 : 0.25)))
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+struct CompactMetric: View {
+    let value: String
+    let label: String
+    let icon: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Image(systemName: icon).foregroundStyle(AppTheme.green)
+            Text(value).font(.title3.bold()).foregroundStyle(AppTheme.darkGreen)
+            Text(label).font(.caption).foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .cardStyle()
+    }
+}
+
+struct AdvisoryRow: View {
+    let text: String
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 9) {
+            Image(systemName: "leaf.fill").foregroundStyle(AppTheme.green)
+            Text(text).font(.subheadline)
+        }
+    }
+}
+
+struct DataBadge: View {
+    let text: String
+    let color: Color
+
+    var body: some View {
+        Text(text).font(.caption2.bold()).tracking(0.7).foregroundStyle(color)
+            .padding(.horizontal, 8).padding(.vertical, 5)
+            .background(color.opacity(0.12)).clipShape(Capsule())
+    }
+}
+
+struct SourceDisclosure: View {
+    let text: String
+
+    var body: some View {
+        Label(text, systemImage: "info.circle.fill")
+            .font(.caption).foregroundStyle(.secondary)
+            .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+struct NearbyFacilitiesContent: View {
+    @EnvironmentObject private var model: AppModel
+    let title: String
+    let subtitle: String
+
+    var body: some View {
+        VStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 5) {
+                Text(title).font(.title3.bold())
+                Text(subtitle).font(.subheadline).foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            ForEach(PilotContract.nearbyFacilities) { facility in
+                VStack(alignment: .leading, spacing: 7) {
+                    HStack(alignment: .top) {
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text(facility.category.uppercased()).font(.caption.bold()).tracking(0.7).foregroundStyle(AppTheme.green)
+                            Text(facility.name).font(.headline)
+                        }
+                        Spacer()
+                        Text(facility.distance).font(.caption.bold()).foregroundStyle(AppTheme.darkGreen)
+                    }
+                    Label(facility.contact, systemImage: "person.crop.circle").font(.subheadline)
+                    Text(facility.source).font(.caption).foregroundStyle(.secondary)
+                }
+                .cardStyle()
+            }
+            Text(model.text("దూరాలు సుమారుగా మాత్రమే చూపబడ్డాయి. సేవా వివరాలను నేరుగా నిర్ధారించండి.", "दूरी केवल अनुमानित है। सेवा विवरण सीधे सत्यापित करें।", "தூரங்கள் தோராயமானவை. சேவை விவரங்களை நேரடியாக உறுதிப்படுத்தவும்.", "Distances are approximate. Verify service details directly."))
+                .font(.caption).foregroundStyle(.secondary)
+        }
     }
 }
 
