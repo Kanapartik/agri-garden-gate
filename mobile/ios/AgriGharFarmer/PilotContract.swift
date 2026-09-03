@@ -49,6 +49,58 @@ struct WeatherDay: Identifiable, Equatable {
     let symbol: String
 }
 
+enum LifecycleUrgency: Int, Equatable {
+    case overdue = 0
+    case today = 1
+    case upcoming = 2
+    case later = 3
+}
+
+enum LifecycleDestination: Equatable {
+    case farm, intelligence, training, inputs, soilCare, schemes, farmHistory
+}
+
+struct LifecycleStage: Identifiable, Equatable {
+    let id: String
+    let title: String
+    let summary: String
+    let icon: String
+}
+
+struct LifecycleAction: Identifiable, Equatable {
+    let id: String
+    let stageID: String
+    let title: String
+    let detail: String
+    let urgency: LifecycleUrgency
+    let icon: String
+    let cropCodes: [String]
+    let destination: LifecycleDestination
+    let trainingModuleID: String?
+
+    init(
+        id: String,
+        stageID: String,
+        title: String,
+        detail: String,
+        urgency: LifecycleUrgency,
+        icon: String,
+        cropCodes: [String] = [],
+        destination: LifecycleDestination,
+        trainingModuleID: String? = nil
+    ) {
+        self.id = id
+        self.stageID = stageID
+        self.title = title
+        self.detail = detail
+        self.urgency = urgency
+        self.icon = icon
+        self.cropCodes = cropCodes
+        self.destination = destination
+        self.trainingModuleID = trainingModuleID
+    }
+}
+
 struct MarketQuote: Identifiable, Equatable {
     let id: String
     let crop: String
@@ -347,6 +399,60 @@ enum PilotContentLocalization {
         "CHC manager": "CHC మేనేజర్",
         "Dispatch desk": "పంపిణీ డెస్క్",
         "Synthetic directory": "సింథటిక్ డైరెక్టరీ",
+        "Plan & insure": "ప్రణాళిక మరియు బీమా",
+        "Confirm coverage and prepare evidence": "బీమాను నిర్ధారించి ఆధారాలు సిద్ధం చేయండి",
+        "Sow & establish": "విత్తడం మరియు స్థాపన",
+        "Start every parcel correctly": "ప్రతి పొలాన్ని సరిగ్గా ప్రారంభించండి",
+        "Water & nourish": "నీరు మరియు పోషణ",
+        "Apply water and nutrients on time": "నీరు, పోషకాలను సమయానికి అందించండి",
+        "Protect crop": "పంట రక్షణ",
+        "Scout early and act safely": "ముందుగానే పరిశీలించి సురక్షితంగా చర్య తీసుకోండి",
+        "Protect soil": "నేల పరిరక్షణ",
+        "Preserve moisture and topsoil": "తేమను, పైమట్టిని కాపాడండి",
+        "Harvest & preserve": "కోత మరియు నిల్వ",
+        "Protect quality after maturity": "పక్వం తర్వాత నాణ్యతను కాపాడండి",
+        "Verify paddy insurance cover": "వరి పంట బీమాను నిర్ధారించండి",
+        "PMFBY record is available; confirm dates and sum insured with the authorised desk.": "PMFBY రికార్డు అందుబాటులో ఉంది; తేదీలు మరియు బీమా మొత్తాన్ని అధీకృత డెస్క్ వద్ద నిర్ధారించండి.",
+        "Review chilli and cotton insurance": "మిరప, పత్తి బీమాను సమీక్షించండి",
+        "Confirm whether both crops are notified before the enrolment window closes.": "నమోదు గడువు ముగిసేలోపు రెండు పంటలు నోటిఫై అయ్యాయో నిర్ధారించండి.",
+        "Complete parcel soil test": "ప్రతి పొలానికి నేల పరీక్ష పూర్తి చేయండి",
+        "No parcel-level laboratory result is linked; collect and submit a representative sample.": "పొలం స్థాయి ప్రయోగశాల ఫలితం జత కాలేదు; సరైన నమూనాను సేకరించి సమర్పించండి.",
+        "Confirm crop and input plan": "పంట మరియు ఇన్‌పుట్ ప్రణాళికను నిర్ధారించండి",
+        "The three-parcel allocation is recorded for the current season.": "ప్రస్తుత సీజన్‌కు మూడు పొలాల కేటాయింపు నమోదైంది.",
+        "Prepare land and drainage": "భూమి మరియు నీటి పారుదల సిద్ధం చేయండి",
+        "Field preparation is recorded; keep drainage channels open before forecast rain.": "పొలం తయారీ నమోదైంది; అంచనా వర్షానికి ముందు పారుదల కాలువలను తెరిచి ఉంచండి.",
+        "Treat seed before sowing": "విత్తే ముందు విత్తన శుద్ధి చేయండి",
+        "Seed-treatment activity is recorded for the pilot.": "పైలట్ కోసం విత్తన శుద్ధి చర్య నమోదైంది.",
+        "Record sowing date and spacing": "విత్తిన తేదీ మరియు దూరాన్ని నమోదు చేయండి",
+        "Sowing is recorded; exact dates still need farmer confirmation.": "విత్తడం నమోదైంది; ఖచ్చితమైన తేదీలను రైతు ఇంకా నిర్ధారించాలి.",
+        "Complete sowing-stage training": "విత్తే దశ శిక్షణ పూర్తి చేయండి",
+        "Finish all three land-preparation and sowing lessons.": "భూమి తయారీ మరియు విత్తడంపై మూడు పాఠాలను పూర్తి చేయండి.",
+        "Check irrigation and field moisture": "నీటిపారుదల మరియు పొలం తేమను పరిశీలించండి",
+        "Inspect each parcel today; avoid watering where forecast rain is adequate.": "ఈరోజు ప్రతి పొలాన్ని పరిశీలించండి; అంచనా వర్షం సరిపోతే నీరు పెట్టవద్దు.",
+        "Apply organic manure": "సేంద్రియ ఎరువు వేయండి",
+        "Organic-manure application is recorded; retain the field receipt or note.": "సేంద్రియ ఎరువు వాడకం నమోదైంది; పొలం రసీదు లేదా నోటును భద్రపరచండి.",
+        "Adjust top-dressing after rain": "వర్షం తర్వాత పై ఎరువును సర్దుబాటు చేయండి",
+        "Recheck field moisture and postpone nitrogen application during heavy rain.": "పొలం తేమను మళ్లీ చూసి భారీ వర్షంలో నత్రజని వాడకాన్ని వాయిదా వేయండి.",
+        "Scout every parcel": "ప్రతి పొలాన్ని పరిశీలించండి",
+        "Check paddy, chilli and cotton for pest or disease signs and record observations.": "వరి, మిరప, పత్తిలో తెగులు లేదా వ్యాధి లక్షణాలను చూసి వివరాలు నమోదు చేయండి.",
+        "Prepare an IPM response": "సమగ్ర సస్యరక్షణ చర్య సిద్ధం చేయండి",
+        "Use thresholds and authorised guidance before any crop-protection treatment.": "ఏ పంట రక్షణ చర్యకైనా ముందు పరిమితులు మరియు అధీకృత మార్గదర్శకాన్ని పాటించండి.",
+        "Complete crop-protection training": "పంట రక్షణ శిక్షణ పూర్తి చేయండి",
+        "Finish scouting, IPM and safe-spraying lessons.": "పరిశీలన, సమగ్ర సస్యరక్షణ మరియు సురక్షిత స్ప్రేయింగ్ పాఠాలను పూర్తి చేయండి.",
+        "Inspect bunds and runoff paths": "గట్లు మరియు నీటి ప్రవాహ మార్గాలను పరిశీలించండి",
+        "Repair weak bunds and prevent topsoil loss before the next rainfall.": "తదుపరి వర్షానికి ముందు బలహీన గట్లను బాగుచేసి పైమట్టి నష్టాన్ని నివారించండి.",
+        "Mulch or retain suitable residue": "మల్చింగ్ చేయండి లేదా తగిన పంట అవశేషాలను ఉంచండి",
+        "Cover exposed soil where agronomically appropriate to reduce evaporation.": "ఆవిరీభవనం తగ్గేందుకు వ్యవసాయపరంగా అనుకూలమైన చోట బహిర్గత నేలను కప్పండి.",
+        "Prepare harvest and moisture checks": "కోత మరియు తేమ తనిఖీలను సిద్ధం చేయండి",
+        "Open this stage when the crop approaches maturity.": "పంట పక్వానికి చేరుకునే సమయంలో ఈ దశను ప్రారంభించండి.",
+        "Complete harvest training": "కోత శిక్షణ పూర్తి చేయండి",
+        "Finish maturity, cutting and low-loss threshing lessons.": "పక్వం, కోత మరియు తక్కువ నష్టంతో నూర్పిడి పాఠాలను పూర్తి చేయండి.",
+        "Create produce storage plan": "పంట ఉత్పత్తి నిల్వ ప్రణాళికను రూపొందించండి",
+        "Plan drying, grading, bags, ventilation and pest-free storage before harvest.": "కోతకు ముందు ఎండబెట్టడం, గ్రేడింగ్, సంచులు, గాలి ప్రసరణ మరియు పురుగులు లేని నిల్వను ప్రణాళిక చేయండి.",
+        "Complete preservation training": "నిల్వ పరిరక్షణ శిక్షణ పూర్తి చేయండి",
+        "Finish the drying, storage and preservation lessons.": "ఎండబెట్టడం, నిల్వ మరియు పరిరక్షణ పాఠాలను పూర్తి చేయండి.",
+        "Complete value-creation training": "విలువ సృష్టి శిక్షణ పూర్తి చేయండి",
+        "Learn cleaning, grading, processing and by-product options.": "శుభ్రపరచడం, గ్రేడింగ్, ప్రాసెసింగ్ మరియు ఉప ఉత్పత్తుల అవకాశాలను నేర్చుకోండి.",
         "OBSERVED": "పరిశీలితం",
         "DERIVED": "ఉత్పన్నం"
     ]
@@ -490,6 +596,60 @@ enum PilotContentLocalization {
         "CHC manager": "CHC प्रबंधक",
         "Dispatch desk": "प्रेषण डेस्क",
         "Synthetic directory": "सिंथेटिक निर्देशिका",
+        "Plan & insure": "योजना और बीमा",
+        "Confirm coverage and prepare evidence": "बीमा की पुष्टि करें और प्रमाण तैयार रखें",
+        "Sow & establish": "बुवाई और स्थापना",
+        "Start every parcel correctly": "हर खेत की सही शुरुआत करें",
+        "Water & nourish": "सिंचाई और पोषण",
+        "Apply water and nutrients on time": "पानी और पोषक तत्व समय पर दें",
+        "Protect crop": "फसल सुरक्षा",
+        "Scout early and act safely": "जल्दी निरीक्षण करें और सुरक्षित कार्रवाई करें",
+        "Protect soil": "मिट्टी संरक्षण",
+        "Preserve moisture and topsoil": "नमी और ऊपरी मिट्टी बचाएँ",
+        "Harvest & preserve": "कटाई और संरक्षण",
+        "Protect quality after maturity": "पकने के बाद गुणवत्ता बचाएँ",
+        "Verify paddy insurance cover": "धान बीमा कवर सत्यापित करें",
+        "PMFBY record is available; confirm dates and sum insured with the authorised desk.": "PMFBY रिकॉर्ड उपलब्ध है; अधिकृत केंद्र पर तारीख और बीमित राशि की पुष्टि करें।",
+        "Review chilli and cotton insurance": "मिर्च और कपास बीमा की समीक्षा करें",
+        "Confirm whether both crops are notified before the enrolment window closes.": "नामांकन अवधि बंद होने से पहले दोनों फसलों की अधिसूचना जाँचें।",
+        "Complete parcel soil test": "हर खेत की मिट्टी जाँच पूरी करें",
+        "No parcel-level laboratory result is linked; collect and submit a representative sample.": "खेत-स्तर की प्रयोगशाला रिपोर्ट जुड़ी नहीं है; उचित नमूना लेकर जमा करें।",
+        "Confirm crop and input plan": "फसल और इनपुट योजना की पुष्टि करें",
+        "The three-parcel allocation is recorded for the current season.": "वर्तमान मौसम के लिए तीन खेतों का आवंटन दर्ज है।",
+        "Prepare land and drainage": "भूमि और जल निकासी तैयार करें",
+        "Field preparation is recorded; keep drainage channels open before forecast rain.": "खेत तैयारी दर्ज है; अनुमानित वर्षा से पहले नालियाँ खुली रखें।",
+        "Treat seed before sowing": "बुवाई से पहले बीज उपचार करें",
+        "Seed-treatment activity is recorded for the pilot.": "पायलट के लिए बीज उपचार दर्ज है।",
+        "Record sowing date and spacing": "बुवाई की तारीख और दूरी दर्ज करें",
+        "Sowing is recorded; exact dates still need farmer confirmation.": "बुवाई दर्ज है; सही तारीखों की किसान पुष्टि बाकी है।",
+        "Complete sowing-stage training": "बुवाई चरण का प्रशिक्षण पूरा करें",
+        "Finish all three land-preparation and sowing lessons.": "भूमि तैयारी और बुवाई के तीनों पाठ पूरे करें।",
+        "Check irrigation and field moisture": "सिंचाई और खेत की नमी जाँचें",
+        "Inspect each parcel today; avoid watering where forecast rain is adequate.": "आज हर खेत जाँचें; पर्याप्त वर्षा अनुमान हो तो सिंचाई न करें।",
+        "Apply organic manure": "जैविक खाद डालें",
+        "Organic-manure application is recorded; retain the field receipt or note.": "जैविक खाद का उपयोग दर्ज है; खेत की रसीद या नोट सुरक्षित रखें।",
+        "Adjust top-dressing after rain": "बारिश के बाद ऊपरी खाद समायोजित करें",
+        "Recheck field moisture and postpone nitrogen application during heavy rain.": "नमी फिर जाँचें और भारी वर्षा में नाइट्रोजन का प्रयोग टालें।",
+        "Scout every parcel": "हर खेत का निरीक्षण करें",
+        "Check paddy, chilli and cotton for pest or disease signs and record observations.": "धान, मिर्च और कपास में कीट या रोग के संकेत देखकर दर्ज करें।",
+        "Prepare an IPM response": "समेकित कीट प्रबंधन कार्रवाई तैयार करें",
+        "Use thresholds and authorised guidance before any crop-protection treatment.": "किसी भी फसल-सुरक्षा उपचार से पहले सीमा और अधिकृत मार्गदर्शन अपनाएँ।",
+        "Complete crop-protection training": "फसल-सुरक्षा प्रशिक्षण पूरा करें",
+        "Finish scouting, IPM and safe-spraying lessons.": "निरीक्षण, IPM और सुरक्षित छिड़काव के पाठ पूरे करें।",
+        "Inspect bunds and runoff paths": "मेड़ों और बहाव मार्गों की जाँच करें",
+        "Repair weak bunds and prevent topsoil loss before the next rainfall.": "अगली वर्षा से पहले कमजोर मेड़ सुधारें और ऊपरी मिट्टी बचाएँ।",
+        "Mulch or retain suitable residue": "मल्च करें या उचित अवशेष रखें",
+        "Cover exposed soil where agronomically appropriate to reduce evaporation.": "वाष्पीकरण घटाने के लिए उचित स्थान पर खुली मिट्टी ढकें।",
+        "Prepare harvest and moisture checks": "कटाई और नमी जाँच की तैयारी करें",
+        "Open this stage when the crop approaches maturity.": "फसल पकने के करीब हो तब यह चरण शुरू करें।",
+        "Complete harvest training": "कटाई प्रशिक्षण पूरा करें",
+        "Finish maturity, cutting and low-loss threshing lessons.": "पकाव, कटाई और कम-हानि मड़ाई के पाठ पूरे करें।",
+        "Create produce storage plan": "उपज भंडारण योजना बनाएँ",
+        "Plan drying, grading, bags, ventilation and pest-free storage before harvest.": "कटाई से पहले सुखाने, ग्रेडिंग, बोरे, हवा और कीट-मुक्त भंडारण की योजना बनाएँ।",
+        "Complete preservation training": "संरक्षण प्रशिक्षण पूरा करें",
+        "Finish the drying, storage and preservation lessons.": "सुखाने, भंडारण और संरक्षण के पाठ पूरे करें।",
+        "Complete value-creation training": "मूल्य-सृजन प्रशिक्षण पूरा करें",
+        "Learn cleaning, grading, processing and by-product options.": "सफाई, ग्रेडिंग, प्रसंस्करण और उप-उत्पाद विकल्प सीखें।",
         "OBSERVED": "अवलोकित",
         "DERIVED": "व्युत्पन्न"
     ]
@@ -633,6 +793,60 @@ enum PilotContentLocalization {
         "CHC manager": "CHC மேலாளர்",
         "Dispatch desk": "அனுப்புகை மையம்",
         "Synthetic directory": "செயற்கை அடைவு",
+        "Plan & insure": "திட்டம் மற்றும் காப்பீடு",
+        "Confirm coverage and prepare evidence": "காப்பீட்டை உறுதி செய்து ஆதாரங்களைத் தயாரிக்கவும்",
+        "Sow & establish": "விதைப்பு மற்றும் நிலைநிறுத்தம்",
+        "Start every parcel correctly": "ஒவ்வொரு வயலையும் சரியாகத் தொடங்கவும்",
+        "Water & nourish": "நீர்ப்பாசனம் மற்றும் ஊட்டம்",
+        "Apply water and nutrients on time": "நீர் மற்றும் ஊட்டச்சத்துகளை நேரத்தில் அளிக்கவும்",
+        "Protect crop": "பயிர் பாதுகாப்பு",
+        "Scout early and act safely": "முன்கூட்டியே கண்காணித்து பாதுகாப்பாகச் செயல்படவும்",
+        "Protect soil": "மண் பாதுகாப்பு",
+        "Preserve moisture and topsoil": "ஈரப்பதத்தையும் மேல் மண்ணையும் பாதுகாக்கவும்",
+        "Harvest & preserve": "அறுவடை மற்றும் பாதுகாப்பு",
+        "Protect quality after maturity": "முதிர்ச்சிக்குப் பிறகு தரத்தைப் பாதுகாக்கவும்",
+        "Verify paddy insurance cover": "நெல் காப்பீட்டை உறுதிப்படுத்தவும்",
+        "PMFBY record is available; confirm dates and sum insured with the authorised desk.": "PMFBY பதிவு உள்ளது; தேதிகளையும் காப்பீட்டுத் தொகையையும் அங்கீகரிக்கப்பட்ட மையத்தில் உறுதிப்படுத்தவும்.",
+        "Review chilli and cotton insurance": "மிளகாய் மற்றும் பருத்தி காப்பீட்டை ஆய்வு செய்யவும்",
+        "Confirm whether both crops are notified before the enrolment window closes.": "பதிவுக் காலம் முடிவதற்கு முன் இரு பயிர்களும் அறிவிக்கப்பட்டுள்ளனவா என உறுதிப்படுத்தவும்.",
+        "Complete parcel soil test": "ஒவ்வொரு வயலின் மண் பரிசோதனையையும் முடிக்கவும்",
+        "No parcel-level laboratory result is linked; collect and submit a representative sample.": "வயல் அளவிலான ஆய்வக முடிவு இணைக்கப்படவில்லை; சரியான மாதிரியைச் சேகரித்து சமர்ப்பிக்கவும்.",
+        "Confirm crop and input plan": "பயிர் மற்றும் இடுபொருள் திட்டத்தை உறுதிப்படுத்தவும்",
+        "The three-parcel allocation is recorded for the current season.": "நடப்பு பருவத்திற்கான மூன்று வயல் ஒதுக்கீடு பதிவாகியுள்ளது.",
+        "Prepare land and drainage": "நிலத்தையும் வடிகாலையும் தயாரிக்கவும்",
+        "Field preparation is recorded; keep drainage channels open before forecast rain.": "வயல் தயாரிப்பு பதிவாகியுள்ளது; மழைக்கு முன் வடிகால்களைத் திறந்துவைக்கவும்.",
+        "Treat seed before sowing": "விதைப்பதற்கு முன் விதை நேர்த்தி செய்யவும்",
+        "Seed-treatment activity is recorded for the pilot.": "முன்னோட்டத்திற்கான விதை நேர்த்தி பதிவு செய்யப்பட்டுள்ளது.",
+        "Record sowing date and spacing": "விதைத்த தேதி மற்றும் இடைவெளியைப் பதிவு செய்யவும்",
+        "Sowing is recorded; exact dates still need farmer confirmation.": "விதைப்பு பதிவாகியுள்ளது; சரியான தேதிகளை விவசாயி உறுதிப்படுத்த வேண்டும்.",
+        "Complete sowing-stage training": "விதைப்புக் கட்டப் பயிற்சியை முடிக்கவும்",
+        "Finish all three land-preparation and sowing lessons.": "நிலத் தயாரிப்பு மற்றும் விதைப்பின் மூன்று பாடங்களையும் முடிக்கவும்.",
+        "Check irrigation and field moisture": "பாசனம் மற்றும் வயல் ஈரப்பதத்தைச் சரிபார்க்கவும்",
+        "Inspect each parcel today; avoid watering where forecast rain is adequate.": "இன்று ஒவ்வொரு வயலையும் பாருங்கள்; போதிய மழை இருந்தால் நீர்ப்பாசனம் செய்ய வேண்டாம்.",
+        "Apply organic manure": "இயற்கை உரம் இடவும்",
+        "Organic-manure application is recorded; retain the field receipt or note.": "இயற்கை உரப் பயன்பாடு பதிவாகியுள்ளது; ரசீது அல்லது குறிப்பை வைத்திருக்கவும்.",
+        "Adjust top-dressing after rain": "மழைக்குப் பிறகு மேலுரத்தைச் சரிசெய்யவும்",
+        "Recheck field moisture and postpone nitrogen application during heavy rain.": "மண் ஈரத்தை மீண்டும் பார்த்து கனமழையில் நைட்ரஜன் இடுவதைத் தள்ளிவைக்கவும்.",
+        "Scout every parcel": "ஒவ்வொரு வயலையும் கண்காணிக்கவும்",
+        "Check paddy, chilli and cotton for pest or disease signs and record observations.": "நெல், மிளகாய், பருத்தியில் பூச்சி அல்லது நோய் அறிகுறிகளைப் பார்த்துப் பதிவு செய்யவும்.",
+        "Prepare an IPM response": "ஒருங்கிணைந்த பூச்சி மேலாண்மை நடவடிக்கையைத் தயாரிக்கவும்",
+        "Use thresholds and authorised guidance before any crop-protection treatment.": "எந்தப் பயிர் பாதுகாப்பு நடவடிக்கைக்கும் முன் வரம்புகளையும் அங்கீகரிக்கப்பட்ட வழிகாட்டுதலையும் பின்பற்றவும்.",
+        "Complete crop-protection training": "பயிர் பாதுகாப்புப் பயிற்சியை முடிக்கவும்",
+        "Finish scouting, IPM and safe-spraying lessons.": "கண்காணிப்பு, IPM மற்றும் பாதுகாப்பான தெளிப்பு பாடங்களை முடிக்கவும்.",
+        "Inspect bunds and runoff paths": "வரப்புகளையும் நீரோட்டப் பாதைகளையும் சரிபார்க்கவும்",
+        "Repair weak bunds and prevent topsoil loss before the next rainfall.": "அடுத்த மழைக்கு முன் பலவீனமான வரப்புகளைச் சரிசெய்து மேல் மண் இழப்பைத் தடுக்கவும்.",
+        "Mulch or retain suitable residue": "மூடாக்கு இடவும் அல்லது தகுந்த பயிர் எச்சத்தை வைத்திருக்கவும்",
+        "Cover exposed soil where agronomically appropriate to reduce evaporation.": "ஆவியாதலைக் குறைக்க ஏற்ற இடங்களில் வெளிப்பட்ட மண்ணை மூடவும்.",
+        "Prepare harvest and moisture checks": "அறுவடை மற்றும் ஈரப்பதச் சோதனையைத் தயாரிக்கவும்",
+        "Open this stage when the crop approaches maturity.": "பயிர் முதிர்ச்சியை அணுகும்போது இந்தக் கட்டத்தைத் தொடங்கவும்.",
+        "Complete harvest training": "அறுவடைப் பயிற்சியை முடிக்கவும்",
+        "Finish maturity, cutting and low-loss threshing lessons.": "முதிர்ச்சி, அறுவடை மற்றும் குறைந்த இழப்பு கதிரடிப்பு பாடங்களை முடிக்கவும்.",
+        "Create produce storage plan": "விளைபொருள் சேமிப்புத் திட்டத்தை உருவாக்கவும்",
+        "Plan drying, grading, bags, ventilation and pest-free storage before harvest.": "அறுவடைக்கு முன் உலர்த்தல், தரப்படுத்தல், மூட்டைகள், காற்றோட்டம் மற்றும் பூச்சியற்ற சேமிப்பைத் திட்டமிடவும்.",
+        "Complete preservation training": "பாதுகாப்புப் பயிற்சியை முடிக்கவும்",
+        "Finish the drying, storage and preservation lessons.": "உலர்த்தல், சேமிப்பு மற்றும் பாதுகாப்புப் பாடங்களை முடிக்கவும்.",
+        "Complete value-creation training": "மதிப்பூட்டல் பயிற்சியை முடிக்கவும்",
+        "Learn cleaning, grading, processing and by-product options.": "சுத்தம் செய்தல், தரப்படுத்தல், செயலாக்கம் மற்றும் துணைப் பொருள் வாய்ப்புகளை கற்கவும்.",
         "OBSERVED": "கண்காணிக்கப்பட்டது",
         "DERIVED": "பெறப்பட்டது"
     ]
@@ -914,6 +1128,56 @@ enum PilotContract {
         SnapshotItem(id: "rfqs", title: "RFQs and quotes", detail: "0", meta: "No requests or quotes."),
         SnapshotItem(id: "orders", title: "Orders and disputes", detail: "0", meta: "No orders or disputes.")
     ]
+
+    static let lifecycleStages: [LifecycleStage] = [
+        LifecycleStage(id: "plan", title: "Plan & insure", summary: "Confirm coverage and prepare evidence", icon: "checkmark.shield.fill"),
+        LifecycleStage(id: "sow", title: "Sow & establish", summary: "Start every parcel correctly", icon: "leaf.fill"),
+        LifecycleStage(id: "water", title: "Water & nourish", summary: "Apply water and nutrients on time", icon: "drop.fill"),
+        LifecycleStage(id: "protect", title: "Protect crop", summary: "Scout early and act safely", icon: "cross.case.fill"),
+        LifecycleStage(id: "soil", title: "Protect soil", summary: "Preserve moisture and topsoil", icon: "mountain.2.fill"),
+        LifecycleStage(id: "harvest", title: "Harvest & preserve", summary: "Protect quality after maturity", icon: "shippingbox.fill")
+    ]
+
+    static let lifecycleActions: [LifecycleAction] = [
+        LifecycleAction(id: "paddy-insurance", stageID: "plan", title: "Verify paddy insurance cover", detail: "PMFBY record is available; confirm dates and sum insured with the authorised desk.", urgency: .upcoming, icon: "checkmark.shield.fill", cropCodes: ["PADDY"], destination: .schemes),
+        LifecycleAction(id: "other-insurance", stageID: "plan", title: "Review chilli and cotton insurance", detail: "Confirm whether both crops are notified before the enrolment window closes.", urgency: .overdue, icon: "exclamationmark.shield.fill", cropCodes: ["CHILLI", "COTTON"], destination: .schemes),
+        LifecycleAction(id: "soil-test", stageID: "plan", title: "Complete parcel soil test", detail: "No parcel-level laboratory result is linked; collect and submit a representative sample.", urgency: .overdue, icon: "testtube.2", destination: .soilCare),
+        LifecycleAction(id: "crop-plan", stageID: "plan", title: "Confirm crop and input plan", detail: "The three-parcel allocation is recorded for the current season.", urgency: .upcoming, icon: "map.fill", destination: .farm),
+        LifecycleAction(id: "land-drainage", stageID: "sow", title: "Prepare land and drainage", detail: "Field preparation is recorded; keep drainage channels open before forecast rain.", urgency: .today, icon: "water.waves", destination: .intelligence),
+        LifecycleAction(id: "seed-treatment", stageID: "sow", title: "Treat seed before sowing", detail: "Seed-treatment activity is recorded for the pilot.", urgency: .upcoming, icon: "leaf.circle.fill", destination: .training),
+        LifecycleAction(id: "sowing-record", stageID: "sow", title: "Record sowing date and spacing", detail: "Sowing is recorded; exact dates still need farmer confirmation.", urgency: .upcoming, icon: "calendar.badge.checkmark", destination: .farmHistory),
+        LifecycleAction(id: "training-sowing", stageID: "sow", title: "Complete sowing-stage training", detail: "Finish all three land-preparation and sowing lessons.", urgency: .upcoming, icon: "book.closed.fill", destination: .training, trainingModuleID: "sowing-basics"),
+        LifecycleAction(id: "irrigation-check", stageID: "water", title: "Check irrigation and field moisture", detail: "Inspect each parcel today; avoid watering where forecast rain is adequate.", urgency: .today, icon: "drop.triangle.fill", destination: .intelligence),
+        LifecycleAction(id: "organic-manure", stageID: "water", title: "Apply organic manure", detail: "Organic-manure application is recorded; retain the field receipt or note.", urgency: .upcoming, icon: "leaf.arrow.triangle.circlepath", destination: .inputs),
+        LifecycleAction(id: "rain-nutrition", stageID: "water", title: "Adjust top-dressing after rain", detail: "Recheck field moisture and postpone nitrogen application during heavy rain.", urgency: .upcoming, icon: "cloud.rain.fill", destination: .inputs),
+        LifecycleAction(id: "weekly-scout", stageID: "protect", title: "Scout every parcel", detail: "Check paddy, chilli and cotton for pest or disease signs and record observations.", urgency: .today, icon: "eye.fill", destination: .inputs),
+        LifecycleAction(id: "ipm-response", stageID: "protect", title: "Prepare an IPM response", detail: "Use thresholds and authorised guidance before any crop-protection treatment.", urgency: .upcoming, icon: "ladybug.fill", destination: .inputs),
+        LifecycleAction(id: "training-protection", stageID: "protect", title: "Complete crop-protection training", detail: "Finish scouting, IPM and safe-spraying lessons.", urgency: .upcoming, icon: "book.closed.fill", destination: .training, trainingModuleID: "crop-protection"),
+        LifecycleAction(id: "bunds-runoff", stageID: "soil", title: "Inspect bunds and runoff paths", detail: "Repair weak bunds and prevent topsoil loss before the next rainfall.", urgency: .today, icon: "mountain.2.fill", destination: .soilCare),
+        LifecycleAction(id: "mulch-residue", stageID: "soil", title: "Mulch or retain suitable residue", detail: "Cover exposed soil where agronomically appropriate to reduce evaporation.", urgency: .upcoming, icon: "square.stack.3d.up.fill", destination: .soilCare),
+        LifecycleAction(id: "harvest-readiness", stageID: "harvest", title: "Prepare harvest and moisture checks", detail: "Open this stage when the crop approaches maturity.", urgency: .later, icon: "gauge.with.dots.needle.50percent", destination: .farmHistory),
+        LifecycleAction(id: "training-harvest", stageID: "harvest", title: "Complete harvest training", detail: "Finish maturity, cutting and low-loss threshing lessons.", urgency: .later, icon: "book.closed.fill", destination: .training, trainingModuleID: "crop-cutting"),
+        LifecycleAction(id: "storage-plan", stageID: "harvest", title: "Create produce storage plan", detail: "Plan drying, grading, bags, ventilation and pest-free storage before harvest.", urgency: .later, icon: "shippingbox.fill", destination: .farmHistory),
+        LifecycleAction(id: "training-preservation", stageID: "harvest", title: "Complete preservation training", detail: "Finish the drying, storage and preservation lessons.", urgency: .later, icon: "book.closed.fill", destination: .training, trainingModuleID: "preservation"),
+        LifecycleAction(id: "training-value", stageID: "harvest", title: "Complete value-creation training", detail: "Learn cleaning, grading, processing and by-product options.", urgency: .later, icon: "indianrupeesign.circle.fill", destination: .training, trainingModuleID: "value-creation")
+    ]
+
+    static let recordedLifecycleActionIDs: Set<String> = [
+        "paddy-insurance", "crop-plan", "land-drainage", "seed-treatment", "sowing-record", "organic-manure"
+    ]
+
+    static var currentLifecycleActions: [LifecycleAction] {
+        lifecycleActions.filter { $0.urgency != .later }
+    }
+
+    static var totalTrainingLessonCount: Int {
+        trainingModules.reduce(0) { $0 + $1.lessons.count }
+    }
+
+    static func trainingLessonIDs(moduleID: String) -> Set<String> {
+        guard let module = trainingModules.first(where: { $0.id == moduleID }) else { return [] }
+        return Set(module.lessons.indices.map { "\(module.id)-\($0)" })
+    }
 
     static let currentTemperatureC = 33
     static let currentHumidityPct = 77

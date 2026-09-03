@@ -47,6 +47,42 @@ final class PilotContractTests: XCTestCase {
         XCTAssertEqual(PilotContract.weatherForecast[1].rainfallMm, 16.0, accuracy: 0.01)
     }
 
+    func testLifecycleDashboardCoversEveryFarmStageAndTimelyActivity() {
+        XCTAssertEqual(PilotContract.lifecycleStages.map(\.id), ["plan", "sow", "water", "protect", "soil", "harvest"])
+        XCTAssertEqual(PilotContract.lifecycleActions.count, 21)
+        XCTAssertEqual(PilotContract.currentLifecycleActions.count, 16)
+        XCTAssertEqual(PilotContract.recordedLifecycleActionIDs.count, 6)
+        XCTAssertTrue(PilotContract.recordedLifecycleActionIDs.isSubset(of: Set(PilotContract.lifecycleActions.map(\.id))))
+        XCTAssertEqual(PilotContract.lifecycleActions.filter { $0.urgency == .overdue }.count, 2)
+        XCTAssertEqual(PilotContract.lifecycleActions.filter { $0.urgency == .today }.count, 4)
+
+        let titles = Set(PilotContract.lifecycleActions.map(\.title))
+        XCTAssertTrue(titles.contains("Check irrigation and field moisture"))
+        XCTAssertTrue(titles.contains("Apply organic manure"))
+        XCTAssertTrue(titles.contains("Inspect bunds and runoff paths"))
+        XCTAssertTrue(titles.contains("Verify paddy insurance cover"))
+        XCTAssertTrue(titles.contains("Complete crop-protection training"))
+    }
+
+    func testLifecycleTrainingLinksAndTranslationsAreComplete() {
+        let moduleIDs = Set(PilotContract.trainingModules.map(\.id))
+        for action in PilotContract.lifecycleActions {
+            if let trainingModuleID = action.trainingModuleID {
+                XCTAssertTrue(moduleIDs.contains(trainingModuleID))
+            }
+            for language in [AppLanguage.telugu, .hindi, .tamil] {
+                XCTAssertNotEqual(PilotContentLocalization.text(action.title, language: language), action.title)
+                XCTAssertNotEqual(PilotContentLocalization.text(action.detail, language: language), action.detail)
+            }
+        }
+        for stage in PilotContract.lifecycleStages {
+            for language in [AppLanguage.telugu, .hindi, .tamil] {
+                XCTAssertNotEqual(PilotContentLocalization.text(stage.title, language: language), stage.title)
+                XCTAssertNotEqual(PilotContentLocalization.text(stage.summary, language: language), stage.summary)
+            }
+        }
+    }
+
     func testFarmIntelligenceContainsDataForEveryWebSubmenu() {
         XCTAssertEqual(PilotContract.locationDetails.count, 6)
         XCTAssertEqual(PilotContract.seasonDetails.count, 3)

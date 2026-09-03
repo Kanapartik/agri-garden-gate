@@ -19,7 +19,7 @@ are connected.
 - Authenticated profile refresh: `GET /me`, with bearer tokens stored in the
   iOS Keychain (`whenUnlockedThisDeviceOnly`)
 
-Version `0.5.1` retains the supplied Agrivah lockup and app icon and includes the
+Version `0.6.0` retains the supplied Agrivah lockup and app icon and includes the
 same farmer workspaces available in the web application: profile, onboarding,
 farm, farm history, farm intelligence, training, inputs and protection, soil
 care, consent, schemes, and marketplace. Farm Intelligence now exposes the web
@@ -35,6 +35,15 @@ metrics, a horizontally scrollable seven-day synthetic weather outlook,
 rainfall advisory, quick actions, and persistent bottom navigation so the main
 areas do not require scrolling to the bottom of a long menu. The forecast is
 clearly labelled synthetic and is not a live authoritative weather feed.
+The dashboard also provides a crop-lifecycle readiness score. Twenty-one actions
+cover planning and insurance, sowing, irrigation and nutrition, crop protection,
+soil stewardship, training, harvest and preservation. Only the 16 actions due in
+the current stage affect current readiness; later-stage harvest work is shown but
+does not reduce today's score. Recorded pilot evidence starts the synthetic
+snapshot at 6/16, while farmer confirmations and completed training lessons are
+stored in the device Keychain and update stage and crop-level progress toward
+100%. The schedule is explicitly labelled synthetic and must be reconciled with
+actual sowing dates, weather and authorised agronomic advice before production.
 The selected app language is also applied to farmer content rather than only
 navigation: Telugu now covers parcel and crop names, seasons, five-year notes,
 intelligence records, training stages and lessons, input/soil guidance, scheme
@@ -82,7 +91,7 @@ the owner's Apple Developer team, signing certificate, and provisioning profile.
 
 - Validate the Supabase SMS provider, India DLT header/template and delivery to
   the enrolled device before a field rollout.
-- Record baseline consent through the server-signed consent endpoint; v0.5.1
+- Record baseline consent through the server-signed consent endpoint; v0.6.0
   continues to retain the existing local pilot consent receipt.
 - Remove the device-local static OTP fallback after SMS delivery is accepted.
 - Add refresh-token rotation and server logout before long-lived distribution.

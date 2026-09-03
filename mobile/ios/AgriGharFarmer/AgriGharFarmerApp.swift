@@ -58,6 +58,8 @@ final class AppModel: ObservableObject {
     @Published var identityVerificationIsSynthetic = false
     @Published var sandboxStaticOTPActive = false
     @Published var localSandboxOTPActive = false
+    @Published var completedLifecycleActionIDs: Set<String> = []
+    @Published var completedTrainingLessonIDs: Set<String> = []
 
     private let keychain: KeychainStore
     private let apiClient: MobileAPIClient
@@ -76,6 +78,9 @@ final class AppModel: ObservableObject {
         self.keychain = keychain
         self.apiClient = apiClient
         self.language = AppLanguage(rawValue: keychain.string(for: "profile.language") ?? "") ?? .telugu
+        self.completedLifecycleActionIDs = Self.storedSet(keychain.string(for: "lifecycle.completed"))
+            ?? PilotContract.recordedLifecycleActionIDs
+        self.completedTrainingLessonIDs = Self.storedSet(keychain.string(for: "training.completed")) ?? []
         let hasConsent = keychain.string(for: "consent.version") == PilotContract.consentVersion
         let hasSession = !(keychain.string(for: "auth.accessToken") ?? "").isEmpty
         let storedMaskedPhone = keychain.string(for: "farmer.phone.masked") ?? ""
@@ -95,7 +100,14 @@ final class AppModel: ObservableObject {
            let previewLanguage = AppLanguage(rawValue: String(languageArgument.dropFirst("--preview-language=".count))) {
             self.language = previewLanguage
         }
-        if ProcessInfo.processInfo.arguments.contains("--preview-intelligence") {
+        if ProcessInfo.processInfo.arguments.contains("--preview-lifecycle") {
+            self.screen = .home
+            self.farmerName = PilotContract.sandboxFarmerName
+            self.gender = .male
+            self.localSandboxOTPActive = true
+            self.completedLifecycleActionIDs = PilotContract.recordedLifecycleActionIDs
+            self.completedTrainingLessonIDs = []
+        } else if ProcessInfo.processInfo.arguments.contains("--preview-intelligence") {
             self.screen = .intelligence
             self.farmerName = PilotContract.sandboxFarmerName
             self.gender = .male
@@ -145,6 +157,7 @@ final class AppModel: ObservableObject {
         }
         #if DEBUG
         if ProcessInfo.processInfo.arguments.contains("--preview-sandbox-profile")
+            || ProcessInfo.processInfo.arguments.contains("--preview-lifecycle")
             || ProcessInfo.processInfo.arguments.contains("--preview-profile")
             || ProcessInfo.processInfo.arguments.contains("--preview-intelligence")
             || ProcessInfo.processInfo.arguments.contains("--preview-training")
@@ -187,6 +200,98 @@ final class AppModel: ObservableObject {
         PilotContentLocalization.text(source, language: language)
     }
 
+    var completedTrainingLessonCount: Int {
+        completedTrainingLessonIDs.intersection(Set(PilotContract.trainingModules.flatMap { module in
+            module.lessons.indices.map { "\(module.id)-\($0)" }
+        })).count
+    }
+
+    var currentLifecycleCompletedCount: Int {
+        PilotContract.currentLifecycleActions.filter(isLifecycleActionComplete).count
+    }
+
+    var currentLifecycleProgress: Double {
+        guard !PilotContract.currentLifecycleActions.isEmpty else { return 0 }
+        return Double(currentLifecycleCompletedCount) / Double(PilotContract.currentLifecycleActions.count)
+    }
+
+    var currentLifecyclePercent: Int {
+        Int((currentLifecycleProgress * 100).rounded())
+    }
+
+    var overdueLifecycleCount: Int {
+        PilotContract.currentLifecycleActions.filter {
+            $0.urgency == .overdue && !isLifecycleActionComplete($0)
+        }.count
+    }
+
+    var todayLifecycleCount: Int {
+        PilotContract.currentLifecycleActions.filter {
+            $0.urgency == .today && !isLifecycleActionComplete($0)
+        }.count
+    }
+
+    func isLifecycleActionComplete(_ action: LifecycleAction) -> Bool {
+        if let moduleID = action.trainingModuleID {
+            let required = PilotContract.trainingLessonIDs(moduleID: moduleID)
+            return !required.isEmpty && required.isSubset(of: completedTrainingLessonIDs)
+        }
+        return completedLifecycleActionIDs.contains(action.id)
+    }
+
+    func lifecycleProgress(stageID: String) -> Double? {
+        let actions = PilotContract.lifecycleActions.filter { $0.stageID == stageID }
+        guard !actions.isEmpty else { return nil }
+        if actions.allSatisfy({ $0.urgency == .later }) { return nil }
+        let current = actions.filter { $0.urgency != .later }
+        let completed = current.filter(isLifecycleActionComplete).count
+        return Double(completed) / Double(current.count)
+    }
+
+    func cropLifecycleProgress(cropCode: String) -> Double {
+        let actions = PilotContract.currentLifecycleActions.filter {
+            $0.cropCodes.isEmpty || $0.cropCodes.contains(cropCode)
+        }
+        guard !actions.isEmpty else { return 0 }
+        let completed = actions.filter(isLifecycleActionComplete).count
+        return Double(completed) / Double(actions.count)
+    }
+
+    func toggleLifecycleAction(_ action: LifecycleAction) {
+        guard action.trainingModuleID == nil else {
+            openLifecycleDestination(action.destination)
+            return
+        }
+        if completedLifecycleActionIDs.contains(action.id) {
+            completedLifecycleActionIDs.remove(action.id)
+        } else {
+            completedLifecycleActionIDs.insert(action.id)
+        }
+        persistSet(completedLifecycleActionIDs, key: "lifecycle.completed")
+    }
+
+    func toggleTrainingLesson(moduleID: String, index: Int) {
+        let lessonID = "\(moduleID)-\(index)"
+        if completedTrainingLessonIDs.contains(lessonID) {
+            completedTrainingLessonIDs.remove(lessonID)
+        } else {
+            completedTrainingLessonIDs.insert(lessonID)
+        }
+        persistSet(completedTrainingLessonIDs, key: "training.completed")
+    }
+
+    func openLifecycleDestination(_ destination: LifecycleDestination) {
+        switch destination {
+        case .farm: screen = .farm
+        case .intelligence: screen = .intelligence
+        case .training: screen = .training
+        case .inputs: screen = .inputs
+        case .soilCare: screen = .soilCare
+        case .schemes: screen = .schemes
+        case .farmHistory: screen = .farmHistory
+        }
+    }
+
     func genderTitle(_ value: Gender) -> String {
         switch value {
         case .female: return text("మహిళ", "महिला", "பெண்", "Female")
@@ -197,6 +302,16 @@ final class AppModel: ObservableObject {
 
     func persistLanguage() {
         _ = keychain.set(language.rawValue, for: "profile.language")
+    }
+
+    private static func storedSet(_ raw: String?) -> Set<String>? {
+        guard let raw else { return nil }
+        guard !raw.isEmpty else { return [] }
+        return Set(raw.split(separator: "|").map(String.init))
+    }
+
+    private func persistSet(_ values: Set<String>, key: String) {
+        _ = keychain.set(values.sorted().joined(separator: "|"), for: key)
     }
 
     var showsBottomNavigation: Bool {
@@ -306,6 +421,10 @@ final class AppModel: ObservableObject {
         profileUpdatedAt = nil
         identityVerificationStatus = nil
         identityVerificationIsSynthetic = false
+        if keychain.string(for: "lifecycle.completed") == nil {
+            completedLifecycleActionIDs = PilotContract.recordedLifecycleActionIDs
+            persistSet(completedLifecycleActionIDs, key: "lifecycle.completed")
+        }
         _ = keychain.set(farmerName, for: "profile.name")
         _ = keychain.set(gender.rawValue, for: "profile.gender")
         _ = keychain.set(PilotContract.snapshotVersion, for: "profile.snapshotVersion")
@@ -407,6 +526,8 @@ final class AppModel: ObservableObject {
         profileUpdatedAt = nil
         identityVerificationStatus = nil
         identityVerificationIsSynthetic = false
+        completedLifecycleActionIDs = []
+        completedTrainingLessonIDs = []
         syncMessage = nil
         villageDraft = ""
         farmNoteDraft = ""
@@ -809,6 +930,8 @@ struct HomeView: View {
                     .accessibilityLabel(model.text("బ్యాక్‌ఎండ్ ప్రొఫైల్ రిఫ్రెష్", "बैकएंड प्रोफ़ाइल रीफ़्रेश", "பின்தள சுயவிவரத்தைப் புதுப்பி", "Refresh backend profile"))
                 }
 
+                LifecycleDashboardCard()
+
                 HStack(spacing: 12) {
                     DashboardMetric(icon: "map.fill", value: "\(model.totalExtentText)", label: model.text("ఎకరాలు", "एकड़", "ஏக்கர்", "acres")) {
                         model.screen = .farm
@@ -816,7 +939,7 @@ struct HomeView: View {
                     DashboardMetric(icon: "leaf.fill", value: "3", label: model.text("పంటలు", "फसलें", "பயிர்கள்", "crops")) {
                         model.screen = .farm
                     }
-                    DashboardMetric(icon: "book.closed.fill", value: "0/12", label: model.text("పాఠాలు", "पाठ", "பாடங்கள்", "lessons")) {
+                    DashboardMetric(icon: "book.closed.fill", value: "\(model.completedTrainingLessonCount)/\(PilotContract.totalTrainingLessonCount)", label: model.text("పాఠాలు", "पाठ", "பாடங்கள்", "lessons")) {
                         model.screen = .training
                     }
                 }
@@ -913,6 +1036,264 @@ struct DashboardAction: View {
             .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.black.opacity(0.06)))
         }
         .buttonStyle(.plain)
+    }
+}
+
+struct LifecycleDashboardCard: View {
+    @EnvironmentObject private var model: AppModel
+    @State private var showsAllActions = false
+
+    private var visibleActions: [LifecycleAction] {
+        let sorted = PilotContract.lifecycleActions.sorted { first, second in
+            let firstComplete = model.isLifecycleActionComplete(first)
+            let secondComplete = model.isLifecycleActionComplete(second)
+            if firstComplete != secondComplete { return !firstComplete }
+            return first.urgency.rawValue < second.urgency.rawValue
+        }
+        if showsAllActions { return sorted }
+        return Array(sorted.filter { $0.urgency != .later && !model.isLifecycleActionComplete($0) }.prefix(4))
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack(alignment: .center, spacing: 16) {
+                LifecycleProgressRing(progress: model.currentLifecycleProgress)
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(model.text("ప్రస్తుత పంట సిద్ధత", "वर्तमान फसल तैयारी", "தற்போதைய பயிர் தயார்நிலை", "Current crop readiness"))
+                        .font(.title3.bold()).foregroundStyle(AppTheme.darkGreen)
+                    Text("\(model.currentLifecycleCompletedCount)/\(PilotContract.currentLifecycleActions.count) \(model.text("సమయానుకూల చర్యలు పూర్తయ్యాయి", "समयबद्ध कार्य पूरे", "நேரச் செயல்கள் முடிந்தன", "timely actions complete"))")
+                        .font(.subheadline).foregroundStyle(.secondary)
+                    Text(readinessMessage)
+                        .font(.caption.bold()).foregroundStyle(model.currentLifecyclePercent == 100 ? AppTheme.green : Color.orange)
+                }
+            }
+
+            HStack(spacing: 8) {
+                LifecycleCountBadge(
+                    value: model.overdueLifecycleCount,
+                    label: model.text("ఆలస్యం", "विलंबित", "தாமதம்", "overdue"),
+                    color: .red
+                )
+                LifecycleCountBadge(
+                    value: model.todayLifecycleCount,
+                    label: model.text("ఈరోజు", "आज", "இன்று", "today"),
+                    color: .orange
+                )
+                LifecycleCountBadge(
+                    value: PilotContract.lifecycleActions.filter { $0.urgency == .later }.count,
+                    label: model.text("తర్వాతి దశ", "अगला चरण", "அடுத்த கட்டம்", "later stage"),
+                    color: .gray
+                )
+            }
+
+            Divider()
+
+            VStack(alignment: .leading, spacing: 10) {
+                Text(model.text("దశల వారీ పురోగతి", "चरणवार प्रगति", "கட்ட வாரியான முன்னேற்றம்", "Progress by stage"))
+                    .font(.headline)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 10) {
+                        ForEach(PilotContract.lifecycleStages) { stage in
+                            LifecycleStageTile(stage: stage, progress: model.lifecycleProgress(stageID: stage.id))
+                        }
+                    }
+                }
+            }
+
+            VStack(alignment: .leading, spacing: 10) {
+                Text(model.text("పంటల సిద్ధత", "फसल तैयारी", "பயிர் தயார்நிலை", "Readiness by crop"))
+                    .font(.headline)
+                HStack(spacing: 9) {
+                    ForEach(PilotContract.crops) { crop in
+                        CropReadinessTile(crop: crop, progress: model.cropLifecycleProgress(cropCode: crop.code))
+                    }
+                }
+            }
+
+            Divider()
+
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(model.text("తదుపరి చేయాల్సినవి", "अगले कार्य", "அடுத்து செய்ய வேண்டியவை", "Do next"))
+                        .font(.headline)
+                    Text(model.text("పూర్తయినట్లు నిర్ధారించినప్పుడే స్కోరు పెరుగుతుంది", "पूर्ण होने की पुष्टि पर ही स्कोर बढ़ता है", "முடிந்ததை உறுதிப்படுத்தினால் மட்டுமே மதிப்பெண் உயரும்", "The score rises only after completion is confirmed"))
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+                Spacer()
+                Button(showsAllActions ? model.text("తక్కువ చూపండి", "कम दिखाएँ", "குறைவாகக் காட்டு", "Show less") : model.text("అన్నీ చూడండి", "सभी देखें", "அனைத்தையும் காண்க", "View all")) {
+                    withAnimation { showsAllActions.toggle() }
+                }
+                .font(.caption.bold()).foregroundStyle(AppTheme.green)
+            }
+
+            ForEach(visibleActions) { action in
+                LifecycleActionRow(
+                    action: action,
+                    isComplete: model.isLifecycleActionComplete(action),
+                    onToggle: { model.toggleLifecycleAction(action) },
+                    onOpen: { model.openLifecycleDestination(action.destination) }
+                )
+                if action.id != visibleActions.last?.id { Divider() }
+            }
+
+            Text(model.text("ఈ పైలట్ షెడ్యూల్ సింథటిక్. వాస్తవ తేదీలు, వాతావరణం మరియు అధీకృత వ్యవసాయ సలహాను నిర్ధారించండి.", "यह पायलट समय-सारिणी सिंथेटिक है। वास्तविक तारीख, मौसम और अधिकृत कृषि सलाह की पुष्टि करें।", "இந்த முன்னோட்ட அட்டவணை செயற்கையானது. உண்மைத் தேதிகள், வானிலை மற்றும் அங்கீகரிக்கப்பட்ட வேளாண் ஆலோசனையை உறுதிப்படுத்தவும்.", "This pilot schedule is synthetic. Confirm actual dates, weather and authorised agronomic advice."))
+                .font(.caption2).foregroundStyle(.secondary)
+        }
+        .cardStyle(background: AppTheme.leaf.opacity(0.22))
+    }
+
+    private var readinessMessage: String {
+        if model.currentLifecyclePercent == 100 {
+            return model.text("అద్భుతం — ప్రస్తుత దశ 100% సిద్ధంగా ఉంది.", "बहुत अच्छा—वर्तमान चरण 100% तैयार है।", "சிறப்பு—தற்போதைய கட்டம் 100% தயாராக உள்ளது.", "Excellent—current-stage readiness is 100%.")
+        }
+        return model.text("ప్రతి సమయానుకూల చర్యను పూర్తి చేసి 100% చేరుకోండి.", "हर समयबद्ध कार्य पूरा करके 100% तक पहुँचें।", "ஒவ்வொரு நேரச் செயலையும் முடித்து 100% அடையுங்கள்.", "Complete every timely action to reach 100%.")
+    }
+}
+
+struct LifecycleProgressRing: View {
+    @EnvironmentObject private var model: AppModel
+    let progress: Double
+
+    var body: some View {
+        ZStack {
+            Circle().stroke(AppTheme.green.opacity(0.14), lineWidth: 10)
+            Circle()
+                .trim(from: 0, to: min(max(progress, 0), 1))
+                .stroke(AppTheme.green, style: StrokeStyle(lineWidth: 10, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+            Text("\(Int((progress * 100).rounded()))%")
+                .font(.title3.bold()).foregroundStyle(AppTheme.darkGreen)
+        }
+        .frame(width: 82, height: 82)
+        .accessibilityValue("\(Int((progress * 100).rounded())) \(model.text("శాతం", "प्रतिशत", "சதவீதம்", "percent"))")
+    }
+}
+
+struct LifecycleCountBadge: View {
+    let value: Int
+    let label: String
+    let color: Color
+
+    var body: some View {
+        Text("\(value) \(label)")
+            .font(.caption.bold())
+            .foregroundStyle(value == 0 ? Color.secondary : color)
+            .padding(.horizontal, 10).padding(.vertical, 6)
+            .background((value == 0 ? Color.gray : color).opacity(0.11))
+            .clipShape(Capsule())
+    }
+}
+
+struct LifecycleStageTile: View {
+    @EnvironmentObject private var model: AppModel
+    let stage: LifecycleStage
+    let progress: Double?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 7) {
+            Image(systemName: stage.icon).foregroundStyle(AppTheme.green)
+            Text(model.contentText(stage.title)).font(.caption.bold()).foregroundStyle(AppTheme.darkGreen).lineLimit(2)
+            if let progress {
+                ProgressView(value: progress).tint(AppTheme.green)
+                Text("\(Int((progress * 100).rounded()))%")
+                    .font(.caption2.bold()).foregroundStyle(.secondary)
+            } else {
+                Text(model.text("ఇంకా ప్రారంభం కాలేదు", "अभी शुरू नहीं", "இன்னும் தொடங்கவில்லை", "Not due yet"))
+                    .font(.caption2.bold()).foregroundStyle(.secondary)
+            }
+        }
+        .frame(width: 128, height: 94, alignment: .topLeading)
+        .padding(11)
+        .background(.white.opacity(0.9))
+        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.black.opacity(0.05)))
+        .accessibilityHint(model.contentText(stage.summary))
+    }
+}
+
+struct CropReadinessTile: View {
+    @EnvironmentObject private var model: AppModel
+    let crop: CropAllocation
+    let progress: Double
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(model.contentText(crop.nameEnglish)).font(.caption.bold()).lineLimit(1)
+            Text("\(Int((progress * 100).rounded()))%")
+                .font(.headline).foregroundStyle(AppTheme.darkGreen)
+            ProgressView(value: progress).tint(AppTheme.green)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(10)
+        .background(.white.opacity(0.9))
+        .clipShape(RoundedRectangle(cornerRadius: 13))
+    }
+}
+
+struct LifecycleActionRow: View {
+    @EnvironmentObject private var model: AppModel
+    let action: LifecycleAction
+    let isComplete: Bool
+    let onToggle: () -> Void
+    let onOpen: () -> Void
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 11) {
+            Button(action: onToggle) {
+                Image(systemName: completionIcon)
+                    .font(.title3).foregroundStyle(isComplete ? AppTheme.green : urgencyColor)
+                    .frame(width: 32, height: 32)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(isComplete ? model.text("పూర్తయింది", "पूर्ण", "முடிந்தது", "Completed") : model.text("పూర్తయినట్లు గుర్తించండి", "पूर्ण चिन्हित करें", "முடிந்ததாகக் குறிக்கவும்", "Mark complete"))
+
+            VStack(alignment: .leading, spacing: 5) {
+                HStack(alignment: .top) {
+                    Text(model.contentText(action.title)).font(.subheadline.bold()).foregroundStyle(AppTheme.darkGreen)
+                    Spacer(minLength: 8)
+                    Text(statusLabel).font(.caption2.bold()).foregroundStyle(isComplete ? AppTheme.green : urgencyColor)
+                        .padding(.horizontal, 7).padding(.vertical, 4)
+                        .background((isComplete ? AppTheme.green : urgencyColor).opacity(0.1)).clipShape(Capsule())
+                }
+                if !action.cropCodes.isEmpty {
+                    Text(action.cropCodes.compactMap { code in
+                        PilotContract.crops.first(where: { $0.code == code }).map { model.contentText($0.nameEnglish) }
+                    }.joined(separator: " • "))
+                    .font(.caption2.bold()).foregroundStyle(AppTheme.green)
+                }
+                Text(model.contentText(action.detail)).font(.caption).foregroundStyle(.secondary)
+                Button(action: onOpen) {
+                    Label(model.text("మార్గదర్శకం తెరవండి", "मार्गदर्शन खोलें", "வழிகாட்டலைத் திறக்கவும்", "Open guidance"), systemImage: "arrow.right.circle.fill")
+                        .font(.caption.bold()).foregroundStyle(AppTheme.green)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .opacity(isComplete ? 0.72 : 1)
+    }
+
+    private var completionIcon: String {
+        if isComplete { return "checkmark.circle.fill" }
+        return action.trainingModuleID == nil ? "circle" : "book.circle.fill"
+    }
+
+    private var statusLabel: String {
+        if isComplete { return model.text("పూర్తి", "पूर्ण", "முடிந்தது", "Complete") }
+        switch action.urgency {
+        case .overdue: return model.text("ఆలస్యం", "विलंबित", "தாமதம்", "Overdue")
+        case .today: return model.text("ఈరోజు", "आज", "இன்று", "Today")
+        case .upcoming: return model.text("ఈ వారం", "इस सप्ताह", "இந்த வாரம்", "This week")
+        case .later: return model.text("తర్వాతి దశ", "अगला चरण", "அடுத்த கட்டம்", "Later stage")
+        }
+    }
+
+    private var urgencyColor: Color {
+        switch action.urgency {
+        case .overdue: return .red
+        case .today: return .orange
+        case .upcoming: return .blue
+        case .later: return .gray
+        }
     }
 }
 
@@ -1730,7 +2111,6 @@ struct NearbyFacilitiesContent: View {
 
 struct TrainingView: View {
     @EnvironmentObject private var model: AppModel
-    @State private var completedLessons: Set<String> = []
 
     var body: some View {
         ScrollView {
@@ -1750,14 +2130,10 @@ struct TrainingView: View {
                         ForEach(Array(module.lessons.enumerated()), id: \.offset) { index, lesson in
                             let lessonID = "\(module.id)-\(index)"
                             Button {
-                                if completedLessons.contains(lessonID) {
-                                    completedLessons.remove(lessonID)
-                                } else {
-                                    completedLessons.insert(lessonID)
-                                }
+                                model.toggleTrainingLesson(moduleID: module.id, index: index)
                             } label: {
                                 HStack(alignment: .top, spacing: 10) {
-                                    Image(systemName: completedLessons.contains(lessonID) ? "checkmark.circle.fill" : "circle")
+                                    Image(systemName: model.completedTrainingLessonIDs.contains(lessonID) ? "checkmark.circle.fill" : "circle")
                                         .foregroundStyle(AppTheme.green)
                                     Text(model.contentText(lesson)).foregroundStyle(.primary)
                                     Spacer()
@@ -1766,7 +2142,7 @@ struct TrainingView: View {
                             }
                             .buttonStyle(.plain)
                         }
-                        let completed = module.lessons.indices.filter { completedLessons.contains("\(module.id)-\($0)") }.count
+                        let completed = module.lessons.indices.filter { model.completedTrainingLessonIDs.contains("\(module.id)-\($0)") }.count
                         Text("\(completed)/\(module.lessons.count) \(model.text("పూర్తి", "पूर्ण", "முடிந்தது", "completed")) • \(completed == module.lessons.count ? model.text("ముగిసింది", "पूरा", "நிறைவு", "complete") : model.text("కొనసాగుతోంది", "प्रगति में", "நடைபெறுகிறது", "in progress"))")
                             .font(.caption.bold()).foregroundStyle(completed == module.lessons.count ? AppTheme.green : .secondary)
                     }
