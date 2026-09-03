@@ -4,7 +4,8 @@ Native Android application for the Agrivah farmer pilot.
 
 ## Included in this APK
 
-- Telugu-first farmer journey.
+- Telugu-first farmer journey with a Profile language selector for Telugu,
+  Hindi, Tamil, and English. The preference survives sign-out.
 - Android 12+ (`minSdk 31`).
 - Phone-number validation and an explicitly labelled demo OTP flow.
 - Farmer-owned baseline consent with contract/policy versions.
@@ -19,6 +20,10 @@ Native Android application for the Agrivah farmer pilot.
 - Current web snapshot content includes 10 crop-history records, two insurance
   snapshots, five training modules (12 lessons), eight intelligence categories,
   eight soil practices, four schemes and the current empty marketplace state.
+- Redesigned dashboard with persistent bottom navigation, compact farm metrics,
+  a horizontally scrollable seven-day synthetic weather forecast, and a
+  prominent rainfall advisory. The forecast is demo/reference data, not a live
+  or authoritative weather feed.
 - Offline draft save, consent withdrawal, local-data deletion, and clear
   self-reported/pending verification states.
 - No full phone number, Aadhaar number, OTP token, API secret, or production
@@ -30,7 +35,7 @@ The generated debug APK is intentionally marked **Pilot Demo**. Enter any valid
 Indian mobile number and use OTP `123456`. The complete number is held only in
 memory for the OTP screen; only its masked form is stored.
 
-Version `0.3.0-pilot` replaces an existing demo profile with the current
+Version `0.4.0-pilot` replaces an existing demo profile with the current
 Guntur/Kaza web-parity snapshot once after upgrade. It does not link the phone login to the
 web farmer's separate email auth subject and does not write to the production
 database.

@@ -50,6 +50,13 @@ public class PilotContractTest {
     }
 
     @Test
+    public void dashboardIncludesSevenDaySyntheticForecast() {
+        assertEquals(7, PilotContract.WEATHER_FORECAST.size());
+        assertEquals(33, PilotContract.CURRENT_TEMPERATURE_C);
+        assertEquals(16.0, PilotContract.WEATHER_FORECAST.get(1).rainfallMm(), 0.01);
+    }
+
+    @Test
     public void otpShapeRequiresExactlySixDigits() {
         assertTrue(PilotContract.isOtpShapeValid("123456"));
         assertFalse(PilotContract.isOtpShapeValid("12345"));

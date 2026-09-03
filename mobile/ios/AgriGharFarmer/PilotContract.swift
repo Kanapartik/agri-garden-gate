@@ -40,13 +40,41 @@ struct TrainingModule: Identifiable, Equatable {
     let lessons: [String]
 }
 
+struct WeatherDay: Identifiable, Equatable {
+    let id: Int
+    let minimumC: Int
+    let maximumC: Int
+    let rainfallMm: Double
+    let conditions: String
+    let symbol: String
+}
+
+enum AppLanguage: String, CaseIterable, Identifiable {
+    case telugu = "te"
+    case hindi = "hi"
+    case tamil = "ta"
+    case english = "en"
+
+    var id: String { rawValue }
+    var localeIdentifier: String { "\(rawValue)-IN" }
+
+    var nativeName: String {
+        switch self {
+        case .telugu: return "తెలుగు"
+        case .hindi: return "हिन्दी"
+        case .tamil: return "தமிழ்"
+        case .english: return "English"
+        }
+    }
+}
+
 enum PilotContract {
     static let localeIdentifier = "te-IN"
     static let minimumIOSVersion = "17.0"
     static let apiPrefix = "/mobile/v1"
     static let consentVersion = "mobile-consent-2026-08-v1"
     static let policyVersion = "2026-08-baseline-v1"
-    static let snapshotVersion = "guntur-kaza-web-parity-2026-09-02-v1"
+    static let snapshotVersion = "guntur-kaza-dashboard-weather-2026-09-02-v1"
     static let snapshotCapturedAt = "01-09-2026"
     static let totalAcres = Decimal(string: "18.20")!
     static let sandboxStaticOTP = "123456"
@@ -201,6 +229,21 @@ enum PilotContract {
         SnapshotItem(id: "listings", title: "Listings", detail: "0", meta: "No published or draft farmer listings."),
         SnapshotItem(id: "rfqs", title: "RFQs and quotes", detail: "0", meta: "No requests or quotes."),
         SnapshotItem(id: "orders", title: "Orders and disputes", detail: "0", meta: "No orders or disputes.")
+    ]
+
+    static let currentTemperatureC = 33
+    static let currentHumidityPct = 77
+    static let currentWindKph = 10
+    static let currentRainfallMm = 9.0
+    static let currentWeatherConditions = "Cloudy with showers"
+    static let weatherForecast: [WeatherDay] = [
+        WeatherDay(id: 1, minimumC: 27, maximumC: 37, rainfallMm: 12.8, conditions: "Rain likely", symbol: "cloud.rain.fill"),
+        WeatherDay(id: 2, minimumC: 28, maximumC: 38, rainfallMm: 16.0, conditions: "Rain likely", symbol: "cloud.heavyrain.fill"),
+        WeatherDay(id: 3, minimumC: 27, maximumC: 39, rainfallMm: 0.0, conditions: "Mainly dry", symbol: "sun.max.fill"),
+        WeatherDay(id: 4, minimumC: 28, maximumC: 37, rainfallMm: 3.2, conditions: "Isolated showers", symbol: "cloud.sun.rain.fill"),
+        WeatherDay(id: 5, minimumC: 27, maximumC: 38, rainfallMm: 6.4, conditions: "Isolated showers", symbol: "cloud.sun.rain.fill"),
+        WeatherDay(id: 6, minimumC: 28, maximumC: 39, rainfallMm: 9.6, conditions: "Rain likely", symbol: "cloud.rain.fill"),
+        WeatherDay(id: 7, minimumC: 27, maximumC: 37, rainfallMm: 12.8, conditions: "Rain likely", symbol: "cloud.rain.fill")
     ]
 
     static var allocatedAcres: Decimal {

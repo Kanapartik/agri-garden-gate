@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -21,12 +22,17 @@ import android.widget.Toast;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.UUID;
 
 public final class MainActivity extends Activity {
+    private enum NavSection { DASHBOARD, FARM, INTELLIGENCE, TRAINING, MORE }
+
+    private static final String UI_PREFERENCES = "agrivah_ui_preferences";
+    private static final String KEY_LANGUAGE = "language";
     private static final String KEY_SESSION = "session_active";
     private static final String KEY_PHONE_MASKED = "phone_masked";
     private static final String KEY_CONSENT = "baseline_consent_active";
@@ -40,10 +46,13 @@ public final class MainActivity extends Activity {
 
     private SecureStore store;
     private String pendingPhone;
+    private String languageCode = "te";
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        Locale locale = Locale.forLanguageTag(PilotContract.PRIMARY_LOCALE);
+        String selectedLanguage = newBase.getSharedPreferences(UI_PREFERENCES, Context.MODE_PRIVATE)
+            .getString(KEY_LANGUAGE, "te");
+        Locale locale = Locale.forLanguageTag(selectedLanguage + "-IN");
         Locale.setDefault(locale);
         Configuration configuration = new Configuration(newBase.getResources().getConfiguration());
         configuration.setLocale(locale);
@@ -54,6 +63,8 @@ public final class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         store = new SecureStore(this);
+        languageCode = getSharedPreferences(UI_PREFERENCES, Context.MODE_PRIVATE)
+            .getString(KEY_LANGUAGE, "te");
         if (BuildConfig.PILOT_DEMO_MODE && store.getBoolean(KEY_SESSION, false)) {
             applyPilotSnapshot();
         }
@@ -267,15 +278,40 @@ public final class MainActivity extends Activity {
         card.addView(Ui.space(this, 14));
         card.addView(Ui.divider(this));
         card.addView(Ui.space(this, 14));
+        card.addView(Ui.label(this, getString(R.string.app_language)));
+        card.addView(Ui.space(this, 6));
+        RadioGroup language = new RadioGroup(this);
+        language.setOrientation(RadioGroup.VERTICAL);
+        RadioButton telugu = radio("తెలుగు", "te");
+        RadioButton hindi = radio("हिन्दी", "hi");
+        RadioButton tamil = radio("தமிழ்", "ta");
+        RadioButton english = radio("English", "en");
+        language.addView(telugu);
+        language.addView(hindi);
+        language.addView(tamil);
+        language.addView(english);
+        if ("hi".equals(languageCode)) {
+            hindi.setChecked(true);
+        } else if ("ta".equals(languageCode)) {
+            tamil.setChecked(true);
+        } else if ("en".equals(languageCode)) {
+            english.setChecked(true);
+        } else {
+            telugu.setChecked(true);
+        }
+        card.addView(language);
+        card.addView(Ui.space(this, 14));
+        card.addView(Ui.divider(this));
+        card.addView(Ui.space(this, 14));
         card.addView(Ui.label(this, getString(R.string.location_label)));
         card.addView(Ui.space(this, 8));
         card.addView(Ui.small(this, getString(R.string.fpo_label)));
         content.addView(card);
 
         content.addView(Ui.space(this, 16));
-        content.addView(snapshotGroup("వెబ్ ప్రొఫైల్ వివరాలు", PilotContract.PROFILE_DETAILS));
+        content.addView(snapshotGroup(text("వెబ్ ప్రొఫైల్ వివరాలు", "वेब प्रोफ़ाइल विवरण", "வலை சுயவிவர விவரங்கள்", "Web profile details"), PilotContract.PROFILE_DETAILS));
         content.addView(Ui.space(this, 16));
-        content.addView(snapshotGroup("పత్రాలు", PilotContract.PROFILE_DOCUMENTS));
+        content.addView(snapshotGroup(text("పత్రాలు", "दस्तावेज़", "ஆவணங்கள்", "Documents"), PilotContract.PROFILE_DOCUMENTS));
 
         content.addView(Ui.space(this, 18));
         Button save = Ui.primaryButton(this, getString(R.string.save_profile));
@@ -289,34 +325,60 @@ public final class MainActivity extends Activity {
             String genderCode = selected == null ? "prefer_not_to_say" : String.valueOf(selected.getTag());
             store.putString(KEY_PROFILE_NAME, name);
             store.putString(KEY_PROFILE_GENDER, genderCode);
-            showHome();
+            RadioButton selectedLanguage = findViewById(language.getCheckedRadioButtonId());
+            String newLanguage = selectedLanguage == null ? "te" : String.valueOf(selectedLanguage.getTag());
+            getSharedPreferences(UI_PREFERENCES, Context.MODE_PRIVATE)
+                .edit()
+                .putString(KEY_LANGUAGE, newLanguage)
+                .apply();
+            if (!newLanguage.equals(languageCode)) {
+                recreate();
+            } else {
+                showHome();
+            }
         });
         content.addView(save);
-        setContentView(page.root());
+        if (fromHome) {
+            setAppPage(page, NavSection.MORE);
+        } else {
+            setContentView(page.root());
+        }
     }
 
     private void showHome() {
         Ui.Page page = Ui.page(this);
         LinearLayout content = page.content();
         addBrandHeader(content, BuildConfig.PILOT_DEMO_MODE);
-        content.addView(Ui.space(this, 26));
+        content.addView(Ui.space(this, 18));
         String farmerName = store.getString(KEY_PROFILE_NAME, getString(R.string.brand_name));
         content.addView(Ui.title(this, getString(R.string.hello_farmer, farmerName)));
         content.addView(Ui.space(this, 5));
-        content.addView(Ui.body(this, getString(R.string.home_subtitle)));
-        content.addView(Ui.space(this, 20));
+        content.addView(Ui.body(this, getString(R.string.kaza_cluster_guntur)));
+        content.addView(Ui.space(this, 16));
 
-        LinearLayout landCard = Ui.card(this);
-        landCard.addView(Ui.label(this, getString(R.string.total_land)));
-        landCard.addView(Ui.space(this, 4));
-        landCard.addView(Ui.metric(this, getString(R.string.acres_value)));
-        landCard.addView(Ui.space(this, 8));
-        landCard.addView(Ui.small(this, getString(R.string.location_label)));
-        landCard.addView(Ui.space(this, 8));
-        landCard.addView(Ui.pill(this, getString(R.string.snapshot_note), true));
-        content.addView(landCard);
+        LinearLayout metrics = Ui.horizontal(this);
+        metrics.addView(dashboardMetricCard("▣", "18.20", getString(R.string.acres_short), this::showFarm), Ui.weighted(1));
+        metrics.addView(horizontalGap(8));
+        metrics.addView(dashboardMetricCard("♧", "3", getString(R.string.crops_short), this::showFarm), Ui.weighted(1));
+        metrics.addView(horizontalGap(8));
+        metrics.addView(dashboardMetricCard("▤", "0/12", getString(R.string.lessons_short), this::showTraining), Ui.weighted(1));
+        content.addView(metrics);
 
-        content.addView(Ui.space(this, 22));
+        content.addView(Ui.space(this, 16));
+        content.addView(weatherDashboardCard());
+
+        content.addView(Ui.space(this, 14));
+        LinearLayout warning = Ui.card(this);
+        warning.setBackground(Ui.rounded(Ui.WARNING_BG, Ui.WARNING_BG, Ui.dp(this, 20), 0));
+        TextView warningTitle = Ui.sectionTitle(this, "⚠  " + getString(R.string.rain_alert));
+        warningTitle.setTextColor(Ui.WARNING);
+        warning.addView(warningTitle);
+        warning.addView(Ui.space(this, 6));
+        warning.addView(Ui.body(this, getString(R.string.rain_alert_body)));
+        warning.setOnClickListener(view -> showIntelligence());
+        content.addView(warning);
+
+        content.addView(Ui.space(this, 18));
         content.addView(Ui.sectionTitle(this, getString(R.string.crop_plan)));
         content.addView(Ui.space(this, 10));
         LinearLayout cropCard = Ui.card(this);
@@ -329,32 +391,9 @@ public final class MainActivity extends Activity {
         }
         content.addView(cropCard);
 
-        content.addView(Ui.space(this, 22));
-        content.addView(statusRow());
-        content.addView(Ui.space(this, 24));
-        content.addView(Ui.sectionTitle(this, "రైతు సేవలు"));
-        content.addView(Ui.space(this, 10));
-
-        LinearLayout menu = Ui.card(this);
-        addMenuButton(menu, "నా ప్రొఫైల్", "My profile", () -> showProfile(true));
-        addMenuButton(menu, "నా ఆన్‌బోర్డింగ్", "My onboarding", this::showOnboarding);
-        addMenuButton(menu, "నా పొలం", "My farm", this::showFarm);
-        addMenuButton(menu, "పొలం చరిత్ర", "My farm history", this::showFarmHistory);
-        addMenuButton(menu, "పొలం ఇంటెలిజెన్స్", "Farm intelligence", this::showIntelligence);
-        addMenuButton(menu, "శిక్షణ", "Training", this::showTraining);
-        addMenuButton(menu, "ఇన్‌పుట్స్ & రక్షణ", "Inputs & protection", this::showInputs);
-        addMenuButton(menu, "నేల సంరక్షణ", "Soil care", this::showSoilCare);
-        addMenuButton(menu, "అనుమతి", "Consent", this::showConsentCenter);
-        addMenuButton(menu, "పథకాలు", "Schemes", this::showSchemes);
-        addMenuButton(menu, "మార్కెట్‌ప్లేస్", "Marketplace", this::showMarketplace);
-        content.addView(menu);
-        content.addView(Ui.space(this, 10));
-        Button signOut = Ui.textButton(this, getString(R.string.sign_out));
-        signOut.setOnClickListener(view -> confirmSignOut());
-        content.addView(signOut);
-        content.addView(Ui.space(this, 18));
-        content.addView(Ui.small(this, getString(R.string.contract_footer)));
-        setContentView(page.root());
+        content.addView(Ui.space(this, 12));
+        content.addView(Ui.small(this, getString(R.string.synthetic_weather_note)));
+        setAppPage(page, NavSection.DASHBOARD);
     }
 
     private void showFarm() {
@@ -409,15 +448,52 @@ public final class MainActivity extends Activity {
             getString(R.string.verification_needs_api)
         ));
         content.addView(verify);
-        setContentView(page.root());
+        setAppPage(page, NavSection.FARM);
+    }
+
+    private void showMore() {
+        Ui.Page page = Ui.page(this);
+        LinearLayout content = page.content();
+        addBrandHeader(content, BuildConfig.PILOT_DEMO_MODE);
+        content.addView(Ui.space(this, 16));
+
+        LinearLayout profile = Ui.card(this);
+        profile.addView(Ui.sectionTitle(this, store.getString(KEY_PROFILE_NAME, PilotContract.SNAPSHOT_FARMER_NAME)));
+        profile.addView(Ui.space(this, 4));
+        profile.addView(Ui.small(this, getString(R.string.farmer_workspace_synthetic)));
+        content.addView(profile);
+        content.addView(Ui.space(this, 18));
+        content.addView(Ui.title(this, getString(R.string.all_services)));
+        content.addView(Ui.space(this, 12));
+
+        addMoreRow(content,
+            moreTile("▣", getString(R.string.service_profile), getString(R.string.service_profile_subtitle), () -> showProfile(true)),
+            moreTile("✓", getString(R.string.service_onboarding), getString(R.string.service_onboarding_subtitle), this::showOnboarding));
+        addMoreRow(content,
+            moreTile("↶", getString(R.string.service_history), getString(R.string.service_history_subtitle), this::showFarmHistory),
+            moreTile("✚", getString(R.string.service_inputs), getString(R.string.service_inputs_subtitle), this::showInputs));
+        addMoreRow(content,
+            moreTile("♧", getString(R.string.service_soil), getString(R.string.service_soil_subtitle), this::showSoilCare),
+            moreTile("▤", getString(R.string.service_schemes), getString(R.string.service_schemes_subtitle), this::showSchemes));
+        addMoreRow(content,
+            moreTile("▰", getString(R.string.service_market), getString(R.string.service_market_subtitle), this::showMarketplace),
+            moreTile("◇", getString(R.string.service_consent), getString(R.string.service_consent_subtitle), this::showConsentCenter));
+
+        content.addView(Ui.space(this, 8));
+        Button signOut = Ui.textButton(this, getString(R.string.sign_out));
+        signOut.setTextColor(Color.rgb(166, 49, 49));
+        signOut.setOnClickListener(view -> confirmSignOut());
+        content.addView(signOut);
+        setAppPage(page, NavSection.MORE);
     }
 
     private void showOnboarding() {
         showSnapshotScreen(
-            "నా ఆన్‌బోర్డింగ్",
-            "వెబ్‌లో ఉన్న పాత్ర దరఖాస్తులు మరియు ప్రస్తుత స్థితి.",
+            text("నా ఆన్‌బోర్డింగ్", "मेरा ऑनबोर्डिंग", "என் சேர்க்கை", "My onboarding"),
+            text("వెబ్‌లో ఉన్న పాత్ర దరఖాస్తులు మరియు ప్రస్తుత స్థితి.", "वेब पर भूमिका आवेदन और उनकी वर्तमान स्थिति।", "வலையில் உள்ள பங்கு விண்ணப்பங்களும் தற்போதைய நிலையும்.", "Role applications and their current web status."),
             PilotContract.ONBOARDING_APPLICATIONS,
-            "ఆరు దరఖాస్తులు డ్రాఫ్ట్‌లో ఉన్నాయి; ఏదీ సమర్పించబడలేదు."
+            text("ఆరు దరఖాస్తులు డ్రాఫ్ట్‌లో ఉన్నాయి; ఏదీ సమర్పించబడలేదు.", "छह आवेदन ड्राफ्ट में हैं; कोई जमा नहीं हुआ।", "ஆறு விண்ணப்பங்கள் வரைவில் உள்ளன; எதுவும் சமர்ப்பிக்கப்படவில்லை.", "Six applications are in draft; none has been submitted."),
+            NavSection.MORE
         );
     }
 
@@ -425,8 +501,9 @@ public final class MainActivity extends Activity {
         Ui.Page page = Ui.page(this);
         LinearLayout content = page.content();
         addBackHeader(content, this::showHome);
-        addPageIntro(content, "B2A · MY FARM HISTORY", "పొలం చరిత్ర",
-            "2022–2026 సింథటిక్ రైతు రికార్డులు; ఖర్చు, దిగుబడి, ధర మరియు ఆదాయం.");
+        addPageIntro(content, "B2A · MY FARM HISTORY",
+            text("పొలం చరిత్ర", "खेत इतिहास", "பண்ணை வரலாறு", "Farm history"),
+            text("2022–2026 సింథటిక్ రైతు రికార్డులు; ఖర్చు, దిగుబడి, ధర మరియు ఆదాయం.", "2022–2026 सिंथेटिक किसान रिकॉर्ड: लागत, उपज, मूल्य और आय।", "2022–2026 செயற்கை விவசாயி பதிவுகள்: செலவு, விளைச்சல், விலை மற்றும் வருவாய்.", "Synthetic 2022–2026 farmer records: cost, yield, price and revenue."));
 
         for (PilotContract.FarmHistoryItem item : PilotContract.FARM_HISTORY) {
             LinearLayout card = Ui.card(this);
@@ -434,26 +511,29 @@ public final class MainActivity extends Activity {
             card.addView(Ui.space(this, 3));
             card.addView(Ui.sectionTitle(this, item.crop() + " • " + item.acres()));
             card.addView(Ui.space(this, 9));
-            card.addView(Ui.body(this, "ఖర్చు " + item.cost() + "  •  దిగుబడి " + item.yieldAmount()));
-            card.addView(Ui.body(this, "ధర " + item.price() + "  •  ఆదాయం " + item.revenue()));
+            card.addView(Ui.body(this, text("ఖర్చు", "लागत", "செலவு", "Cost") + " " + item.cost()
+                + "  •  " + text("దిగుబడి", "उपज", "விளைச்சல்", "Yield") + " " + item.yieldAmount()));
+            card.addView(Ui.body(this, text("ధర", "मूल्य", "விலை", "Price") + " " + item.price()
+                + "  •  " + text("ఆదాయం", "आय", "வருவாய்", "Revenue") + " " + item.revenue()));
             card.addView(Ui.space(this, 7));
             card.addView(Ui.small(this, item.note()));
             content.addView(card);
             content.addView(Ui.space(this, 12));
         }
 
-        content.addView(snapshotGroup("బీమా చరిత్ర", PilotContract.INSURANCE_SNAPSHOTS));
+        content.addView(snapshotGroup(text("బీమా చరిత్ర", "बीमा इतिहास", "காப்பீட்டு வரலாறு", "Insurance history"), PilotContract.INSURANCE_SNAPSHOTS));
         content.addView(Ui.space(this, 8));
         content.addView(Ui.small(this, "Sunrise FPO channel desk — PMFBY enrolment (synthetic)"));
-        setContentView(page.root());
+        setAppPage(page, NavSection.FARM);
     }
 
     private void showIntelligence() {
         showSnapshotScreen(
-            "పొలం ఇంటెలిజెన్స్",
-            "Location, weather, soil, crop planning, market, value-add, outcome planner మరియు nearby help.",
+            text("పొలం సమాచారం", "खेत की जानकारी", "பண்ணை தகவல்", "Farm intelligence"),
+            text("స్థానం, వాతావరణం, నేల, పంట ప్రణాళిక, మార్కెట్, విలువ జోడింపు, ఫలిత ప్రణాళిక మరియు సమీప సహాయం.", "स्थान, मौसम, मिट्टी, फसल योजना, बाज़ार, मूल्य-वर्धन, परिणाम योजना और नज़दीकी सहायता।", "இடம், வானிலை, மண், பயிர்த் திட்டம், சந்தை, மதிப்பூட்டல், விளைவு திட்டம் மற்றும் அருகிலுள்ள உதவி.", "Location, weather, soil, crop planning, market, value-add, outcome planning and nearby help."),
             PilotContract.INTELLIGENCE_SECTIONS,
-            "OBSERVED, FORECAST లేదా DERIVED లేబుళ్లను గమనించండి. ఈ snapshotలో market prices synthetic observed; ఇతర సమాచారం derived/reference data."
+            text("పరిశీలించిన, అంచనా లేదా ఉత్పన్న లేబుళ్లను గమనించండి. మార్కెట్ ధరలు సింథటిక్ పరిశీలనలు; ఇతర వివరాలు ఉత్పన్న/సూచన డేటా.", "देखा गया, पूर्वानुमान या व्युत्पन्न लेबल देखें। बाज़ार मूल्य सिंथेटिक अवलोकन हैं; अन्य विवरण व्युत्पन्न/संदर्भ डेटा हैं।", "கவனிக்கப்பட்டது, முன்னறிவிப்பு அல்லது பெறப்பட்டது என்ற குறிச்சொற்களைப் பார்க்கவும். சந்தை விலைகள் செயற்கை கண்காணிப்புகள்; மற்றவை பெறப்பட்ட/குறிப்பு தரவு.", "Note OBSERVED, FORECAST or DERIVED labels. Market prices are synthetic observations; other details are derived/reference data."),
+            NavSection.INTELLIGENCE
         );
     }
 
@@ -461,8 +541,9 @@ public final class MainActivity extends Activity {
         Ui.Page page = Ui.page(this);
         LinearLayout content = page.content();
         addBackHeader(content, this::showHome);
-        addPageIntro(content, "B2B · FARMER PRACTICE LIBRARY", "Farmer training",
-            "విత్తడం నుంచి విలువ సృష్టి వరకు దశల వారీ మార్గదర్శనం. పూర్తి చేసిన పాఠాన్ని గుర్తించండి.");
+        addPageIntro(content, "B2B · FARMER PRACTICE LIBRARY",
+            text("రైతు శిక్షణ", "किसान प्रशिक्षण", "விவசாயி பயிற்சி", "Farmer training"),
+            text("విత్తడం నుంచి విలువ సృష్టి వరకు దశల వారీ మార్గదర్శనం. పూర్తి చేసిన పాఠాన్ని గుర్తించండి.", "बुवाई से मूल्य निर्माण तक चरणबद्ध मार्गदर्शन। पूरा पाठ चिह्नित करें।", "விதைப்பிலிருந்து மதிப்பூட்டல் வரை படிப்படியான வழிகாட்டல். முடித்த பாடத்தைக் குறிக்கவும்.", "Step-by-step guidance from sowing to value creation. Mark completed lessons."));
 
         for (PilotContract.TrainingModule module : PilotContract.TRAINING_MODULES) {
             LinearLayout card = Ui.card(this);
@@ -475,14 +556,19 @@ public final class MainActivity extends Activity {
             card.addView(Ui.body(this, module.summary()));
             card.addView(Ui.space(this, 10));
             card.addView(Ui.divider(this));
-            TextView progress = Ui.small(this, "0/" + module.lessons().size() + " completed • in progress");
+            TextView progress = Ui.small(this, "0/" + module.lessons().size() + " "
+                + text("పూర్తి", "पूर्ण", "முடிந்தது", "completed") + " • "
+                + text("ప్రగతిలో", "प्रगति में", "செயலில்", "in progress"));
             int[] completed = {0};
             for (String lesson : module.lessons()) {
                 CheckBox check = consentCheckBox(lesson);
                 check.setOnCheckedChangeListener((button, checked) -> {
                     completed[0] += checked ? 1 : -1;
-                    progress.setText(completed[0] + "/" + module.lessons().size()
-                        + " completed • " + (completed[0] == module.lessons().size() ? "complete" : "in progress"));
+                    progress.setText(completed[0] + "/" + module.lessons().size() + " "
+                        + text("పూర్తి", "पूर्ण", "முடிந்தது", "completed") + " • "
+                        + (completed[0] == module.lessons().size()
+                            ? text("పూర్తయింది", "पूरा", "நிறைவு", "complete")
+                            : text("ప్రగతిలో", "प्रगति में", "செயலில்", "in progress")));
                 });
                 card.addView(check);
             }
@@ -491,50 +577,58 @@ public final class MainActivity extends Activity {
             content.addView(card);
             content.addView(Ui.space(this, 12));
         }
-        content.addView(Ui.small(this,
-            "ఈ పైలట్ బిల్డ్‌లో completion మార్పులు పరికరం-స్థాయి మాత్రమే; backend sync ఇంకా అమలు కాలేదు."));
-        setContentView(page.root());
+        content.addView(Ui.small(this, text(
+            "ఈ పైలట్ బిల్డ్‌లో పూర్తి చేసిన పాఠాల మార్పులు పరికరం-స్థాయి మాత్రమే; బ్యాక్‌ఎండ్ సమకాలీకరణ ఇంకా అమలు కాలేదు.",
+            "इस पायलट में पाठ पूर्णता केवल डिवाइस पर रहती है; बैकएंड समन्वयन अभी लागू नहीं है।",
+            "இந்த முன்னோட்டத்தில் பாட நிறைவு சாதனத்தில் மட்டுமே சேமிக்கப்படும்; பின்தள ஒத்திசைவு இன்னும் இல்லை.",
+            "Lesson completion is device-only in this pilot; backend sync is not yet implemented."
+        )));
+        setAppPage(page, NavSection.TRAINING);
     }
 
     private void showInputs() {
         showSnapshotScreen(
-            "ఇన్‌పుట్స్ & రక్షణ",
-            "Paddy, Chilli మరియు Cotton కోసం web catalogueలో ఉన్న nutrient మరియు protection guidance.",
+            text("ఇన్‌పుట్స్ & రక్షణ", "इनपुट और सुरक्षा", "இடுபொருட்கள் & பாதுகாப்பு", "Inputs & protection"),
+            text("వరి, మిరప మరియు పత్తి కోసం పోషకాలు మరియు రక్షణ మార్గదర్శనం.", "धान, मिर्च और कपास के लिए पोषण और सुरक्षा मार्गदर्शन।", "நெல், மிளகாய் மற்றும் பருத்திக்கான ஊட்டச்சத்து மற்றும் பாதுகாப்பு வழிகாட்டல்.", "Nutrient and protection guidance for Paddy, Chilli and Cotton."),
             PilotContract.INPUT_GUIDANCE,
-            "మోతాదులు ప్రతి హెక్టారుకు reference values. నేల పరీక్ష, పంట దశ, స్థానిక label మరియు అధీకృత వ్యవసాయ నిపుణుడి నిర్ణయం లేకుండా వర్తింపజేయవద్దు."
+            text("మోతాదులు హెక్టారుకు సూచన విలువలు. నేల పరీక్ష, పంట దశ, స్థానిక లేబుల్ మరియు అధీకృత నిపుణుడి నిర్ణయం లేకుండా ఉపయోగించవద్దు.", "मात्राएँ प्रति हेक्टेयर संदर्भ मान हैं। मिट्टी परीक्षण, फसल अवस्था, स्थानीय लेबल और अधिकृत विशेषज्ञ के निर्णय के बिना उपयोग न करें।", "அளவுகள் ஹெக்டேருக்கான குறிப்புகள். மண் பரிசோதனை, பயிர் நிலை, உள்ளூர் லேபிள் மற்றும் அங்கீகரிக்கப்பட்ட நிபுணர் முடிவு இல்லாமல் பயன்படுத்த வேண்டாம்.", "Rates are per-hectare reference values. Do not apply without a soil test, crop-stage check, local label and authorised expert decision."),
+            NavSection.MORE
         );
     }
 
     private void showSoilCare() {
         showSnapshotScreen(
-            "నేల సంరక్షణ",
-            "Web soil-care catalogueలోని ఎనిమిది retention practices.",
+            text("నేల సంరక్షణ", "मृदा देखभाल", "மண் பராமரிப்பு", "Soil care"),
+            text("వెబ్ నేల సంరక్షణ జాబితాలోని ఎనిమిది నిలుపుదల పద్ధతులు.", "वेब मृदा-देखभाल सूची की आठ संरक्षण विधियाँ।", "வலை மண் பராமரிப்பு பட்டியலில் உள்ள எட்டு பாதுகாப்பு முறைகள்.", "Eight retention practices from the web soil-care catalogue."),
             PilotContract.SOIL_PRACTICES,
-            "Gypsum లేదా lime వంటి amendments కోసం soil-lab ఫలితం తప్పనిసరి."
+            text("జిప్సం లేదా సున్నం వంటి సవరణలకు నేల ప్రయోగశాల ఫలితం తప్పనిసరి.", "जिप्सम या चूना जैसे संशोधनों के लिए मिट्टी प्रयोगशाला परिणाम अनिवार्य है।", "ஜிப்சம் அல்லது சுண்ணாம்பு போன்ற திருத்தங்களுக்கு மண் ஆய்வு முடிவு அவசியம்.", "A soil-lab result is mandatory before amendments such as gypsum or lime."),
+            NavSection.MORE
         );
     }
 
     private void showSchemes() {
         showSnapshotScreen(
-            "పథకాలు",
-            "Web scheme discoveryలో కనిపించే catalogue మరియు Ramesh యొక్క application status.",
+            text("పథకాలు", "योजनाएँ", "திட்டங்கள்", "Schemes"),
+            text("వెబ్ పథకాల జాబితా మరియు రైతు దరఖాస్తు స్థితి.", "वेब योजना सूची और किसान आवेदन स्थिति।", "வலைத் திட்டப் பட்டியலும் விவசாயியின் விண்ணப்ப நிலையும்.", "Web scheme catalogue and farmer application status."),
             PilotContract.SCHEMES,
-            "Eligibility checks synthetic/preliminary మాత్రమే; ప్రభుత్వ అర్హత లేదా ఆమోదంగా పరిగణించవద్దు."
+            text("అర్హత తనిఖీలు సింథటిక్/ప్రాథమికం మాత్రమే; ప్రభుత్వ అర్హత లేదా ఆమోదంగా పరిగణించవద్దు.", "पात्रता जाँच केवल सिंथेटिक/प्रारंभिक है; इसे सरकारी पात्रता या स्वीकृति न मानें।", "தகுதிச் சரிபார்ப்புகள் செயற்கை/ஆரம்ப நிலை மட்டுமே; அரசு தகுதி அல்லது ஒப்புதலாக கருத வேண்டாம்.", "Eligibility checks are synthetic/preliminary and are not government eligibility or approval."),
+            NavSection.MORE
         );
     }
 
     private void showMarketplace() {
         showSnapshotScreen(
-            "మార్కెట్‌ప్లేస్",
-            "Farmer marketplace profile, listings, RFQs, quotes, orders మరియు disputes.",
+            text("మార్కెట్‌ప్లేస్", "मार्केटप्लेस", "சந்தை", "Marketplace"),
+            text("రైతు మార్కెట్ ప్రొఫైల్, జాబితాలు, ధర అభ్యర్థనలు, కోట్స్, ఆర్డర్లు మరియు వివాదాలు.", "किसान बाज़ार प्रोफ़ाइल, सूचियाँ, मूल्य अनुरोध, कोट, ऑर्डर और विवाद।", "விவசாயி சந்தை சுயவிவரம், பட்டியல்கள், விலை கோரிக்கைகள், மேற்கோள்கள், ஆர்டர்கள் மற்றும் சர்ச்சைகள்.", "Farmer marketplace profile, listings, RFQs, quotes, orders and disputes."),
             PilotContract.MARKETPLACE_STATE,
-            "ప్రస్తుత web farmer accountలో marketplace activity లేదు. Activation చేయకుండా mobile app కూడా empty stateనే చూపుతుంది."
+            text("ప్రస్తుత వెబ్ రైతు ఖాతాలో మార్కెట్ కార్యకలాపం లేదు; మొబైల్ యాప్ కూడా ఖాళీ స్థితినే చూపుతుంది.", "वर्तमान वेब किसान खाते में बाज़ार गतिविधि नहीं है; मोबाइल ऐप भी खाली स्थिति दिखाता है।", "தற்போதைய வலை விவசாயி கணக்கில் சந்தைச் செயல்பாடு இல்லை; கைபேசி செயலியும் காலியான நிலையைக் காட்டுகிறது.", "The current web farmer account has no marketplace activity; the mobile app shows the same empty state."),
+            NavSection.MORE
         );
     }
 
     private void showSnapshotScreen(String title, String subtitle,
                                     java.util.List<PilotContract.SnapshotItem> items,
-                                    String footer) {
+                                    String footer, NavSection activeSection) {
         Ui.Page page = Ui.page(this);
         LinearLayout content = page.content();
         addBackHeader(content, this::showHome);
@@ -544,7 +638,7 @@ public final class MainActivity extends Activity {
             content.addView(Ui.space(this, 12));
         }
         content.addView(Ui.small(this, footer));
-        setContentView(page.root());
+        setAppPage(page, activeSection);
     }
 
     private void showConsentCenter() {
@@ -570,18 +664,18 @@ public final class MainActivity extends Activity {
         content.addView(Ui.space(this, 8));
         content.addView(Ui.body(this, getString(R.string.optional_unavailable)));
         content.addView(Ui.space(this, 14));
-        content.addView(optionalPurposeCard("భూమి రికార్డు ధృవీకరణ", "tg_bhu_bharati"));
+        content.addView(optionalPurposeCard(text("భూమి రికార్డు ధృవీకరణ", "भूमि रिकॉर्ड सत्यापन", "நிலப் பதிவு சரிபார்ப்பு", "Land-record verification"), "tg_bhu_bharati"));
         content.addView(Ui.space(this, 10));
-        content.addView(optionalPurposeCard("FPO సభ్యత్వ ధృవీకరణ", "fpo_membership_register"));
+        content.addView(optionalPurposeCard(text("FPO సభ్యత్వ ధృవీకరణ", "FPO सदस्यता सत्यापन", "FPO உறுப்பினர் சரிபார்ப்பு", "FPO membership verification"), "fpo_membership_register"));
         content.addView(Ui.space(this, 10));
-        content.addView(optionalPurposeCard("వ్యవసాయ సలహా", "agronomic_advisory"));
+        content.addView(optionalPurposeCard(text("వ్యవసాయ సలహా", "कृषि सलाह", "வேளாண் ஆலோசனை", "Agronomic advice"), "agronomic_advisory"));
         content.addView(Ui.space(this, 22));
 
         Button withdraw = Ui.secondaryButton(this, getString(R.string.withdraw_consent));
         withdraw.setTextColor(Color.rgb(166, 49, 49));
         withdraw.setOnClickListener(view -> confirmWithdrawConsent());
         content.addView(withdraw);
-        setContentView(page.root());
+        setAppPage(page, NavSection.MORE);
     }
 
     private LinearLayout cropRow(PilotContract.CropAllocation crop) {
@@ -618,6 +712,161 @@ public final class MainActivity extends Activity {
         bar.addView(empty, new LinearLayout.LayoutParams(0, Ui.dp(this, 9), remaining));
         wrapper.addView(bar);
         return wrapper;
+    }
+
+    private View horizontalGap(int widthDp) {
+        View gap = new View(this);
+        gap.setLayoutParams(new LinearLayout.LayoutParams(Ui.dp(this, widthDp), 1));
+        return gap;
+    }
+
+    private LinearLayout dashboardMetricCard(String icon, String value, String label, Runnable action) {
+        LinearLayout card = Ui.card(this);
+        card.setPadding(Ui.dp(this, 12), Ui.dp(this, 12), Ui.dp(this, 12), Ui.dp(this, 12));
+        TextView iconView = Ui.label(this, icon);
+        iconView.setTextColor(Ui.GREEN_700);
+        card.addView(iconView);
+        card.addView(Ui.space(this, 5));
+        TextView valueView = Ui.sectionTitle(this, value);
+        valueView.setTextColor(Ui.GREEN_900);
+        card.addView(valueView);
+        card.addView(Ui.small(this, label));
+        card.setOnClickListener(view -> action.run());
+        return card;
+    }
+
+    private LinearLayout weatherDashboardCard() {
+        LinearLayout card = Ui.card(this);
+        LinearLayout header = Ui.horizontal(this);
+        LinearLayout labels = Ui.vertical(this);
+        labels.setLayoutParams(Ui.weighted(1));
+        labels.addView(Ui.sectionTitle(this, getString(R.string.seven_day_weather)));
+        labels.addView(Ui.small(this, getString(R.string.kaza_synthetic_forecast)));
+        header.addView(labels);
+        TextView temperature = Ui.metric(this, PilotContract.CURRENT_TEMPERATURE_C + "°");
+        temperature.setGravity(Gravity.END);
+        header.addView(temperature, new LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        card.addView(header);
+        card.addView(Ui.space(this, 5));
+        card.addView(Ui.body(this, getString(R.string.current_weather_conditions)));
+        card.addView(Ui.space(this, 8));
+        card.addView(Ui.small(this,
+            getString(R.string.humidity) + " " + PilotContract.CURRENT_HUMIDITY_PCT + "%   •   "
+                + getString(R.string.wind) + " " + PilotContract.CURRENT_WIND_KPH + " km/h   •   "
+                + getString(R.string.rain) + " "
+                + String.format(Locale.US, "%.1f", PilotContract.CURRENT_RAINFALL_MM) + " mm"));
+        card.addView(Ui.space(this, 13));
+
+        HorizontalScrollView scroll = new HorizontalScrollView(this);
+        scroll.setHorizontalScrollBarEnabled(false);
+        LinearLayout days = Ui.horizontal(this);
+        days.setLayoutParams(new HorizontalScrollView.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        LocalDate today = LocalDate.now();
+        Locale selectedLocale = Locale.forLanguageTag(languageCode + "-IN");
+        DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("EEE", selectedLocale);
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMM", selectedLocale);
+        for (PilotContract.WeatherDay day : PilotContract.WEATHER_FORECAST) {
+            LocalDate date = today.plusDays(day.dayOffset());
+            LinearLayout dayCard = Ui.vertical(this);
+            dayCard.setPadding(Ui.dp(this, 10), Ui.dp(this, 10), Ui.dp(this, 10), Ui.dp(this, 10));
+            dayCard.setBackground(Ui.rounded(Ui.CREAM, Ui.BORDER, Ui.dp(this, 14), Ui.dp(this, 1)));
+            dayCard.setGravity(Gravity.CENTER);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(Ui.dp(this, 96), ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMarginEnd(Ui.dp(this, 9));
+            dayCard.setLayoutParams(params);
+            TextView dayLabel = Ui.label(this, dayFormatter.format(date));
+            dayLabel.setGravity(Gravity.CENTER);
+            dayCard.addView(dayLabel);
+            TextView dateLabel = Ui.small(this, dateFormatter.format(date));
+            dateLabel.setGravity(Gravity.CENTER);
+            dayCard.addView(dateLabel);
+            TextView symbol = Ui.title(this, day.symbol());
+            symbol.setGravity(Gravity.CENTER);
+            dayCard.addView(symbol);
+            TextView range = Ui.label(this, day.maximumC() + "° / " + day.minimumC() + "°");
+            range.setGravity(Gravity.CENTER);
+            dayCard.addView(range);
+            TextView rain = Ui.small(this, String.format(Locale.US, "%.1f mm", day.rainfallMm()));
+            rain.setTextColor(Color.rgb(35, 111, 178));
+            rain.setGravity(Gravity.CENTER);
+            dayCard.addView(rain);
+            days.addView(dayCard);
+        }
+        scroll.addView(days);
+        card.addView(scroll);
+        return card;
+    }
+
+    private Button moreTile(String icon, String title, String subtitle, Runnable action) {
+        Button button = Ui.secondaryButton(this, icon + "\n" + title + "\n" + subtitle);
+        button.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+        button.setTextColor(Ui.TEXT);
+        button.setMinHeight(Ui.dp(this, 108));
+        button.setOnClickListener(view -> action.run());
+        return button;
+    }
+
+    private void addMoreRow(LinearLayout content, Button left, Button right) {
+        LinearLayout row = Ui.horizontal(this);
+        row.addView(left, Ui.weighted(1));
+        row.addView(horizontalGap(10));
+        row.addView(right, Ui.weighted(1));
+        content.addView(row);
+        content.addView(Ui.space(this, 10));
+    }
+
+    private void setAppPage(Ui.Page page, NavSection activeSection) {
+        LinearLayout shell = new LinearLayout(this);
+        shell.setOrientation(LinearLayout.VERTICAL);
+        shell.setBackgroundColor(Ui.CREAM);
+        shell.addView(page.root(), new LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT, 0, 1
+        ));
+        shell.addView(bottomNavigation(activeSection), new LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
+        ));
+        setContentView(shell);
+    }
+
+    private LinearLayout bottomNavigation(NavSection activeSection) {
+        LinearLayout navigation = Ui.horizontal(this);
+        navigation.setPadding(Ui.dp(this, 8), Ui.dp(this, 7), Ui.dp(this, 8), Ui.dp(this, 5));
+        navigation.setBackgroundColor(Color.WHITE);
+        navigation.setElevation(Ui.dp(this, 12));
+        navigation.addView(navigationButton("▦", getString(R.string.nav_dashboard),
+            activeSection == NavSection.DASHBOARD, this::showHome), Ui.weighted(1));
+        navigation.addView(navigationButton("▣", getString(R.string.nav_farm),
+            activeSection == NavSection.FARM, this::showFarm), Ui.weighted(1));
+        navigation.addView(navigationButton("⌁", getString(R.string.nav_intelligence),
+            activeSection == NavSection.INTELLIGENCE, this::showIntelligence), Ui.weighted(1));
+        navigation.addView(navigationButton("▤", getString(R.string.nav_training),
+            activeSection == NavSection.TRAINING, this::showTraining), Ui.weighted(1));
+        navigation.addView(navigationButton("•••", getString(R.string.nav_more),
+            activeSection == NavSection.MORE, this::showMore), Ui.weighted(1));
+        navigation.setOnApplyWindowInsetsListener((view, insets) -> {
+            android.graphics.Insets bars = insets.getInsets(android.view.WindowInsets.Type.systemBars());
+            view.setPadding(Ui.dp(this, 8), Ui.dp(this, 7), Ui.dp(this, 8), Ui.dp(this, 5) + bars.bottom);
+            return insets;
+        });
+        return navigation;
+    }
+
+    private Button navigationButton(String icon, String title, boolean selected, Runnable action) {
+        Button button = new Button(this);
+        button.setText(icon + "\n" + title);
+        button.setTextSize(10);
+        button.setTextColor(selected ? Ui.GREEN_700 : Ui.MUTED);
+        button.setGravity(Gravity.CENTER);
+        button.setAllCaps(false);
+        button.setMinHeight(Ui.dp(this, 58));
+        button.setPadding(Ui.dp(this, 2), Ui.dp(this, 4), Ui.dp(this, 2), Ui.dp(this, 4));
+        button.setBackground(selected
+            ? Ui.rounded(Ui.GREEN_100, Ui.GREEN_100, Ui.dp(this, 13), 0)
+            : Ui.rounded(Color.WHITE, Color.WHITE, Ui.dp(this, 13), 0));
+        button.setOnClickListener(view -> action.run());
+        return button;
     }
 
     private void addMenuButton(LinearLayout menu, String title, String subtitle, Runnable action) {
@@ -780,7 +1029,7 @@ public final class MainActivity extends Activity {
     private void confirmSignOut() {
         new AlertDialog.Builder(this)
             .setTitle(getString(R.string.sign_out))
-            .setMessage("ఈ పరికరంలోని పైలట్ సెషన్ మరియు స్థానిక వివరాలు తొలగించబడతాయి.")
+            .setMessage(text("ఈ పరికరంలోని పైలట్ సెషన్ మరియు స్థానిక వివరాలు తొలగించబడతాయి.", "इस डिवाइस का पायलट सत्र और स्थानीय विवरण मिट जाएगा।", "இந்தச் சாதனத்தின் முன்னோட்ட அமர்வும் உள்ளூர் விவரங்களும் நீக்கப்படும்.", "The pilot session and local details on this device will be removed."))
             .setNegativeButton(getString(R.string.cancel), null)
             .setPositiveButton(getString(R.string.sign_out), (dialog, which) -> clearLocalSession())
             .show();
@@ -814,7 +1063,7 @@ public final class MainActivity extends Activity {
         new AlertDialog.Builder(this)
             .setTitle(title)
             .setMessage(message)
-            .setPositiveButton("సరే", null)
+            .setPositiveButton(text("సరే", "ठीक है", "சரி", "OK"), null)
             .show();
     }
 
@@ -822,10 +1071,19 @@ public final class MainActivity extends Activity {
         Toast.makeText(this, stringResource, Toast.LENGTH_LONG).show();
     }
 
+    private String text(String telugu, String hindi, String tamil, String english) {
+        return switch (languageCode) {
+            case "hi" -> hindi;
+            case "ta" -> tamil;
+            case "en" -> english;
+            default -> telugu;
+        };
+    }
+
     private String formatTime(String instant) {
         try {
             DateTimeFormatter formatter = DateTimeFormatter
-                .ofPattern("dd-MM-yyyy HH:mm", Locale.forLanguageTag(PilotContract.PRIMARY_LOCALE))
+                .ofPattern("dd-MM-yyyy HH:mm", Locale.forLanguageTag(languageCode + "-IN"))
                 .withZone(ZoneId.systemDefault());
             return formatter.format(Instant.parse(instant));
         } catch (Exception ignored) {

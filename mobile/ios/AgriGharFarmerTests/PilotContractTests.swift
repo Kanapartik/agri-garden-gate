@@ -41,6 +41,18 @@ final class PilotContractTests: XCTestCase {
         XCTAssertEqual(PilotContract.marketplaceState.map(\.detail), ["Not activated", "0", "0", "0"])
     }
 
+    func testDashboardIncludesSevenDaySyntheticForecast() {
+        XCTAssertEqual(PilotContract.weatherForecast.count, 7)
+        XCTAssertEqual(PilotContract.currentTemperatureC, 33)
+        XCTAssertEqual(PilotContract.weatherForecast[1].rainfallMm, 16.0, accuracy: 0.01)
+    }
+
+    func testSupportedLanguagesHaveIndianLocales() {
+        XCTAssertEqual(AppLanguage.allCases.map(\.rawValue), ["te", "hi", "ta", "en"])
+        XCTAssertEqual(AppLanguage.tamil.localeIdentifier, "ta-IN")
+        XCTAssertEqual(AppLanguage.english.nativeName, "English")
+    }
+
     func testOTPShapeRequiresExactlySixDigits() {
         XCTAssertTrue(PilotContract.isValidOTPShape("123456"))
         XCTAssertFalse(PilotContract.isValidOTPShape("12345"))

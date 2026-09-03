@@ -8,7 +8,7 @@ public final class PilotContract {
     public static final int MIN_ANDROID_SDK = 31;
     public static final String PRIMARY_LOCALE = "te-IN";
     public static final String PILOT_ID = "pilot-guntur-kaza-synthetic-001";
-    public static final String SNAPSHOT_VERSION = "guntur-kaza-web-parity-2026-09-02-v1";
+    public static final String SNAPSHOT_VERSION = "guntur-kaza-dashboard-weather-2026-09-02-v1";
     public static final String SNAPSHOT_FARMER_NAME = "Ramesh Naidu Vemuri";
     public static final String SNAPSHOT_FARMER_GENDER = "male";
     public static final String CONSENT_CONTRACT_VERSION = "mobile-consent-2026-08-v1";
@@ -129,6 +129,21 @@ public final class PilotContract {
         item("orders", "Orders and disputes", "0", "No orders or disputes.")
     );
 
+    public static final int CURRENT_TEMPERATURE_C = 33;
+    public static final int CURRENT_HUMIDITY_PCT = 77;
+    public static final int CURRENT_WIND_KPH = 10;
+    public static final double CURRENT_RAINFALL_MM = 9.0;
+    public static final String CURRENT_WEATHER_CONDITIONS = "Cloudy with showers";
+    public static final List<WeatherDay> WEATHER_FORECAST = List.of(
+        new WeatherDay(1, 27, 37, 12.8, "Rain likely", "☔"),
+        new WeatherDay(2, 28, 38, 16.0, "Rain likely", "🌧"),
+        new WeatherDay(3, 27, 39, 0.0, "Mainly dry", "☀"),
+        new WeatherDay(4, 28, 37, 3.2, "Isolated showers", "🌦"),
+        new WeatherDay(5, 27, 38, 6.4, "Isolated showers", "🌦"),
+        new WeatherDay(6, 28, 39, 9.6, "Rain likely", "🌧"),
+        new WeatherDay(7, 27, 37, 12.8, "Rain likely", "☔")
+    );
+
     public static final BigDecimal PILOT_TOTAL_ACRES = new BigDecimal("18.20");
 
     private PilotContract() {
@@ -217,6 +232,16 @@ public final class PilotContract {
         String title,
         String summary,
         List<String> lessons
+    ) {
+    }
+
+    public record WeatherDay(
+        int dayOffset,
+        int minimumC,
+        int maximumC,
+        double rainfallMm,
+        String conditions,
+        String symbol
     ) {
     }
 }
