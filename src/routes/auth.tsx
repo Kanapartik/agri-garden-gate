@@ -6,6 +6,8 @@ import { lovable } from "@/integrations/lovable/index";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ArrowLeft, LockKeyhole, ShieldCheck, Sprout } from "lucide-react";
+import agrivahMark from "@/assets/agrivah-mark.png.asset.json";
 
 const TITLE = "Sign in — AgriGhar ATAP";
 const DESCRIPTION =
@@ -101,18 +103,40 @@ function AuthPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-6 py-12">
-      <div className="w-full max-w-md">
-        <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">
-          ← AgriGhar ATAP
-        </Link>
-        <div className="mt-4 rounded-lg border border-border bg-card p-7">
-          <h1 className="text-xl font-semibold">
+    <main className="app-canvas relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-10 sm:px-6">
+      <div className="relative w-full max-w-[460px]">
+        <div className="relative z-10 overflow-hidden rounded-3xl border border-border bg-card/90 p-7 shadow-raised backdrop-blur-xl sm:p-10">
+          <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-primary via-accent to-primary" />
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back to Agrivah
+          </Link>
+
+          <div className="mb-8 mt-7 text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary shadow-raised">
+              <img
+                src={agrivahMark.url}
+                alt="Agrivah"
+                width={490}
+                height={480}
+                className="h-12 w-auto"
+              />
+            </div>
+            <p className="font-display text-xl font-bold text-primary">AGRIVAH</p>
+            <p className="mt-1 text-xs font-semibold uppercase text-muted-foreground">
+              Connect • Collaborate • Transform
+            </p>
+          </div>
+
+          <h1 className="text-2xl font-bold">
             {mode === "signin" ? "Sign in" : "Create your account"}
           </h1>
-          <p className="mt-1.5 text-sm text-muted-foreground">
-            Access is default-deny. Roles and organisation membership are granted by an authorized
-            administrator after sign-in.
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            {mode === "signin"
+              ? "Access your secure farming workspace."
+              : "Create your account, then complete your role profile."}
           </p>
 
           {awaitingConfirm ? (
@@ -121,7 +145,7 @@ function AuthPage() {
             </p>
           ) : (
             <>
-              <form onSubmit={onSubmit} className="mt-6 space-y-4">
+              <form onSubmit={onSubmit} className="mt-7 space-y-5">
                 {mode === "signup" && (
                   <div className="space-y-1.5">
                     <Label htmlFor="fullName">Full name</Label>
@@ -159,33 +183,43 @@ function AuthPage() {
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full" disabled={busy}>
-                  {mode === "signin" ? "Sign in" : "Create account"}
+                <Button type="submit" size="lg" className="w-full" disabled={busy}>
+                  <LockKeyhole /> {mode === "signin" ? "Enter workspace" : "Create account"}
                 </Button>
               </form>
 
               <Button
                 type="button"
                 variant="outline"
-                className="mt-3 w-full"
+                className="mt-3 h-11 w-full"
                 onClick={onGoogle}
                 disabled={busy}
               >
                 Continue with Google
               </Button>
 
-              <button
+              <Button
                 type="button"
-                className="mt-5 text-sm text-primary hover:underline"
+                variant="link"
+                className="mt-4 h-auto w-full"
                 onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
               >
                 {mode === "signin"
                   ? "No account yet? Create one"
                   : "Already have an account? Sign in"}
-              </button>
+              </Button>
             </>
           )}
+          <div className="mt-7 flex items-start gap-3 border-t border-border pt-5 text-xs leading-5 text-muted-foreground">
+            <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+            <p>
+              Your information is private by default. Access is granted only for approved roles and
+              purposes.
+            </p>
+          </div>
         </div>
+        <div className="absolute -bottom-3 -right-3 h-full w-full rounded-3xl bg-primary/5" />
+        <div className="absolute -bottom-6 -right-6 h-full w-full rounded-3xl bg-accent/5" />
       </div>
     </main>
   );
