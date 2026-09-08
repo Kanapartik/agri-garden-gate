@@ -8,6 +8,24 @@ import { Button } from "@/components/ui/button";
 import { LanguageSwitcher, useLanguage } from "@/components/atap/LanguageProvider";
 import type { AppRole } from "@/lib/atap/policy";
 import agrivahMark from "@/assets/agrivah-mark.png.asset.json";
+import {
+  BadgeCheck,
+  BookOpenCheck,
+  Building2,
+  ChevronRight,
+  ClipboardList,
+  FileClock,
+  Landmark,
+  LayoutDashboard,
+  Leaf,
+  LogOut,
+  Map,
+  PackageSearch,
+  ShieldCheck,
+  Sprout,
+  Tractor,
+  UserRound,
+} from "lucide-react";
 
 type NavItem = { to: string; label: string; labelKey: string };
 
@@ -161,45 +179,70 @@ export function AppShell({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="app-canvas flex min-h-screen flex-col bg-background">
       {signedIn ? (
-        <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur">
-          <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3">
-            <Link to="/" className="flex items-center gap-2 font-display text-base font-bold">
+        <header className="sticky top-0 z-30 border-b border-border bg-card/90 backdrop-blur-xl">
+          <div className="mx-auto grid w-full max-w-[1600px] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 lg:px-6">
+            <Link to="/" className="flex min-w-0 items-center gap-3 font-display text-base font-bold">
               <img
                 src={agrivahMark.url}
                 alt="Agrivah logo"
                 width={490}
                 height={480}
-                className="h-8 w-auto"
+                className="h-10 w-auto shrink-0"
               />
-              <span className="tracking-[0.12em] text-primary">AGRIVAH</span>
-              <span className="text-xs font-semibold tracking-wide text-muted-foreground">ATAP</span>
+              <span className="min-w-0 leading-tight">
+                <span className="block truncate text-base text-primary">AGRIVAH</span>
+                <span className="block truncate text-[10px] font-semibold uppercase text-muted-foreground">Farmer platform</span>
+              </span>
             </Link>
-            <nav className="flex flex-wrap items-center gap-1 text-sm" aria-label="Main">
-              {items.map((item) => (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  activeProps={{ className: "bg-secondary text-secondary-foreground" }}
-                  className="rounded-md px-2.5 py-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-secondary-foreground"
-                >
-                  {t(item.labelKey)}
-                </Link>
-              ))}
-            </nav>
-            <div className="ml-auto flex items-center gap-2">
+            <div className="flex shrink-0 items-center gap-2">
               <LanguageSwitcher />
-              <Button variant="outline" size="sm" onClick={signOut}>
-                {t("shell.signOut")}
+              <Button variant="ghost" size="icon" onClick={signOut} title={t("shell.signOut")} aria-label={t("shell.signOut")}>
+                <LogOut />
               </Button>
             </div>
           </div>
+          <nav className="flex gap-1 overflow-x-auto border-t border-border px-4 py-2 lg:hidden" aria-label="Main">
+            {items.map((item) => (
+              <Link key={item.to} to={item.to} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground" }} className="shrink-0 rounded-lg px-3 py-2 text-xs font-medium text-muted-foreground">
+                {t(item.labelKey)}
+              </Link>
+            ))}
+          </nav>
         </header>
       ) : null}
-      <div className="flex-1">{children}</div>
-      <footer className="border-t border-border px-6 py-6 text-xs text-muted-foreground">
-        <div className="mx-auto max-w-6xl">
+      <div className={signedIn ? "mx-auto flex w-full max-w-[1600px] flex-1" : "flex-1"}>
+        {signedIn ? (
+          <aside className="sticky top-[65px] hidden h-[calc(100vh-65px)] w-64 shrink-0 border-r border-sidebar-border bg-sidebar/80 px-3 py-5 backdrop-blur-xl lg:flex lg:flex-col">
+            <p className="px-3 pb-3 text-[10px] font-bold uppercase text-muted-foreground">Your workspace</p>
+            <nav className="flex-1 space-y-1 overflow-y-auto" aria-label="Main">
+              {items.map((item) => {
+                const Icon = navIcon(item.to);
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm" }}
+                    className="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
+                  >
+                    <Icon className="h-4 w-4 shrink-0" />
+                    <span className="min-w-0 flex-1 truncate">{t(item.labelKey)}</span>
+                    <ChevronRight className="h-3.5 w-3.5 shrink-0 opacity-0 transition-opacity group-hover:opacity-60" />
+                  </Link>
+                );
+              })}
+            </nav>
+            <div className="mt-4 rounded-xl border border-sidebar-border bg-background/60 p-3 text-xs text-muted-foreground">
+              <ShieldCheck className="mb-2 h-4 w-4 text-primary" />
+              Your data stays purpose-scoped and under your consent.
+            </div>
+          </aside>
+        ) : null}
+        <div className="min-w-0 flex-1">{children}</div>
+      </div>
+      <footer className={signedIn ? "border-t border-border px-6 py-5 text-xs text-muted-foreground lg:ml-64" : "border-t border-border px-6 py-6 text-xs text-muted-foreground"}>
+        <div className="mx-auto max-w-6xl text-center lg:text-left">
           {t("shell.footer")}
         </div>
       </footer>
@@ -219,17 +262,33 @@ export function PageHeader({
   actions?: ReactNode;
 }) {
   return (
-    <div className="flex flex-wrap items-end justify-between gap-4">
-      <div className="max-w-2xl">
+    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 border-b border-border pb-6 sm:flex sm:flex-wrap sm:justify-between">
+      <div className="min-w-0 max-w-3xl">
         {eyebrow ? (
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent-foreground">
+          <p className="text-xs font-bold uppercase text-accent">
             {eyebrow}
           </p>
         ) : null}
-        <h1 className="mt-1 text-2xl font-bold sm:text-3xl">{title}</h1>
-        {description ? <p className="mt-2 text-sm text-muted-foreground">{description}</p> : null}
+        <h1 className="mt-2 text-2xl font-bold leading-tight sm:text-3xl">{title}</h1>
+        {description ? <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">{description}</p> : null}
       </div>
-      {actions ? <div className="flex gap-2">{actions}</div> : null}
+      {actions ? <div className="flex shrink-0 gap-2">{actions}</div> : null}
     </div>
   );
+}
+
+function navIcon(to: string) {
+  if (to === "/profile") return UserRound;
+  if (to === "/onboarding") return ClipboardList;
+  if (to === "/farm") return Tractor;
+  if (to === "/farm-history") return FileClock;
+  if (to === "/intelligence") return Sprout;
+  if (to === "/practices") return BookOpenCheck;
+  if (to === "/inputs") return PackageSearch;
+  if (to === "/soil-care") return Leaf;
+  if (to === "/consent") return BadgeCheck;
+  if (to === "/discovery" || to === "/schemes") return Landmark;
+  if (to === "/fpo" || to === "/insurer") return Building2;
+  if (to === "/rollout") return Map;
+  return LayoutDashboard;
 }
