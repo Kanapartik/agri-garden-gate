@@ -103,15 +103,20 @@ export function navItemsForRoles(
   if (isInsurerMember || isOversight) {
     items.push({ to: "/insurer", label: "Insurer revenue", labelKey: "nav.insurerRevenue" });
     items.push({ to: "/insurer-risk", label: "Risk surveillance", labelKey: "nav.insurerRisk" });
-    items.push({ to: "/insurer-claims", label: "Claims management", labelKey: "nav.insurerClaims" });
-    items.push({ to: "/insurer-policies", label: "Policies & enrolment", labelKey: "nav.insurerPolicies" });
+    items.push({
+      to: "/insurer-claims",
+      label: "Claims management",
+      labelKey: "nav.insurerClaims",
+    });
+    items.push({
+      to: "/insurer-policies",
+      label: "Policies & enrolment",
+      labelKey: "nav.insurerPolicies",
+    });
   }
 
-
   if (
-    roles.some(
-      (r) => r === "scheme_publisher" || r === "scheme_reviewer" || r === "platform_admin",
-    )
+    roles.some((r) => r === "scheme_publisher" || r === "scheme_reviewer" || r === "platform_admin")
   ) {
     items.push({ to: "/schemes", label: "Government", labelKey: "nav.government" });
   }
@@ -130,8 +135,10 @@ export function navItemsForRoles(
     items.push({ to: "/admin", label: "Admin", labelKey: "nav.admin" });
   }
 
-  if (roles.includes("platform_admin")) items.push({ to: "/configuration", label: "Configuration", labelKey: "nav.configuration" });
-  if (isEngineering) items.push({ to: "/architecture", label: "Architecture", labelKey: "nav.architecture" });
+  if (roles.includes("platform_admin"))
+    items.push({ to: "/configuration", label: "Configuration", labelKey: "nav.configuration" });
+  if (isEngineering)
+    items.push({ to: "/architecture", label: "Architecture", labelKey: "nav.architecture" });
   return items;
 }
 
@@ -144,7 +151,9 @@ function useSessionRoles() {
     supabase.auth.getSession().then(({ data }) => {
       if (active) setSignedIn(Boolean(data.session));
     });
-    const { data } = supabase.auth.onAuthStateChange((_e, session) => setSignedIn(Boolean(session)));
+    const { data } = supabase.auth.onAuthStateChange((_e, session) =>
+      setSignedIn(Boolean(session)),
+    );
     return () => {
       active = false;
       data.subscription.unsubscribe();
@@ -183,7 +192,10 @@ export function AppShell({ children }: { children: ReactNode }) {
       {signedIn ? (
         <header className="sticky top-0 z-30 border-b border-border bg-card/90 backdrop-blur-xl">
           <div className="mx-auto grid w-full max-w-[1600px] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 lg:px-6">
-            <Link to="/" className="flex min-w-0 items-center gap-3 font-display text-base font-bold">
+            <Link
+              to="/"
+              className="flex min-w-0 items-center gap-3 font-display text-base font-bold"
+            >
               <img
                 src={agrivahMark.url}
                 alt="Agrivah logo"
@@ -193,19 +205,35 @@ export function AppShell({ children }: { children: ReactNode }) {
               />
               <span className="min-w-0 leading-tight">
                 <span className="block truncate text-base text-primary">AGRIVAH</span>
-                <span className="block truncate text-[10px] font-semibold uppercase text-muted-foreground">Farmer platform</span>
+                <span className="block truncate text-[10px] font-semibold uppercase text-muted-foreground">
+                  Farmer platform
+                </span>
               </span>
             </Link>
             <div className="flex shrink-0 items-center gap-2">
               <LanguageSwitcher />
-              <Button variant="ghost" size="icon" onClick={signOut} title={t("shell.signOut")} aria-label={t("shell.signOut")}>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={signOut}
+                title={t("shell.signOut")}
+                aria-label={t("shell.signOut")}
+              >
                 <LogOut />
               </Button>
             </div>
           </div>
-          <nav className="flex gap-1 overflow-x-auto border-t border-border px-4 py-2 lg:hidden" aria-label="Main">
+          <nav
+            className="flex gap-1 overflow-x-auto border-t border-border px-4 py-2 lg:hidden"
+            aria-label="Main"
+          >
             {items.map((item) => (
-              <Link key={item.to} to={item.to} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground" }} className="shrink-0 rounded-lg px-3 py-2 text-xs font-medium text-muted-foreground">
+              <Link
+                key={item.to}
+                to={item.to}
+                activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground" }}
+                className="shrink-0 rounded-lg px-3 py-2 text-xs font-medium text-muted-foreground"
+              >
                 {t(item.labelKey)}
               </Link>
             ))}
@@ -215,7 +243,9 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className={signedIn ? "mx-auto flex w-full max-w-[1600px] flex-1" : "flex-1"}>
         {signedIn ? (
           <aside className="sticky top-[65px] hidden h-[calc(100vh-65px)] w-64 shrink-0 border-r border-sidebar-border bg-sidebar/80 px-3 py-5 backdrop-blur-xl lg:flex lg:flex-col">
-            <p className="px-3 pb-3 text-[10px] font-bold uppercase text-muted-foreground">Your workspace</p>
+            <p className="px-3 pb-3 text-[10px] font-bold uppercase text-muted-foreground">
+              Your workspace
+            </p>
             <nav className="flex-1 space-y-1 overflow-y-auto" aria-label="Main">
               {items.map((item) => {
                 const Icon = navIcon(item.to);
@@ -223,7 +253,9 @@ export function AppShell({ children }: { children: ReactNode }) {
                   <Link
                     key={item.to}
                     to={item.to}
-                    activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm" }}
+                    activeProps={{
+                      className: "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm",
+                    }}
                     className="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
                   >
                     <Icon className="h-4 w-4 shrink-0" />
@@ -241,10 +273,14 @@ export function AppShell({ children }: { children: ReactNode }) {
         ) : null}
         <div className="min-w-0 flex-1">{children}</div>
       </div>
-      <footer className={signedIn ? "border-t border-border px-6 py-5 text-xs text-muted-foreground lg:ml-64" : "border-t border-border px-6 py-6 text-xs text-muted-foreground"}>
-        <div className="mx-auto max-w-6xl text-center lg:text-left">
-          {t("shell.footer")}
-        </div>
+      <footer
+        className={
+          signedIn
+            ? "border-t border-border px-6 py-5 text-xs text-muted-foreground lg:ml-64"
+            : "border-t border-border px-6 py-6 text-xs text-muted-foreground"
+        }
+      >
+        <div className="mx-auto max-w-6xl text-center lg:text-left">{t("shell.footer")}</div>
       </footer>
     </div>
   );
@@ -264,13 +300,11 @@ export function PageHeader({
   return (
     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 border-b border-border pb-6 sm:flex sm:flex-wrap sm:justify-between">
       <div className="min-w-0 max-w-3xl">
-        {eyebrow ? (
-          <p className="text-xs font-bold uppercase text-accent">
-            {eyebrow}
-          </p>
-        ) : null}
+        {eyebrow ? <p className="text-xs font-bold uppercase text-accent">{eyebrow}</p> : null}
         <h1 className="mt-2 text-2xl font-bold leading-tight sm:text-3xl">{title}</h1>
-        {description ? <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">{description}</p> : null}
+        {description ? (
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">{description}</p>
+        ) : null}
       </div>
       {actions ? <div className="flex shrink-0 gap-2">{actions}</div> : null}
     </div>

@@ -107,16 +107,27 @@ function AuthPage() {
       <div className="relative w-full max-w-[460px]">
         <div className="relative z-10 overflow-hidden rounded-3xl border border-border bg-card/90 p-7 shadow-raised backdrop-blur-xl sm:p-10">
           <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-primary via-accent to-primary" />
-          <Link to="/" className="inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
+          >
             <ArrowLeft className="h-4 w-4" /> Back to Agrivah
           </Link>
 
           <div className="mb-8 mt-7 text-center">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary shadow-raised">
-              <img src={agrivahMark.url} alt="Agrivah" width={490} height={480} className="h-12 w-auto" />
+              <img
+                src={agrivahMark.url}
+                alt="Agrivah"
+                width={490}
+                height={480}
+                className="h-12 w-auto"
+              />
             </div>
             <p className="font-display text-xl font-bold text-primary">AGRIVAH</p>
-            <p className="mt-1 text-xs font-semibold uppercase text-muted-foreground">Connect • Collaborate • Transform</p>
+            <p className="mt-1 text-xs font-semibold uppercase text-muted-foreground">
+              Connect • Collaborate • Transform
+            </p>
           </div>
 
           <h1 className="text-2xl font-bold">
@@ -201,7 +212,10 @@ function AuthPage() {
           )}
           <div className="mt-7 flex items-start gap-3 border-t border-border pt-5 text-xs leading-5 text-muted-foreground">
             <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-            <p>Your information is private by default. Access is granted only for approved roles and purposes.</p>
+            <p>
+              Your information is private by default. Access is granted only for approved roles and
+              purposes.
+            </p>
           </div>
         </div>
         <div className="absolute -bottom-3 -right-3 h-full w-full rounded-3xl bg-primary/5" />
