@@ -31,7 +31,7 @@ export function FpoMonitoringSection({ tenantId }: { tenantId: string }) {
   const key = ["atap", "fpo-monitoring", tenantId, memberId];
   const q = useQuery({
     queryKey: key,
-    queryFn: () => list({ data: { tenantId, memberId: memberId || undefined } }),
+    queryFn: () => list({ data: { tenantId, ...(memberId ? { memberId } : {}) } }),
     enabled: Boolean(tenantId),
   });
   const refresh = () => qc.invalidateQueries({ queryKey: ["atap", "fpo-monitoring", tenantId] });
