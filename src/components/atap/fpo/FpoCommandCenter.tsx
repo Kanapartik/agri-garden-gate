@@ -115,7 +115,7 @@ export function FpoCommandCenter({
     metrics: overview.metrics,
   });
   const activeLens =
-    FPO_DASHBOARD_LENSES.find((item) => item.key === lens) ?? FPO_DASHBOARD_LENSES[0];
+    FPO_DASHBOARD_LENSES.find((item) => item.key === lens) ?? FPO_DASHBOARD_LENSES[0]!;
   const organization = overview.profile?.display_name ?? overview.tenants[0]?.name ?? "FPO";
   const topMetrics = overview.metrics.filter((metric) => !metric.pending).slice(0, 6);
 
