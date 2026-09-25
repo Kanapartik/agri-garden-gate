@@ -73,6 +73,9 @@ export function navItemsForRoles(
       { to: "/fpo", label: "FPO dashboard", labelKey: "nav.fpo" },
       { to: "/fpo-opportunity", label: "Opportunity intelligence", labelKey: "nav.fpoOpportunity" },
     ];
+    if (roles.includes("onboarding_officer") || roles.includes("tenant_admin")) {
+      fpoItems.push({ to: "/review", label: "Review queue", labelKey: "nav.review" });
+    }
     if (roles.includes("tenant_admin")) {
       fpoItems.push({ to: "/access", label: "Access & roles", labelKey: "nav.access" });
     }

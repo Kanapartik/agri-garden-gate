@@ -73,7 +73,7 @@ describe("role-aware navigation", () => {
 
 describe("tenant-type aware navigation", () => {
   const FARMER_MENUS = ["My farm", "Farm intelligence", "Training", "Inputs & protection", "Soil care", "Marketplace"];
-  const FPO_MENUS = ["FPO workspace", "Opportunity intelligence"];
+  const FPO_MENUS = ["FPO dashboard", "Opportunity intelligence"];
   const INSURER_MENUS = ["Insurer revenue", "Risk surveillance", "Claims management", "Policies & enrolment"];
 
   it("hides farmer, FPO and marketplace menus from a pure insurer tenant admin", () => {
