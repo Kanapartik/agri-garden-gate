@@ -47,6 +47,7 @@ import { Route as AuthenticatedRolloutRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedSchemesRouteImport } from './routes/_authenticated/schemes'
 import { Route as AuthenticatedSoilCareRouteImport } from './routes/_authenticated/soil-care'
 import { Route as FpoPortalIndexRouteImport } from './routes/fpo-portal.index'
+import { Route as FpoPortalAdminRouteImport } from './routes/fpo-portal.admin'
 import { Route as FpoPortalComparisonRouteImport } from './routes/fpo-portal.comparison'
 import { Route as FpoPortalMembersRouteImport } from './routes/fpo-portal.members'
 import { Route as FpoPortalVouchersRouteImport } from './routes/fpo-portal.vouchers'
@@ -251,6 +252,11 @@ const FpoPortalIndexRoute = FpoPortalIndexRouteImport.update({
   path: '/',
   getParentRoute: () => FpoPortalRoute,
 } as any)
+const FpoPortalAdminRoute = FpoPortalAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => FpoPortalRoute,
+} as any)
 const FpoPortalComparisonRoute = FpoPortalComparisonRouteImport.update({
   id: '/comparison',
   path: '/comparison',
@@ -324,6 +330,7 @@ export interface FileRoutesByFullPath {
   '/rollout': typeof AuthenticatedRolloutRoute
   '/schemes': typeof AuthenticatedSchemesRoute
   '/soil-care': typeof AuthenticatedSoilCareRoute
+  '/fpo-portal/admin': typeof FpoPortalAdminRoute
   '/fpo-portal/comparison': typeof FpoPortalComparisonRoute
   '/fpo-portal/members': typeof FpoPortalMembersRoute
   '/fpo-portal/vouchers': typeof FpoPortalVouchersRoute
@@ -369,6 +376,7 @@ export interface FileRoutesByTo {
   '/rollout': typeof AuthenticatedRolloutRoute
   '/schemes': typeof AuthenticatedSchemesRoute
   '/soil-care': typeof AuthenticatedSoilCareRoute
+  '/fpo-portal/admin': typeof FpoPortalAdminRoute
   '/fpo-portal/comparison': typeof FpoPortalComparisonRoute
   '/fpo-portal/members': typeof FpoPortalMembersRoute
   '/fpo-portal/vouchers': typeof FpoPortalVouchersRoute
@@ -417,6 +425,7 @@ export interface FileRoutesById {
   '/_authenticated/rollout': typeof AuthenticatedRolloutRoute
   '/_authenticated/schemes': typeof AuthenticatedSchemesRoute
   '/_authenticated/soil-care': typeof AuthenticatedSoilCareRoute
+  '/fpo-portal/admin': typeof FpoPortalAdminRoute
   '/fpo-portal/comparison': typeof FpoPortalComparisonRoute
   '/fpo-portal/members': typeof FpoPortalMembersRoute
   '/fpo-portal/vouchers': typeof FpoPortalVouchersRoute
@@ -465,6 +474,7 @@ export interface FileRouteTypes {
     | '/rollout'
     | '/schemes'
     | '/soil-care'
+    | '/fpo-portal/admin'
     | '/fpo-portal/comparison'
     | '/fpo-portal/members'
     | '/fpo-portal/vouchers'
@@ -510,6 +520,7 @@ export interface FileRouteTypes {
     | '/rollout'
     | '/schemes'
     | '/soil-care'
+    | '/fpo-portal/admin'
     | '/fpo-portal/comparison'
     | '/fpo-portal/members'
     | '/fpo-portal/vouchers'
@@ -557,6 +568,7 @@ export interface FileRouteTypes {
     | '/_authenticated/rollout'
     | '/_authenticated/schemes'
     | '/_authenticated/soil-care'
+    | '/fpo-portal/admin'
     | '/fpo-portal/comparison'
     | '/fpo-portal/members'
     | '/fpo-portal/vouchers'
@@ -855,6 +867,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FpoPortalIndexRouteImport
       parentRoute: typeof FpoPortalRoute
     }
+    '/fpo-portal/admin': {
+      id: '/fpo-portal/admin'
+      path: '/admin'
+      fullPath: '/fpo-portal/admin'
+      preLoaderRoute: typeof FpoPortalAdminRouteImport
+      parentRoute: typeof FpoPortalRoute
+    }
     '/fpo-portal/comparison': {
       id: '/fpo-portal/comparison'
       path: '/comparison'
@@ -965,6 +984,7 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface FpoPortalRouteChildren {
+  FpoPortalAdminRoute: typeof FpoPortalAdminRoute
   FpoPortalComparisonRoute: typeof FpoPortalComparisonRoute
   FpoPortalMembersRoute: typeof FpoPortalMembersRoute
   FpoPortalVouchersRoute: typeof FpoPortalVouchersRoute
@@ -972,6 +992,7 @@ interface FpoPortalRouteChildren {
 }
 
 const FpoPortalRouteChildren: FpoPortalRouteChildren = {
+  FpoPortalAdminRoute: FpoPortalAdminRoute,
   FpoPortalComparisonRoute: FpoPortalComparisonRoute,
   FpoPortalMembersRoute: FpoPortalMembersRoute,
   FpoPortalVouchersRoute: FpoPortalVouchersRoute,
