@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, redirect, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { BarChart3, LayoutDashboard, LogOut, Receipt, Users } from "lucide-react";
+import { BarChart3, LayoutDashboard, LogOut, Receipt, ShieldCheck, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getMyContext } from "@/lib/atap.functions";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,8 @@ export const Route = createFileRoute("/fpo-portal")({
       ctx.roles.some((r) => r.tenant_id === t.id && STAFF_ROLES.includes(r.role)),
     );
     if (!tenant) throw redirect({ to: "/fpo-login", search: { denied: 1 } });
-    return { fpoTenant: { id: tenant.id, name: tenant.name }, staffName: ctx.profile?.full_name ?? data.user.email ?? "" };
+    const isAdmin = ctx.roles.some((r) => r.tenant_id === tenant.id && r.role === "tenant_admin");
+    return { isAdmin, fpoTenant: { id: tenant.id, name: tenant.name }, staffName: ctx.profile?.full_name ?? data.user.email ?? "" };
   },
   head: () => ({
     meta: [
@@ -39,10 +40,12 @@ const NAV = [
   { to: "/fpo-portal/members", label: "Members", icon: Users, exact: false },
   { to: "/fpo-portal/vouchers", label: "Vouchers", icon: Receipt, exact: false },
   { to: "/fpo-portal/comparison", label: "Comparison", icon: BarChart3, exact: false },
+  { to: "/fpo-portal/admin", label: "Staff & roles", icon: ShieldCheck, exact: false },
 ] as const;
 
 function PortalShell() {
-  const { fpoTenant, staffName } = Route.useRouteContext();
+  const { fpoTenant, staffName, isAdmin } = Route.useRouteContext();
+  const nav = NAV.filter((n) => isAdmin || n.to !== "/fpo-portal/admin");
   const navigate = useNavigate();
   const qc = useQueryClient();
 
@@ -64,7 +67,7 @@ function PortalShell() {
           </div>
         </div>
         <nav className="space-y-1">
-          {NAV.map((n) => (
+          {nav.map((n) => (
             <Link
               key={n.to}
               to={n.to}
@@ -88,7 +91,7 @@ function PortalShell() {
           </Button>
         </header>
         <nav className="flex gap-1 overflow-x-auto border-b border-border px-3 py-2 md:hidden">
-          {NAV.map((n) => (
+          {nav.map((n) => (
             <Link
               key={n.to}
               to={n.to}

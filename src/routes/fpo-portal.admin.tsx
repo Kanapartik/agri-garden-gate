@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { StateBadge } from "@/components/atap/StatusBadge";
 import { FpoTeamSection } from "@/components/atap/fpo/FpoTeamSection";
+import { FpoStaffAccounts } from "@/components/atap/fpo/FpoStaffAccounts";
 import { getFpoWorkspace, inviteStaff, revokeInvite } from "@/lib/atap/district.functions";
 import type { AppRole } from "@/lib/atap/policy";
 
@@ -117,6 +118,8 @@ function AdminPage() {
           )}
         </div>
       </section>
+
+      <FpoStaffAccounts tenantId={fpoTenant.id} roles={roles} />
 
       <FpoTeamSection tenantId={fpoTenant.id} />
     </div>
