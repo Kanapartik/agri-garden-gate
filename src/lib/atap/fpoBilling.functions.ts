@@ -163,13 +163,13 @@ export const getBillingBoard = createServerFn({ method: "POST" })
     const [voucherRes, memberRes] = await Promise.all([
       supabase
         .from("fpo_ledger_entries")
-        .select(`${VOUCHER_COLUMNS}, fpo_members(display_name, village_name)`)
+        .select(`${VOUCHER_COLUMNS}, fpo_members(display_name, village_cluster)`)
         .eq("tenant_id", data.tenantId)
         .order("entry_date", { ascending: false })
         .limit(400),
       supabase
         .from("fpo_members")
-        .select("id, display_name, village_name")
+        .select("id, display_name, village_cluster")
         .eq("tenant_id", data.tenantId)
         .eq("status", "active")
         .order("display_name")
@@ -178,7 +178,7 @@ export const getBillingBoard = createServerFn({ method: "POST" })
 
     const raw = (voucherRes.data ?? []) as Array<
       Record<string, unknown> & {
-        fpo_members: { display_name: string; village_name: string | null } | null;
+        fpo_members: { display_name: string; village_cluster: string | null } | null;
       }
     >;
 
@@ -245,12 +245,12 @@ export const getBillingBoard = createServerFn({ method: "POST" })
       (memberRes.data ?? []) as Array<{
         id: string;
         display_name: string;
-        village_name: string | null;
+        village_cluster: string | null;
       }>
     ).map((m) => ({
       id: m.id,
       display_name: m.display_name,
-      village: m.village_name ?? null,
+      village: m.village_cluster ?? null,
       owesFpo: Math.round((owes.get(m.id)?.owesFpo ?? 0) * 100) / 100,
       fpoOwes: Math.round((owes.get(m.id)?.fpoOwes ?? 0) * 100) / 100,
     }));
