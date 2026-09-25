@@ -23,6 +23,7 @@ import { FpoTeamSection } from "@/components/atap/fpo/FpoTeamSection";
 import { FpoInsightsSection } from "@/components/atap/fpo/FpoInsightsSection";
 import { FpoMemberHistorySection } from "@/components/atap/fpo/FpoMemberHistorySection";
 import { FpoInsuranceSection } from "@/components/atap/fpo/FpoInsuranceSection";
+import { FpoCommandCenter } from "@/components/atap/fpo/FpoCommandCenter";
 import { Button } from "@/components/ui/button";
 import {
   acceptInvite,
@@ -246,59 +247,11 @@ function FpoPage() {
       </nav>
 
       {section === "overview" ? (
-        <div className="space-y-6">
-          <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {(ov?.metrics ?? []).map((m) => (
-              <button
-                key={m.key}
-                type="button"
-                onClick={() => setSection(m.section)}
-                className="panel p-4 text-left"
-              >
-                <p className="text-xs uppercase tracking-wide text-muted-foreground">{m.label}</p>
-                <p className="mt-1 text-2xl font-bold">{m.value}</p>
-                {m.pending ? (
-                  <p className="mt-1 text-xs text-muted-foreground">Activates in a later phase</p>
-                ) : null}
-              </button>
-            ))}
-          </section>
-
-          <section className="panel space-y-3 p-5">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <h2 className="font-display text-base font-semibold">{t("fpo.onboarding.title")}</h2>
-              <p className="text-sm text-muted-foreground">
-                {ov?.completeness ?? 0}% {t("fpo.onboarding.complete")}
-              </p>
-            </div>
-            <ol className="grid gap-2 sm:grid-cols-3">
-              {(ov?.steps ?? []).map((s) => (
-                <li
-                  key={s.step}
-                  className="flex items-center justify-between gap-2 rounded-md border border-border px-3 py-2 text-sm"
-                >
-                  <span>{s.label}</span>
-                  <StateBadge state={s.status} />
-                </li>
-              ))}
-            </ol>
-            <Button variant="outline" size="sm" onClick={() => setSection("settings")}>
-              Continue organization profile
-            </Button>
-          </section>
-
-          {(ov?.missingDocuments.length ?? 0) > 0 ? (
-            <section className="panel space-y-2 p-5">
-              <h2 className="font-display text-base font-semibold">{t("fpo.documents.missing")}</h2>
-              <p className="text-sm text-muted-foreground">
-                {ov?.missingDocuments.map((d) => d.replaceAll("_", " ")).join(", ")}
-              </p>
-              <Button variant="outline" size="sm" onClick={() => setSection("documents")}>
-                Open documents
-              </Button>
-            </section>
-          ) : null}
-        </div>
+        overview.isLoading || !ov ? (
+          <p className="text-sm text-muted-foreground">{t("common.loading")}</p>
+        ) : (
+          <FpoCommandCenter overview={ov} onOpenSection={setSection} />
+        )
       ) : null}
 
       {section === "settings" ? (

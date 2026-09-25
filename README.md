@@ -51,3 +51,8 @@ The frozen Siddipet/Raipole pilot decision, mobile API, and consent contract are
 indexed in [`docs/mobile/README.md`](./docs/mobile/README.md). Native pilot
 applications are available for
 [`Android`](./mobile/android/) and [`iOS`](./mobile/ios/).
+
+## FPO application
+
+The authenticated FPO Intelligence & Governance workspace and its phased
+delivery contract are documented in [`docs/fpo/README.md`](./docs/fpo/README.md).
