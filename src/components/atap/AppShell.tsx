@@ -114,7 +114,7 @@ export function navItemsForRoles(
       isFpoMember) ||
     isOversight
   ) {
-    items.push({ to: "/fpo", label: "FPO workspace", labelKey: "nav.fpo" });
+    items.push({ to: "/fpo", label: "FPO dashboard", labelKey: "nav.fpo" });
     items.push({
       to: "/fpo-opportunity",
       label: "Opportunity intelligence",
