@@ -1,7 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
+import { acceptInvite } from "@/lib/atap/district.functions";
 import { Button } from "@/components/ui/button";
 import agrivahMark from "@/assets/agrivah-mark.png.asset.json";
 
@@ -29,6 +31,22 @@ function FpoLogin() {
   const [error, setError] = useState<string | null>(
     denied ? "This account is not staff of any FPO. Farmers sign in on the farmer site." : null,
   );
+
+  const accept = useServerFn(acceptInvite);
+  const [inviteRef, setInviteRef] = useState("");
+
+  async function acceptRef() {
+    setBusy(true);
+    setError(null);
+    try {
+      await accept({ data: { inviteId: inviteRef.trim() } });
+      navigate({ to: "/fpo-portal" });
+    } catch (e) {
+      setError(e instanceof Error ? e.message.replaceAll("_", " ") : "Could not accept invitation");
+    } finally {
+      setBusy(false);
+    }
+  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -62,6 +80,15 @@ function FpoLogin() {
         <Button type="submit" className="w-full" disabled={busy}>
           {busy ? "Signing in…" : "Sign in to FPO Portal"}
         </Button>
+        {denied ? (
+          <div className="space-y-2 border-t border-border pt-3">
+            <p className="text-xs text-muted-foreground">Invited as FPO staff? Enter the invitation reference while signed in with the invited email.</p>
+            <input className="field-base" placeholder="Invitation reference" value={inviteRef} onChange={(e) => setInviteRef(e.target.value)} />
+            <Button type="button" variant="outline" className="w-full" disabled={!inviteRef || busy} onClick={acceptRef}>
+              Accept invitation
+            </Button>
+          </div>
+        ) : null}
         <p className="text-center text-xs text-muted-foreground">
           Farmer? <a href="/auth" className="underline">Use the farmer sign-in</a>
         </p>
