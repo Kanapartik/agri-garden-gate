@@ -16,6 +16,7 @@ import { FpoFacilitationSection } from "@/components/atap/fpo/FpoFacilitationSec
 import { FpoProcurementSection } from "@/components/atap/fpo/FpoProcurementSection";
 import { FpoProduceSection } from "@/components/atap/fpo/FpoProduceSection";
 import { FpoAccountsSection } from "@/components/atap/fpo/FpoAccountsSection";
+import { FpoBillingSection } from "@/components/atap/fpo/FpoBillingSection";
 import { FpoDocumentsSection } from "@/components/atap/fpo/FpoDocumentsSection";
 import { FpoNotificationsSection } from "@/components/atap/fpo/FpoNotificationsSection";
 import { FpoTasksSection } from "@/components/atap/fpo/FpoTasksSection";
@@ -435,6 +436,12 @@ function FpoPage() {
 
       {section === "produce" ? <FpoProduceSection tenantId={activeTenant?.id ?? ""} /> : null}
       {section === "accounts" ? <FpoAccountsSection tenantId={activeTenant?.id ?? ""} /> : null}
+      {section === "billing" ? (
+        <FpoBillingSection
+          tenantId={activeTenant?.id ?? ""}
+          orgLabel={activeTenant?.name ?? "Farmer Producer Organization"}
+        />
+      ) : null}
       {section === "notifications" ? (
         <FpoNotificationsSection tenantId={activeTenant?.id ?? ""} />
       ) : null}

@@ -109,6 +109,7 @@ const en: Dict = {
   "fpo.section.procurement": "Procurement",
   "fpo.section.produce": "Produce & market",
   "fpo.section.accounts": "Accounts & funds",
+  "fpo.section.billing": "Billing & collections",
   "fpo.section.notifications": "Notifications",
   "fpo.section.tasks": "Tasks",
   "fpo.section.insights": "Insights",
