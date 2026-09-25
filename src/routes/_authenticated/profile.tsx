@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/atap/AppShell";
+import { MyFarmerQr } from "@/components/atap/farmer/MyFarmerQr";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -224,6 +225,9 @@ function ProfilePage() {
         title="My profile"
         description="These details set the context for scheme eligibility. They are yours: reviewers see only the eligibility result, never your photograph, category or account number."
       />
+
+      <MyFarmerQr />
+
 
       <section className="panel p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
