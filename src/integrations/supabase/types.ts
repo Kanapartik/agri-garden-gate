@@ -2306,9 +2306,13 @@ export type Database = {
         Row: {
           amount: number
           amount_settled: number
+          approver_at: string | null
+          approver_user_id: string | null
           bank_reference: string | null
           campaign_id: string | null
           category: Database["public"]["Enums"]["fpo_ledger_category"]
+          checker_at: string | null
+          checker_user_id: string | null
           created_at: string
           created_by_user_id: string | null
           description: string
@@ -2319,6 +2323,8 @@ export type Database = {
           is_reconciled: boolean
           is_synthetic: boolean
           lot_id: string | null
+          maker_at: string | null
+          maker_user_id: string | null
           member_id: string | null
           note: string | null
           party_name: string | null
@@ -2326,15 +2332,22 @@ export type Database = {
           reconciled_at: string | null
           reconciled_by_user_id: string | null
           reference: string | null
+          returned_reason: string | null
           tenant_id: string
           updated_at: string
+          voucher_number: string | null
+          workflow_stage: Database["public"]["Enums"]["fpo_voucher_stage"]
         }
         Insert: {
           amount: number
           amount_settled?: number
+          approver_at?: string | null
+          approver_user_id?: string | null
           bank_reference?: string | null
           campaign_id?: string | null
           category?: Database["public"]["Enums"]["fpo_ledger_category"]
+          checker_at?: string | null
+          checker_user_id?: string | null
           created_at?: string
           created_by_user_id?: string | null
           description: string
@@ -2345,6 +2358,8 @@ export type Database = {
           is_reconciled?: boolean
           is_synthetic?: boolean
           lot_id?: string | null
+          maker_at?: string | null
+          maker_user_id?: string | null
           member_id?: string | null
           note?: string | null
           party_name?: string | null
@@ -2352,15 +2367,22 @@ export type Database = {
           reconciled_at?: string | null
           reconciled_by_user_id?: string | null
           reference?: string | null
+          returned_reason?: string | null
           tenant_id: string
           updated_at?: string
+          voucher_number?: string | null
+          workflow_stage?: Database["public"]["Enums"]["fpo_voucher_stage"]
         }
         Update: {
           amount?: number
           amount_settled?: number
+          approver_at?: string | null
+          approver_user_id?: string | null
           bank_reference?: string | null
           campaign_id?: string | null
           category?: Database["public"]["Enums"]["fpo_ledger_category"]
+          checker_at?: string | null
+          checker_user_id?: string | null
           created_at?: string
           created_by_user_id?: string | null
           description?: string
@@ -2371,6 +2393,8 @@ export type Database = {
           is_reconciled?: boolean
           is_synthetic?: boolean
           lot_id?: string | null
+          maker_at?: string | null
+          maker_user_id?: string | null
           member_id?: string | null
           note?: string | null
           party_name?: string | null
@@ -2378,8 +2402,11 @@ export type Database = {
           reconciled_at?: string | null
           reconciled_by_user_id?: string | null
           reference?: string | null
+          returned_reason?: string | null
           tenant_id?: string
           updated_at?: string
+          voucher_number?: string | null
+          workflow_stage?: Database["public"]["Enums"]["fpo_voucher_stage"]
         }
         Relationships: [
           {
@@ -10922,6 +10949,12 @@ export type Database = {
         | "submitted"
         | "accepted"
         | "rejected"
+      fpo_voucher_stage:
+        | "draft"
+        | "pending_check"
+        | "checked"
+        | "approved"
+        | "returned"
       gate_status: "pending" | "approved" | "rejected"
       geo_level: "country" | "state" | "district" | "block" | "village"
       identity_check_status:
@@ -11552,6 +11585,13 @@ export const Constants = {
       fpo_task_priority: ["low", "normal", "high", "urgent"],
       fpo_task_status: ["open", "in_progress", "blocked", "done", "cancelled"],
       fpo_uc_state: ["not_due", "pending", "submitted", "accepted", "rejected"],
+      fpo_voucher_stage: [
+        "draft",
+        "pending_check",
+        "checked",
+        "approved",
+        "returned",
+      ],
       gate_status: ["pending", "approved", "rejected"],
       geo_level: ["country", "state", "district", "block", "village"],
       identity_check_status: [
