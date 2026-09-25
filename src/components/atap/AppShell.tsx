@@ -38,7 +38,7 @@ type NavItem = { to: string; label: string; labelKey: string };
 export function isFpoOfficial(roles: AppRole[], tenantTypes: string[]): boolean {
   if (roles.includes("platform_admin") || roles.includes("auditor")) return false;
   return (
-    tenantTypes.includes("fpo") &&
+    tenantTypes.length > 0 && tenantTypes.every((t) => t === "fpo") &&
     roles.some((r) => r === "tenant_admin" || r === "onboarding_officer" || r === "field_agent")
   );
 }
