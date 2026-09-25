@@ -3432,6 +3432,71 @@ export type Database = {
           },
         ]
       }
+      fpo_performance_scores: {
+        Row: {
+          best_practices: number
+          created_at: string
+          district: string
+          financial_discipline: number
+          fpo_name: string
+          governance: number
+          id: string
+          is_synthetic: boolean
+          loan_repayment: number
+          member_engagement: number
+          members: number
+          period: string
+          scheme_coverage: number
+          state: string
+          tenant_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          best_practices: number
+          created_at?: string
+          district: string
+          financial_discipline: number
+          fpo_name: string
+          governance: number
+          id?: string
+          is_synthetic?: boolean
+          loan_repayment: number
+          member_engagement: number
+          members?: number
+          period: string
+          scheme_coverage: number
+          state?: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          best_practices?: number
+          created_at?: string
+          district?: string
+          financial_discipline?: number
+          fpo_name?: string
+          governance?: number
+          id?: string
+          is_synthetic?: boolean
+          loan_repayment?: number
+          member_engagement?: number
+          members?: number
+          period?: string
+          scheme_coverage?: number
+          state?: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_performance_scores_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fpo_procurement_campaigns: {
         Row: {
           created_at: string
