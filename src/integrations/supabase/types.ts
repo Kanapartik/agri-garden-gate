@@ -2870,6 +2870,123 @@ export type Database = {
           },
         ]
       }
+      fpo_monitoring_notes: {
+        Row: {
+          author_id: string | null
+          body: string
+          category: string
+          created_at: string
+          crop: string | null
+          id: string
+          is_synthetic: boolean
+          member_id: string
+          observed_on: string
+          severity: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          author_id?: string | null
+          body: string
+          category: string
+          created_at?: string
+          crop?: string | null
+          id?: string
+          is_synthetic?: boolean
+          member_id: string
+          observed_on?: string
+          severity?: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string | null
+          body?: string
+          category?: string
+          created_at?: string
+          crop?: string | null
+          id?: string
+          is_synthetic?: boolean
+          member_id?: string
+          observed_on?: string
+          severity?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_monitoring_notes_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_monitoring_notes_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_monitoring_summaries: {
+        Row: {
+          created_at: string
+          id: string
+          member_id: string
+          model: string
+          note_ids: string[]
+          questions: Json
+          reviewed_at: string
+          reviewed_by: string | null
+          summary: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          member_id: string
+          model: string
+          note_ids?: string[]
+          questions?: Json
+          reviewed_at?: string
+          reviewed_by?: string | null
+          summary: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          member_id?: string
+          model?: string
+          note_ids?: string[]
+          questions?: Json
+          reviewed_at?: string
+          reviewed_by?: string | null
+          summary?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_monitoring_summaries_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "fpo_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fpo_monitoring_summaries_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fpo_notification_deliveries: {
         Row: {
           channel: Database["public"]["Enums"]["fpo_notice_channel"]
@@ -10673,6 +10790,14 @@ export type Database = {
     }
     Functions: {
       can_read_farm: { Args: { _farm_id: string }; Returns: boolean }
+      fpo_has_member_consent: {
+        Args: { _member_id: string; _purpose: string }
+        Returns: boolean
+      }
+      fpo_monitoring_role: {
+        Args: { _tenant_id: string; _user_id: string; _write: boolean }
+        Returns: boolean
+      }
       has_consent: {
         Args: {
           _consumer_id: string
