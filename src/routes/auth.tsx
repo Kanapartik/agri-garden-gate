@@ -8,6 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, LockKeyhole, ShieldCheck, Sprout } from "lucide-react";
 import agrivahMark from "@/assets/agrivah-mark.png.asset.json";
+import { useServerFn } from "@tanstack/react-start";
+import { getMyContext } from "@/lib/atap.functions";
+import { isFpoOfficial } from "@/components/atap/AppShell";
 
 const TITLE = "Sign in — AgriGhar ATAP";
 const DESCRIPTION =
@@ -39,12 +42,25 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthPage() {
-  const continueTo = Route.useSearch().redirect ?? "/dashboard";
+  const explicitRedirect = Route.useSearch().redirect;
+  const continueTo = explicitRedirect ?? "/dashboard";
   const navigate = useNavigate();
   const router = useRouter();
+  const fetchContext = useServerFn(getMyContext);
   const goOn = async () => {
     await router.invalidate();
-    await navigate({ to: continueTo, replace: true });
+    let target = continueTo;
+    if (!explicitRedirect) {
+      try {
+        const ctx = await fetchContext();
+        const roles = (ctx?.roles ?? []).map((r) => r.role);
+        const types = (ctx?.tenants ?? []).map((t) => t.tenant_type);
+        if (isFpoOfficial(roles, types)) target = "/fpo";
+      } catch {
+        /* fall back to default */
+      }
+    }
+    await navigate({ to: target, replace: true });
   };
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");

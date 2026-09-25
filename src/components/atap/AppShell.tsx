@@ -35,6 +35,14 @@ type NavItem = { to: string; label: string; labelKey: string };
  * authority. Tenant types come from the caller's active memberships
  * (`getMyContext`), so an insurer employee never sees farmer/FPO workspaces.
  */
+export function isFpoOfficial(roles: AppRole[], tenantTypes: string[]): boolean {
+  if (roles.includes("platform_admin") || roles.includes("auditor")) return false;
+  return (
+    tenantTypes.length > 0 && tenantTypes.every((t) => t === "fpo") &&
+    roles.some((r) => r === "tenant_admin" || r === "onboarding_officer" || r === "field_agent")
+  );
+}
+
 export function navItemsForRoles(
   roles: AppRole[],
   signedIn: boolean,
@@ -56,6 +64,23 @@ export function navItemsForRoles(
   // journey) — farmer surfaces apply. Tenant members see their tenant's
   // workspaces instead.
   const isPlainIndividual = tenantTypes.length === 0;
+
+  // Official FPO login: FPO staff (not platform oversight) get a governance
+  // menu only — no personal farmer journeys. A farmer who is also an FPO
+  // operator keeps a separate personal login for those.
+  if (isFpoOfficial(roles, tenantTypes)) {
+    const fpoItems: NavItem[] = [
+      { to: "/fpo", label: "FPO dashboard", labelKey: "nav.fpo" },
+      { to: "/fpo-opportunity", label: "Opportunity intelligence", labelKey: "nav.fpoOpportunity" },
+    ];
+    if (roles.includes("onboarding_officer") || roles.includes("tenant_admin")) {
+      fpoItems.push({ to: "/review", label: "Review queue", labelKey: "nav.review" });
+    }
+    if (roles.includes("tenant_admin")) {
+      fpoItems.push({ to: "/access", label: "Access & roles", labelKey: "nav.access" });
+    }
+    return fpoItems;
+  }
 
   const items: NavItem[] = [
     { to: "/profile", label: "My profile", labelKey: "nav.profile" },
@@ -89,7 +114,7 @@ export function navItemsForRoles(
       isFpoMember) ||
     isOversight
   ) {
-    items.push({ to: "/fpo", label: "FPO workspace", labelKey: "nav.fpo" });
+    items.push({ to: "/fpo", label: "FPO dashboard", labelKey: "nav.fpo" });
     items.push({
       to: "/fpo-opportunity",
       label: "Opportunity intelligence",

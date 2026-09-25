@@ -34,7 +34,7 @@ describe("role-aware navigation", () => {
 
   it("gives FPO staff the FPO workspace but no government surface", () => {
     const items = labels(["onboarding_officer"], true, ["fpo"]);
-    expect(items).toContain("FPO workspace");
+    expect(items).toContain("FPO dashboard");
     expect(items).not.toContain("Government");
     expect(items).not.toContain("District");
   });
@@ -73,7 +73,7 @@ describe("role-aware navigation", () => {
 
 describe("tenant-type aware navigation", () => {
   const FARMER_MENUS = ["My farm", "Farm intelligence", "Training", "Inputs & protection", "Soil care", "Marketplace"];
-  const FPO_MENUS = ["FPO workspace", "Opportunity intelligence"];
+  const FPO_MENUS = ["FPO dashboard", "Opportunity intelligence"];
   const INSURER_MENUS = ["Insurer revenue", "Risk surveillance", "Claims management", "Policies & enrolment"];
 
   it("hides farmer, FPO and marketplace menus from a pure insurer tenant admin", () => {
@@ -88,10 +88,10 @@ describe("tenant-type aware navigation", () => {
     expect(items).toContain("Schemes");
   });
 
-  it("hides insurer menus from a pure FPO tenant admin", () => {
+  it("gives a pure FPO tenant admin an official FPO menu without farmer or insurer menus", () => {
     const items = labels(["tenant_admin"], true, ["fpo"]);
     for (const m of INSURER_MENUS) expect(items).not.toContain(m);
-    for (const m of FARMER_MENUS) expect(items).toContain(m);
+    for (const m of FARMER_MENUS) expect(items).not.toContain(m);
     for (const m of FPO_MENUS) expect(items).toContain(m);
   });
 
