@@ -24,6 +24,7 @@ import { FpoTeamSection } from "@/components/atap/fpo/FpoTeamSection";
 import { FpoInsightsSection } from "@/components/atap/fpo/FpoInsightsSection";
 import { FpoMemberHistorySection } from "@/components/atap/fpo/FpoMemberHistorySection";
 import { FpoMonitoringSection } from "@/components/atap/fpo/FpoMonitoringSection";
+import { FpoBenchmarkSection } from "@/components/atap/fpo/FpoBenchmarkSection";
 import { FpoInsuranceSection } from "@/components/atap/fpo/FpoInsuranceSection";
 import { FpoCommandCenter } from "@/components/atap/fpo/FpoCommandCenter";
 import { Button } from "@/components/ui/button";
@@ -451,6 +452,7 @@ function FpoPage() {
         <FpoMemberHistorySection tenantId={activeTenant?.id ?? ""} />
       ) : null}
       {section === "monitoring" ? <FpoMonitoringSection tenantId={activeTenant?.id ?? ""} /> : null}
+      {section === "benchmark" ? <FpoBenchmarkSection tenantId={activeTenant?.id ?? ""} /> : null}
       {section === "insurance" ? <FpoInsuranceSection tenantId={activeTenant?.id ?? ""} /> : null}
 
       {section === "insights" ? (
