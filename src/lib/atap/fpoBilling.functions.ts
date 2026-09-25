@@ -398,7 +398,9 @@ export const actOnVoucher = createServerFn({ method: "POST" })
     if (!verdict.allowed) throw new Error(verdict.reasons.join(" "));
 
     const now = new Date().toISOString();
-    const patch: Record<string, unknown> = { workflow_stage: verdict.stage };
+    const patch: Database["public"]["Tables"]["fpo_ledger_entries"]["Update"] = {
+      workflow_stage: verdict.stage,
+    };
     if (data.action === "check") {
       patch["checker_user_id"] = userId;
       patch["checker_at"] = now;
