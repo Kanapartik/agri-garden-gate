@@ -17,6 +17,7 @@ export const FPO_SECTIONS = [
   "procurement",
   "produce",
   "accounts",
+  "billing",
   "opportunities",
   "documents",
   "notifications",
