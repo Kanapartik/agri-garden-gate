@@ -15,6 +15,8 @@ import { Route as AdvantagesRouteImport } from './routes/advantages'
 import { Route as ArchitectureRouteImport } from './routes/architecture'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ExecutionRouteImport } from './routes/execution'
+import { Route as FpoLoginRouteImport } from './routes/fpo-login'
+import { Route as FpoPortalRouteImport } from './routes/fpo-portal'
 import { Route as IntegrationsRouteImport } from './routes/integrations'
 import { Route as PainPointsRouteImport } from './routes/pain-points'
 import { Route as PlatformRouteImport } from './routes/platform'
@@ -44,6 +46,10 @@ import { Route as AuthenticatedReviewRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedRolloutRouteImport } from './routes/_authenticated/rollout'
 import { Route as AuthenticatedSchemesRouteImport } from './routes/_authenticated/schemes'
 import { Route as AuthenticatedSoilCareRouteImport } from './routes/_authenticated/soil-care'
+import { Route as FpoPortalIndexRouteImport } from './routes/fpo-portal.index'
+import { Route as FpoPortalComparisonRouteImport } from './routes/fpo-portal.comparison'
+import { Route as FpoPortalMembersRouteImport } from './routes/fpo-portal.members'
+import { Route as FpoPortalVouchersRouteImport } from './routes/fpo-portal.vouchers'
 import { Route as MobileV1BootstrapRouteImport } from './routes/mobile/v1/bootstrap'
 import { Route as MobileV1MeRouteImport } from './routes/mobile/v1/me'
 import { Route as MobileV1AuthOtpRequestRouteImport } from './routes/mobile/v1/auth/otp/request'
@@ -76,6 +82,16 @@ const AuthRoute = AuthRouteImport.update({
 const ExecutionRoute = ExecutionRouteImport.update({
   id: '/execution',
   path: '/execution',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FpoLoginRoute = FpoLoginRouteImport.update({
+  id: '/fpo-login',
+  path: '/fpo-login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FpoPortalRoute = FpoPortalRouteImport.update({
+  id: '/fpo-portal',
+  path: '/fpo-portal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IntegrationsRoute = IntegrationsRouteImport.update({
@@ -230,6 +246,26 @@ const AuthenticatedSoilCareRoute = AuthenticatedSoilCareRouteImport.update({
   path: '/soil-care',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const FpoPortalIndexRoute = FpoPortalIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => FpoPortalRoute,
+} as any)
+const FpoPortalComparisonRoute = FpoPortalComparisonRouteImport.update({
+  id: '/comparison',
+  path: '/comparison',
+  getParentRoute: () => FpoPortalRoute,
+} as any)
+const FpoPortalMembersRoute = FpoPortalMembersRouteImport.update({
+  id: '/members',
+  path: '/members',
+  getParentRoute: () => FpoPortalRoute,
+} as any)
+const FpoPortalVouchersRoute = FpoPortalVouchersRouteImport.update({
+  id: '/vouchers',
+  path: '/vouchers',
+  getParentRoute: () => FpoPortalRoute,
+} as any)
 const MobileV1BootstrapRoute = MobileV1BootstrapRouteImport.update({
   id: '/mobile/v1/bootstrap',
   path: '/mobile/v1/bootstrap',
@@ -257,6 +293,8 @@ export interface FileRoutesByFullPath {
   '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
   '/execution': typeof ExecutionRoute
+  '/fpo-login': typeof FpoLoginRoute
+  '/fpo-portal': typeof FpoPortalRouteWithChildren
   '/integrations': typeof IntegrationsRoute
   '/pain-points': typeof PainPointsRoute
   '/platform': typeof PlatformRoute
@@ -286,6 +324,10 @@ export interface FileRoutesByFullPath {
   '/rollout': typeof AuthenticatedRolloutRoute
   '/schemes': typeof AuthenticatedSchemesRoute
   '/soil-care': typeof AuthenticatedSoilCareRoute
+  '/fpo-portal/comparison': typeof FpoPortalComparisonRoute
+  '/fpo-portal/members': typeof FpoPortalMembersRoute
+  '/fpo-portal/vouchers': typeof FpoPortalVouchersRoute
+  '/fpo-portal/': typeof FpoPortalIndexRoute
   '/mobile/v1/bootstrap': typeof MobileV1BootstrapRoute
   '/mobile/v1/me': typeof MobileV1MeRoute
   '/mobile/v1/auth/otp/request': typeof MobileV1AuthOtpRequestRoute
@@ -297,6 +339,7 @@ export interface FileRoutesByTo {
   '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
   '/execution': typeof ExecutionRoute
+  '/fpo-login': typeof FpoLoginRoute
   '/integrations': typeof IntegrationsRoute
   '/pain-points': typeof PainPointsRoute
   '/platform': typeof PlatformRoute
@@ -326,6 +369,10 @@ export interface FileRoutesByTo {
   '/rollout': typeof AuthenticatedRolloutRoute
   '/schemes': typeof AuthenticatedSchemesRoute
   '/soil-care': typeof AuthenticatedSoilCareRoute
+  '/fpo-portal/comparison': typeof FpoPortalComparisonRoute
+  '/fpo-portal/members': typeof FpoPortalMembersRoute
+  '/fpo-portal/vouchers': typeof FpoPortalVouchersRoute
+  '/fpo-portal': typeof FpoPortalIndexRoute
   '/mobile/v1/bootstrap': typeof MobileV1BootstrapRoute
   '/mobile/v1/me': typeof MobileV1MeRoute
   '/mobile/v1/auth/otp/request': typeof MobileV1AuthOtpRequestRoute
@@ -339,6 +386,8 @@ export interface FileRoutesById {
   '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
   '/execution': typeof ExecutionRoute
+  '/fpo-login': typeof FpoLoginRoute
+  '/fpo-portal': typeof FpoPortalRouteWithChildren
   '/integrations': typeof IntegrationsRoute
   '/pain-points': typeof PainPointsRoute
   '/platform': typeof PlatformRoute
@@ -368,6 +417,10 @@ export interface FileRoutesById {
   '/_authenticated/rollout': typeof AuthenticatedRolloutRoute
   '/_authenticated/schemes': typeof AuthenticatedSchemesRoute
   '/_authenticated/soil-care': typeof AuthenticatedSoilCareRoute
+  '/fpo-portal/comparison': typeof FpoPortalComparisonRoute
+  '/fpo-portal/members': typeof FpoPortalMembersRoute
+  '/fpo-portal/vouchers': typeof FpoPortalVouchersRoute
+  '/fpo-portal/': typeof FpoPortalIndexRoute
   '/mobile/v1/bootstrap': typeof MobileV1BootstrapRoute
   '/mobile/v1/me': typeof MobileV1MeRoute
   '/mobile/v1/auth/otp/request': typeof MobileV1AuthOtpRequestRoute
@@ -381,6 +434,8 @@ export interface FileRouteTypes {
     | '/architecture'
     | '/auth'
     | '/execution'
+    | '/fpo-login'
+    | '/fpo-portal'
     | '/integrations'
     | '/pain-points'
     | '/platform'
@@ -410,6 +465,10 @@ export interface FileRouteTypes {
     | '/rollout'
     | '/schemes'
     | '/soil-care'
+    | '/fpo-portal/comparison'
+    | '/fpo-portal/members'
+    | '/fpo-portal/vouchers'
+    | '/fpo-portal/'
     | '/mobile/v1/bootstrap'
     | '/mobile/v1/me'
     | '/mobile/v1/auth/otp/request'
@@ -421,6 +480,7 @@ export interface FileRouteTypes {
     | '/architecture'
     | '/auth'
     | '/execution'
+    | '/fpo-login'
     | '/integrations'
     | '/pain-points'
     | '/platform'
@@ -450,6 +510,10 @@ export interface FileRouteTypes {
     | '/rollout'
     | '/schemes'
     | '/soil-care'
+    | '/fpo-portal/comparison'
+    | '/fpo-portal/members'
+    | '/fpo-portal/vouchers'
+    | '/fpo-portal'
     | '/mobile/v1/bootstrap'
     | '/mobile/v1/me'
     | '/mobile/v1/auth/otp/request'
@@ -462,6 +526,8 @@ export interface FileRouteTypes {
     | '/architecture'
     | '/auth'
     | '/execution'
+    | '/fpo-login'
+    | '/fpo-portal'
     | '/integrations'
     | '/pain-points'
     | '/platform'
@@ -491,6 +557,10 @@ export interface FileRouteTypes {
     | '/_authenticated/rollout'
     | '/_authenticated/schemes'
     | '/_authenticated/soil-care'
+    | '/fpo-portal/comparison'
+    | '/fpo-portal/members'
+    | '/fpo-portal/vouchers'
+    | '/fpo-portal/'
     | '/mobile/v1/bootstrap'
     | '/mobile/v1/me'
     | '/mobile/v1/auth/otp/request'
@@ -504,6 +574,8 @@ export interface RootRouteChildren {
   ArchitectureRoute: typeof ArchitectureRoute
   AuthRoute: typeof AuthRoute
   ExecutionRoute: typeof ExecutionRoute
+  FpoLoginRoute: typeof FpoLoginRoute
+  FpoPortalRoute: typeof FpoPortalRouteWithChildren
   IntegrationsRoute: typeof IntegrationsRoute
   PainPointsRoute: typeof PainPointsRoute
   PlatformRoute: typeof PlatformRoute
@@ -557,6 +629,20 @@ declare module '@tanstack/react-router' {
       path: '/execution'
       fullPath: '/execution'
       preLoaderRoute: typeof ExecutionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fpo-login': {
+      id: '/fpo-login'
+      path: '/fpo-login'
+      fullPath: '/fpo-login'
+      preLoaderRoute: typeof FpoLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fpo-portal': {
+      id: '/fpo-portal'
+      path: '/fpo-portal'
+      fullPath: '/fpo-portal'
+      preLoaderRoute: typeof FpoPortalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/integrations': {
@@ -762,6 +848,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSoilCareRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/fpo-portal/': {
+      id: '/fpo-portal/'
+      path: '/'
+      fullPath: '/fpo-portal/'
+      preLoaderRoute: typeof FpoPortalIndexRouteImport
+      parentRoute: typeof FpoPortalRoute
+    }
+    '/fpo-portal/comparison': {
+      id: '/fpo-portal/comparison'
+      path: '/comparison'
+      fullPath: '/fpo-portal/comparison'
+      preLoaderRoute: typeof FpoPortalComparisonRouteImport
+      parentRoute: typeof FpoPortalRoute
+    }
+    '/fpo-portal/members': {
+      id: '/fpo-portal/members'
+      path: '/members'
+      fullPath: '/fpo-portal/members'
+      preLoaderRoute: typeof FpoPortalMembersRouteImport
+      parentRoute: typeof FpoPortalRoute
+    }
+    '/fpo-portal/vouchers': {
+      id: '/fpo-portal/vouchers'
+      path: '/vouchers'
+      fullPath: '/fpo-portal/vouchers'
+      preLoaderRoute: typeof FpoPortalVouchersRouteImport
+      parentRoute: typeof FpoPortalRoute
+    }
     '/mobile/v1/bootstrap': {
       id: '/mobile/v1/bootstrap'
       path: '/mobile/v1/bootstrap'
@@ -850,6 +964,24 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface FpoPortalRouteChildren {
+  FpoPortalComparisonRoute: typeof FpoPortalComparisonRoute
+  FpoPortalMembersRoute: typeof FpoPortalMembersRoute
+  FpoPortalVouchersRoute: typeof FpoPortalVouchersRoute
+  FpoPortalIndexRoute: typeof FpoPortalIndexRoute
+}
+
+const FpoPortalRouteChildren: FpoPortalRouteChildren = {
+  FpoPortalComparisonRoute: FpoPortalComparisonRoute,
+  FpoPortalMembersRoute: FpoPortalMembersRoute,
+  FpoPortalVouchersRoute: FpoPortalVouchersRoute,
+  FpoPortalIndexRoute: FpoPortalIndexRoute,
+}
+
+const FpoPortalRouteWithChildren = FpoPortalRoute._addFileChildren(
+  FpoPortalRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -857,6 +989,8 @@ const rootRouteChildren: RootRouteChildren = {
   ArchitectureRoute: ArchitectureRoute,
   AuthRoute: AuthRoute,
   ExecutionRoute: ExecutionRoute,
+  FpoLoginRoute: FpoLoginRoute,
+  FpoPortalRoute: FpoPortalRouteWithChildren,
   IntegrationsRoute: IntegrationsRoute,
   PainPointsRoute: PainPointsRoute,
   PlatformRoute: PlatformRoute,
