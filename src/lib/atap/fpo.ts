@@ -24,6 +24,7 @@ export const FPO_SECTIONS = [
   "tasks",
   "insights",
   "member_history",
+  "monitoring",
   "insurance",
   "team",
   "settings",
@@ -64,6 +65,7 @@ export const FPO_SECTION_DEFS: SectionDef[] = [
     labelKey: "fpo.section.memberHistory",
     phase: 11,
   },
+  { key: "monitoring", label: "Field monitoring", labelKey: "fpo.section.monitoring", phase: 14 },
   { key: "insurance", label: "Insurance cover", labelKey: "fpo.section.insurance", phase: 12 },
   { key: "team", label: "Team & permissions", labelKey: "fpo.section.team", phase: 1 },
   { key: "settings", label: "Settings", labelKey: "fpo.section.settings", phase: 1 },
@@ -74,7 +76,7 @@ export function isFpoSection(value: string): value is FpoSection {
 }
 
 /** Phases delivered so far; later sections render a scoped placeholder. */
-export const DELIVERED_PHASES = 13;
+export const DELIVERED_PHASES = 14;
 
 export function sectionAvailable(key: FpoSection): boolean {
   const def = FPO_SECTION_DEFS.find((s) => s.key === key);
