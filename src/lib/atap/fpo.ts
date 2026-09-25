@@ -47,6 +47,12 @@ export const FPO_SECTION_DEFS: SectionDef[] = [
   { key: "procurement", label: "Procurement", labelKey: "fpo.section.procurement", phase: 5 },
   { key: "produce", label: "Produce & market", labelKey: "fpo.section.produce", phase: 6 },
   { key: "accounts", label: "Accounts", labelKey: "fpo.section.accounts", phase: 7 },
+  {
+    key: "billing",
+    label: "Billing & collections",
+    labelKey: "fpo.section.billing",
+    phase: 13,
+  },
   { key: "opportunities", label: "Opportunities", labelKey: "fpo.section.opportunities", phase: 3 },
   { key: "documents", label: "Documents", labelKey: "fpo.section.documents", phase: 1 },
   { key: "notifications", label: "Notifications", labelKey: "fpo.section.notifications", phase: 8 },
@@ -68,7 +74,7 @@ export function isFpoSection(value: string): value is FpoSection {
 }
 
 /** Phases delivered so far; later sections render a scoped placeholder. */
-export const DELIVERED_PHASES = 12;
+export const DELIVERED_PHASES = 13;
 
 export function sectionAvailable(key: FpoSection): boolean {
   const def = FPO_SECTION_DEFS.find((s) => s.key === key);

@@ -435,6 +435,12 @@ function FpoPage() {
 
       {section === "produce" ? <FpoProduceSection tenantId={activeTenant?.id ?? ""} /> : null}
       {section === "accounts" ? <FpoAccountsSection tenantId={activeTenant?.id ?? ""} /> : null}
+      {section === "billing" ? (
+        <FpoBillingSection
+          tenantId={activeTenant?.id ?? ""}
+          orgLabel={activeTenant?.name ?? "Farmer Producer Organization"}
+        />
+      ) : null}
       {section === "notifications" ? (
         <FpoNotificationsSection tenantId={activeTenant?.id ?? ""} />
       ) : null}
