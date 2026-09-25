@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -40,8 +40,11 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const continueTo = Route.useSearch().redirect ?? "/dashboard";
-  const goOn = () => {
-    window.location.assign(continueTo);
+  const navigate = useNavigate();
+  const router = useRouter();
+  const goOn = async () => {
+    await router.invalidate();
+    await navigate({ to: continueTo, replace: true });
   };
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
@@ -52,7 +55,7 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) goOn();
+      if (data.session) void goOn();
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [continueTo]);
@@ -75,11 +78,11 @@ function AuthPage() {
           setAwaitingConfirm(true);
           return;
         }
-        goOn();
+        await goOn();
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        goOn();
+        await goOn();
       }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Sign in failed");
@@ -99,7 +102,7 @@ function AuthPage() {
       return;
     }
     if (result.redirected) return;
-    goOn();
+    await goOn();
   }
 
   return (
