@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState, type ReactNode } from "react";
@@ -198,7 +198,18 @@ function useSessionRoles() {
   };
 }
 
+/** The FPO portal has its own shell; the farmer platform shell steps aside. */
+export function isFpoPortalPath(pathname: string): boolean {
+  return pathname === "/fpo-login" || pathname === "/fpo-portal" || pathname.startsWith("/fpo-portal/");
+}
+
 export function AppShell({ children }: { children: ReactNode }) {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  if (isFpoPortalPath(pathname)) return <>{children}</>;
+  return <PlatformShell>{children}</PlatformShell>;
+}
+
+function PlatformShell({ children }: { children: ReactNode }) {
   const { signedIn, roles, tenantTypes } = useSessionRoles();
   const navigate = useNavigate();
   const queryClient = useQueryClient();

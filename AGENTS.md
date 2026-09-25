@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- FPO Portal lives at /fpo-login + /fpo-portal/* with its own shell (AppShell steps aside via isFpoPortalPath); why: FPO staff manage the FPO separately from farmer accounts.
