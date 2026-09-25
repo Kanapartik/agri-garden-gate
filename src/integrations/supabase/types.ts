@@ -10790,14 +10790,6 @@ export type Database = {
     }
     Functions: {
       can_read_farm: { Args: { _farm_id: string }; Returns: boolean }
-      fpo_has_member_consent: {
-        Args: { _member_id: string; _purpose: string }
-        Returns: boolean
-      }
-      fpo_monitoring_role: {
-        Args: { _tenant_id: string; _user_id: string; _write: boolean }
-        Returns: boolean
-      }
       has_consent: {
         Args: {
           _consumer_id: string
