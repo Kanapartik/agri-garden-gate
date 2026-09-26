@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/atap/AppShell";
 import { MyFarmerQr } from "@/components/atap/farmer/MyFarmerQr";
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -43,12 +44,15 @@ export const Route = createFileRoute("/_authenticated/profile")({
     ],
   }),
   component: ProfilePage,
-  errorComponent: () => (
-    <main className="mx-auto max-w-3xl px-6 py-20 text-sm text-muted-foreground">
-      Your profile could not be loaded. Try refreshing.
-    </main>
-  ),
+  errorComponent: ProfileError,
 });
+
+function ProfileError() {
+  const { t } = useLanguage();
+  return (
+    <main className="mx-auto max-w-3xl px-6 py-20 text-sm text-muted-foreground">{t("pf.loadError")}</main>
+  );
+}
 
 const DOC_LABEL: Record<DocKind, string> = {
   photo: "Photograph",
@@ -88,6 +92,7 @@ function toDataUrl(file: File): Promise<string> {
 
 function ProfilePage() {
   const queryClient = useQueryClient();
+  const { t } = useLanguage();
   const fetchWorkspace = useServerFn(getProfileWorkspace);
   const save = useServerFn(saveProfile);
   const register = useServerFn(registerDocument);
@@ -127,12 +132,12 @@ function ProfilePage() {
   const saveMutation = useMutation({
     mutationFn: (input: FormState) => save({ data: { ...input, confirmedFields: confirmed } }),
     onSuccess: async () => {
-      toast.success("Profile saved");
+      toast.success(t("pf.saved"));
       setConfirmed([]);
       await queryClient.invalidateQueries({ queryKey: ["atap", "profile-workspace"] });
       await queryClient.invalidateQueries({ queryKey: ["atap", "scheme-discovery"] });
     },
-    onError: () => toast.error("Could not save your profile"),
+    onError: () => toast.error(t("pf.saveFailed")),
   });
 
   const data = workspace.data;
@@ -160,23 +165,23 @@ function ProfilePage() {
 
       if (kind === "photo") {
         await savePhoto({ data: { storagePath: path } });
-        toast.success("Photograph saved");
+        toast.success(t("pf.photoSaved"));
       } else {
         const dataUrl = await toDataUrl(file);
         const result = await register({
           data: { docKind: kind, storagePath: path, mimeType: file.type, dataUrl },
         });
         if (result.extractionError) {
-          toast.message("Document stored — reading it failed, please enter the details yourself.");
+          toast.message(t("pf.readFailed"));
         } else if (result.suggestions.length === 0) {
-          toast.message("Document stored — nothing could be read clearly.");
+          toast.message(t("pf.nothingRead"));
         } else {
-          toast.success(`${result.suggestions.length} field(s) read — review and confirm below`);
+          toast.success(`${result.suggestions.length} ${t("pf.fieldsRead")}`);
         }
       }
       await queryClient.invalidateQueries({ queryKey: ["atap", "profile-workspace"] });
     } catch {
-      toast.error("Upload failed");
+      toast.error(t("pf.uploadFailed"));
     } finally {
       setUploading(false);
     }
@@ -197,21 +202,21 @@ function ProfilePage() {
     };
     const target = map[field];
     if (!target) {
-      toast.message("Noted — this field is kept on the document only.");
+      toast.message(t("pf.keptOnDoc"));
       return;
     }
     set(target, value as never);
     setConfirmed((prev) => (prev.includes(String(target)) ? prev : [...prev, String(target)]));
-    toast.success("Applied — save to confirm");
+    toast.success(t("pf.applied"));
   }
 
   if (workspace.isLoading) {
-    return <main className="mx-auto max-w-5xl px-6 py-12 text-sm text-muted-foreground">Loading…</main>;
+    return <main className="mx-auto max-w-5xl px-6 py-12 text-sm text-muted-foreground">{t("common.loading")}</main>;
   }
   if (workspace.isError || !data) {
     return (
       <main className="mx-auto max-w-5xl px-6 py-12 text-sm text-field-invalid">
-        Could not load your profile.
+        {t("pf.loadErrorShort")}
       </main>
     );
   }
@@ -221,9 +226,9 @@ function ProfilePage() {
   return (
     <main className="mx-auto max-w-5xl space-y-8 px-6 py-12">
       <PageHeader
-        eyebrow="Farmer portal"
-        title="My profile"
-        description="These details set the context for scheme eligibility. They are yours: reviewers see only the eligibility result, never your photograph, category or account number."
+        eyebrow={t("pf.eyebrow")}
+        title={t("pf.title")}
+        description={t("pf.description")}
       />
 
       <MyFarmerQr />
@@ -233,50 +238,48 @@ function ProfilePage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-              Profile completeness
+              {t("pf.completeness")}
             </h2>
             <p className="mt-1 text-2xl font-semibold">{completeness.score}%</p>
           </div>
           <Badge variant={completeness.schemeReady ? "secondary" : "destructive"}>
-            {completeness.schemeReady ? "Scheme ready" : "Scheme context incomplete"}
+            {completeness.schemeReady ? t("pf.schemeReady") : t("pf.schemeIncomplete")}
           </Badge>
         </div>
         <div className="mt-4 flex flex-wrap gap-2">
           {completeness.fields.map((f) => (
             <Badge key={String(f.field)} variant={f.done ? "secondary" : "outline"}>
               {f.done ? "✓" : "•"} {f.label}
-              {f.required && !f.done ? " (required)" : ""}
+              {f.required && !f.done ? ` ${t("pf.required")}` : ""}
             </Badge>
           ))}
         </div>
         {completeness.schemeReady ? (
           <p className="mt-4 text-sm text-muted-foreground">
-            Your details will prefill scheme applications.{" "}
+            {t("pf.prefillNote")}{" "}
             <Link to="/discovery" className="underline">
-              Browse schemes
+              {t("pf.browseSchemes")}
             </Link>
             .
           </p>
         ) : (
           <p className="mt-4 text-sm text-muted-foreground">
-            Missing: {completeness.missingRequired.join(", ")}. Scheme rules cannot be evaluated until
-            these are filled.
+            {t("pf.missing")}: {completeness.missingRequired.join(", ")}. {t("pf.missingHelp")}
           </p>
         )}
       </section>
 
       <section className="panel space-y-4 p-5">
         <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-          Photograph &amp; documents
+          {t("pf.docsTitle")}
         </h2>
         <p className="text-sm text-muted-foreground">
-          Photograph a passbook, land record or ID and AgriGhar will read it. Every reading is a
-          suggestion you confirm — nothing is applied automatically.
+          {t("pf.docsHelp")}
         </p>
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <Label htmlFor="photo">Your photograph</Label>
+            <Label htmlFor="photo">{t("pf.photo")}</Label>
             <Input
               id="photo"
               type="file"
@@ -288,12 +291,12 @@ function ProfilePage() {
               }}
             />
             <p className="mt-1 text-xs text-muted-foreground">
-              {data.profile?.photo_path ? "Photograph on file." : "Not uploaded yet."}
+              {data.profile?.photo_path ? t("pf.photoOnFile") : t("pf.photoNone")}
             </p>
           </div>
 
           <div>
-            <Label htmlFor="doc">Document</Label>
+            <Label htmlFor="doc">{t("pf.document")}</Label>
             <select
               id="doc-kind"
               className="mb-2 h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -302,7 +305,7 @@ function ProfilePage() {
             >
               {DOC_KINDS.filter((k) => k !== "photo").map((k) => (
                 <option key={k} value={k}>
-                  {DOC_LABEL[k]}
+                  {t(`pf.doc.${k}`)}
                 </option>
               ))}
             </select>
@@ -324,15 +327,14 @@ function ProfilePage() {
             {data.documents.map((doc) => (
               <div key={doc.id} className="rounded-lg border border-border p-4">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="text-sm font-medium">{DOC_LABEL[doc.doc_kind]}</p>
+                  <p className="text-sm font-medium">{t(`pf.doc.${doc.doc_kind}`)}</p>
                   <span className="text-xs text-muted-foreground">
                     {new Date(doc.created_at).toLocaleString()}
                   </span>
                 </div>
                 {doc.extraction_error ? (
                   <p className="mt-2 text-xs text-muted-foreground">
-                    Could not be read automatically ({doc.extraction_error}). Enter the details below
-                    manually.
+                    {t("pf.cannotRead")} ({doc.extraction_error}). {t("pf.enterManually")}
                   </p>
                 ) : null}
                 {doc.suggestions.length > 0 ? (
@@ -345,7 +347,7 @@ function ProfilePage() {
                         <span>
                           <span className="text-muted-foreground">{s.label}:</span> {String(s.value)}{" "}
                           <span className="text-xs text-muted-foreground">
-                            ({Math.round(s.confidence * 100)}% confidence)
+                            ({Math.round(s.confidence * 100)}% {t("pf.confidence")})
                           </span>
                         </span>
                         <Button
@@ -353,7 +355,7 @@ function ProfilePage() {
                           variant="outline"
                           onClick={() => applySuggestion(s.field, s.value)}
                         >
-                          Use this
+                          {t("pf.useThis")}
                         </Button>
                       </div>
                     ))}
@@ -367,12 +369,12 @@ function ProfilePage() {
 
       <section className="panel space-y-4 p-5">
         <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-          Personal &amp; land details
+          {t("pf.detailsTitle")}
         </h2>
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <Label htmlFor="full_name">Full name</Label>
+            <Label htmlFor="full_name">{t("pf.fullName")}</Label>
             <Input
               id="full_name"
               value={form.full_name ?? ""}
@@ -380,7 +382,7 @@ function ProfilePage() {
             />
           </div>
           <div>
-            <Label htmlFor="dob">Date of birth</Label>
+            <Label htmlFor="dob">{t("pf.dob")}</Label>
             <Input
               id="dob"
               type="date"
@@ -388,60 +390,60 @@ function ProfilePage() {
               onChange={(e) => set("date_of_birth", e.target.value)}
             />
             <p className="mt-1 text-xs text-muted-foreground">
-              {age === null ? "Age is derived from this date." : `Age ${age} years`}
+              {age === null ? t("pf.ageHint") : `${t("pf.age")} ${age} ${t("pf.years")}`}
             </p>
           </div>
           <div>
-            <Label htmlFor="gender">Gender</Label>
+            <Label htmlFor="gender">{t("pf.gender")}</Label>
             <select
               id="gender"
               className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
               value={form.gender ?? ""}
               onChange={(e) => set("gender", e.target.value)}
             >
-              <option value="">Select</option>
-              <option value="female">Female</option>
-              <option value="male">Male</option>
-              <option value="other">Other</option>
+              <option value="">{t("pf.select")}</option>
+              <option value="female">{t("pf.female")}</option>
+              <option value="male">{t("pf.male")}</option>
+              <option value="other">{t("pf.other")}</option>
             </select>
           </div>
           <div>
-            <Label htmlFor="category">Social category</Label>
+            <Label htmlFor="category">{t("pf.category")}</Label>
             <select
               id="category"
               className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
               value={form.social_category ?? ""}
               onChange={(e) => set("social_category", e.target.value)}
             >
-              <option value="">Select</option>
+              <option value="">{t("pf.select")}</option>
               {SOCIAL_CATEGORIES.map((c) => (
                 <option key={c} value={c}>
-                  {CATEGORY_LABEL[c] ?? c}
+                  {CATEGORY_LABEL[c] ? t(`pf.cat.${c}`) : c}
                 </option>
               ))}
             </select>
             <p className="mt-1 text-xs text-muted-foreground">
-              Used only to evaluate scheme rules. Never shared with reviewers.
+              {t("pf.categoryHint")}
             </p>
           </div>
           <div>
-            <Label htmlFor="ownership">Type of land holding</Label>
+            <Label htmlFor="ownership">{t("pf.ownership")}</Label>
             <select
               id="ownership"
               className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
               value={form.ownership_type ?? ""}
               onChange={(e) => set("ownership_type", e.target.value)}
             >
-              <option value="">Select</option>
+              <option value="">{t("pf.select")}</option>
               {OWNERSHIP_TYPES.map((o) => (
                 <option key={o} value={o}>
-                  {OWNERSHIP_LABEL[o] ?? o}
+                  {OWNERSHIP_LABEL[o] ? t(`pf.own.${o}`) : o}
                 </option>
               ))}
             </select>
           </div>
           <div>
-            <Label htmlFor="extent">Extent of land (acres)</Label>
+            <Label htmlFor="extent">{t("pf.extent")}</Label>
             <Input
               id="extent"
               type="number"
@@ -454,7 +456,7 @@ function ProfilePage() {
             />
           </div>
           <div>
-            <Label htmlFor="state">State</Label>
+            <Label htmlFor="state">{t("pf.state")}</Label>
             <select
               id="state"
               className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -464,7 +466,7 @@ function ProfilePage() {
                 set("district_geography_id", null);
               }}
             >
-              <option value="">Select</option>
+              <option value="">{t("pf.select")}</option>
               {states.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
@@ -473,14 +475,14 @@ function ProfilePage() {
             </select>
           </div>
           <div>
-            <Label htmlFor="district">District</Label>
+            <Label htmlFor="district">{t("pf.district")}</Label>
             <select
               id="district"
               className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
               value={form.district_geography_id ?? ""}
               onChange={(e) => set("district_geography_id", e.target.value || null)}
             >
-              <option value="">Select</option>
+              <option value="">{t("pf.select")}</option>
               {districts.map((d) => (
                 <option key={d.id} value={d.id}>
                   {d.name}
@@ -489,7 +491,7 @@ function ProfilePage() {
             </select>
           </div>
           <div>
-            <Label htmlFor="village">Village / mandal code</Label>
+            <Label htmlFor="village">{t("pf.village")}</Label>
             <Input
               id="village"
               value={form.village_code ?? ""}
@@ -497,22 +499,22 @@ function ProfilePage() {
             />
           </div>
           <div>
-            <Label htmlFor="irrigation">Irrigation source</Label>
+            <Label htmlFor="irrigation">{t("pf.irrigation")}</Label>
             <Input
               id="irrigation"
               value={form.irrigation_source ?? ""}
               onChange={(e) => set("irrigation_source", e.target.value)}
-              placeholder="borewell, canal, rainfed…"
+              placeholder={t("pf.irrigationPh")}
             />
           </div>
         </div>
 
         <h3 className="pt-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-          Passbook / bank details
+          {t("pf.bankTitle")}
         </h3>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <Label htmlFor="holder">Account holder</Label>
+            <Label htmlFor="holder">{t("pf.holder")}</Label>
             <Input
               id="holder"
               value={form.bank_account_holder ?? ""}
@@ -520,7 +522,7 @@ function ProfilePage() {
             />
           </div>
           <div>
-            <Label htmlFor="bank">Bank</Label>
+            <Label htmlFor="bank">{t("pf.bank")}</Label>
             <Input
               id="bank"
               value={form.bank_name ?? ""}
@@ -528,7 +530,7 @@ function ProfilePage() {
             />
           </div>
           <div>
-            <Label htmlFor="branch">Branch</Label>
+            <Label htmlFor="branch">{t("pf.branch")}</Label>
             <Input
               id="branch"
               value={form.bank_branch ?? ""}
@@ -544,7 +546,7 @@ function ProfilePage() {
             />
           </div>
           <div>
-            <Label htmlFor="account">Account number</Label>
+            <Label htmlFor="account">{t("pf.account")}</Label>
             <Input
               id="account"
               inputMode="numeric"
@@ -553,17 +555,17 @@ function ProfilePage() {
               onChange={(e) => set("bank_account_number", e.target.value)}
             />
             <p className="mt-1 text-xs text-muted-foreground">
-              Only the last four digits are stored; the rest is kept as a one-way hash.
+              {t("pf.accountHint")}
             </p>
           </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-3 pt-2">
           <Button disabled={saveMutation.isPending} onClick={() => saveMutation.mutate(form)}>
-            {saveMutation.isPending ? "Saving…" : "Save profile"}
+            {saveMutation.isPending ? t("pf.saving") : t("pf.save")}
           </Button>
           <Button variant="outline" asChild>
-            <Link to="/farm">Capture farm parcel</Link>
+            <Link to="/farm">{t("pf.captureParcel")}</Link>
           </Button>
         </div>
       </section>
