@@ -18,17 +18,13 @@ import { getFarmerCoverDetail } from "@/lib/atap/insuranceBridge.functions";
 import { useSeasonSync } from "@/hooks/useSeasonSync";
 import {
   COST_HEADS,
-  COST_HEAD_LABEL,
-  COVER_LABEL,
   SEASON_CODES,
-  SEASON_LABEL,
   seasonEconomics,
   totalCost,
   type CostBreakdown,
   type CostHead,
 } from "@/lib/atap/farmHistory";
 import {
-  PLANNING_DISCLAIMER,
   buildSeasonBudget,
   planCandidates,
   planRisks,
@@ -64,38 +60,9 @@ export const Route = createFileRoute("/_authenticated/farm-history")({
   ),
 });
 
-const inr = (value: number | null | undefined) =>
-  value === null || value === undefined
-    ? "—"
-    : `₹${Math.round(value).toLocaleString("en-IN")}`;
-
-const qtl = (value: number | null | undefined) =>
-  value === null || value === undefined ? "—" : `${value.toLocaleString("en-IN")} qtl`;
-
-const SERVICE_LABEL: Record<string, string> = {
-  drone_service: "Drone / spraying",
-  farm_machinery: "Machinery hiring",
-  soil_lab: "Soil testing lab",
-  chc: "Custom hiring centre",
-  warehouse: "Warehouse",
-  cold_storage: "Cold storage",
-  processor: "Processing unit",
-  logistics: "Logistics",
-  kvk: "KVK / extension",
-  fpo: "FPO",
-  extension_centre: "Extension centre",
-};
-
 type Tab = "overview" | "history" | "area" | "plan" | "insurance" | "services";
 
-const TABS: Array<{ id: Tab; label: string }> = [
-  { id: "overview", label: "Command centre" },
-  { id: "history", label: "My 5-year history" },
-  { id: "area", label: "What my area grows" },
-  { id: "plan", label: "Next season plan" },
-  { id: "insurance", label: "Insurance corner" },
-  { id: "services", label: "Services near me" },
-];
+const TABS: Tab[] = ["overview", "history", "area", "plan", "insurance", "services"];
 
 interface DraftState {
   id?: string;
@@ -146,7 +113,13 @@ function Stat({
 }
 
 function FarmHistoryPage() {
-  const { t: tr } = useLanguage();
+  const { t: tr, locale } = useLanguage();
+  const number = (v: number) => v.toLocaleString(`${locale}-IN`);
+  const inr = (value: number | null | undefined) => value == null ? "—" : new Intl.NumberFormat(`${locale}-IN`, { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(Math.round(value));
+  const qtl = (value: number | null | undefined) => value == null ? "—" : `${number(value)} ${tr("fh.qtl")}`;
+  const seasonLabel = (code: string) => tr(`fh.season.${code}`);
+  const costLabel = (head: string) => tr(`fh.costHead.${head}`);
+  const coverLabel = (code: string) => tr(`fh.cover.${code}`);
   const queryClient = useQueryClient();
   const fetchWorkspace = useServerFn(getFarmHistoryWorkspace);
   const saveSeason = useServerFn(saveFarmSeason);
@@ -205,9 +178,7 @@ function FarmHistoryPage() {
     },
     onSuccess: async (result) => {
       toast.success(
-        (result as { queued?: boolean })?.queued
-          ? "Saved on this device — it will sync when you are back online"
-          : "Season saved",
+        (result as { queued?: boolean })?.queued ? tr("fh.saveSeasonQueued") : tr("fh.saveSeasonOk"),
       );
       setDraft(null);
       await queryClient.invalidateQueries({ queryKey: ["atap", "farm-history"] });
@@ -252,7 +223,7 @@ function FarmHistoryPage() {
       toast.success(tr("fh.planSaved"));
       await queryClient.invalidateQueries({ queryKey: ["atap", "season-plans"] });
     },
-    onError: (e: Error) => toast.error(e.message || "Could not save this plan"),
+    onError: (e: Error) => toast.error(e.message || tr("fh.savePlanErr")),
   });
 
   const deletePlanMutation = useMutation({
@@ -342,7 +313,7 @@ function FarmHistoryPage() {
                   )
                 }
               >
-                Add a season
+                {tr("fh.addSeason")}
               </Button>
             </div>
           ) : null
@@ -361,7 +332,7 @@ function FarmHistoryPage() {
         >
           <div className="flex items-center gap-2">
             <Badge variant={sync.online ? "secondary" : "outline"}>
-              {sync.online ? "Online" : "Offline"}
+              {sync.online ? tr("fh.online") : tr("fh.offline")}
             </Badge>
             <p className="text-sm">{sync.summary}</p>
           </div>
@@ -371,24 +342,24 @@ function FarmHistoryPage() {
             disabled={!sync.online || sync.flushing || sync.counts.total === 0}
             onClick={() => void sync.flush()}
           >
-            {sync.flushing ? "Syncing…" : "Sync now"}
+            {sync.flushing ? tr("fh.syncing") : tr("fh.syncNow")}
           </Button>
         </div>
       ) : null}
 
       <div className="flex flex-wrap gap-2">
-        {TABS.map((t) => (
+        {TABS.map((tabId) => (
           <button
-            key={t.id}
+            key={tabId}
             type="button"
-            onClick={() => setTab(t.id)}
+            onClick={() => setTab(tabId)}
             className={
-              tab === t.id
+              tab === tabId
                 ? "rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
                 : "rounded-full border border-border px-4 py-2 text-sm text-muted-foreground hover:text-foreground"
             }
           >
-            {tr(`fh.tab.${t.id}`)}
+            {tr(`fh.tab.${tabId}`)}
           </button>
         ))}
       </div>
@@ -404,27 +375,27 @@ function FarmHistoryPage() {
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <Stat
                   label={tr("fh.totalExtent")}
-                  value={`${data.totalAcres.toLocaleString("en-IN")} acres`}
-                  helper={`${data.parcels.length} parcel${data.parcels.length === 1 ? "" : "s"} · ${data.scale.helper}`}
+                  value={`${number(data.totalAcres)} ${tr("fh.acres")}`}
+                  helper={`${data.parcels.length} ${tr("fh.parcels")} · ${data.scale.helper}`}
                 />
                 <Stat
                   label={tr("fh.avgNet")}
                   value={inr(data.summary.avgNetPerAcre)}
-                  helper={`${data.summary.yearsCovered} year(s) recorded · trend ${data.summary.trend.replace("_", " ")}`}
+                  helper={`${data.summary.yearsCovered} ${tr("fh.yearsRecorded")} · ${tr("fh.trend")} ${tr(`fh.trend.${data.summary.trend}`)}`}
                 />
                 <Stat
                   label={tr("fh.bestYear")}
                   value={
                     data.summary.bestYear
-                      ? `${data.summary.bestYear.crop_year} · ${inr(data.summary.bestYear.netPerAcre)}/ac`
+                      ? `${data.summary.bestYear.crop_year} · ${inr(data.summary.bestYear.netPerAcre)}/${tr("fh.acShort")}`
                       : "—"
                   }
-                  helper={data.summary.bestYear?.crops.join(", ") || "Add a season to see this"}
+                  helper={data.summary.bestYear?.crops.join(", ") || tr("fh.addToSee")}
                 />
                 <Stat
                   label={tr("fh.insurance")}
-                  value={COVER_LABEL[data.insurance.coverState]}
-                  helper={`Indicative farmer share ${inr(data.insurance.estimatedFarmerShare)} · advisory only`}
+                  value={coverLabel(data.insurance.coverState)}
+                  helper={`${tr("fh.indShare")} ${inr(data.insurance.estimatedFarmerShare)} · ${tr("fh.advisoryOnly")}`}
                 />
               </div>
 
@@ -433,7 +404,7 @@ function FarmHistoryPage() {
                   <h2 className="text-base font-semibold">{tr("fh.completeness")}</h2>
                   <Badge variant="secondary">{data.readiness.score}%</Badge>
                 </div>
-                <p className="mt-1 text-sm text-muted-foreground">{data.readiness.message}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{tr(`fh.readiness.${data.readiness.score === 100 ? "complete" : "incomplete"}`)}</p>
                 {data.readiness.yearsMissing.length ? (
                   <div className="mt-3 flex flex-wrap gap-2">
                     {data.readiness.yearsMissing.map((year) => (
@@ -447,7 +418,7 @@ function FarmHistoryPage() {
                           )
                         }
                       >
-                        Add {year}
+                        {tr("fh.add")} {year}
                       </Button>
                     ))}
                   </div>
@@ -485,8 +456,7 @@ function FarmHistoryPage() {
                 </div>
               ) : (
                 <p className="rounded-xl border border-dashed border-border p-6 text-sm text-muted-foreground">
-                  No season history yet. Add your first season — even one crop, one cost figure and
-                  one yield is enough to start the comparison with your district.
+                  {tr("fh.noHistory")}
                 </p>
               )}
 
@@ -498,7 +468,7 @@ function FarmHistoryPage() {
                       <div key={p.id} className="rounded-lg border border-border p-4">
                         <p className="text-sm font-medium">{p.label}</p>
                         <p className="text-xs text-muted-foreground">
-                          {p.area_acres ?? "—"} acres · {p.primary_crop ?? "crop not set"}
+                          {p.area_acres ?? "—"} {tr("fh.acres")} · {p.primary_crop ?? tr("fh.cropNotSet")}
                         </p>
                       </div>
                     ))}
@@ -520,27 +490,27 @@ function FarmHistoryPage() {
                     >
                       <div>
                         <p className="text-sm font-medium">
-                          {o.crop_year} {SEASON_LABEL[o.season_code] ?? o.season_code} · {o.crop} ·{" "}
-                          {o.area_acres} ac
+                          {o.crop_year} {seasonLabel(o.season_code)} · {o.crop} ·{" "}
+                          {o.area_acres} {tr("fh.acShort")}
                         </p>
                         {o.lastError ? (
                           <p className="text-xs text-destructive">{o.lastError}</p>
                         ) : (
                           <p className="text-xs text-muted-foreground">
-                            Stored on this device only
+                            {tr("fh.deviceOnly")}
                           </p>
                         )}
                       </div>
                       <div className="flex items-center gap-2">
                         <Badge variant={o.blocked ? "destructive" : "outline"}>
-                          {o.blocked ? "Needs attention" : "Queued"}
+                          {o.blocked ? tr("fh.needsAttention") : tr("fh.queued")}
                         </Badge>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => sync.discard(o.clientOpId)}
                         >
-                          Discard
+                          {tr("fh.discard")}
                         </Button>
                       </div>
                     </div>
@@ -550,8 +520,7 @@ function FarmHistoryPage() {
 
               {seasonsSorted.length === 0 && sync.optimistic.length === 0 ? (
                 <p className="rounded-xl border border-dashed border-border p-6 text-sm text-muted-foreground">
-                  Nothing recorded yet. Use “Add a season” to record what you sowed, what it cost and
-                  what you earned.
+                  {tr("fh.nothingRecorded")}
                 </p>
               ) : (
                 <div className="overflow-x-auto rounded-xl border border-border bg-card">
@@ -577,7 +546,7 @@ function FarmHistoryPage() {
                             <td className="p-3">
                               <span className="font-medium">{s.crop_year}</span>
                               <span className="block text-xs text-muted-foreground">
-                                {SEASON_LABEL[s.season_code] ?? s.season_code}
+                                {seasonLabel(s.season_code)}
                               </span>
                             </td>
                             <td className="p-3">{s.crop}</td>
@@ -592,7 +561,7 @@ function FarmHistoryPage() {
                               {inr(eco.netMargin)}
                               {eco.returnOnCostPct !== null ? (
                                 <span className="block text-xs font-normal text-muted-foreground">
-                                  {eco.returnOnCostPct}% on cost
+                                  {eco.returnOnCostPct}% {tr("fh.onCost")}
                                 </span>
                               ) : null}
                             </td>
@@ -626,14 +595,14 @@ function FarmHistoryPage() {
                                     })
                                   }
                                 >
-                                  Edit
+                                  {tr("fh.edit")}
                                 </Button>
                                 <Button
                                   size="sm"
                                   variant="ghost"
                                   onClick={() => deleteMutation.mutate(s.id)}
                                 >
-                                  Delete
+                                  {tr("fh.delete")}
                                 </Button>
                               </div>
                             </td>
@@ -645,8 +614,7 @@ function FarmHistoryPage() {
                 </div>
               )}
               <p className="text-xs text-muted-foreground">
-                Every figure here is entered by you and stored against your account only. No other
-                organisation can read your season records.
+                {tr("fh.privacy")}
               </p>
             </section>
           ) : null}
@@ -654,13 +622,12 @@ function FarmHistoryPage() {
           {tab === "area" ? (
             <section className="space-y-5">
               <p className="text-sm text-muted-foreground">
-                District averages for {data.district ?? "your area"} over the last five years —
-                aggregate reference data, never another farmer's records.
+                {tr("fh.areaIntro").replace("{district}", data.district ?? tr("fh.yourArea"))}
               </p>
               <div className="rounded-xl border border-border bg-card p-4 space-y-2">
                 <div className="flex flex-wrap items-center gap-2">
                   <Badge variant={data.officialReference.fields.price === "official" ? "default" : "outline"}>
-                    Price: {data.officialReference.fields.price === "official" ? "Official (MSP)" : "Indicative"}
+                    {tr("fh.price")}: {data.officialReference.fields.price === "official" ? tr("fh.officialMsp") : tr("fh.indicative")}
                   </Badge>
                   <Badge variant="outline">{tr("fh.yieldInd")}</Badge>
                   <Badge variant="outline">{tr("fh.costInd")}</Badge>
@@ -673,7 +640,7 @@ function FarmHistoryPage() {
                 </ul>
                 {data.officialReference.datasets.length > 0 ? (
                   <p className="text-xs text-muted-foreground">
-                    Loaded sources:{" "}
+                    {tr("fh.loadedSources")}:{" "}
                     {data.officialReference.datasets.map((d) => `${d.label} (${d.citation})`).join("; ")}
                   </p>
                 ) : null}
@@ -698,7 +665,7 @@ function FarmHistoryPage() {
                         <td className="p-3 text-right tabular-nums">
                           {c.avgYieldPerAcre}
                           <span className="block text-xs text-muted-foreground">
-                            band {c.yieldBand[0]}–{c.yieldBand[1]}
+                            {tr("fh.band")} {c.yieldBand[0]}–{c.yieldBand[1]}
                           </span>
                         </td>
                         <td className="p-3 text-right tabular-nums">{inr(c.avgCostPerAcre)}</td>
@@ -734,14 +701,11 @@ function FarmHistoryPage() {
                                 : "secondary"
                           }
                         >
-                          {row.verdict === "no_own_data"
-                            ? "no history"
-                            : row.verdict.replace("_", " ")}
+                          {tr(`fh.verdict.${row.verdict}`)}
                         </Badge>
                       </div>
                       <p className="mt-2 text-xs text-muted-foreground">
-                        Mine {row.ownYieldPerAcre ?? "—"} qtl/ac · area {row.areaYieldPerAcre} qtl/ac
-                        {row.yieldGapPct !== null ? ` · gap ${row.yieldGapPct}%` : ""}
+                        {tr("fh.mine")} {row.ownYieldPerAcre ?? "—"} {tr("fh.qtl")}/{tr("fh.acShort")} · {tr("fh.area")} {row.areaYieldPerAcre} {tr("fh.qtl")}/{tr("fh.acShort")}{row.yieldGapPct !== null ? ` · ${tr("fh.gap")} ${row.yieldGapPct}%` : ""}
                       </p>
                     </div>
                   ))}
@@ -752,7 +716,7 @@ function FarmHistoryPage() {
 
           {tab === "plan" ? (
             <section className="space-y-5">
-              <p className="text-sm text-muted-foreground">{PLANNING_DISCLAIMER}</p>
+              <p className="text-sm text-muted-foreground">{tr("fh.planningDisclaimer")}</p>
 
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {candidates.map((c) => {
@@ -770,11 +734,10 @@ function FarmHistoryPage() {
                     >
                       <div className="flex items-center justify-between gap-2">
                         <p className="text-sm font-medium">{c.crop}</p>
-                        <Badge variant={active ? "default" : "outline"}>score {c.score}</Badge>
+                        <Badge variant={active ? "default" : "outline"}>{tr("fh.score")} {c.score}</Badge>
                       </div>
                       <p className="mt-2 text-xs text-muted-foreground">
-                        Indicative net {inr(c.expectedNetPerAcre)}/acre · yield{" "}
-                        {c.expectedYieldPerAcre} qtl/ac
+                        {tr("fh.indNetShort")} {inr(c.expectedNetPerAcre)}/{tr("fh.acShort")} · {tr("fh.yield")} {c.expectedYieldPerAcre} {tr("fh.qtl")}/{tr("fh.acShort")}
                       </p>
                       <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
                         {c.reasons.slice(0, 2).map((r) => (
@@ -786,7 +749,7 @@ function FarmHistoryPage() {
                 })}
                 {candidates.length === 0 ? (
                   <p className="rounded-xl border border-dashed border-border p-6 text-sm text-muted-foreground">
-                    Add a season or wait for district reference data to see planning options.
+                    {tr("fh.noCandidates")}
                   </p>
                 ) : null}
               </div>
@@ -794,7 +757,7 @@ function FarmHistoryPage() {
               {activeCandidate && planBudget ? (
                 <div className="rounded-xl border border-border bg-card p-5">
                   <h2 className="text-base font-semibold">
-                    Input budget — {activeCandidate.crop}
+                    {tr("fh.inputBudget")} — {activeCandidate.crop}
                   </h2>
                   <div className="mt-4 grid gap-4 sm:grid-cols-3">
                     <div>
@@ -847,7 +810,7 @@ function FarmHistoryPage() {
                           })
                         }
                       >
-                        Save advisory plan
+                        {tr("fh.saveAdvisory")}
                       </Button>
                     </div>
                   </div>
@@ -859,14 +822,14 @@ function FarmHistoryPage() {
                           <th className="p-3 text-left">{tr("fh.inputHead")}</th>
                           <th className="p-3 text-right">{tr("fh.perAcre")}</th>
                           <th className="p-3 text-right">
-                            Total ({planBudget.acres} ac)
+                            {tr("fh.totalBudget")} ({planBudget.acres} {tr("fh.acShort")})
                           </th>
                         </tr>
                       </thead>
                       <tbody>
                         {planBudget.lines.map((line) => (
                           <tr key={line.head} className="border-t border-border">
-                            <td className="p-3">{COST_HEAD_LABEL[line.head]}</td>
+                            <td className="p-3">{costLabel(line.head)}</td>
                             <td className="p-3 text-right tabular-nums">{inr(line.perAcre)}</td>
                             <td className="p-3 text-right tabular-nums">{inr(line.total)}</td>
                           </tr>
@@ -883,11 +846,11 @@ function FarmHistoryPage() {
                       label={tr("fh.breakEven")}
                       value={
                         planBudget.breakEvenYieldPerAcre !== null
-                          ? `${planBudget.breakEvenYieldPerAcre} qtl/ac`
+                          ? `${planBudget.breakEvenYieldPerAcre} ${tr("fh.qtl")}/${tr("fh.acShort")}`
                           : "—"
                       }
                       {...(planBudget.breakEvenPricePerQuintal !== null
-                        ? { helper: `or ${inr(planBudget.breakEvenPricePerQuintal)}/qtl` }
+                        ? { helper: `${tr("fh.or")} ${inr(planBudget.breakEvenPricePerQuintal)}/${tr("fh.qtl")}` }
                         : {})}
                     />
                   </div>
@@ -905,7 +868,7 @@ function FarmHistoryPage() {
                                   : "outline"
                             }
                           >
-                            {r.severity}
+                            {tr(`fh.severity.${r.severity}`)}
                           </Badge>
                           <span className="text-muted-foreground">{r.message}</span>
                         </li>
@@ -919,7 +882,7 @@ function FarmHistoryPage() {
                 <h2 className="text-base font-semibold">{tr("fh.savedPlans")}</h2>
                 {(plans.data ?? []).length === 0 ? (
                   <p className="mt-2 text-sm text-muted-foreground">
-                    No advisory plan saved yet.
+                    {tr("fh.noPlans")}
                   </p>
                 ) : (
                   <div className="mt-3 space-y-2">
@@ -930,11 +893,11 @@ function FarmHistoryPage() {
                       >
                         <div>
                           <p className="text-sm font-medium">
-                            {p.crop} · {SEASON_LABEL[p.snapshot.season_code] ?? p.snapshot.season_code}{" "}
+                            {p.crop} · {seasonLabel(p.snapshot.season_code)}{" "}
                             {p.snapshot.crop_year}
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            {p.snapshot.acres} ac · budget {inr(p.snapshot.budget?.totalCost)}
+                            {p.snapshot.acres} {tr("fh.acShort")} · {tr("fh.budget")} {inr(p.snapshot.budget?.totalCost)}
                           </p>
                         </div>
                         <Button
@@ -942,7 +905,7 @@ function FarmHistoryPage() {
                           size="sm"
                           onClick={() => deletePlanMutation.mutate(p.id)}
                         >
-                          Remove
+                          {tr("fh.remove")}
                         </Button>
                       </div>
                     ))}
@@ -955,31 +918,29 @@ function FarmHistoryPage() {
           {tab === "insurance" ? (
             <section className="space-y-5">
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <Stat label={tr("fh.coverStatus")} value={COVER_LABEL[data.insurance.coverState]} />
+                <Stat label={tr("fh.coverStatus")} value={coverLabel(data.insurance.coverState)} />
                 <Stat
                   label={tr("fh.sumInsured")}
                   value={inr(data.insurance.estimatedSumInsured)}
-                  helper={`${inr(data.insurance.sumInsuredPerAcre)} per acre`}
+                  helper={`${inr(data.insurance.sumInsuredPerAcre)} ${tr("fh.perAcre")}`}
                 />
                 <Stat
                   label={tr("fh.yourShare")}
                   value={inr(data.insurance.estimatedFarmerShare)}
-                  helper={`${inr(data.insurance.farmerSharePerAcre)} per acre`}
+                  helper={`${inr(data.insurance.farmerSharePerAcre)} ${tr("fh.perAcre")}`}
                 />
                 <Stat
                   label={tr("fh.season")}
-                  value={`${SEASON_LABEL[data.insurance.seasonCode] ?? data.insurance.seasonCode} ${data.insurance.cropYear}`}
-                  helper={data.insurance.crop ?? "crop not set"}
+                  value={`${seasonLabel(data.insurance.seasonCode)} ${data.insurance.cropYear}`}
+                  helper={data.insurance.crop ?? tr("fh.cropNotSet")}
                 />
               </div>
 
               <div className="rounded-xl border border-border bg-secondary p-5 text-sm text-secondary-foreground">
-                These are indicative figures for planning only. Enrolment, eligibility and any claim
-                outcome are decided by the authorised insurer or government officer — never
-                automatically here.
+                {tr("fh.insuranceDisclaimer")}
                 {data.insurance.contactLabel ? (
                   <span className="mt-2 block font-medium">
-                    Contact route: {data.insurance.contactLabel}
+                    {tr("fh.contactRoute")}: {data.insurance.contactLabel}
                   </span>
                 ) : null}
               </div>
@@ -988,17 +949,16 @@ function FarmHistoryPage() {
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <h2 className="text-base font-semibold">{tr("fh.coverRecord")}</h2>
                   <Badge variant={cover.data?.bound ? "default" : "secondary"}>
-                    {cover.data?.bound ? "Bound to a notified policy" : "Indicative only"}
+                    {cover.data?.bound ? tr("fh.boundPolicy") : tr("fh.indicativeOnly")}
                   </Badge>
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground">
                   {cover.data?.note ??
-                    "Cover figures become policy-bound once your organization links a notified insurer policy."}
+                    tr("fh.coverNote")}
                 </p>
                 {(cover.data?.snapshots.length ?? 0) === 0 ? (
                   <p className="mt-3 text-sm text-muted-foreground">
-                    No cover record yet. Your FPO can refresh cover indicators once you authorize
-                    membership facilitation.
+                    {tr("fh.noCover")}
                   </p>
                 ) : (
                   <div className="mt-3 space-y-2">
@@ -1009,17 +969,17 @@ function FarmHistoryPage() {
                       >
                         <div>
                           <p className="text-sm font-medium">
-                            {SEASON_LABEL[s.seasonCode] ?? s.seasonCode} {s.cropYear} ·{" "}
-                            {s.crop ?? "crop not set"}
+                            {seasonLabel(s.seasonCode)} {s.cropYear} ·{" "}
+                            {s.crop ?? tr("fh.cropNotSet")}
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            {inr(s.sumInsuredPerAcre ?? 0)} sum insured / acre · your share{" "}
-                            {inr(s.farmerSharePerAcre ?? 0)} / acre
+                            {inr(s.sumInsuredPerAcre ?? 0)} {tr("fh.sumInsured")} / {tr("fh.acShort")} · {tr("fh.yourShare")} {" "}
+                            {inr(s.farmerSharePerAcre ?? 0)} / {tr("fh.acShort")}
                             {s.contactLabel ? ` · ${s.contactLabel}` : ""}
                           </p>
                         </div>
                         <Badge variant={s.source === "insurer_policy" ? "default" : "outline"}>
-                          {s.source === "insurer_policy" ? "Policy-bound" : "Indicative"}
+                          {s.source === "insurer_policy" ? tr("fh.policyBound") : tr("fh.indicative")}
                         </Badge>
                       </div>
                     ))}
@@ -1031,11 +991,11 @@ function FarmHistoryPage() {
                 <h2 className="text-base font-semibold">{tr("fh.claimStatus")}</h2>
                 <p className="mt-1 text-xs text-muted-foreground">
                   {cover.data?.claimNote ??
-                    "Claim status is mirrored from the insurer at organization level."}
+                    tr("fh.claimNote")}
                 </p>
                 {(cover.data?.claims.length ?? 0) === 0 ? (
                   <p className="mt-3 text-sm text-muted-foreground">
-                    No claim has been reported for your organization.
+                    {tr("fh.noClaims")}
                   </p>
                 ) : (
                   <div className="mt-3 space-y-2">
@@ -1046,12 +1006,12 @@ function FarmHistoryPage() {
                       >
                         <div>
                           <p className="text-sm font-medium">
-                            {c.crop ?? "all crops"} · {c.season} · {c.peril.replace(/_/g, " ")}
+                            {c.crop ?? tr("fh.allCrops")} · {c.season} · {c.peril.replace(/_/g, " ")}
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            {c.fpoName} · reported{" "}
-                            {new Date(c.reportedAt).toLocaleDateString("en-IN")}
-                            {c.relevantToFarmer ? " · matches your district and crop" : ""}
+                            {c.fpoName} · {tr("fh.reported")} {" "}
+                            {new Date(c.reportedAt).toLocaleDateString(`${locale}-IN`)}
+                            {c.relevantToFarmer ? ` · ${tr("fh.matchesCrop")}` : ""}
                           </p>
                         </div>
                         <Badge variant="secondary">{c.stageLabel}</Badge>
@@ -1067,8 +1027,7 @@ function FarmHistoryPage() {
                 <h2 className="text-base font-semibold">{tr("fh.myApps")}</h2>
                 {data.insuranceApplications.length === 0 ? (
                   <p className="mt-2 text-sm text-muted-foreground">
-                    No applications yet. Open Schemes to see what you can apply for; a human reviewer
-                    decides each one.
+                    {tr("fh.noApps")}
                   </p>
                 ) : (
                   <div className="mt-3 space-y-2">
@@ -1102,7 +1061,7 @@ function FarmHistoryPage() {
                       : "rounded-full border border-border px-3 py-1.5 text-xs text-muted-foreground"
                   }
                 >
-                  All services
+                  {tr("fh.allServices")}
                 </button>
                 {data.serviceKinds.map((kind) => (
                   <button
@@ -1115,14 +1074,14 @@ function FarmHistoryPage() {
                         : "rounded-full border border-border px-3 py-1.5 text-xs text-muted-foreground"
                     }
                   >
-                    {SERVICE_LABEL[kind] ?? kind}
+                    {tr(`fh.service.${kind}`)}
                   </button>
                 ))}
               </div>
 
               {filteredServices.length === 0 ? (
                 <p className="rounded-xl border border-dashed border-border p-6 text-sm text-muted-foreground">
-                  No services listed for your area yet.
+                  {tr("fh.noServices")}
                 </p>
               ) : (
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -1130,21 +1089,21 @@ function FarmHistoryPage() {
                     <div key={s.id} className="rounded-xl border border-border bg-card p-5">
                       <div className="flex items-start justify-between gap-2">
                         <p className="text-sm font-medium">{s.name}</p>
-                        <Badge variant="outline">{SERVICE_LABEL[s.kind] ?? s.kind}</Badge>
+                        <Badge variant="outline">{tr(`fh.service.${s.kind}`)}</Badge>
                       </div>
                       <p className="mt-2 text-xs text-muted-foreground">
                         {s.district_name ?? "—"}
-                        {s.distanceKm !== null ? ` · ${s.distanceKm} km away` : ""}
+                        {s.distanceKm !== null ? ` · ${s.distanceKm} ${tr("fh.kmAway")}` : ""}
                       </p>
                       <p className="mt-2 text-xs text-muted-foreground">
-                        {s.contact_label ?? "Contact via your FPO or extension officer"}
+                        {s.contact_label ?? tr("fh.contactFpo")}
                       </p>
                     </div>
                   ))}
                 </div>
               )}
               <p className="text-xs text-muted-foreground">
-                Listing is discovery only — booking and payment are not part of this release.
+                {tr("fh.serviceDisclaimer")}
               </p>
             </section>
           ) : null}
@@ -1154,7 +1113,7 @@ function FarmHistoryPage() {
       {draft ? (
         <section className="rounded-xl border border-border bg-card p-6">
           <h2 className="text-base font-semibold">
-            {draft.id ? "Edit season" : "Add a season"}
+            {draft.id ? tr("fh.editSeason") : tr("fh.addSeason")}
           </h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div>
@@ -1176,7 +1135,7 @@ function FarmHistoryPage() {
               >
                 {SEASON_CODES.map((code) => (
                   <option key={code} value={code}>
-                    {SEASON_LABEL[code]}
+                    {seasonLabel(code)}
                   </option>
                 ))}
               </select>
@@ -1248,7 +1207,7 @@ function FarmHistoryPage() {
           <div className="mt-3 grid gap-4 sm:grid-cols-3 lg:grid-cols-6">
             {COST_HEADS.map((head) => (
               <div key={head}>
-                <Label htmlFor={`cost-${head}`}>{COST_HEAD_LABEL[head]}</Label>
+                <Label htmlFor={`cost-${head}`}>{costLabel(head)}</Label>
                 <Input
                   id={`cost-${head}`}
                   inputMode="decimal"
@@ -1261,7 +1220,7 @@ function FarmHistoryPage() {
             ))}
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
-            Total input cost:{" "}
+            {tr("fh.totalInputCost")}:{" "}
             <span className="font-semibold text-foreground">
               {inr(
                 totalCost(
@@ -1279,10 +1238,10 @@ function FarmHistoryPage() {
               onClick={() => saveMutation.mutate(draft)}
               disabled={saveMutation.isPending || !draft.crop.trim()}
             >
-              {saveMutation.isPending ? "Saving…" : "Save season"}
+              {saveMutation.isPending ? tr("fh.saving") : tr("fh.saveSeason")}
             </Button>
             <Button variant="outline" onClick={() => setDraft(null)}>
-              Cancel
+              {tr("fh.cancel")}
             </Button>
           </div>
         </section>

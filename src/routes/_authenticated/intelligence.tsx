@@ -18,11 +18,6 @@ import {
 } from "@/lib/atap/intelligence.functions";
 import {
   ESCALATION_FACILITY_KINDS,
-  ESCALATION_LABEL,
-  PRICE_LABEL_HELP,
-  PRICE_LABEL_TEXT,
-  confidenceLabel,
-  freshnessLabel,
   type EscalationKind,
   type OutcomeScenario,
   type PriceLabel,
@@ -51,24 +46,29 @@ export const Route = createFileRoute("/_authenticated/intelligence")({
 });
 
 const SECTIONS = [
-  { key: "location", label: "Location & season" },
-  { key: "weather", label: "Weather" },
-  { key: "soil", label: "Soil" },
-  { key: "crops", label: "Crop planning" },
-  { key: "market", label: "Market" },
-  { key: "valueadd", label: "Value-add" },
-  { key: "planner", label: "Outcome planner" },
-  { key: "nearby", label: "Nearby & help" },
+  { key: "location" },
+  { key: "weather" },
+  { key: "soil" },
+  { key: "crops" },
+  { key: "market" },
+  { key: "valueadd" },
+  { key: "planner" },
+  { key: "nearby" },
 ] as const;
 
 type SectionKey = (typeof SECTIONS)[number]["key"];
 
-function rupees(n: number): string {
-  return `₹${Math.round(n).toLocaleString("en-IN")}`;
+function useDisplay() {
+  const { t, locale } = useLanguage();
+  const rupees = (n: number) => new Intl.NumberFormat(`${locale}-IN`, { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(Math.round(n));
+  const freshness = (seconds: number | null) => seconds === null ? t("intel.freshnessUnknown") : seconds < 3600 ? `${Math.max(1, Math.round(seconds / 60))} ${t("intel.minutesOld")}` : seconds < 86400 ? `${Math.round(seconds / 3600)} ${t("intel.hoursOld")}` : `${Math.round(seconds / 86400)} ${t("intel.daysOld")}`;
+  const confidence = (value: number | null) => t(`intel.confidence.${value === null ? "unknown" : value >= .75 ? "high" : value >= .5 ? "moderate" : "low"}`);
+  return { t, locale, rupees, freshness, confidence };
 }
 
 /** No monetary value renders without its label — the core B2A design rule. */
 function PriceTag({ label }: { label: PriceLabel }) {
+  const { t } = useLanguage();
   const tone =
     label === "observed"
       ? "bg-primary/10 text-primary"
@@ -77,10 +77,10 @@ function PriceTag({ label }: { label: PriceLabel }) {
         : "bg-secondary text-secondary-foreground";
   return (
     <span
-      title={PRICE_LABEL_HELP[label]}
+      title={t(`intel.priceHelp.${label}`)}
       className={`rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${tone}`}
     >
-      {PRICE_LABEL_TEXT[label]}
+      {t(`intel.priceLabel.${label}`)}
     </span>
   );
 }
@@ -116,7 +116,7 @@ function IntelligencePage() {
   const refresh = useMutation({
     mutationFn: useServerFn(refreshFarmObservations),
     onSuccess: (res: { stored: number; soilBasis: string }) => {
-      toast.success(`Stored ${res.stored} fresh observations (soil basis: ${res.soilBasis}).`);
+      toast.success(`${t("intel.stored")} ${res.stored} · ${t("intel.soilBasis")}: ${res.soilBasis}`);
       void queryClient.invalidateQueries({ queryKey: ["atap", "farm-intelligence"] });
     },
     onError: (e: Error) => toast.error(e.message),
@@ -125,7 +125,7 @@ function IntelligencePage() {
   if (intel.isPending) {
     return (
       <main className="mx-auto max-w-6xl px-6 py-10">
-        <Empty text="Collating your farm information…" />
+        <Empty text={t("intel.collating")} />
       </main>
     );
   }
@@ -133,7 +133,7 @@ function IntelligencePage() {
   if (intel.isError || !data) {
     return (
       <main className="mx-auto max-w-6xl px-6 py-10">
-        <Empty text="We could not load your farm intelligence right now. Please try again." />
+        <Empty text={t("intel.loadError")} />
       </main>
     );
   }
@@ -152,7 +152,7 @@ function IntelligencePage() {
               disabled={refresh.isPending}
               onClick={() => refresh.mutate({ data: { farmId: data.farmId! } })}
             >
-              {refresh.isPending ? "Refreshing…" : "Refresh data"}
+              {refresh.isPending ? t("intel.refreshing") : t("intel.refresh")}
             </Button>
           ) : undefined
         }
@@ -160,7 +160,7 @@ function IntelligencePage() {
 
       {data.parcels.length === 0 ? (
         <Card title={t("intel.noParcel")}>
-          <Empty text="Capture a farm parcel first — location is what unlocks this workspace. Go to My farm to add one." />
+          <Empty text={t("intel.captureParcel")} />
         </Card>
       ) : (
         <>
@@ -182,7 +182,7 @@ function IntelligencePage() {
             ))}
           </div>
 
-          <nav className="flex flex-wrap gap-1 border-b border-border pb-2" aria-label="Farm intelligence sections">
+          <nav className="flex flex-wrap gap-1 border-b border-border pb-2" aria-label={t("intel.sections")}>
             {SECTIONS.map((s) => (
               <button
                 key={s.key}
@@ -209,9 +209,7 @@ function IntelligencePage() {
           {section === "nearby" ? <NearbySection data={data} /> : null}
 
           <p className="text-xs text-muted-foreground">
-            All external readings in this environment are synthetic and served through adapters (agromet, soil health
-            card, district profile, mandi price, FPO registry). Nothing here is an authoritative government record and
-            no scheme, credit or insurance outcome is decided from it.
+            {t("intel.disclaimer")}
           </p>
         </>
       )}
@@ -222,19 +220,19 @@ function IntelligencePage() {
 function LocationSection({ data }: { data: FarmIntelligence }) {
   const { t } = useLanguage();
   const loc = data.location;
-  if (!loc) return <Empty text="No location resolved for this parcel yet." />;
+  if (!loc) return <Empty text={t("intel.noLocation")} />;
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      <Card title={t("intel.resolved")} note={`Source ${loc.sourceKey}`}>
+      <Card title={t("intel.resolved")} note={`${t("intel.source")} ${loc.sourceKey}`}>
         <dl className="grid grid-cols-2 gap-y-2 text-sm">
           <dt className="text-muted-foreground">{t("intel.village")}</dt>
-          <dd>{loc.villageName ?? loc.villageCode ?? "Not recorded"}</dd>
+          <dd>{loc.villageName ?? loc.villageCode ?? t("intel.notRecorded")}</dd>
           <dt className="text-muted-foreground">{t("intel.block")}</dt>
-          <dd>{loc.blockName ?? "Not recorded"}</dd>
+          <dd>{loc.blockName ?? t("intel.notRecorded")}</dd>
           <dt className="text-muted-foreground">{t("intel.district")}</dt>
-          <dd>{loc.districtName ?? "Not resolved"}</dd>
+          <dd>{loc.districtName ?? t("intel.notResolved")}</dd>
           <dt className="text-muted-foreground">{t("intel.state")}</dt>
-          <dd>{loc.stateName ?? "Not resolved"}</dd>
+          <dd>{loc.stateName ?? t("intel.notResolved")}</dd>
           <dt className="text-muted-foreground">{t("intel.centroid")}</dt>
           <dd>
             {loc.lat.toFixed(4)}, {loc.lng.toFixed(4)}
@@ -245,11 +243,11 @@ function LocationSection({ data }: { data: FarmIntelligence }) {
       </Card>
       <Card title={t("intel.seasonBasis")}>
         <p>
-          <strong>{loc.seasonLabel}</strong> — sowing {loc.sowingWindow}, harvest {loc.harvestWindow}.
+          <strong>{loc.seasonLabel}</strong> — {t("intel.sowing")} {loc.sowingWindow}, {t("intel.harvest")} {loc.harvestWindow}.
         </p>
         <p className="mt-2 text-xs text-muted-foreground">
-          Major soils here: {loc.majorSoils.join(", ") || "not recorded"}. Common irrigation:{" "}
-          {loc.irrigationSources.join(", ") || "not recorded"}.
+          {t("intel.majorSoils")}: {loc.majorSoils.join(", ") || t("intel.notRecorded")}. {t("intel.irrigation")}:{" "}
+          {loc.irrigationSources.join(", ") || t("intel.notRecorded")}.
         </p>
       </Card>
     </div>
@@ -257,14 +255,14 @@ function LocationSection({ data }: { data: FarmIntelligence }) {
 }
 
 function WeatherSection({ data }: { data: FarmIntelligence }) {
-  const { t } = useLanguage();
+  const { t, freshness, confidence } = useDisplay();
   const w = data.weather;
-  if (!w) return <Empty text="No agromet reading available." />;
+  if (!w) return <Empty text={t("intel.noWeather")} />;
   return (
     <div className="space-y-4">
       <Card
         title={t("intel.current")}
-        note={`${w.envelope.sourceKey} · ${freshnessLabel(w.envelope.freshnessSeconds)} · ${confidenceLabel(
+        note={`${w.envelope.sourceKey} · ${freshness(w.envelope.freshnessSeconds)} · ${confidence(
           w.envelope.confidence,
         )}`}
       >
@@ -313,11 +311,11 @@ function Stat({ label, value }: { label: string; value: string }) {
 function SoilSection({ data }: { data: FarmIntelligence }) {
   const { t } = useLanguage();
   const soil = data.soil;
-  if (!soil) return <Empty text="No soil information available." />;
+  if (!soil) return <Empty text={t("intel.noSoil")} />;
   return (
     <div className="grid gap-4 md:grid-cols-2">
       <Card
-        title={soil.basis === "lab_tested" ? "Laboratory result for this farm" : "General soil information (location)"}
+        title={soil.basis === "lab_tested" ? t("intel.labResult") : t("intel.generalSoil")}
         note={soil.basisNote}
       >
         {soil.lab ? (
@@ -336,10 +334,10 @@ function SoilSection({ data }: { data: FarmIntelligence }) {
             </dd>
           </dl>
         ) : (
-          <Empty text="No Soil Health Card or laboratory test on record for this parcel." />
+          <Empty text={t("intel.noLab")} />
         )}
       </Card>
-      <Card title={t("intel.soilCtx")} note={`Source ${soil.general.sourceKey}`}>
+      <Card title={t("intel.soilCtx")} note={`${t("intel.source")} ${soil.general.sourceKey}`}>
         <dl className="grid grid-cols-2 gap-y-2">
           <dt className="text-muted-foreground">{t("intel.majorSoils")}</dt>
           <dd>{soil.general.majorSoils.join(", ")}</dd>
@@ -356,21 +354,20 @@ function SoilSection({ data }: { data: FarmIntelligence }) {
 }
 
 function CropSection({ data }: { data: FarmIntelligence }) {
-  const { t } = useLanguage();
-  if (data.crops.length === 0) return <Empty text="No crop candidates for this location yet." />;
+  const { t, freshness, confidence } = useDisplay();
+  if (data.crops.length === 0) return <Empty text={t("intel.noCrops")} />;
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
-        Decision support only, ranked with a visible factor breakdown. Nothing here approves a scheme, a loan or an
-        insurance claim.
+        {t("intel.cropDisclaimer")}
       </p>
       {data.crops.map((c) => (
         <Card
           key={`${c.crop}-${c.variety ?? "any"}`}
-          title={`${c.crop}${c.variety ? ` · ${c.variety}` : ""} — score ${c.score}/100`}
-          note={`${confidenceLabel(c.confidence)} · soil basis: ${
-            c.soilBasis === "lab_tested" ? "laboratory tested" : "inferred from location"
-          } · ${freshnessLabel(c.freshnessSeconds)}`}
+          title={`${c.crop}${c.variety ? ` · ${c.variety}` : ""} — ${t("intel.score")} ${c.score}/100`}
+          note={`${confidence(c.confidence)} · ${t("intel.soilBasis")}: ${
+            c.soilBasis === "lab_tested" ? t("intel.labTested") : t("intel.inferred")
+          } · ${freshness(c.freshnessSeconds)}`}
         >
           <p>{c.explanation}</p>
           <div className="mt-3 space-y-1">
@@ -380,14 +377,14 @@ function CropSection({ data }: { data: FarmIntelligence }) {
                 <span className="h-1.5 w-40 overflow-hidden rounded bg-secondary">
                   <span className="block h-full bg-primary" style={{ width: `${Math.round(f.score * 100)}%` }} />
                 </span>
-                <span className="text-muted-foreground">weight {Math.round(f.weight * 100)}%</span>
+                <span className="text-muted-foreground">{t("intel.weight")} {Math.round(f.weight * 100)}%</span>
               </div>
             ))}
           </div>
           <div className="mt-3 grid gap-3 md:grid-cols-2">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                What would change this
+                {t("intel.whatChanges")}
               </p>
               <ul className="mt-1 list-disc pl-5 text-xs">
                 {c.changeFactors.map((f) => (
@@ -411,12 +408,12 @@ function CropSection({ data }: { data: FarmIntelligence }) {
 }
 
 function MarketSection({ prices }: { prices: PriceView[] }) {
-  const { t } = useLanguage();
-  if (prices.length === 0) return <Empty text="No mandi price observations for this area yet." />;
+  const { t, rupees } = useDisplay();
+  if (prices.length === 0) return <Empty text={t("intel.noPrices")} />;
   return (
     <Card
       title={t("intel.mandi")}
-      note="OBSERVED prices are what markets actually reported, with the date and source. Forecasts and derived scenarios are never shown as observed prices."
+      note={t("intel.marketNote")}
     >
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
@@ -467,7 +464,7 @@ function MarketSection({ prices }: { prices: PriceView[] }) {
 }
 
 function ValueAddSection({ data }: { data: FarmIntelligence }) {
-  const { t } = useLanguage();
+  const { t, rupees } = useDisplay();
   const compute = useServerFn(computeValueAddScenario);
   const [pathId, setPathId] = useState(data.processingPaths[0]?.id ?? "");
   const [quintal, setQuintal] = useState(100);
@@ -493,18 +490,18 @@ function ValueAddSection({ data }: { data: FarmIntelligence }) {
   const path = useMemo(() => data.processingPaths.find((p) => p.id === pathId), [data.processingPaths, pathId]);
 
   if (data.processingPaths.length === 0) {
-    return <Empty text="No processing path is configured for your commodities yet." />;
+    return <Empty text={t("intel.noPaths")} />;
   }
 
   return (
     <div className="space-y-4">
       <Card
         title={t("intel.vaEcon")}
-        note="Every output here is a DERIVED SCENARIO. Recovery percentages and costs come from the configured processing path — a processor or FPO quotation replaces them, they are never hard-coded."
+        note={t("intel.valueNote")}
       >
         <div className="grid gap-3 sm:grid-cols-4">
           <label className="text-xs">
-            Processing path
+            {t("intel.path")}
             <select
               value={pathId}
               onChange={(e) => setPathId(e.target.value)}
@@ -523,19 +520,19 @@ function ValueAddSection({ data }: { data: FarmIntelligence }) {
         </div>
         {path ? (
           <p className="mt-3 text-xs text-muted-foreground">
-            Assumption source: <strong>{path.assumptionSource}</strong> ·{" "}
+            {t("intel.assumptionSource")}: <strong>{path.assumptionSource}</strong> ·{" "}
             {path.steps
-              .map((s) => `${s.fromProduct} → ${s.toProduct} at ${s.recoveryPct}% recovery, ₹${s.costPerQuintal}/qtl`)
+              .map((s) => `${s.fromProduct} → ${s.toProduct} ${t("intel.at")} ${s.recoveryPct}% ${t("intel.recovery")}, ${rupees(s.costPerQuintal)}/${t("intel.qtl")}`)
               .join(" · ")}
           </p>
         ) : null}
         <Button size="sm" className="mt-3" disabled={run.isPending} onClick={() => run.mutate()}>
-          {run.isPending ? "Calculating…" : "Calculate scenario"}
+          {run.isPending ? t("intel.calculating") : t("intel.calculate")}
         </Button>
       </Card>
 
       {result ? (
-        <Card title={`${result.pathLabel} — derived scenario`} note={`Assumption source: ${result.assumptionSource}`}>
+        <Card title={`${result.pathLabel} — ${t("intel.derived")}`} note={`{t("intel.assumptionSource")}: ${result.assumptionSource}`}>
           <div className="grid gap-3 sm:grid-cols-3">
             <LabeledStat
               label={t("intel.sellRaw")}
@@ -552,7 +549,7 @@ function ValueAddSection({ data }: { data: FarmIntelligence }) {
               value={
                 result.processedObservedPrice
                   ? `${rupees(result.processedObservedPrice.amount)}/${result.processedObservedPrice.unit}`
-                  : "No observed price"
+                  : t("intel.noObservedPrice")
               }
               priceLabel={result.processedObservedPrice?.label ?? "derived_scenario"}
             />
@@ -560,11 +557,10 @@ function ValueAddSection({ data }: { data: FarmIntelligence }) {
           <ul className="mt-3 space-y-1 text-xs">
             {result.steps.map((s) => (
               <li key={s.stepOrder}>
-                Step {s.stepOrder}: {s.inputQuintal} qtl {s.fromProduct} → {s.outputQuintal} qtl {s.toProduct} at{" "}
-                {s.recoveryPct}% recovery; processing {rupees(s.processingCost)}; by-products{" "}
+                {t("intel.step")} {s.stepOrder}: {s.inputQuintal} {t("intel.qtl")} {s.fromProduct} → {s.outputQuintal} {t("intel.qtl")} {s.toProduct} {t("intel.at")} {s.recoveryPct}% {t("intel.recovery")}; {t("intel.processing")} {rupees(s.processingCost)}; {t("intel.byproducts")} {" "}
                 {rupees(s.byproductValue)}
                 {s.byproducts.length > 0
-                  ? ` (${s.byproducts.map((b) => `${b.name} ${b.quantityQuintal} qtl`).join(", ")})`
+                  ? ` (${s.byproducts.map((b) => `${b.name} ${b.quantityQuintal} ${t("intel.qtl")}`).join(", ")})`
                   : ""}
               </li>
             ))}
@@ -629,7 +625,7 @@ function LabeledStat({
 }
 
 function PlannerSection({ data }: { data: FarmIntelligence }) {
-  const { t } = useLanguage();
+  const { t, rupees } = useDisplay();
   const compute = useServerFn(computeCropOutcomeScenarios);
   const [crop, setCrop] = useState(data.crops[0]?.crop ?? data.parcels[0]?.primaryCrop ?? "Paddy");
   const [scenarios, setScenarios] = useState<OutcomeScenario[] | null>(null);
@@ -652,11 +648,11 @@ function PlannerSection({ data }: { data: FarmIntelligence }) {
     <div className="space-y-4">
       <Card
         title={t("intel.planner")}
-        note="Low / base / high scenarios with break-even price and yield. These are DERIVED SCENARIOS for planning, not a guarantee or an offer."
+        note={t("intel.plannerNote")}
       >
         <div className="flex flex-wrap items-end gap-3">
           <label className="text-xs">
-            Crop
+            {t("intel.commodity")}
             <select
               value={crop}
               onChange={(e) => setCrop(e.target.value)}
@@ -670,12 +666,12 @@ function PlannerSection({ data }: { data: FarmIntelligence }) {
             </select>
           </label>
           <Button size="sm" disabled={run.isPending} onClick={() => run.mutate()}>
-            {run.isPending ? "Planning…" : "Build scenarios"}
+            {run.isPending ? t("intel.planning") : t("intel.build")}
           </Button>
         </div>
         {priceMeta ? (
           <p className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
-            Selling price basis <PriceTag label={priceMeta.label} /> from {priceMeta.source}
+            {t("intel.priceBasis")} <PriceTag label={priceMeta.label} /> {t("intel.from")} {priceMeta.source}
           </p>
         ) : null}
       </Card>
@@ -683,7 +679,7 @@ function PlannerSection({ data }: { data: FarmIntelligence }) {
       {scenarios ? (
         <div className="grid gap-4 md:grid-cols-3">
           {scenarios.map((s) => (
-            <Card key={s.scenario} title={`${s.scenario.toUpperCase()} case`}>
+            <Card key={s.scenario} title={t(`intel.case.${s.scenario}`)}>
               <dl className="grid grid-cols-2 gap-y-1 text-xs">
                 <dt className="text-muted-foreground">{t("intel.expYield")}</dt>
                 <dd>{s.expectedYieldQuintal} qtl</dd>
@@ -706,7 +702,7 @@ function PlannerSection({ data }: { data: FarmIntelligence }) {
                 <dt className="text-muted-foreground">{t("intel.target")}</dt>
                 <dd>{s.targetMarket}</dd>
               </dl>
-              <p className="mt-2 text-xs text-muted-foreground">Value-add alternative: {s.valueAddAlternative}</p>
+              <p className="mt-2 text-xs text-muted-foreground">{t("intel.valueAlternative")}: {s.valueAddAlternative}</p>
               <ul className="mt-2 list-disc pl-4 text-xs text-muted-foreground">
                 {s.risks.map((r) => (
                   <li key={r}>{r}</li>
@@ -721,7 +717,7 @@ function PlannerSection({ data }: { data: FarmIntelligence }) {
 }
 
 function NearbySection({ data }: { data: FarmIntelligence }) {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const escalate = useServerFn(escalateToHuman);
   const queryClient = useQueryClient();
   const [kind, setKind] = useState<EscalationKind>("talk_to_fpo");
@@ -757,7 +753,7 @@ function NearbySection({ data }: { data: FarmIntelligence }) {
         {Object.entries(data.facilities).map(([group, list]) => (
           <Card key={group} title={group.replace(/_/g, " ")}>
             {list.length === 0 ? (
-              <Empty text="None recorded nearby." />
+              <Empty text={t("intel.noneNearby")} />
             ) : (
               <ul className="space-y-1 text-sm">
                 {list.map((f) => (
@@ -777,11 +773,11 @@ function NearbySection({ data }: { data: FarmIntelligence }) {
 
       <Card
         title={t("intel.talk")}
-        note="Any advisory that could affect credit, insurance, a scheme or a contract is routed to an authorised person — the platform never decides it."
+        note={t("intel.humanNote")}
       >
         <div className="grid gap-3 sm:grid-cols-3">
           <label className="text-xs">
-            What do you need?
+            {t("intel.whatNeed")}
             <select
               value={kind}
               onChange={(e) => {
@@ -790,15 +786,15 @@ function NearbySection({ data }: { data: FarmIntelligence }) {
               }}
               className="mt-1 w-full rounded-md border border-input bg-background px-2 py-1.5 text-sm"
             >
-              {(Object.keys(ESCALATION_LABEL) as EscalationKind[]).map((k) => (
+              {(["talk_to_fpo", "talk_to_kvk", "talk_to_agronomist", "book_soil_test", "request_processor_quote"] as EscalationKind[]).map((k) => (
                 <option key={k} value={k}>
-                  {ESCALATION_LABEL[k]}
+                  {t(`intel.escalation.${k}`)}
                 </option>
               ))}
             </select>
           </label>
           <label className="text-xs">
-            Facility (optional)
+            {t("intel.facilityOptional")}
             <select
               value={facilityId}
               onChange={(e) => setFacilityId(e.target.value)}
@@ -813,7 +809,7 @@ function NearbySection({ data }: { data: FarmIntelligence }) {
             </select>
           </label>
           <label className="text-xs">
-            Message (optional)
+            {t("intel.messageOptional")}
             <input
               value={message}
               onChange={(e) => setMessage(e.target.value)}
@@ -823,20 +819,20 @@ function NearbySection({ data }: { data: FarmIntelligence }) {
           </label>
         </div>
         <Button size="sm" className="mt-3" disabled={send.isPending} onClick={() => send.mutate()}>
-          {send.isPending ? "Sending…" : "Send request"}
+          {send.isPending ? t("intel.sending") : t("intel.send")}
         </Button>
       </Card>
 
       <Card title={t("intel.requests")}>
         {data.escalations.length === 0 ? (
-          <Empty text="No help requests raised from this workspace yet." />
+          <Empty text={t("intel.noRequests")} />
         ) : (
           <ul className="space-y-1 text-sm">
             {data.escalations.map((e) => (
               <li key={e.id}>
-                {ESCALATION_LABEL[e.kind]} · {e.status}
+                {t(`intel.escalation.${e.kind}`)} · {t(`intel.state.${e.status}`)}
                 <span className="block text-xs text-muted-foreground">
-                  {new Date(e.createdAt).toLocaleString()} {e.facilityName ? `· ${e.facilityName}` : ""}
+                  {new Date(e.createdAt).toLocaleString(`${locale}-IN`)} {e.facilityName ? `· ${e.facilityName}` : ""}
                   {e.message ? ` · ${e.message}` : ""}
                 </span>
               </li>

@@ -49,16 +49,11 @@ export const Route = createFileRoute("/_authenticated/market")({
   component: MarketPage,
 });
 
-const KIND_LABEL: Record<MarketPartyKind, string> = {
-  input_supplier: "Input supplier (seed, fertiliser, crop protection)",
-  equipment_supplier: "Equipment supplier (sale only)",
-  buyer_trader: "Buyer / trader",
-  processor: "Processor",
-  fpo_aggregator: "FPO aggregator",
-};
-
 function MarketPage() {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
+  const kindLabel = (kind: MarketPartyKind) => t(`mk.kind.${kind}`);
+  const stateLabel = (state: string) => t(`mk.state.${state}`);
+  const money = (n: number) => new Intl.NumberFormat(`${locale}-IN`, { style: "currency", currency: "INR", maximumFractionDigits: 2 }).format(n);
   const queryClient = useQueryClient();
   const fetchWorkspace = useServerFn(getMarketplaceWorkspace);
   const createProfile = useServerFn(createMarketProfile);
@@ -175,7 +170,7 @@ function MarketPage() {
         },
       }),
     onSuccess: async (res) => {
-      toast.success(`Listing saved — quality score ${res.qualityScore}/100`);
+      toast.success(`${t("mk.listingSaved")} ${res.qualityScore}/100`);
       await refresh();
     },
     onError: fail,
@@ -224,7 +219,7 @@ function MarketPage() {
   if (!data) {
     return (
       <main className="mx-auto max-w-3xl px-6 py-12 text-sm text-muted-foreground">
-        Marketplace workspace unavailable.
+        {t("mk.unavailable")}
       </main>
     );
   }
@@ -251,11 +246,11 @@ function MarketPage() {
 
       <section className="grid gap-3 sm:grid-cols-5">
         {[
-          ["Published listings", data.summary.publishedListings],
-          ["Awaiting review", data.summary.pendingListings],
-          ["Open RFQs", data.summary.openRfqs],
-          ["Live orders", data.summary.liveOrders],
-          ["Disputes in human review", data.summary.disputesInHumanReview],
+          [t("mk.publishedListings"), data.summary.publishedListings],
+          [t("mk.awaitingReview"), data.summary.pendingListings],
+          [t("mk.openRfqs"), data.summary.openRfqs],
+          [t("mk.liveOrders"), data.summary.liveOrders],
+          [t("mk.humanDisputes"), data.summary.disputesInHumanReview],
         ].map(([label, value]) => (
           <div key={String(label)} className="panel p-4">
             <p className="text-2xl font-semibold">{value}</p>
@@ -268,22 +263,20 @@ function MarketPage() {
         <h2 className="font-display text-sm font-semibold">{t("mk.activation")}</h2>
         <div className="flex flex-wrap gap-4 text-xs">
           <span className="flex items-center gap-2">
-            Base commerce <FlagBadge enabled={data.flags.baseCommerce} />
+            {t("mk.baseCommerce")} <FlagBadge enabled={data.flags.baseCommerce} label={data.flags.baseCommerce ? t("mk.on") : t("mk.off")} />
           </span>
           <span className="flex items-center gap-2">
-            FPO aggregated RFQ <FlagBadge enabled={data.flags.aggregatedRfq} />
+            {t("mk.aggregatedRfq")} <FlagBadge enabled={data.flags.aggregatedRfq} label={data.flags.aggregatedRfq ? t("mk.on") : t("mk.off")} />
           </span>
           <span className="flex items-center gap-2">
-            Sponsored placement (D-15) <FlagBadge enabled={data.flags.sponsoredPlacement} />
+            {t("mk.sponsored")} <FlagBadge enabled={data.flags.sponsoredPlacement} label={data.flags.sponsoredPlacement ? t("mk.on") : t("mk.off")} />
           </span>
           <span className="flex items-center gap-2">
-            Dispute workflow <FlagBadge enabled={data.flags.disputeWorkflow} />
+            {t("mk.disputeWorkflow")} <FlagBadge enabled={data.flags.disputeWorkflow} label={data.flags.disputeWorkflow ? t("mk.on") : t("mk.off")} />
           </span>
         </div>
         <p className="field-hint">
-          Sponsored placement exists as schema only. No sponsored surface is rendered and ranking ignores
-          sponsorship until decision D-15 is taken. Equipment rental, warehousing, export, auctions, carbon
-          credits and logistics are out of scope for this slice and rejected server-side.
+          {t("mk.activationNote")} 
         </p>
       </section>
 
@@ -298,16 +291,16 @@ function MarketPage() {
               value={partyKind}
               onChange={(e) => setPartyKind(e.target.value as MarketPartyKind)}
             >
-              {Object.entries(KIND_LABEL).map(([code, label]) => (
+              {(["input_supplier", "equipment_supplier", "buyer_trader", "processor", "fpo_aggregator"] as MarketPartyKind[]).map((code) => (
                 <option key={code} value={code}>
-                  {label}
+                  {kindLabel(code)}
                 </option>
               ))}
             </select>
           </label>
           <label className="space-y-1">
             <span className="field-hint">{t("mk.side")}</span>
-            <input className="field-base" value={kindDefaultSide(partyKind)} readOnly />
+            <input className="field-base" value={t(`mk.side.${kindDefaultSide(partyKind)}`)} readOnly />
           </label>
           <label className="space-y-1">
             <span className="field-hint">{t("mk.legalName")}</span>
@@ -315,7 +308,7 @@ function MarketPage() {
               className="field-base"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
-              placeholder="Synthetic Agri Inputs Pvt Ltd"
+              placeholder={t("mk.exampleName")}
             />
           </label>
           <label className="space-y-1">
@@ -359,9 +352,7 @@ function MarketPage() {
         <Button
           onClick={() => createProfileMutation.mutate()}
           disabled={createProfileMutation.isPending || !displayName}
-        >
-          Create draft profile
-        </Button>
+        >{t("mk.createDraft")}</Button>
 
         <div className="space-y-2 pt-2">
           {data.myProfiles.length === 0 ? (
@@ -371,15 +362,15 @@ function MarketPage() {
               <div key={p.id} className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border p-3">
                 <div>
                   <p className="text-sm font-medium">
-                    {p.display_name} · {p.side}
+                    {p.display_name} · {t(`mk.side.${p.side}`)}
                   </p>
                   <p className="field-hint">
-                    {KIND_LABEL[p.party_kind]} · {p.categories.join(", ") || "no categories"}
+                    {kindLabel(p.party_kind)} · {p.categories.join(", ") || t("mk.noCategories")}
                   </p>
-                  {p.decision_note ? <p className="field-hint">Reviewer: {p.decision_note}</p> : null}
+                  {p.decision_note ? <p className="field-hint">{t("mk.reviewer")}: {p.decision_note}</p> : null}
                 </div>
                 <div className="flex items-center gap-2">
-                  <StateBadge state={p.state} />
+                  <StateBadge state={p.state} label={stateLabel(p.state)} />
                   {(p.state === "draft" || p.state === "rejected") && (
                     <Button
                       size="sm"
@@ -392,9 +383,7 @@ function MarketPage() {
                           })
                           .catch(fail)
                       }
-                    >
-                      Submit for review
-                    </Button>
+                    >{t("mk.submitReview")}</Button>
                   )}
                 </div>
               </div>
@@ -408,8 +397,8 @@ function MarketPage() {
         <section className="panel space-y-4 p-5">
           <h2 className="font-display text-sm font-semibold">{t("mk.s2")}</h2>
           <p className="field-hint">
-            Publishing requires an approved seller profile and a quality score of at least{" "}
-            {data.minPublishScore}/100. No commercial plan changes either requirement.
+            {t("mk.publishingNote")} 
+            {data.minPublishScore}/100. {t("mk.noPlanException")} 
           </p>
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="space-y-1">
@@ -421,7 +410,7 @@ function MarketPage() {
               >
                 {sellerProfiles.map((p) => (
                   <option key={p.id} value={p.id}>
-                    {p.display_name} ({p.state})
+                    {p.display_name} ({stateLabel(p.state)})
                   </option>
                 ))}
               </select>
@@ -458,16 +447,16 @@ function MarketPage() {
             </label>
             {(
               [
-                ["priceMin", "Price min"],
-                ["priceMax", "Price max"],
-                ["minOrderQty", "Min order qty"],
-                ["unit", "Unit"],
-                ["regionCode", "Region code"],
-                ["qualityNotes", "Quality / certification notes"],
+                ["priceMin", "mk.field.priceMin"],
+                ["priceMax", "mk.field.priceMax"],
+                ["minOrderQty", "mk.field.minOrderQty"],
+                ["unit", "mk.field.unit"],
+                ["regionCode", "mk.field.regionCode"],
+                ["qualityNotes", "mk.field.qualityNotes"],
               ] as const
             ).map(([field, label]) => (
               <label key={field} className="space-y-1">
-                <span className="field-hint">{label}</span>
+                <span className="field-hint">{t(label)}</span>
                 <input
                   className="field-base"
                   value={listing[field]}
@@ -476,36 +465,32 @@ function MarketPage() {
               </label>
             ))}
           </div>
-          <Button onClick={() => listingMutation.mutate()} disabled={listingMutation.isPending}>
-            Save listing draft
-          </Button>
+          <Button onClick={() => listingMutation.mutate()} disabled={listingMutation.isPending}>{t("mk.saveDraft")}</Button>
 
           <div className="space-y-2 pt-2">
             {data.myListings.map((l) => (
               <div key={l.id} className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border p-3">
                 <div>
-                  <p className="text-sm font-medium">{l.title || "(untitled)"}</p>
+                  <p className="text-sm font-medium">{l.title || t("mk.untitled")}</p>
                   <p className="field-hint">
-                    {l.category} · quality {l.quality_score}/100
+                    {l.category} · {t("mk.quality")} {l.quality_score}/100
                     {l.review_note ? ` · ${l.review_note}` : ""}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <StateBadge state={l.status} />
+                  <StateBadge state={l.status} label={stateLabel(l.status)} />
                   {l.status !== "published" ? (
                     <Button
                       size="sm"
                       onClick={() =>
                         publishListingFn({ data: { listingId: l.id } })
                           .then((r) => {
-                            toast.success(`Published (quality ${r.score}/100)`);
+                            toast.success(`${t("mk.published")} ${r.score}/100`);
                             return refresh();
                           })
                           .catch(fail)
                       }
-                    >
-                      Publish
-                    </Button>
+                    >{t("mk.publish")}</Button>
                   ) : (
                     <Button
                       size="sm"
@@ -515,9 +500,7 @@ function MarketPage() {
                           .then(() => refresh())
                           .catch(fail)
                       }
-                    >
-                      Delist
-                    </Button>
+                    >{t("mk.delist")}</Button>
                   )}
                 </div>
               </div>
@@ -530,8 +513,7 @@ function MarketPage() {
       <section className="panel space-y-4 p-5">
         <h2 className="font-display text-sm font-semibold">{t("mk.s3")}</h2>
         <p className="field-hint">
-          Ranking uses query fit and listing quality only. Seller plan and sponsorship are not ranking
-          inputs, so two identical listings always rank identically.
+          {t("mk.rankingNote")} 
         </p>
         <div className="grid gap-3 sm:grid-cols-4">
           <select
@@ -558,18 +540,16 @@ function MarketPage() {
             value={query.maxPrice}
             onChange={(e) => setQuery({ ...query, maxPrice: e.target.value })}
           />
-          <Button onClick={() => searchMutation.mutate()} disabled={searchMutation.isPending}>
-            Search
-          </Button>
+          <Button onClick={() => searchMutation.mutate()} disabled={searchMutation.isPending}>{t("mk.search")}</Button>
         </div>
         <div className="space-y-2">
           {(results ?? data.publishedListings).map((l) => (
             <div key={l.id} className="rounded-lg border border-border p-3">
               <p className="text-sm font-medium">{l.title}</p>
               <p className="field-hint">
-                {l.category} · {l.region_code ?? "any region"} ·{" "}
-                {l.price_min != null ? `${l.price_min}–${l.price_max ?? l.price_min}/${l.unit}` : "price on request"}{" "}
-                · quality {l.quality_score}/100
+                {l.category} · {l.region_code ?? t("mk.anyRegion")} ·{" "}
+                {l.price_min != null ? `${money(l.price_min)}–${money(l.price_max ?? l.price_min)}/${l.unit}` : t("mk.priceOnRequest")}{" "}
+                · {t("mk.quality")} {l.quality_score}/100
               </p>
             </div>
           ))}
@@ -593,7 +573,7 @@ function MarketPage() {
               >
                 {buyerProfiles.map((p) => (
                   <option key={p.id} value={p.id}>
-                    {p.display_name} ({p.state})
+                    {p.display_name} ({stateLabel(p.state)})
                   </option>
                 ))}
               </select>
@@ -644,9 +624,8 @@ function MarketPage() {
               onChange={(e) => setRfq({ ...rfq, isAggregated: e.target.checked })}
             />
             <span>
-              This is FPO aggregated member demand. Requires an approved delegated purchasing authority rule
-              for the tenant and the aggregated-RFQ flag; both are checked server-side and currently{" "}
-              {data.flags.aggregatedRfq ? "flag-enabled" : "flag-disabled"}.
+              {t("mk.aggregationNote")} 
+              {data.flags.aggregatedRfq ? t("mk.flagEnabled") : t("mk.flagDisabled")}.
             </span>
           </label>
           {rfq.isAggregated && (
@@ -657,9 +636,7 @@ function MarketPage() {
               onChange={(e) => setRfq({ ...rfq, authorityRef: e.target.value })}
             />
           )}
-          <Button onClick={() => rfqMutation.mutate()} disabled={rfqMutation.isPending}>
-            Publish RFQ
-          </Button>
+          <Button onClick={() => rfqMutation.mutate()} disabled={rfqMutation.isPending}>{t("mk.publishRfq")}</Button>
         </section>
       )}
 
@@ -678,11 +655,11 @@ function MarketPage() {
                   <div>
                     <p className="text-sm font-medium">{r.title}</p>
                     <p className="field-hint">
-                      {r.category} · {r.quantity} {r.unit} · {r.delivery_region ?? "any region"}
-                      {r.is_aggregated ? " · aggregated demand" : ""}
+                      {r.category} · {r.quantity} {r.unit} · {r.delivery_region ?? t("mk.anyRegion")}
+                      {r.is_aggregated ? ` · ${t("mk.aggregatedDemand")}` : ""}
                     </p>
                   </div>
-                  <StateBadge state={r.status} />
+                  <StateBadge state={r.status} label={stateLabel(r.status)} />
                 </div>
 
                 {!isOwner && sellerProfiles.length > 0 && (
@@ -724,16 +701,14 @@ function MarketPage() {
                           })
                           .catch(fail)
                       }
-                    >
-                      Submit quote
-                    </Button>
+                    >{t("mk.submitQuote")}</Button>
                   </div>
                 )}
 
                 {quotes.map((q) => (
                   <div key={q.id} className="flex items-center justify-between gap-2 rounded border border-border/70 p-2">
                     <p className="field-hint">
-                      {q.price}/{q.unit} · {q.note || "no note"} · {q.status}
+                      {q.price}/{q.unit} · {q.note || t("mk.noNote")} · {stateLabel(q.status)}
                     </p>
                     {isOwner && q.status === "submitted" ? (
                       <Button
@@ -746,9 +721,7 @@ function MarketPage() {
                             })
                             .catch(fail)
                         }
-                      >
-                        Accept & create order
-                      </Button>
+                      >{t("mk.acceptQuote")}</Button>
                     ) : null}
                   </div>
                 ))}
@@ -771,9 +744,9 @@ function MarketPage() {
               <div key={o.id} className="space-y-2 rounded-lg border border-border p-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="text-sm font-medium">
-                    {o.quantity} {o.unit} @ {o.agreed_price ?? "—"} · {isSeller ? "you sell" : "you buy"}
+                    {o.quantity} {o.unit} @ {o.agreed_price ?? "—"} · {isSeller ? t("mk.youSell") : t("mk.youBuy")}
                   </p>
-                  <StateBadge state={o.status} />
+                  <StateBadge state={o.status} label={stateLabel(o.status)} />
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {isSeller && o.status === "created" && (
@@ -784,9 +757,7 @@ function MarketPage() {
                           .then(() => refresh())
                           .catch(fail)
                       }
-                    >
-                      Accept order
-                    </Button>
+                    >{t("mk.acceptOrder")}</Button>
                   )}
                   {isSeller && o.status === "accepted" && (
                     <Button
@@ -796,9 +767,7 @@ function MarketPage() {
                           .then(() => refresh())
                           .catch(fail)
                       }
-                    >
-                      Mark fulfilled
-                    </Button>
+                    >{t("mk.markFulfilled")}</Button>
                   )}
                   {!isSeller && (o.status === "fulfilled" || o.status === "accepted") && (
                     <Button
@@ -809,16 +778,14 @@ function MarketPage() {
                           .then(() => refresh())
                           .catch(fail)
                       }
-                    >
-                      Close order
-                    </Button>
+                    >{t("mk.closeOrder")}</Button>
                   )}
                 </div>
 
                 {dispute ? (
                   <p className="field-hint">
-                    Dispute {dispute.category} · <StateBadge state={dispute.status} />{" "}
-                    {dispute.resolution_note ?? "awaiting human reviewer"}
+                    {t("mk.dispute")}: {dispute.category} · <StateBadge state={dispute.status} label={stateLabel(dispute.status)} />{" "}
+                    {dispute.resolution_note ?? t("mk.awaitingHuman")}
                   </p>
                 ) : data.flags.disputeWorkflow ? (
                   <div className="grid gap-2 sm:grid-cols-3">
@@ -856,9 +823,7 @@ function MarketPage() {
                           })
                           .catch(fail)
                       }
-                    >
-                      Raise dispute
-                    </Button>
+                    >{t("mk.raiseDispute")}</Button>
                   </div>
                 ) : null}
               </div>
@@ -880,7 +845,7 @@ function MarketPage() {
               data.reviewProfiles.map((p) => (
                 <div key={p.id} className="space-y-2 rounded-lg border border-border p-3">
                   <p className="text-sm font-medium">
-                    {p.display_name} · {KIND_LABEL[p.party_kind]}
+                    {p.display_name} · {kindLabel(p.party_kind)}
                   </p>
                   <p className="field-hint">
                     {p.categories.join(", ")} · {p.regions.join(", ")} · {p.contact_email}
@@ -902,13 +867,13 @@ function MarketPage() {
                             data: { profileId: p.id, decision, note: decisionNotes[p.id] ?? "" },
                           })
                             .then(() => {
-                              toast.success(`Profile ${decision}`);
+                              toast.success(`${t("mk.profile")} ${stateLabel(decision)}`);
                               return refresh();
                             })
                             .catch(fail)
                         }
                       >
-                        {decision === "approved" ? "Approve" : "Reject"}
+                        {decision === "approved" ? t("mk.approve") : t("mk.reject")}
                       </Button>
                     ))}
                   </div>
@@ -943,13 +908,13 @@ function MarketPage() {
                             data: { disputeId: d.id, next, resolutionNote: decisionNotes[d.id] ?? "" },
                           })
                             .then(() => {
-                              toast.success(`Dispute ${next} by human reviewer`);
+                              toast.success(`${t("mk.dispute")} ${stateLabel(next)} · ${t("mk.humanReviewer")}`);
                               return refresh();
                             })
                             .catch(fail)
                         }
                       >
-                        {next === "resolved" ? "Resolve" : "Reject"}
+                        {next === "resolved" ? t("mk.resolve") : t("mk.reject")}
                       </Button>
                     ))}
                   </div>
