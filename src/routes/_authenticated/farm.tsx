@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/atap/AppShell";
 import { StateBadge, StatusBadge } from "@/components/atap/StatusBadge";
 import { ParcelCapture } from "@/components/atap/ParcelCapture";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import {
   completeFirstValueAction,
   getFarmerWorkspace,
@@ -14,7 +15,6 @@ import {
   syncFarmDrafts,
 } from "@/lib/atap/farmer.functions";
 import {
-  CHANNEL_LABEL,
   identityBlocksProgress,
   isAssistedChannel,
   validateBoundary,
@@ -78,6 +78,8 @@ function emptyForm(): DraftForm {
 
 function FarmPage() {
   const queryClient = useQueryClient();
+  const { t } = useLanguage();
+  const chLabel = (c: string) => t(`farm.ch.${c}`);
   const fetchWorkspace = useServerFn(getFarmerWorkspace);
   const sync = useServerFn(syncFarmDrafts);
   const verify = useServerFn(runIdentityCheck);
@@ -128,9 +130,9 @@ function FarmPage() {
       const conflicts = res.results.filter((r) => r.outcome === "plot_ref_already_registered");
       setQueue(removeDrafts(queueOwner, settled));
       if (conflicts.length > 0) {
-        toast.warning(`${conflicts.length} parcel(s) held for review: plot reference already registered.`);
+        toast.warning(`${conflicts.length} ${t("farm.held")}`);
       } else {
-        toast.success("Parcel drafts synced without duplicates.");
+        toast.success(t("farm.syncedToast"));
       }
       await queryClient.invalidateQueries({ queryKey: ["atap", "farmer-workspace"] });
     },
@@ -147,8 +149,8 @@ function FarmPage() {
         },
       }),
     onSuccess: async (res) => {
-      if (res.status === "verified") toast.success("Identity verified by the mocked jurisdiction adapter.");
-      else toast.warning(`Sent to manual review (${res.status}). Nothing was lost.`);
+      if (res.status === "verified") toast.success(t("farm.verified"));
+      else toast.warning(`${t("farm.manualReview")} (${res.status}). ${t("farm.nothingLost")}`);
       await queryClient.invalidateQueries({ queryKey: ["atap", "farmer-workspace"] });
     },
     onError: (e: Error) => toast.error(e.message),
@@ -157,7 +159,7 @@ function FarmPage() {
   const firstValueMutation = useMutation({
     mutationFn: (actionKey: string) => firstValue({ data: { actionKey, channel } }),
     onSuccess: async () => {
-      toast.success("Logged as a first-value action.");
+      toast.success(t("farm.logged"));
       await queryClient.invalidateQueries({ queryKey: ["atap", "farmer-workspace"] });
     },
     onError: (e: Error) => toast.error(e.message),
@@ -181,7 +183,7 @@ function FarmPage() {
     };
     setQueue(upsertDraft(queueOwner, draft));
     setForm(emptyForm());
-    toast.success("Saved on this device. It will survive a reload or connection loss.");
+    toast.success(t("farm.savedDevice"));
   }
 
   const data = workspace.data;
@@ -193,20 +195,19 @@ function FarmPage() {
   return (
     <div className="space-y-8">
       <PageHeader
-        eyebrow="B2 · Farmer & assisted onboarding"
-        title="Farm & parcel capture"
-        description="Capture parcels offline, verify identity through an adapter that can only recommend, and sync drafts idempotently. All data here is synthetic."
+        eyebrow={t("farm.eyebrow")}
+        title={t("farm.title")}
+        description={t("farm.description")}
       />
 
       <section className="rounded-xl border border-border bg-card p-5">
-        <h2 className="font-display text-lg font-semibold">Capture mode</h2>
+        <h2 className="font-display text-lg font-semibold">{t("farm.captureMode")}</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Assisted mode records the acting agent separately from the farmer whose data it is. Consent is
-          never delegated — the farmer accepts it themselves in the consent centre.
+          {t("farm.captureHelp")}
         </p>
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <label className="block">
-            <span className="mb-1 block text-sm font-medium">Channel</span>
+            <span className="mb-1 block text-sm font-medium">{t("farm.channel")}</span>
             <select
               className="field-base"
               value={channel}
@@ -214,24 +215,24 @@ function FarmPage() {
             >
               {CHANNEL_OPTIONS.map((c) => (
                 <option key={c} value={c}>
-                  {CHANNEL_LABEL[c]}
+                  {chLabel(c)}
                 </option>
               ))}
             </select>
           </label>
           {isAssistedChannel(channel) && (
             <label className="block">
-              <span className="mb-1 block text-sm font-medium">Farmer user id (data subject)</span>
+              <span className="mb-1 block text-sm font-medium">{t("farm.subject")}</span>
               <input
                 className="field-base"
                 value={subjectUserId}
                 onChange={(e) => setSubjectUserId(e.target.value)}
-                placeholder="uuid of the farmer you are assisting"
+                placeholder={t("farm.subjectPh")}
               />
               <span className="field-hint block">
                 {data?.canAssist
-                  ? "Your role allows assisted capture. Every write is audited as actor vs subject."
-                  : "You do not hold an assisting role, so the server will deny assisted writes."}
+                  ? t("farm.canAssist")
+                  : t("farm.cannotAssist")}
               </span>
             </label>
           )}
@@ -239,14 +240,13 @@ function FarmPage() {
       </section>
 
       <section className="rounded-xl border border-border bg-card p-5">
-        <h2 className="font-display text-lg font-semibold">Jurisdiction identity check</h2>
+        <h2 className="font-display text-lg font-semibold">{t("farm.idTitle")}</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Mocked adapter. A reference ending in an unverifiable pattern, or a duplicate already used by
-          another subject, routes to human manual review instead of failing the farmer.
+          {t("farm.idHelp")}
         </p>
         <div className="mt-4 flex flex-wrap items-end gap-3">
           <label className="block min-w-64 flex-1">
-            <span className="mb-1 block text-sm font-medium">Identity reference (synthetic)</span>
+            <span className="mb-1 block text-sm font-medium">{t("farm.idRef")}</span>
             <input
               className="field-base"
               value={reference}
@@ -258,13 +258,12 @@ function FarmPage() {
             onClick={() => verifyMutation.mutate()}
             disabled={reference.trim().length < 4 || verifyMutation.isPending}
           >
-            Run check
+            {t("farm.runCheck")}
           </Button>
         </div>
         {blockedCheck && (
           <p className="mt-3 rounded-md border border-border bg-muted/50 p-3 text-sm">
-            A check is on hold ({blockedCheck.status.replaceAll("_", " ")}). A platform admin resolves it in
-            the admin queue; your captured data stays saved.
+            {t("farm.onHold")} ({blockedCheck.status.replaceAll("_", " ")}). {t("farm.onHoldHelp")}
           </p>
         )}
         <ul className="mt-4 space-y-2 text-sm">
@@ -272,48 +271,48 @@ function FarmPage() {
             <li key={check.id} className="flex flex-wrap items-center gap-2 rounded-md border border-border p-3">
               <StateBadge state={check.status} />
               <span className="text-muted-foreground">{check.jurisdiction_code}</span>
-              <span className="text-muted-foreground">via {check.adapter_name}</span>
+              <span className="text-muted-foreground">{t("farm.via")} {check.adapter_name}</span>
               {check.reason_category && (
                 <span className="text-muted-foreground">· {check.reason_category.replaceAll("_", " ")}</span>
               )}
             </li>
           ))}
           {(data?.identityChecks ?? []).length === 0 && (
-            <li className="text-sm text-muted-foreground">No checks run yet.</li>
+            <li className="text-sm text-muted-foreground">{t("farm.noChecks")}</li>
           )}
         </ul>
       </section>
 
       <section className="rounded-xl border border-border bg-card p-5">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 className="font-display text-lg font-semibold">Parcel capture</h2>
+          <h2 className="font-display text-lg font-semibold">{t("farm.parcelTitle")}</h2>
           <span className="text-xs text-muted-foreground">
-            {online ? "Online" : "Offline — drafts stay on this device"}
+            {online ? t("farm.online") : t("farm.offline")}
           </span>
         </div>
         <div className="mt-4 grid gap-4 lg:grid-cols-2">
           <div className="space-y-3">
             <label className="block">
-              <span className="mb-1 block text-sm font-medium">Parcel label</span>
+              <span className="mb-1 block text-sm font-medium">{t("farm.label")}</span>
               <input
                 className="field-base"
                 value={form.label}
                 onChange={(e) => setForm({ ...form, label: e.target.value })}
-                placeholder="North field"
+                placeholder={t("farm.labelPh")}
               />
             </label>
             <label className="block">
-              <span className="mb-1 block text-sm font-medium">Plot reference</span>
+              <span className="mb-1 block text-sm font-medium">{t("farm.plotRef")}</span>
               <input
                 className="field-base"
                 value={form.plotRef}
                 onChange={(e) => setForm({ ...form, plotRef: e.target.value })}
                 placeholder="TG-KHM-114/2"
               />
-              <span className="field-hint block">Used as the duplicate guard for a farmer's parcels.</span>
+              <span className="field-hint block">{t("farm.plotHint")}</span>
             </label>
             <label className="block">
-              <span className="mb-1 block text-sm font-medium">Village code</span>
+              <span className="mb-1 block text-sm font-medium">{t("farm.village")}</span>
               <input
                 className="field-base"
                 value={form.villageCode}
@@ -323,30 +322,30 @@ function FarmPage() {
             </label>
             <div className="grid gap-3 sm:grid-cols-2">
               <label className="block">
-                <span className="mb-1 block text-sm font-medium">Primary crop</span>
+                <span className="mb-1 block text-sm font-medium">{t("farm.crop")}</span>
                 <input
                   className="field-base"
                   value={form.primaryCrop}
                   onChange={(e) => setForm({ ...form, primaryCrop: e.target.value })}
-                  placeholder="Cotton"
+                  placeholder={t("farm.cropPh")}
                 />
               </label>
               <label className="block">
-                <span className="mb-1 block text-sm font-medium">Irrigation (baseline profile)</span>
+                <span className="mb-1 block text-sm font-medium">{t("farm.irrigation")}</span>
                 <select
                   className="field-base"
                   value={form.irrigation}
                   onChange={(e) => setForm({ ...form, irrigation: e.target.value })}
                 >
-                  <option value="">Not stated</option>
-                  <option value="rainfed">Rainfed</option>
-                  <option value="borewell">Borewell</option>
-                  <option value="canal">Canal</option>
+                  <option value="">{t("farm.notStated")}</option>
+                  <option value="rainfed">{t("farm.rainfed")}</option>
+                  <option value="borewell">{t("farm.borewell")}</option>
+                  <option value="canal">{t("farm.canal")}</option>
                 </select>
               </label>
             </div>
             <Button onClick={queueDraft} disabled={!canQueue}>
-              Save parcel on this device
+              {t("farm.saveDevice")}
             </Button>
           </div>
           <ParcelCapture
@@ -359,12 +358,12 @@ function FarmPage() {
 
       <section className="rounded-xl border border-border bg-card p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="font-display text-lg font-semibold">Deferred sync queue ({queue.length})</h2>
+          <h2 className="font-display text-lg font-semibold">{t("farm.queue")} ({queue.length})</h2>
           <Button
             onClick={() => syncMutation.mutate(queue)}
             disabled={queue.length === 0 || syncMutation.isPending}
           >
-            Sync now
+            {t("farm.syncNow")}
           </Button>
         </div>
         <ul className="mt-3 space-y-2 text-sm">
@@ -374,32 +373,31 @@ function FarmPage() {
                 <span className="font-medium">{draft.label}</span>
                 <span className="text-muted-foreground">{draft.plotRef}</span>
                 <StatusBadge status="draft" />
-                <span className="text-muted-foreground">{CHANNEL_LABEL[draft.channel]}</span>
+                <span className="text-muted-foreground">{chLabel(draft.channel)}</span>
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
-                Draft key {draft.clientDraftId} — replaying this queue updates the same record instead of
-                duplicating it.
+                {t("farm.draftKey")} {draft.clientDraftId} — {t("farm.draftHelp")}
               </p>
             </li>
           ))}
           {queue.length === 0 && (
-            <li className="text-sm text-muted-foreground">Nothing pending. Captured parcels are synced.</li>
+            <li className="text-sm text-muted-foreground">{t("farm.nothingPending")}</li>
           )}
         </ul>
       </section>
 
       <section className="rounded-xl border border-border bg-card p-5">
-        <h2 className="font-display text-lg font-semibold">Synced farm records</h2>
+        <h2 className="font-display text-lg font-semibold">{t("farm.synced")}</h2>
         <div className="mt-3 overflow-x-auto">
           <table className="data-table">
             <thead>
               <tr>
-                <th>Parcel</th>
-                <th>Plot ref</th>
-                <th>Area</th>
-                <th>Crop</th>
-                <th>Channel</th>
-                <th>Sync</th>
+                <th>{t("farm.col.parcel")}</th>
+                <th>{t("farm.col.plot")}</th>
+                <th>{t("farm.col.area")}</th>
+                <th>{t("farm.col.crop")}</th>
+                <th>{t("farm.col.channel")}</th>
+                <th>{t("farm.col.sync")}</th>
               </tr>
             </thead>
             <tbody>
@@ -409,7 +407,7 @@ function FarmPage() {
                   <td>{farm.plot_ref}</td>
                   <td>{farm.area_acres ?? "—"}</td>
                   <td>{farm.primary_crop ?? "—"}</td>
-                  <td>{CHANNEL_LABEL[farm.channel]}</td>
+                  <td>{chLabel(farm.channel)}</td>
                   <td>
                     <StateBadge state={farm.sync_state} />
                   </td>
@@ -418,7 +416,7 @@ function FarmPage() {
               {(data?.farms ?? []).length === 0 && (
                 <tr>
                   <td colSpan={6} className="text-muted-foreground">
-                    No farm records yet.
+                    {t("farm.noFarms")}
                   </td>
                 </tr>
               )}
@@ -428,9 +426,9 @@ function FarmPage() {
       </section>
 
       <section className="rounded-xl border border-border bg-card p-5">
-        <h2 className="font-display text-lg font-semibold">Welcome — first value</h2>
+        <h2 className="font-display text-lg font-semibold">{t("farm.firstValue")}</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Launcher options are configuration-driven. Deactivated domains stay visibly deactivated.
+          {t("farm.firstValueHelp")}
         </p>
         <ul className="mt-4 grid gap-3 sm:grid-cols-2">
           {(data?.firstValue ?? []).map((action) => (
@@ -444,7 +442,7 @@ function FarmPage() {
                 disabled={!action.available || firstValueMutation.isPending}
                 onClick={() => firstValueMutation.mutate(action.key)}
               >
-                {action.available ? "Start" : "Not active in this slice"}
+                {action.available ? t("farm.start") : t("farm.notActive")}
               </Button>
             </li>
           ))}
@@ -453,18 +451,18 @@ function FarmPage() {
 
       {data?.canSeeMetrics && (
         <section className="rounded-xl border border-border bg-card p-5">
-          <h2 className="font-display text-lg font-semibold">Onboarding funnel</h2>
+          <h2 className="font-display text-lg font-semibold">{t("farm.funnel")}</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Assisted share {Math.round((data.metrics.assistedShare ?? 0) * 100)}% ·{" "}
-            {data.metrics.assisted} assisted vs {data.metrics.selfService} self-service events.
+            {t("farm.assistedShare")} {Math.round((data.metrics.assistedShare ?? 0) * 100)}% ·{" "}
+            {data.metrics.assisted} {t("farm.assistedVs")} {data.metrics.selfService} {t("farm.selfEvents")}
           </p>
           <div className="mt-3 overflow-x-auto">
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>Stage</th>
-                  <th>Events</th>
-                  <th>Distinct farmers</th>
+                  <th>{t("farm.col.stage")}</th>
+                  <th>{t("farm.col.events")}</th>
+                  <th>{t("farm.col.farmers")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -478,7 +476,7 @@ function FarmPage() {
                 {data.metrics.byStage.length === 0 && (
                   <tr>
                     <td colSpan={3} className="text-muted-foreground">
-                      No funnel events recorded yet.
+                      {t("farm.noFunnel")}
                     </td>
                   </tr>
                 )}
