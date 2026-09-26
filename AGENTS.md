@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - FPO Portal lives at /fpo-login + /fpo-portal/* with its own shell (AppShell steps aside via isFpoPortalPath); why: FPO staff manage the FPO separately from farmer accounts.
+- Shared catalogs require a farmer account, active tenant membership, or the relevant authorized role; FPO records require matching FPO membership and privileged reads must check purpose-scoped consent first, because signing in alone does not authorize cross-tenant data access.
