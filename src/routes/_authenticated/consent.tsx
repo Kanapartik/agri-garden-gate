@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/atap/AppShell";
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import { Button } from "@/components/ui/button";
 import {
   acceptBaselineConsent,
@@ -37,6 +38,7 @@ export const Route = createFileRoute("/_authenticated/consent")({
 });
 
 function ConsentPage() {
+  const { t, locale } = useLanguage();
   const queryClient = useQueryClient();
   const fetchWorkspace = useServerFn(getFarmerWorkspace);
   const accept = useServerFn(acceptBaselineConsent);
@@ -62,7 +64,7 @@ function ConsentPage() {
   const fpoRevokeMutation = useMutation({
     mutationFn: (consentId: string) => revokeFpoConsent({ data: { consentId } }),
     onSuccess: async () => {
-      toast.success("Authorization withdrawn and audited.");
+      toast.success(t("consent.toastFpo"));
       await queryClient.invalidateQueries({ queryKey: ["atap", "my-fpo-consents"] });
     },
     onError: (e: Error) => toast.error(e.message),
@@ -72,9 +74,9 @@ function ConsentPage() {
     queryClient.invalidateQueries({ queryKey: ["atap", "farmer-workspace"] });
 
   const acceptMutation = useMutation({
-    mutationFn: () => accept({ data: { channel: "self_service", locale: "en" } }),
+    mutationFn: () => accept({ data: { channel: "self_service", locale } }),
     onSuccess: async () => {
-      toast.success("Baseline platform consent recorded.");
+      toast.success(t("consent.toastBaseline"));
       await invalidate();
     },
     onError: (e: Error) => toast.error(e.message),
@@ -83,7 +85,7 @@ function ConsentPage() {
   const revokeMutation = useMutation({
     mutationFn: () => revoke(),
     onSuccess: async () => {
-      toast.success("Baseline consent revoked and audited.");
+      toast.success(t("consent.toastRevoked"));
       await invalidate();
     },
     onError: (e: Error) => toast.error(e.message),
@@ -97,7 +99,7 @@ function ConsentPage() {
     }) => setPartner({ data: input }),
     onSuccess: async (_res, input) => {
       toast.success(
-        input.decision === "grant" ? "Partner consent granted." : "Partner consent revoked.",
+        input.decision === "grant" ? t("consent.toastGranted") : t("consent.toastPartnerRevoked"),
       );
       await invalidate();
     },
@@ -110,8 +112,8 @@ function ConsentPage() {
     onSuccess: (res) => {
       setProbeResult(
         res.decision === "allow"
-          ? `Allowed (${res.reason}) — ${res.fields?.length ?? 0} parcel row(s) shared.`
-          : `Denied (${res.reason}) — no farm data returned.`,
+          ? `${t("consent.allowed")} (${res.reason}) — ${res.fields?.length ?? 0} ${t("consent.rowsShared")}`
+          : `${t("consent.denied")} (${res.reason}) — ${t("consent.noData")}`,
       );
     },
     onError: (e: Error) => toast.error(e.message),
@@ -120,45 +122,42 @@ function ConsentPage() {
   return (
     <div className="space-y-8">
       <PageHeader
-        eyebrow="B2 · Consent"
-        title="Consent centre"
-        description="Baseline platform consent is what the platform needs to hold your account. Everything a partner wants is a separate, optional choice you can withdraw at any time."
+        eyebrow={t("consent.eyebrow")}
+        title={t("consent.title")}
+        description={t("consent.description")}
       />
 
       <section className="rounded-xl border border-border bg-card p-5">
-        <h2 className="font-display text-lg font-semibold">Baseline platform consent</h2>
+        <h2 className="font-display text-lg font-semibold">{t("consent.baseline")}</h2>
         <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-          <li>• We keep your account, your contact details and your onboarding record.</li>
-          <li>• We keep the farm details you enter so you do not have to type them again.</li>
-          <li>
-            • We do not share your farm data with any bank, insurer or buyer under this consent.
-          </li>
-          <li>• You can withdraw this consent; withdrawal is recorded in the audit trail.</li>
+          <li>• {t("consent.b1")}</li>
+          <li>• {t("consent.b2")}</li>
+          <li>• {t("consent.b3")}</li>
+          <li>• {t("consent.b4")}</li>
         </ul>
         <p className="mt-3 text-xs text-muted-foreground">
-          Policy version {data?.baselinePolicyVersion ?? "…"} · status{" "}
-          {data?.baselineAccepted ? "accepted" : "not accepted"}
+          {t("consent.policyVersion")} {data?.baselinePolicyVersion ?? "…"} · {t("consent.status")}{" "}
+          {data?.baselineAccepted ? t("consent.accepted") : t("consent.notAccepted")}
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
           <Button onClick={() => acceptMutation.mutate()} disabled={acceptMutation.isPending}>
-            {data?.baselineAccepted ? "Re-affirm" : "I accept the baseline"}
+            {data?.baselineAccepted ? t("consent.reaffirm") : t("consent.accept")}
           </Button>
           <Button
             variant="outline"
             onClick={() => revokeMutation.mutate()}
             disabled={!data?.baselineAccepted || revokeMutation.isPending}
           >
-            Withdraw baseline consent
+            {t("consent.withdrawBaseline")}
           </Button>
         </div>
       </section>
 
       <section className="space-y-3">
         <div>
-          <h2 className="font-display text-lg font-semibold">Optional partner sharing</h2>
+          <h2 className="font-display text-lg font-semibold">{t("consent.partnerTitle")}</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Each card is one partner for one purpose. Nothing here is bundled into the baseline, and
-            paying for a higher tier never widens what a partner may read.
+            {t("consent.partnerHelp")}
           </p>
         </div>
         <ul className="grid gap-3 md:grid-cols-2">
@@ -174,8 +173,8 @@ function ConsentPage() {
               <p className="mt-2 text-sm text-muted-foreground">{card.description}</p>
               <p className="mt-2 text-xs text-muted-foreground">
                 {card.granted
-                  ? `Shared${card.expiresAt ? ` until ${new Date(card.expiresAt).toLocaleDateString()}` : ""}`
-                  : "Not shared"}
+                  ? `${t("consent.shared")}${card.expiresAt ? ` ${t("consent.until")} ${new Date(card.expiresAt).toLocaleDateString()}` : ""}`
+                  : t("consent.notShared")}
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
                 <Button
@@ -190,7 +189,7 @@ function ConsentPage() {
                     })
                   }
                 >
-                  {card.granted ? "Withdraw" : "Allow"}
+                  {card.granted ? t("common.withdraw") : t("consent.allow")}
                 </Button>
                 <Button
                   size="sm"
@@ -205,7 +204,7 @@ function ConsentPage() {
                     });
                   }}
                 >
-                  Test partner read
+                  {t("consent.testRead")}
                 </Button>
               </div>
               {probe?.consumerId === card.consumerId &&
@@ -215,7 +214,7 @@ function ConsentPage() {
           ))}
           {(data?.partnerCards ?? []).length === 0 && (
             <li className="text-sm text-muted-foreground">
-              No partner requests configured for your account.
+              {t("consent.noPartners")}
             </li>
           )}
         </ul>
@@ -223,11 +222,9 @@ function ConsentPage() {
 
       <section className="space-y-3">
         <div>
-          <h2 className="font-display text-lg font-semibold">Your FPO authorizations</h2>
+          <h2 className="font-display text-lg font-semibold">{t("consent.fpoTitle")}</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            What each producer organization you belong to may see about you, and why. Membership on
-            its own gives an FPO no access to your farm, scheme or market details — only these
-            authorizations do, and you can withdraw any of them here.
+            {t("consent.fpoHelp")}
           </p>
         </div>
         <ul className="grid gap-3 md:grid-cols-2">
@@ -241,8 +238,8 @@ function ConsentPage() {
                 <p className="mt-2 text-sm text-muted-foreground">{c.evidence}</p>
               ) : null}
               <p className="mt-2 text-xs text-muted-foreground">
-                Recorded {new Date(c.granted_at).toLocaleDateString()}
-                {c.expires_at ? ` · until ${new Date(c.expires_at).toLocaleDateString()}` : ""}
+                {t("consent.recorded")} {new Date(c.granted_at).toLocaleDateString()}
+                {c.expires_at ? ` · ${t("consent.until")} ${new Date(c.expires_at).toLocaleDateString()}` : ""}
               </p>
               <Button
                 size="sm"
@@ -251,13 +248,13 @@ function ConsentPage() {
                 disabled={fpoRevokeMutation.isPending}
                 onClick={() => fpoRevokeMutation.mutate(c.id)}
               >
-                Withdraw
+                {t("common.withdraw")}
               </Button>
             </li>
           ))}
           {(fpoConsents.data ?? []).length === 0 && (
             <li className="text-sm text-muted-foreground">
-              No producer organization currently has authorization to view your details.
+              {t("consent.noFpo")}
             </li>
           )}
         </ul>
