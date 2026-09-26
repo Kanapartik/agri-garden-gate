@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/atap/AppShell";
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import { StatusBadge } from "@/components/atap/StatusBadge";
 import { OnboardingStepper } from "@/components/atap/OnboardingStepper";
 import { Button } from "@/components/ui/button";
@@ -35,6 +36,7 @@ export const Route = createFileRoute("/_authenticated/onboarding")({
 });
 
 function OnboardingPage() {
+  const { t } = useLanguage();
   const queryClient = useQueryClient();
   const fetchWorkspace = useServerFn(getOnboardingWorkspace);
   const start = useServerFn(startApplication);
@@ -51,7 +53,7 @@ function OnboardingPage() {
     mutationFn: (roleCode: string) => start({ data: { roleCode } }),
     onSuccess: async (res) => {
       setActiveId(res.id);
-      toast.success("Synthetic draft created");
+      toast.success(t("on.draftCreated"));
       await queryClient.invalidateQueries({ queryKey: ["atap", "onboarding-workspace"] });
     },
     onError: (e: Error) => toast.error(e.message),
@@ -60,20 +62,20 @@ function OnboardingPage() {
   const submitMutation = useMutation({
     mutationFn: (applicationId: string) => submit({ data: { applicationId } }),
     onSuccess: async (res) => {
-      if (res.ok) toast.success("Submitted — status is now Pending human review");
-      else toast.error(`Incomplete steps: ${res.missing.join(", ")}`);
+      if (res.ok) toast.success(t("on.submitted"));
+      else toast.error(`${t("on.incomplete")}: ${res.missing.join(", ")}`);
       await queryClient.invalidateQueries({ queryKey: ["atap", "onboarding-workspace"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
 
   if (workspace.isLoading) {
-    return <main className="mx-auto max-w-6xl px-6 py-12 text-sm text-muted-foreground">Loading…</main>;
+    return <main className="mx-auto max-w-6xl px-6 py-12 text-sm text-muted-foreground">{t("common.loading")}</main>;
   }
   if (workspace.isError || !workspace.data) {
     return (
       <main className="mx-auto max-w-6xl px-6 py-12 text-sm text-field-invalid">
-        Could not load your onboarding workspace.
+        {t("common.loadError")}
       </main>
     );
   }
@@ -86,19 +88,17 @@ function OnboardingPage() {
   return (
     <main className="mx-auto max-w-6xl space-y-8 px-6 py-12">
       <PageHeader
-        eyebrow={`Environment: ${data.env}`}
-        title="My onboarding"
-        description="Drafts autosave as you type. Submitting moves the application to Pending; only a human reviewer can activate or reject it."
+        eyebrow={`${t("on.env")}: ${data.env}`}
+        title={t("on.title")}
+        description={t("on.description")}
       />
 
       <section className="panel p-5">
         <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-          Add a role profile
+          {t("on.addRole")}
         </h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          One account can hold multiple role profiles — for example farmer, FPO office bearer and
-          knowledge contributor. Each journey is drafted separately and only becomes active after
-          human review; starting a draft grants no access by itself.
+          {t("on.addRoleHelp")}
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
           {selectable.map((role) => (
@@ -120,11 +120,11 @@ function OnboardingPage() {
           <table className="data-table">
             <thead>
               <tr>
-                <th>Role</th>
-                <th>Status</th>
-                <th>Step</th>
-                <th>Updated</th>
-                <th>Synthetic</th>
+                <th>{t("on.col.role")}</th>
+                <th>{t("on.col.status")}</th>
+                <th>{t("on.col.step")}</th>
+                <th>{t("on.col.updated")}</th>
+                <th>{t("on.col.synthetic")}</th>
                 <th />
               </tr>
             </thead>
@@ -141,10 +141,10 @@ function OnboardingPage() {
                   <td className="text-muted-foreground">
                     {new Date(app.updated_at).toLocaleString()}
                   </td>
-                  <td className="text-muted-foreground">{app.is_synthetic ? "Yes" : "No"}</td>
+                  <td className="text-muted-foreground">{app.is_synthetic ? t("common.yes") : t("common.no")}</td>
                   <td>
                     <Button variant="ghost" size="sm" onClick={() => setActiveId(app.id)}>
-                      {active?.id === app.id ? "Open" : "Edit"}
+                      {active?.id === app.id ? t("on.open") : t("on.edit")}
                     </Button>
                   </td>
                 </tr>
@@ -172,7 +172,7 @@ function OnboardingPage() {
         />
       ) : (
         <p className="text-sm text-muted-foreground">
-          No applications yet. Start a synthetic draft above.
+          {t("on.empty")}
         </p>
       )}
     </main>

@@ -9,6 +9,8 @@
  * Nothing here is a security boundary; language is a presentation choice.
  */
 
+import { PAGE_DICTS } from "./i18n.pages";
+
 export const LOCALES = ["en", "te", "hi", "ta", "kn"] as const;
 export type Locale = (typeof LOCALES)[number];
 
@@ -449,7 +451,13 @@ const kn: Dict = {
   "soil.bookTest": "ಮಣ್ಣಿನ ಪರೀಕ್ಷೆಗೆ ವಿನಂತಿಸಿ",
 };
 
-export const DICTIONARIES: Record<Locale, Dict> = { en, te, hi, ta, kn };
+export const DICTIONARIES: Record<Locale, Dict> = {
+  en: { ...PAGE_DICTS.en, ...en },
+  te: { ...PAGE_DICTS.te, ...te },
+  hi: { ...PAGE_DICTS.hi, ...hi },
+  ta: { ...PAGE_DICTS.ta, ...ta },
+  kn: { ...PAGE_DICTS.kn, ...kn },
+};
 
 /**
  * Resolves a UI label. Missing translations fall back to English rather than
