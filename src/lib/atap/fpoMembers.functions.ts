@@ -420,9 +420,8 @@ export const setMembershipStatus = createServerFn({ method: "POST" })
 /* ------------------------------------------------------- farmer linkage */
 
 /**
- * Candidate lookup is deliberately narrow: FPO admins only, an explicit search
- * term, a hard result cap, no contact details returned, and every search
- * audited. It exists to link an *existing* identity, not to browse farmers.
+ * Candidate lookup is limited to farmers who have already given this FPO
+ * active member-management consent. An FPO role alone is not consent.
  */
 export const searchFarmerCandidates = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -434,14 +433,27 @@ export const searchFarmerCandidates = createServerFn({ method: "POST" })
     const term = data.query.trim();
     if (term.length < 3) return [];
 
+    const { data: consents, error: consentError } = await supabase
+      .from("fpo_farmer_consents")
+      .select("farmer_user_id")
+      .eq("tenant_id", data.tenantId)
+      .eq("purpose_code", "fpo_member_management")
+      .is("revoked_at", null)
+      .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`);
+    if (consentError) throw new Error("Candidate search unavailable");
+    const permittedIds = [...new Set((consents ?? []).map((row) => row.farmer_user_id))];
+    if (permittedIds.length === 0) return [];
+
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: rows } = await supabaseAdmin
+    const { data: rows, error: profileError } = await supabaseAdmin
       .from("farmer_profiles")
       .select("farmer_user_id, full_name, village_code, total_extent_acres")
+      .in("farmer_user_id", permittedIds)
       .or(
         `full_name.ilike.%${term.replace(/[%,]/g, "")}%,village_code.ilike.%${term.replace(/[%,]/g, "")}%`,
       )
       .limit(10);
+    if (profileError) throw new Error("Candidate search unavailable");
 
     const { data: existing } = await supabase
       .from("fpo_members")

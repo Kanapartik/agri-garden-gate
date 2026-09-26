@@ -184,7 +184,37 @@ export const createOrganization = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const { audit } = await import("@/lib/atap/admin.server");
+    const { audit, resolveActor } = await import("@/lib/atap/admin.server");
+    const actor = await resolveActor(supabase, userId);
+    // Case creation in this control plane is restricted to platform oversight.
+    // A caller cannot invent a subject or attach an unrelated tenant to it.
+    if (!actor.isPlatformAdmin || data.subjectType !== "organization") {
+      await audit(supabase, {
+        actor_user_id: userId,
+        action: "verification_case.open",
+        subject_type: data.subjectType,
+        subject_id: data.subjectId,
+        decision: "deny",
+        metadata: { reason: "not_authorized" },
+      });
+      throw new Error("Forbidden");
+    }
+    const { data: organization, error: lookupError } = await supabase
+      .from("organizations")
+      .select("id, tenant_id")
+      .eq("id", data.subjectId)
+      .maybeSingle();
+    if (lookupError || !organization || (data.tenantId ?? null) !== organization.tenant_id) {
+      await audit(supabase, {
+        actor_user_id: userId,
+        action: "verification_case.open",
+        subject_type: data.subjectType,
+        subject_id: data.subjectId,
+        decision: "deny",
+        metadata: { reason: "invalid_subject" },
+      });
+      throw new Error("Forbidden");
+    }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const { data: org, error } = await supabaseAdmin
@@ -554,7 +584,7 @@ export const openVerificationCase = createServerFn({ method: "POST" })
         case_type: data.caseType,
         subject_type: data.subjectType,
         subject_id: data.subjectId,
-        tenant_id: data.tenantId ?? null,
+        tenant_id: organization.tenant_id,
         opened_by: userId,
         evidence: data.evidence ?? [],
       })
