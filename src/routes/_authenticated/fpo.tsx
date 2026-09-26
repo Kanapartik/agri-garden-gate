@@ -224,7 +224,7 @@ function FpoPage() {
 
       <nav
         className="flex flex-wrap gap-1 border-b border-border pb-2 text-sm"
-        aria-label="FPO sections'
+        aria-label="FPO sections"
       >
         {FPO_SECTION_DEFS.map((s) => (
           <button
@@ -277,7 +277,7 @@ function FpoPage() {
                 <>
                   <input
                     className="field-base"
-                    placeholder="staff@example.org'
+                    placeholder="staff@example.org"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
@@ -294,7 +294,7 @@ function FpoPage() {
                   </select>
                   <input
                     className="field-base"
-                    placeholder="Note (optional)'
+                    placeholder="Note (optional)"
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
                   />
@@ -456,7 +456,7 @@ function FpoPage() {
               <>
                 <input
                   className="field-base"
-                  placeholder="Source label (e.g. Warangal register sheet 3)'
+                  placeholder="Source label (e.g. Warangal register sheet 3)"
                   value={sourceLabel}
                   onChange={(e) => setSourceLabel(e.target.value)}
                 />

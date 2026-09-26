@@ -337,7 +337,7 @@ export function FpoBillingSection({
                 className={input}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="What is this collection or expense for?'
+                placeholder="What is this collection or expense for?"
               />
             </label>
             <label className="space-y-1 text-sm">
@@ -533,7 +533,7 @@ export function FpoBillingSection({
                         className={input}
                         value={remarks}
                         onChange={(e) => setRemarks(e.target.value)}
-                        placeholder="What needs correcting?'
+                        placeholder="What needs correcting?"
                       />
                     </label>
                     <Button

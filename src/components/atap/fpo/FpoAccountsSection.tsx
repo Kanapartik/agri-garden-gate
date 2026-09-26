@@ -258,7 +258,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                   className={input}
                   value={direction}
                   onChange={(e) => setDirection(e.target.value as LedgerDirection)}
-                  aria-label="Direction'
+                  aria-label="Direction"
                 >
                   <option value="inflow">Money in</option>
                   <option value="outflow">Money out</option>
@@ -267,7 +267,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                   className={input}
                   value={category}
                   onChange={(e) => setCategory(e.target.value as LedgerCategory)}
-                  aria-label="Category'
+                  aria-label="Category"
                 >
                   {LEDGER_CATEGORIES.map((c) => (
                     <option key={c} value={c}>
@@ -277,13 +277,13 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                 </select>
                 <input
                   className={input}
-                  placeholder="Description'
+                  placeholder="Description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 />
                 <input
                   className={input}
-                  placeholder="Party (buyer, supplier, funder)'
+                  placeholder="Party (buyer, supplier, funder)"
                   value={party}
                   onChange={(e) => setParty(e.target.value)}
                 />
@@ -291,7 +291,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                   className={input}
                   value={memberId}
                   onChange={(e) => setMemberId(e.target.value)}
-                  aria-label="Member'
+                  aria-label="Member"
                 >
                   <option value="">Not member-specific</option>
                   {data.memberOptions.map((m) => (
@@ -302,13 +302,13 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                 </select>
                 <input
                   className={input}
-                  placeholder="Amount (₹)'
+                  placeholder="Amount (₹)"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                 />
                 <input
                   className={input}
-                  placeholder="Amount already settled (₹)'
+                  placeholder="Amount already settled (₹)"
                   value={settled}
                   onChange={(e) => setSettled(e.target.value)}
                 />
@@ -317,11 +317,11 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                   type="date"
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
-                  aria-label="Due date'
+                  aria-label="Due date"
                 />
                 <input
                   className={input}
-                  placeholder="Reference / invoice'
+                  placeholder="Reference / invoice"
                   value={reference}
                   onChange={(e) => setReference(e.target.value)}
                 />
@@ -507,25 +507,25 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
               <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 <input
                   className={input}
-                  placeholder="Grant title'
+                  placeholder="Grant title"
                   value={grantTitle}
                   onChange={(e) => setGrantTitle(e.target.value)}
                 />
                 <input
                   className={input}
-                  placeholder="Funder'
+                  placeholder="Funder"
                   value={funder}
                   onChange={(e) => setFunder(e.target.value)}
                 />
                 <input
                   className={input}
-                  placeholder="Sanctioned (₹)'
+                  placeholder="Sanctioned (₹)"
                   value={sanctioned}
                   onChange={(e) => setSanctioned(e.target.value)}
                 />
                 <input
                   className={input}
-                  placeholder="Received so far (₹)'
+                  placeholder="Received so far (₹)"
                   value={received}
                   onChange={(e) => setReceived(e.target.value)}
                 />
@@ -648,13 +648,13 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                       <div className="grid gap-3 sm:grid-cols-3">
                         <input
                           className={input}
-                          placeholder="Purpose'
+                          placeholder="Purpose"
                           value={utilPurpose}
                           onChange={(e) => setUtilPurpose(e.target.value)}
                         />
                         <input
                           className={input}
-                          placeholder="Amount (₹)'
+                          placeholder="Amount (₹)"
                           value={utilAmount}
                           onChange={(e) => setUtilAmount(e.target.value)}
                         />

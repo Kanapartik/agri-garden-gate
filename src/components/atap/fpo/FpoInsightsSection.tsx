@@ -80,10 +80,10 @@ export function FpoInsightsSection({
         >
           <input
             className={`${input} max-w-md flex-1`}
-            placeholder="Search members, applications, lots, ledger, tasks, team…'
+            placeholder="Search members, applications, lots, ledger, tasks, team…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            aria-label="Search this organization'
+            aria-label="Search this organization"
           />
           <Button type="submit" disabled={query.trim().length < 2}>
             Search</Button>
@@ -203,7 +203,7 @@ export function FpoInsightsSection({
                 className={`${input} max-w-xs`}
                 value={sectionFilter}
                 onChange={(e) => setSectionFilter(e.target.value as FpoSection | "all")}
-                aria-label="Filter by section'
+                aria-label="Filter by section"
               >
                 <option value="all">All sections</option>
                 {FPO_SECTION_DEFS.map((s) => (
@@ -216,7 +216,7 @@ export function FpoInsightsSection({
                 className={`${input} max-w-xs`}
                 value={decisionFilter}
                 onChange={(e) => setDecisionFilter(e.target.value)}
-                aria-label="Filter by decision'
+                aria-label="Filter by decision"
               >
                 <option value="all">All outcomes</option>
                 <option value="allow">Allowed</option>

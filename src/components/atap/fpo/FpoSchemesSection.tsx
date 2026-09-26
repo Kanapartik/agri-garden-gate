@@ -102,7 +102,7 @@ export function FpoSchemesSection({ tenantId }: { tenantId: string }) {
         </div>
         <input
           className="field-base"
-          placeholder="Search schemes'
+          placeholder="Search schemes"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />

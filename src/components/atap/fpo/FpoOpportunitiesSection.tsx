@@ -102,7 +102,7 @@ export function FpoOpportunitiesSection({ tenantId }: { tenantId: string }) {
         <div className="grid gap-3 md:grid-cols-3">
           <input
             className="field-base"
-            placeholder="Search title, provider or benefit'
+            placeholder="Search title, provider or benefit"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -210,7 +210,7 @@ export function FpoOpportunitiesSection({ tenantId }: { tenantId: string }) {
               <div className="space-y-2">
                 <input
                   className="field-base"
-                  placeholder="Internal note (optional)'
+                  placeholder="Internal note (optional)"
                   value={notes[c.id] ?? ""}
                   onChange={(e) => setNotes((n) => ({ ...n, [c.id]: e.target.value }))}
                 />

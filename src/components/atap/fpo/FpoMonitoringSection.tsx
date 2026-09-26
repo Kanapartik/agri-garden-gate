@@ -118,7 +118,7 @@ export function FpoMonitoringSection({ tenantId }: { tenantId: string }) {
                 </div>
                 <textarea
                   className="field-base min-h-24"
-                  placeholder="What did you see in the field?'
+                  placeholder="What did you see in the field?"
                   value={body}
                   onChange={(e) => setBody(e.target.value)}
                 />

@@ -217,7 +217,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
             </select>
             <input
               className="input-field max-w-[10rem]"
-              placeholder="Season'
+              placeholder="Season"
               value={season}
               onChange={(e) => setSeason(e.target.value)}
             />
@@ -379,25 +379,25 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
               </select>
               <input
                 className="input-field max-w-xs"
-                placeholder="Product'
+                placeholder="Product"
                 value={product}
                 onChange={(e) => setProduct(e.target.value)}
               />
               <input
                 className="input-field max-w-[8rem]"
-                placeholder="Quantity'
+                placeholder="Quantity"
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
               />
               <input
                 className="input-field max-w-[6rem]"
-                placeholder="Unit'
+                placeholder="Unit"
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
               />
               <input
                 className="input-field max-w-[9rem]"
-                placeholder="Indicative price'
+                placeholder="Indicative price"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
               />
@@ -536,19 +536,19 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                 />
                 <input
                   className="input-field max-w-[8rem]"
-                  placeholder="Unit price'
+                  placeholder="Unit price"
                   value={unitPrice}
                   onChange={(e) => setUnitPrice(e.target.value)}
                 />
                 <input
                   className="input-field max-w-[9rem]"
-                  placeholder="Transport cost'
+                  placeholder="Transport cost"
                   value={transport}
                   onChange={(e) => setTransport(e.target.value)}
                 />
                 <input
                   className="input-field max-w-[11rem]"
-                  placeholder="Certification'
+                  placeholder="Certification"
                   value={certification}
                   onChange={(e) => setCertification(e.target.value)}
                 />

@@ -194,31 +194,31 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
             </select>
             <input
               className="field-base"
-              placeholder="Village code'
+              placeholder="Village code"
               value={village}
               onChange={(e) => setVillage(e.target.value)}
             />
             <input
               className="field-base"
-              placeholder="Village cluster'
+              placeholder="Village cluster"
               value={cluster}
               onChange={(e) => setCluster(e.target.value)}
             />
             <input
               className="field-base"
-              placeholder="Crops (comma separated)'
+              placeholder="Crops (comma separated)"
               value={crops}
               onChange={(e) => setCrops(e.target.value)}
             />
             <input
               className="field-base"
-              placeholder="Acreage'
+              placeholder="Acreage"
               value={acreage}
               onChange={(e) => setAcreage(e.target.value)}
             />
             <input
               className="field-base"
-              placeholder="Contact hint'
+              placeholder="Contact hint"
               value={contact}
               onChange={(e) => setContact(e.target.value)}
             />
@@ -308,7 +308,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
             <>
               <input
                 className="field-base max-w-48"
-                placeholder="Save as segment'
+                placeholder="Save as segment"
                 value={segmentName}
                 onChange={(e) => setSegmentName(e.target.value)}
               />
@@ -373,7 +373,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
           <div className="flex flex-wrap gap-2">
             <input
               className="field-base max-w-64"
-              placeholder="New tag label'
+              placeholder="New tag label"
               value={tagLabel}
               onChange={(e) => setTagLabel(e.target.value)}
             />
@@ -555,7 +555,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
                 Search an existing AgriGhar farmer identity by name or village. Only minimal identifying fields are returned and every search is audited.</p>
               <input
                 className="field-base"
-                placeholder="Name or village code (min 3 characters)'
+                placeholder="Name or village code (min 3 characters)"
                 value={candidateQuery}
                 onChange={(e) => setCandidateQuery(e.target.value)}
               />
@@ -633,7 +633,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
                   </select>
                   <input
                     className="field-base"
-                    placeholder="How authorization was captured'
+                    placeholder="How authorization was captured"
                     value={consentEvidence}
                     onChange={(e) => setConsentEvidence(e.target.value)}
                   />
