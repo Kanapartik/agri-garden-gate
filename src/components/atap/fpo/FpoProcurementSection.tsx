@@ -200,7 +200,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
           <div className="flex flex-wrap gap-2">
             <input
               className="input-field max-w-xs"
-              placeholder="Campaign' name
+              placeholder="Campaign’ name"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -530,7 +530,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                 </select>
                 <input
                   className="input-field max-w-xs"
-                  placeholder="Supplier' name
+                  placeholder="Supplier’ name"
                   value={supplier}
                   onChange={(e) => setSupplier(e.target.value)}
                 />

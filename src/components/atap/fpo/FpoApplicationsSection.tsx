@@ -135,7 +135,7 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
         <div className="flex flex-wrap gap-2">
           <input
             className="input-field max-w-xs"
-            placeholder="Search title or' reference
+            placeholder="Search title or’ reference"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />

@@ -139,7 +139,7 @@ export function FpoTasksSection({ tenantId }: { tenantId: string }) {
             />
             <input
               className={input}
-              placeholder="Assign to (name /' role)
+              placeholder="Assign to (name /’ role)"
               value={assignee}
               onChange={(e) => setAssignee(e.target.value)}
             />

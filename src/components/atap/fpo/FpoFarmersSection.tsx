@@ -177,7 +177,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             <input
               className="field-base"
-              placeholder="Farmer' name
+              placeholder="Farmer’ name"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />

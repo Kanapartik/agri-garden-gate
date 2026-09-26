@@ -71,7 +71,7 @@ export function FpoQrAddMember({ tenantId }: { tenantId: string }) {
         </Button>
         <Input
           className="max-w-xs"
-          placeholder="Or' type code, e.g. 1A2B-3C4D-…
+          placeholder="Or’ type code, e.g. 1A2B-3C4D-…"
           value={manual}
           onChange={(e) => setManual(e.target.value)}
         />

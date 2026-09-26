@@ -169,7 +169,7 @@ function FpoPage() {
           <h2 className="font-display text-sm font-semibold">Accept a staff invitation</h2>
           <input
             className="field-base"
-            placeholder="Invitation' reference
+            placeholder="Invitation’ reference"
             value={token}
             onChange={(e) => setToken(e.target.value)}
           />
@@ -361,7 +361,7 @@ function FpoPage() {
               <div className="space-y-2 border-t border-border pt-3">
                 <input
                   className="field-base"
-                  placeholder="Accept an invitation' reference
+                  placeholder="Accept an invitation’ reference"
                   value={token}
                   onChange={(e) => setToken(e.target.value)}
                 />

@@ -130,7 +130,7 @@ export function FpoDocumentsSection({
             </select>
             <input
               className="field-base"
-              placeholder="Document title /' reference
+              placeholder="Document title /’ reference"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />

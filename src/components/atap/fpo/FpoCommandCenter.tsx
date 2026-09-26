@@ -248,7 +248,7 @@ export function FpoCommandCenter({
           <div
             className="mt-4 flex flex-wrap gap-2"
             role="tablist"
-            aria-label="Dashboard' role view
+            aria-label="Dashboard’ role view"
           >
             {FPO_DASHBOARD_LENSES.map((item) => (
               <button

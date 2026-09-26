@@ -479,7 +479,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                       <div className="mt-3 grid gap-2 sm:grid-cols-3 lg:grid-cols-6">
                         <input
                           className={input}
-                          placeholder="Buyer' name
+                          placeholder="Buyer’ name"
                           value={buyer}
                           onChange={(ev) => setBuyer(ev.target.value)}
                         />

@@ -660,7 +660,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                         />
                         <input
                           className={input}
-                          placeholder="Voucher' reference
+                          placeholder="Voucher’ reference"
                           value={voucher}
                           onChange={(e) => setVoucher(e.target.value)}
                         />
@@ -731,7 +731,7 @@ function ReconcileRow({
       <div className="mt-2 flex flex-wrap gap-2">
         <input
           className={`${input} sm:w-64`}
-          placeholder="Bank' reference / UTR
+          placeholder="Bank’ reference / UTR"
           value={value}
           onChange={(e) => setValue(e.target.value)}
         />

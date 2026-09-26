@@ -217,7 +217,7 @@ export function FpoProfileSection({
           />
           <input
             className="field-base"
-            placeholder="Person' name
+            placeholder="Person’ name"
             value={leader.personName}
             onChange={(e) => setLeader((l) => ({ ...l, personName: e.target.value }))}
           />
@@ -300,7 +300,7 @@ export function FpoProfileSection({
           <div className="grid gap-3 border-t border-border pt-3 sm:grid-cols-2">
             <input
               className="field-base"
-              placeholder="Bank' name
+              placeholder="Bank’ name"
               value={bank.bankName}
               onChange={(e) => setBank((b) => ({ ...b, bankName: e.target.value }))}
             />
@@ -312,7 +312,7 @@ export function FpoProfileSection({
             />
             <input
               className="field-base"
-              placeholder="Account' type (current / savings)
+              placeholder="Account’ type (current / savings)"
               value={bank.accountType}
               onChange={(e) => setBank((b) => ({ ...b, accountType: e.target.value }))}
             />

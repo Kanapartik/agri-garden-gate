@@ -138,7 +138,7 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
               <div className="grid gap-3 sm:grid-cols-2">
                 <input
                   className={input}
-                  placeholder="Full' name
+                  placeholder="Full’ name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
