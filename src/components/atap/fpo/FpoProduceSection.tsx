@@ -234,31 +234,31 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
           <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             <input
               className={input}
-              placeholder=Commodity
+              placeholder="Commodity'
               value={commodity}
               onChange={(e) => setCommodity(e.target.value)}
             />
             <input
               className={input}
-              placeholder=Variety
+              placeholder="Variety'
               value={variety}
               onChange={(e) => setVariety(e.target.value)}
             />
             <input
               className={input}
-              placeholder=Season
+              placeholder="Season'
               value={season}
               onChange={(e) => setSeason(e.target.value)}
             />
             <input
               className={input}
-              placeholder=Expected quantity
+              placeholder="Expected quantity'
               value={expected}
               onChange={(e) => setExpected(e.target.value)}
             />
             <input
               className={input}
-              placeholder=Reserve price / unit
+              placeholder="Reserve price / unit'
               value={reserve}
               onChange={(e) => setReserve(e.target.value)}
             />
@@ -416,7 +416,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                         </select>
                         <input
                           className={`${input} sm:w-40`}
-                          placeholder=Expected qty
+                          placeholder="Expected qty'
                           value={memberQty}
                           onChange={(e) => setMemberQty(e.target.value)}
                         />
@@ -479,7 +479,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                       <div className="mt-3 grid gap-2 sm:grid-cols-3 lg:grid-cols-6">
                         <input
                           className={input}
-                          placeholder=Buyer name
+                          placeholder="Buyer' name
                           value={buyer}
                           onChange={(ev) => setBuyer(ev.target.value)}
                         />
@@ -496,25 +496,25 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                         </select>
                         <input
                           className={input}
-                          placeholder=Offer / unit
+                          placeholder="Offer / unit'
                           value={offerPrice}
                           onChange={(ev) => setOfferPrice(ev.target.value)}
                         />
                         <input
                           className={input}
-                          placeholder=Quantity
+                          placeholder="Quantity'
                           value={offerQty}
                           onChange={(ev) => setOfferQty(ev.target.value)}
                         />
                         <input
                           className={input}
-                          placeholder=Payment terms
+                          placeholder="Payment terms'
                           value={payTerms}
                           onChange={(ev) => setPayTerms(ev.target.value)}
                         />
                         <input
                           className={input}
-                          placeholder=Delivery terms
+                          placeholder="Delivery terms'
                           value={delTerms}
                           onChange={(ev) => setDelTerms(ev.target.value)}
                         />

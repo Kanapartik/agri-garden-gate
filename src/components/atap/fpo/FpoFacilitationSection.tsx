@@ -174,7 +174,7 @@ export function FpoFacilitationSection({ tenantId }: { tenantId: string }) {
           <div className="grid gap-2 md:grid-cols-2">
             <input
               className="input-field"
-              placeholder=Campaign name
+              placeholder="Campaign' name
               value={name}
               onChange={(e) => setName(e.target.value)}
             />

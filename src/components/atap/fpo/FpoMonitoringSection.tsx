@@ -104,7 +104,7 @@ export function FpoMonitoringSection({ tenantId }: { tenantId: string }) {
               <>
                 <div className="grid grid-cols-2 gap-2">
                   <input type="date" className="field-base" value={observedOn} onChange={(e) => setObservedOn(e.target.value)} />
-                  <input className="field-base" placeholder=Crop (e.g. Chilli) value={crop} onChange={(e) => setCrop(e.target.value)} />
+                  <input className="field-base" placeholder="Crop (e.g. Chilli)' value={crop} onChange={(e) => setCrop(e.target.value)} />
                   <select className="field-base" value={category} onChange={(e) => setCategory(e.target.value)}>
                     {MONITORING_CATEGORIES.map((c) => (
                       <option key={c} value={c}>{c}</option>
@@ -118,7 +118,7 @@ export function FpoMonitoringSection({ tenantId }: { tenantId: string }) {
                 </div>
                 <textarea
                   className="field-base min-h-24"
-                  placeholder=What did you see in the field?
+                  placeholder="What did you see in the field?'
                   value={body}
                   onChange={(e) => setBody(e.target.value)}
                 />

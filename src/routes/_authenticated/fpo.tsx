@@ -169,7 +169,7 @@ function FpoPage() {
           <h2 className="font-display text-sm font-semibold">Accept a staff invitation</h2>
           <input
             className="field-base"
-            placeholder=Invitation reference
+            placeholder="Invitation' reference
             value={token}
             onChange={(e) => setToken(e.target.value)}
           />
@@ -224,7 +224,7 @@ function FpoPage() {
 
       <nav
         className="flex flex-wrap gap-1 border-b border-border pb-2 text-sm"
-        aria-label=FPO sections
+        aria-label="FPO sections'
       >
         {FPO_SECTION_DEFS.map((s) => (
           <button
@@ -277,7 +277,7 @@ function FpoPage() {
                 <>
                   <input
                     className="field-base"
-                    placeholder=staff@example.org
+                    placeholder="staff@example.org'
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
@@ -294,7 +294,7 @@ function FpoPage() {
                   </select>
                   <input
                     className="field-base"
-                    placeholder=Note (optional)
+                    placeholder="Note (optional)'
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
                   />
@@ -361,7 +361,7 @@ function FpoPage() {
               <div className="space-y-2 border-t border-border pt-3">
                 <input
                   className="field-base"
-                  placeholder=Accept an invitation reference
+                  placeholder="Accept an invitation' reference
                   value={token}
                   onChange={(e) => setToken(e.target.value)}
                 />
@@ -456,7 +456,7 @@ function FpoPage() {
               <>
                 <input
                   className="field-base"
-                  placeholder=Source label (e.g. Warangal register sheet 3)
+                  placeholder="Source label (e.g. Warangal register sheet 3)'
                   value={sourceLabel}
                   onChange={(e) => setSourceLabel(e.target.value)}
                 />

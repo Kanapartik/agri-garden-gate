@@ -138,19 +138,19 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
               <div className="grid gap-3 sm:grid-cols-2">
                 <input
                   className={input}
-                  placeholder=Full name
+                  placeholder="Full' name
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
                 <input
                   className={input}
-                  placeholder=Designation (e.g. CEO, field agent)
+                  placeholder="Designation (e.g. CEO, field agent)'
                   value={designation}
                   onChange={(e) => setDesignation(e.target.value)}
                 />
                 <input
                   className={input}
-                  placeholder=Contact hint (masked)
+                  placeholder="Contact hint (masked)'
                   value={contact}
                   onChange={(e) => setContact(e.target.value)}
                 />
@@ -167,20 +167,20 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
                 </select>
                 <input
                   className={input}
-                  placeholder=District scope (comma separated)
+                  placeholder="District scope (comma separated)'
                   value={districts}
                   onChange={(e) => setDistricts(e.target.value)}
                 />
                 <input
                   className={input}
-                  placeholder=Mandal scope (comma separated)
+                  placeholder="Mandal scope (comma separated)'
                   value={mandals}
                   onChange={(e) => setMandals(e.target.value)}
                 />
               </div>
               <textarea
                 className={`${input} min-h-16`}
-                placeholder=Notes (optional)
+                placeholder="Notes (optional)'
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
               />
@@ -312,7 +312,7 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
                       ) : null}
                       <textarea
                         className={`${input} min-h-16`}
-                        placeholder=Review notes
+                        placeholder="Review notes'
                         value={reviewNotes}
                         onChange={(e) => setReviewNotes(e.target.value)}
                       />

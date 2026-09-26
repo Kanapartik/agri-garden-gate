@@ -135,7 +135,7 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
         <div className="flex flex-wrap gap-2">
           <input
             className="input-field max-w-xs"
-            placeholder=Search title or reference
+            placeholder="Search title or' reference
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -274,13 +274,13 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
             </select>
             <input
               className="input-field"
-              placeholder=Application title
+              placeholder="Application title'
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
             <input
               className="input-field"
-              placeholder=Pending documents (comma separated)
+              placeholder="Pending documents (comma separated)'
               value={pendingDocs}
               onChange={(e) => setPendingDocs(e.target.value)}
             />

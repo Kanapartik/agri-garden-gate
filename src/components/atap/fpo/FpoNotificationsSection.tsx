@@ -112,13 +112,13 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
           <h3 className="font-display text-base font-semibold">Compose a notification</h3>
           <input
             className={input}
-            placeholder=Title
+            placeholder="Title'
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
           <textarea
             className={`${input} min-h-24`}
-            placeholder=Message to members
+            placeholder="Message to members'
             value={body}
             onChange={(e) => setBody(e.target.value)}
           />

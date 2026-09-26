@@ -98,13 +98,13 @@ export function FpoTasksSection({ tenantId }: { tenantId: string }) {
           <h3 className="font-display text-base font-semibold">Create a task</h3>
           <input
             className={input}
-            placeholder=Task title
+            placeholder="Task title'
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
           <textarea
             className={`${input} min-h-20`}
-            placeholder=What needs doing?
+            placeholder="What needs doing?'
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
@@ -139,7 +139,7 @@ export function FpoTasksSection({ tenantId }: { tenantId: string }) {
             />
             <input
               className={input}
-              placeholder=Assign to (name / role)
+              placeholder="Assign to (name /' role)
               value={assignee}
               onChange={(e) => setAssignee(e.target.value)}
             />
@@ -238,7 +238,7 @@ export function FpoTasksSection({ tenantId }: { tenantId: string }) {
                       <>
                         <textarea
                           className={`${input} min-h-16`}
-                          placeholder=Progress note
+                          placeholder="Progress note'
                           value={comment}
                           onChange={(e) => setComment(e.target.value)}
                         />
