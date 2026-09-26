@@ -5,6 +5,7 @@ import { FpoBillingSection } from "@/components/atap/fpo/FpoBillingSection";
 export const Route = createFileRoute("/fpo-portal/vouchers")({
   head: () => ({ meta: [{ title: "Vouchers — FPO Portal" }] }),
   component: () => {
+    const { t } = useLanguage();
     const { fpoTenant } = Route.useRouteContext();
     return (
       <div className="space-y-4">

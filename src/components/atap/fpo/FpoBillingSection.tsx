@@ -33,7 +33,6 @@ const input =
 const card = "rounded-lg border border-border bg-card p-4";
 
 function money(value: number): string {
-  const { t } = useLanguage();
   return `₹${Number(value).toLocaleString("en-IN")}`;
 }
 
@@ -115,6 +114,7 @@ export function FpoBillingSection({
   tenantId: string;
   orgLabel?: string;
 }) {
+  const { t } = useLanguage();
   const qc = useQueryClient();
   const boardFn = useServerFn(getBillingBoard);
   const createFn = useServerFn(createVoucher);

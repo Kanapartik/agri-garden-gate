@@ -50,7 +50,6 @@ const moduleIcons: Record<FpoCoreModule["key"], LucideIcon> = {
 };
 
 function numericMetric(overview: FpoOverview, key: string): number {
-  const { t } = useLanguage();
   const raw = overview.metrics.find((metric) => metric.key === key)?.value ?? "0";
   return Number(raw.replace(/[^0-9.-]/g, "")) || 0;
 }
@@ -101,6 +100,7 @@ export function FpoCommandCenter({
   overview: FpoOverview;
   onOpenSection: (section: FpoSection) => void;
 }) {
+  const { t } = useLanguage();
   const [lens, setLens] = useState<FpoDashboardLens>(() => defaultFpoDashboardLens(overview.roles));
   const complianceActions = numericMetric(overview, "compliance");
   const readiness = deriveFpoReadiness({

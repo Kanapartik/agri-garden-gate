@@ -54,7 +54,6 @@ const FIELDS: Array<{ name: string; label: string; kind: FieldKind; group: strin
 const GROUPS = ["Basic details", "Registration", "Location", "Scale & commodities", "Infrastructure"];
 
 function initialValues(profile: FpoOverview["profile"]): Record<string, string> {
-  const { t } = useLanguage();
   const out: Record<string, string> = {};
   for (const f of FIELDS) {
     const raw = (profile as Record<string, unknown> | null)?.[f.name];
@@ -70,6 +69,7 @@ export function FpoProfileSection({
   overview: FpoOverview;
   onChanged: () => Promise<void>;
 }) {
+  const { t } = useLanguage();
   const tenantId = overview.activeTenantId ?? "";
   const save = useServerFn(saveFpoProfile);
   const upsertLeader = useServerFn(saveLeader);

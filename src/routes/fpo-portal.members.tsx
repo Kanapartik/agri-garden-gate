@@ -6,6 +6,7 @@ import { FpoQrAddMember } from "@/components/atap/fpo/FpoQrAddMember";
 export const Route = createFileRoute("/fpo-portal/members")({
   head: () => ({ meta: [{ title: "Members — FPO Portal" }] }),
   component: () => {
+    const { t } = useLanguage();
     const { fpoTenant } = Route.useRouteContext();
     return (
       <div className="space-y-4">
