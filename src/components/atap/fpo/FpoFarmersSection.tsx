@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import { Button } from "@/components/ui/button";
 import { StateBadge } from "@/components/atap/StatusBadge";
 import {
@@ -40,6 +41,7 @@ const NEXT_STATES: Record<MembershipState, MembershipState[]> = {
 };
 
 export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
+  const { t } = useLanguage();
   const qc = useQueryClient();
   const registryFn = useServerFn(getMemberRegistry);
   const saveMemberFn = useServerFn(saveMember);

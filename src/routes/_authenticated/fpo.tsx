@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import { PageHeader } from "@/components/atap/AppShell";
 import { StateBadge } from "@/components/atap/StatusBadge";
 import { TrainingChecklistPanel } from "@/components/atap/TrainingChecklist";
@@ -62,6 +63,7 @@ export const Route = createFileRoute("/_authenticated/fpo")({
 });
 
 function FpoPage() {
+  const { t } = useLanguage();
   const queryClient = useQueryClient();
   const fetchWorkspace = useServerFn(getFpoWorkspace);
   const fetchOverview = useServerFn(getFpoOverview);
