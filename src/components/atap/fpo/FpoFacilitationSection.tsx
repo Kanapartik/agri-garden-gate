@@ -56,8 +56,7 @@ export function FpoFacilitationSection({ tenantId }: { tenantId: string }) {
   if (!tenantId) {
     return (
       <section className="panel p-5 text-sm text-muted-foreground">
-        Select an FPO organization to see member facilitation.
-      </section>
+        Select an FPO organization to see member facilitation.</section>
     );
   }
   if (board.isLoading) {
@@ -155,8 +154,7 @@ export function FpoFacilitationSection({ tenantId }: { tenantId: string }) {
                 {c.members.length === 0 ? (
                   <tr>
                     <td className="py-4 text-sm text-muted-foreground" colSpan={4}>
-                      No members in this cohort yet.
-                    </td>
+                      No members in this cohort yet.</td>
                   </tr>
                 ) : null}
               </tbody>
@@ -167,8 +165,7 @@ export function FpoFacilitationSection({ tenantId }: { tenantId: string }) {
 
       {data.campaigns.length === 0 ? (
         <section className="panel p-5 text-sm text-muted-foreground">
-          No facilitation campaigns yet.
-        </section>
+          No facilitation campaigns yet.</section>
       ) : null}
 
       {data.canManage ? (
@@ -177,7 +174,7 @@ export function FpoFacilitationSection({ tenantId }: { tenantId: string }) {
           <div className="grid gap-2 md:grid-cols-2">
             <input
               className="input-field"
-              placeholder="Campaign name"
+              placeholder="Campaign’ name"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -199,8 +196,7 @@ export function FpoFacilitationSection({ tenantId }: { tenantId: string }) {
             disabled={!name.trim() || create.isPending}
             onClick={() => create.mutate()}
           >
-            Create campaign
-          </Button>
+            Create campaign</Button>
         </section>
       ) : null}
     </div>

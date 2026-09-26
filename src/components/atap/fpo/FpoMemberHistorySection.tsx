@@ -36,8 +36,7 @@ export function FpoMemberHistorySection({ tenantId }: { tenantId: string }) {
   if (!data.canView) {
     return (
       <p className="text-sm text-muted-foreground">
-        Your role in this organization does not include member history planning views.
-      </p>
+        Your role in this organization does not include member history planning views.</p>
     );
   }
 
@@ -66,16 +65,13 @@ export function FpoMemberHistorySection({ tenantId }: { tenantId: string }) {
             {data.coverage.suppressedCohorts}
           </p>
           <p className="text-xs text-muted-foreground">
-            minimum {data.minCohort} members per group
-          </p>
+            minimum{" "}{data.minCohort} members per group</p>
         </div>
       </div>
 
       {data.coverage.consentedMembers === 0 ? (
         <p className="rounded-lg border border-dashed border-border p-6 text-sm text-muted-foreground">
-          No member has given an active membership &amp; farm-planning authorization yet. Collect
-          consent in Farmer membership before planning from member history.
-        </p>
+          No member has given an active membership &amp; farm-planning authorization yet. Collect consent in Farmer membership before planning from member history.</p>
       ) : null}
 
       {data.trends.length > 0 ? (
@@ -133,8 +129,7 @@ export function FpoMemberHistorySection({ tenantId }: { tenantId: string }) {
         </div>
         {data.demand.length === 0 ? (
           <p className="mt-3 text-sm text-muted-foreground">
-            Not enough consenting member history to project input demand.
-          </p>
+            Not enough consenting member history to project input demand.</p>
         ) : (
           <div className="mt-3 overflow-x-auto">
             <table className="w-full text-sm">

@@ -216,8 +216,7 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
               }
               disabled={create.isPending}
             >
-              Save notification
-            </Button>
+              Save notification</Button>
             <Button
               variant="outline"
               onClick={async () => {
@@ -243,15 +242,13 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
                 }
               }}
             >
-              Preview reach
-            </Button>
+              Preview reach</Button>
           </div>
           {preview ? <p className="text-sm">{preview}</p> : null}
         </section>
       ) : (
         <p className="text-sm text-muted-foreground">
-          Only an FPO admin can compose member communication. You have read access to the record.
-        </p>
+          Only an FPO admin can compose member communication. You have read access to the record.</p>
       )}
 
       <section className="space-y-3">
@@ -278,8 +275,7 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
                     <StateBadge state={n.state} />
                     <span className="text-xs text-muted-foreground">
                       {NOTICE_STATE_LABEL[n.state]} · {n.recipient_count} reached,{" "}
-                      {n.withheld_count} withheld
-                    </span>
+                      {n.withheld_count} withheld</span>
                   </div>
                 </div>
                 <p className="text-sm">{n.body}</p>
@@ -291,8 +287,7 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
                         onClick={() => send.mutate({ tenantId, noticeId: n.id })}
                         disabled={send.isPending}
                       >
-                        Send now
-                      </Button>
+                        Send now</Button>
                     ) : null}
                     {nextNoticeStates(n.state)
                       .filter((s) => s === "cancelled" || s === "draft" || s === "scheduled")

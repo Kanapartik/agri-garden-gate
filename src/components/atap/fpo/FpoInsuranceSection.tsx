@@ -80,10 +80,7 @@ export function FpoInsuranceSection({ tenantId }: { tenantId: string }) {
           <div>
             <h3 className="text-sm font-semibold">Refresh member cover indicators</h3>
             <p className="mt-1 text-xs text-muted-foreground">
-              Writes the notified policy&apos;s sum insured and farmer share to each authorized
-              member&apos;s insurance corner. Members without an active authorization are never
-              included, and no enrolment is created.
-            </p>
+              Writes the notified policy's sum insured and farmer share to each authorized member's insurance corner. Members without an active authorization are never included, and no enrolment is created.</p>
           </div>
           <Button
             onClick={() => sync.mutate()}
@@ -94,8 +91,7 @@ export function FpoInsuranceSection({ tenantId }: { tenantId: string }) {
         </div>
         {!data.canManage ? (
           <p className="mt-2 text-xs text-muted-foreground">
-            Read-only: only an FPO administrator can refresh cover indicators.
-          </p>
+            Read-only: only an FPO administrator can refresh cover indicators.</p>
         ) : null}
       </div>
 
@@ -103,9 +99,7 @@ export function FpoInsuranceSection({ tenantId }: { tenantId: string }) {
         <h3 className="text-sm font-semibold">Policies covering this organization</h3>
         {data.policies.length === 0 ? (
           <p className="mt-2 text-sm text-muted-foreground">
-            No insurer policy is linked to this organization yet. Figures in member insurance corners
-            stay indicative until an insurer links a policy.
-          </p>
+            No insurer policy is linked to this organization yet. Figures in member insurance corners stay indicative until an insurer links a policy.</p>
         ) : (
           <div className="mt-3 overflow-x-auto">
             <table className="w-full text-sm">

@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { acceptInvite } from "@/lib/atap/district.functions";
 import { Button } from "@/components/ui/button";
 import agrivahMark from "@/assets/agrivah-mark.png.asset.json";
+import { LanguageSwitcher, useLanguage } from "@/components/atap/LanguageProvider";
 
 export const Route = createFileRoute("/fpo-login")({
   validateSearch: z.object({ denied: z.coerce.number().optional() }),
@@ -23,13 +24,14 @@ export const Route = createFileRoute("/fpo-login")({
 });
 
 function FpoLogin() {
+  const { t } = useLanguage();
   const { denied } = Route.useSearch();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(
-    denied ? "This account is not staff of any FPO. Farmers sign in on the farmer site." : null,
+    denied ? "not_staff" : null,
   );
 
   const accept = useServerFn(acceptInvite);
@@ -42,7 +44,7 @@ function FpoLogin() {
       await accept({ data: { inviteId: inviteRef.trim() } });
       navigate({ to: "/fpo-portal" });
     } catch (e) {
-      setError(e instanceof Error ? e.message.replaceAll("_", " ") : "Could not accept invitation");
+      setError(e instanceof Error ? e.message.replaceAll("_", " ") : "invite_failed");
     } finally {
       setBusy(false);
     }
@@ -60,37 +62,38 @@ function FpoLogin() {
 
   return (
     <div className="grid min-h-screen place-items-center bg-background px-4">
+      <div className="absolute right-4 top-4"><LanguageSwitcher /></div>
       <form onSubmit={submit} className="panel w-full max-w-sm space-y-4 p-6">
         <div className="flex items-center gap-3">
           <img src={agrivahMark.url} alt="Agrivah logo" className="h-10 w-auto" />
           <div>
-            <p className="font-display text-lg font-semibold text-primary">FPO Portal</p>
-            <p className="text-xs text-muted-foreground">For FPO administrators and staff</p>
+             <p className="font-display text-lg font-semibold text-primary">{t("fpo.portal.title")}</p>
+             <p className="text-xs text-muted-foreground">{t("fpo.portal.forStaff")}</p>
           </div>
         </div>
         <label className="block space-y-1 text-sm">
-          <span>Email</span>
+           <span>{t("fpo.portal.email")}</span>
           <input type="email" required className="field-base" value={email} onChange={(e) => setEmail(e.target.value)} />
         </label>
         <label className="block space-y-1 text-sm">
-          <span>Password</span>
+           <span>{t("fpo.portal.password")}</span>
           <input type="password" required className="field-base" value={password} onChange={(e) => setPassword(e.target.value)} />
         </label>
-        {error ? <p className="text-sm text-destructive">{error}</p> : null}
+         {error ? <p className="text-sm text-destructive">{error === "not_staff" ? t("fpo.portal.notStaff") : error === "invite_failed" ? t("fpo.portal.inviteFailed") : error}</p> : null}
         <Button type="submit" className="w-full" disabled={busy}>
-          {busy ? "Signing in…" : "Sign in to FPO Portal"}
+           {busy ? t("fpo.portal.signingIn") : t("fpo.portal.signIn")}
         </Button>
         {denied ? (
           <div className="space-y-2 border-t border-border pt-3">
-            <p className="text-xs text-muted-foreground">Invited as FPO staff? Enter the invitation reference while signed in with the invited email.</p>
-            <input className="field-base" placeholder="Invitation reference" value={inviteRef} onChange={(e) => setInviteRef(e.target.value)} />
+             <p className="text-xs text-muted-foreground">{t("fpo.portal.inviteHelp")}</p>
+             <input className="field-base" placeholder={t("fpo.portal.inviteRef")} value={inviteRef} onChange={(e) => setInviteRef(e.target.value)} />
             <Button type="button" variant="outline" className="w-full" disabled={!inviteRef || busy} onClick={acceptRef}>
-              Accept invitation
+               {t("fpo.portal.acceptInvite")}
             </Button>
           </div>
         ) : null}
         <p className="text-center text-xs text-muted-foreground">
-          Farmer? <a href="/auth" className="underline">Use the farmer sign-in</a>
+           {t("fpo.portal.farmerQuestion")} <a href="/auth" className="underline">{t("fpo.portal.farmerSignIn")}</a>
         </p>
       </form>
     </div>

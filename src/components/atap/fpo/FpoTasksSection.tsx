@@ -139,7 +139,7 @@ export function FpoTasksSection({ tenantId }: { tenantId: string }) {
             />
             <input
               className={input}
-              placeholder="Assign to (name / role)"
+              placeholder="Assign to (name /’ role)"
               value={assignee}
               onChange={(e) => setAssignee(e.target.value)}
             />
@@ -167,8 +167,7 @@ export function FpoTasksSection({ tenantId }: { tenantId: string }) {
             }
             disabled={create.isPending}
           >
-            Create task
-          </Button>
+            Create task</Button>
         </section>
       ) : null}
 
@@ -252,8 +251,7 @@ export function FpoTasksSection({ tenantId }: { tenantId: string }) {
                             }}
                             disabled={!comment.trim()}
                           >
-                            Add note
-                          </Button>
+                            Add note</Button>
                           {data.canManageTasks ? (
                             <Button
                               size="sm"

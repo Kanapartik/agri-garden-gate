@@ -219,7 +219,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
               <li key={w.commodity} className="flex flex-wrap justify-between gap-2">
                 <span className="font-medium">{w.commodity}</span>
                 <span className="text-muted-foreground">
-                  {w.aggregated}/{w.expected} {w.unit} aggregated · {w.lots} lot(s) ·{" "}
+                  {w.aggregated}/{w.expected} {w.unit} aggregated ·{" "}{w.lots} lot(s) ·{" "}
                   {w.window_start ?? "window TBD"} → {w.window_end ?? "TBD"}
                 </span>
               </li>
@@ -269,8 +269,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
             disabled={!commodity || create.isPending}
             onClick={() => create.mutate(undefined as never)}
           >
-            Create lot
-          </Button>
+            Create lot</Button>
         </section>
       ) : null}
 
@@ -289,8 +288,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                   {lot.lot_code ? ` · ${lot.lot_code}` : ""}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {lot.aggregated_quantity}/{lot.expected_quantity} {lot.unit} aggregated
-                  {lot.reserve_price_per_unit
+                  {lot.aggregated_quantity}/{lot.expected_quantity} {lot.unit} aggregated{lot.reserve_price_per_unit
                     ? ` · reserve ₹${lot.reserve_price_per_unit}/${lot.unit}`
                     : " · no reserve price set"}
                   {lot.season ? ` · ${lot.season}` : ""}
@@ -333,9 +331,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                 <div className="mt-5 space-y-5 border-t border-border pt-4">
                   {lot.marketplace_listing_id ? (
                     <p className="rounded-md border border-border bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
-                      Listed on the marketplace — buyers can discover and order this lot from the
-                      Market page.
-                    </p>
+                      Listed on the marketplace — buyers can discover and order this lot from the Market page.</p>
                   ) : detail.data.canManage && detail.data.readiness.ready ? (
                     <div className="flex flex-wrap items-center gap-2">
                       <Button
@@ -346,9 +342,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                         {publishLot.isPending ? "Listing…" : "List on marketplace"}
                       </Button>
                       <span className="text-xs text-muted-foreground">
-                        Publishes the aggregate as a single FPO listing at the reserve price.
-                        Member identities are never shared.
-                      </span>
+                        Publishes the aggregate as a single FPO listing at the reserve price. Member identities are never shared.</span>
                     </div>
                   ) : null}
                   {!detail.data.readiness.ready ? (
@@ -363,11 +357,9 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                     <h4 className="text-sm font-semibold">Member declarations</h4>
                     <p className="text-xs text-muted-foreground">
                       {detail.data.aggregation.members} member(s) ·{" "}
-                      {detail.data.aggregation.confirmed} {detail.data.aggregation.unit} confirmed (
-                      {detail.data.aggregation.confirmation_rate}%) ·{" "}
+                      {detail.data.aggregation.confirmed} {detail.data.aggregation.unit} confirmed ({detail.data.aggregation.confirmation_rate}%) ·{" "}
                       {detail.data.aggregation.delivered} delivered ·{" "}
-                      {detail.data.aggregation.outstanding_delivery} outstanding
-                    </p>
+                      {detail.data.aggregation.outstanding_delivery} outstanding</p>
                     <ul className="mt-2 space-y-2">
                       {detail.data.contributions.map((c) => (
                         <li
@@ -376,7 +368,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                         >
                           <span>
                             {c.member_name} — {c.expected_quantity} expected /{" "}
-                            {c.confirmed_quantity} confirmed / {c.delivered_quantity} delivered{" "}
+                            {c.confirmed_quantity} confirmed /{" "}{c.delivered_quantity} delivered{" "}
                             {c.unit}
                           </span>
                           {detail.data.canRecordContribution ? (
@@ -391,8 +383,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                                   })
                                 }
                               >
-                                Confirm expected
-                              </Button>
+                                Confirm expected</Button>
                               <Button
                                 size="sm"
                                 variant="outline"
@@ -403,8 +394,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                                   })
                                 }
                               >
-                                Mark delivered
-                              </Button>
+                                Mark delivered</Button>
                             </span>
                           ) : null}
                         </li>
@@ -435,14 +425,13 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                           disabled={!memberQty || addContribution.isPending}
                           onClick={() => addContribution.mutate(undefined as never)}
                         >
-                          Add declaration
-                        </Button>
+                          Add declaration</Button>
                       </div>
                     ) : null}
                   </div>
 
                   <div>
-                    <h4 className="text-sm font-semibold">Buyer & processor enquiries</h4>
+                    <h4 className="text-sm font-semibold">Buyer &amp; processor enquiries</h4>
                     {detail.data.enquiries.length === 0 ? (
                       <p className="mt-1 text-sm text-muted-foreground">No enquiries yet.</p>
                     ) : (
@@ -464,7 +453,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                             </p>
                             {e.flags.length > 0 ? (
                               <p className="mt-1 text-xs text-muted-foreground">
-                                Flags: {e.flags.join("; ")}
+                                Flags:{" "}{e.flags.join("; ")}
                               </p>
                             ) : null}
                             {detail.data.canManage ? (
@@ -490,7 +479,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                       <div className="mt-3 grid gap-2 sm:grid-cols-3 lg:grid-cols-6">
                         <input
                           className={input}
-                          placeholder="Buyer name"
+                          placeholder="Buyer’ name"
                           value={buyer}
                           onChange={(ev) => setBuyer(ev.target.value)}
                         />
@@ -534,8 +523,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                           disabled={!buyer || addEnquiry.isPending}
                           onClick={() => addEnquiry.mutate(undefined as never)}
                         >
-                          Record enquiry
-                        </Button>
+                          Record enquiry</Button>
                       </div>
                     ) : null}
                   </div>
@@ -543,8 +531,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                   {detail.data.prices.length > 0 ? (
                     <div>
                       <h4 className="text-sm font-semibold">
-                        {detail.data.lot.commodity} price context
-                      </h4>
+                        {detail.data.lot.commodity} price context</h4>
                       <ul className="mt-1 space-y-1 text-xs text-muted-foreground">
                         {detail.data.prices.map((p) => (
                           <li key={`${p.commodity}-${p.basis}`}>
@@ -563,7 +550,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
       </section>
 
       <section className={card}>
-        <h3 className="text-sm font-semibold">Logistics, storage & processing options</h3>
+        <h3 className="text-sm font-semibold">Logistics, storage &amp; processing options</h3>
         {data.logistics.length === 0 ? (
           <p className="mt-2 text-sm text-muted-foreground">No options listed yet.</p>
         ) : (

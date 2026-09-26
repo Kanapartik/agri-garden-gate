@@ -87,7 +87,7 @@ export function FpoBenchmarkSection({ tenantId }: { tenantId: string }) {
             <p className="font-display text-3xl font-semibold">{own.rank}<span className="text-base text-muted-foreground"> / {ranked.length}</span></p>
           </div>
           <div className="panel p-4">
-            <p className="text-xs text-muted-foreground">Change since {trend[0]?.period}</p>
+            <p className="text-xs text-muted-foreground">Change since{" "}{trend[0]?.period}</p>
             <p className="font-display text-3xl font-semibold">
               {trend.length > 1 ? `${(overallScore(trend[trend.length - 1]!) - overallScore(trend[0]!)) >= 0 ? "+" : ""}${(overallScore(trend[trend.length - 1]!) - overallScore(trend[0]!)).toFixed(1)}` : "—"}
             </p>
@@ -110,7 +110,7 @@ export function FpoBenchmarkSection({ tenantId }: { tenantId: string }) {
             <div key={m.key} className="space-y-1">
               <div className="flex justify-between text-sm">
                 <span title={m.hint}>{m.label}</span>
-                <span className="text-muted-foreground">{own[m.key]} · peers {peerAverage(peers, m.key)}</span>
+                <span className="text-muted-foreground">{own[m.key]} · peers{" "}{peerAverage(peers, m.key)}</span>
               </div>
               <Bar value={own[m.key]} marker={peerAverage(peers, m.key)} />
               <p className="field-hint">{m.hint}</p>
@@ -120,7 +120,7 @@ export function FpoBenchmarkSection({ tenantId }: { tenantId: string }) {
       ) : null}
 
       <section className="panel overflow-x-auto p-5">
-        <h3 className="mb-3 font-display text-sm font-semibold">League table · {active}</h3>
+        <h3 className="mb-3 font-display text-sm font-semibold">League table ·{" "}{active}</h3>
         <table className="w-full min-w-[720px] text-sm">
           <thead className="text-left text-xs text-muted-foreground">
             <tr>

@@ -43,9 +43,7 @@ export function FpoDocumentsSection({
       <section className="panel space-y-3 p-5">
         <h2 className="font-display text-base font-semibold">Compliance status</h2>
         <p className="field-hint">
-          Required for a complete organization record: certificate of incorporation, PAN, bank proof
-          and board resolution.
-        </p>
+          Required for a complete organization record: certificate of incorporation, PAN, bank proof and board resolution.</p>
         {overview.missingDocuments.length === 0 ? (
           <p className="text-sm">All required documents are on file.</p>
         ) : (
@@ -57,8 +55,7 @@ export function FpoDocumentsSection({
         )}
         {due.length > 0 ? (
           <p className="text-sm">
-            {due.length} document(s) need attention — expired, rejected or expiring within 60 days.
-          </p>
+            {due.length} document(s) need attention — expired, rejected or expiring within 60 days.</p>
         ) : null}
       </section>
 
@@ -133,7 +130,7 @@ export function FpoDocumentsSection({
             </select>
             <input
               className="field-base"
-              placeholder="Document title / reference"
+              placeholder="Document title /’ reference"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
@@ -170,13 +167,11 @@ export function FpoDocumentsSection({
               }}
               disabled={!title}
             >
-              Add document
-            </Button>
+              Add document</Button>
           </div>
         ) : (
           <p className="text-sm text-muted-foreground">
-            Only an admin of this FPO can add or review organization documents.
-          </p>
+            Only an admin of this FPO can add or review organization documents.</p>
         )}
       </section>
     </div>

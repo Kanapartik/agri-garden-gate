@@ -2,9 +2,9 @@ import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import { Button } from "@/components/ui/button";
 import { StateBadge } from "@/components/atap/StatusBadge";
-import { useLanguage } from "@/components/atap/LanguageProvider";
 import {
   assignTag,
   deleteSegment,
@@ -175,13 +175,11 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
         <section className="panel space-y-3 p-5">
           <h2 className="font-display text-base font-semibold">{t("fpo.members.add")}</h2>
           <p className="field-hint">
-            Adding a member creates a membership relationship only. Farmer records, farms and
-            documents stay owned by the farmer.
-          </p>
+            Adding a member creates a membership relationship only. Farmer records, farms and documents stay owned by the farmer.</p>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             <input
               className="field-base"
-              placeholder="Farmer name"
+              placeholder="Farmer’ name"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -307,8 +305,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
               setSearch("");
             }}
           >
-            Clear filters
-          </Button>
+            Clear filters</Button>
           {data.canClassify ? (
             <>
               <input
@@ -330,8 +327,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
                   await refresh();
                 }}
               >
-                Save segment
-              </Button>
+                Save segment</Button>
             </>
           ) : null}
         </div>
@@ -375,8 +371,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
         <section className="panel space-y-3 p-5">
           <h2 className="font-display text-base font-semibold">{t("fpo.members.tags")}</h2>
           <p className="field-hint">
-            Tags are FPO-local classification. They are never written back to farmer master data.
-          </p>
+            Tags are FPO-local classification. They are never written back to farmer master data.</p>
           <div className="flex flex-wrap gap-2">
             <input
               className="field-base max-w-64"
@@ -394,8 +389,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
                 await refresh();
               }}
             >
-              Add tag
-            </Button>
+              Add tag</Button>
           </div>
           {selected.length > 0 && data.tags.length > 0 ? (
             <div className="flex flex-wrap items-center gap-2 border-t border-border pt-3">
@@ -547,23 +541,20 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
               {t("fpo.farmer360.title")} — {openRow.display_name}
             </h2>
             <Button variant="ghost" size="sm" onClick={() => setOpenMember(null)}>
-              Close
-            </Button>
+              Close</Button>
           </div>
 
           <div className="grid gap-2 text-sm sm:grid-cols-3">
-            <p>Membership: {openRow.membership_number ?? openRow.member_ref}</p>
-            <p>Status: {MEMBERSHIP_STATE_LABEL[openRow.status]}</p>
-            <p>Village: {openRow.village_code ?? "—"}</p>
+            <p>Membership:{" "}{openRow.membership_number ?? openRow.member_ref}</p>
+            <p>Status:{" "}{MEMBERSHIP_STATE_LABEL[openRow.status]}</p>
+            <p>Village:{" "}{openRow.village_code ?? "—"}</p>
           </div>
 
           {!openRow.farmer_user_id ? (
             <div className="space-y-3 border-t border-border pt-3">
               <h3 className="text-sm font-semibold">{t("fpo.members.link")}</h3>
               <p className="field-hint">
-                Search an existing AgriGhar farmer identity by name or village. Only minimal
-                identifying fields are returned and every search is audited.
-              </p>
+                Search an existing AgriGhar farmer identity by name or village. Only minimal identifying fields are returned and every search is audited.</p>
               <input
                 className="field-base"
                 placeholder="Name or village code (min 3 characters)"
@@ -577,8 +568,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
                 >
                   <span>
                     {c.full_name ?? "Unnamed"} · {c.village_code ?? "—"} ·{" "}
-                    {c.total_extent_acres ?? "—"} ac
-                  </span>
+                    {c.total_extent_acres ?? "—"} ac</span>
                   <Button
                     size="sm"
                     variant="outline"
@@ -624,8 +614,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
                             await refresh();
                           }}
                         >
-                          revoke
-                        </button>
+                          revoke</button>
                       ) : null}
                     </span>
                   ))
@@ -670,8 +659,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
                       }
                     }}
                   >
-                    Record authorization
-                  </Button>
+                    Record authorization</Button>
                 </div>
               ) : null}
 
@@ -680,17 +668,15 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
               ) : detail ? (
                 <div className="space-y-4 border-t border-border pt-3">
                   <p className="field-hint">
-                    Visible sections: {detail.tabs.join(", ")}. Bank, insurance and partner data are
-                    never shown here.
-                  </p>
+                    Visible sections:{" "}{detail.tabs.join(", ")}. Bank, insurance and partner data are never shown here.</p>
                   {detail.profile ? (
                     <div className="grid gap-2 text-sm sm:grid-cols-3">
-                      <p>Name: {detail.profile.full_name ?? "—"}</p>
-                      <p>Ownership: {detail.profile.ownership_type ?? "—"}</p>
-                      <p>Extent: {detail.profile.total_extent_acres ?? "—"} ac</p>
-                      <p>Category: {detail.profile.social_category ?? "—"}</p>
-                      <p>Irrigation: {detail.profile.irrigation_source ?? "—"}</p>
-                      <p>Village: {detail.profile.village_code ?? "—"}</p>
+                      <p>Name:{" "}{detail.profile.full_name ?? "—"}</p>
+                      <p>Ownership:{" "}{detail.profile.ownership_type ?? "—"}</p>
+                      <p>Extent:{" "}{detail.profile.total_extent_acres ?? "—"} ac</p>
+                      <p>Category:{" "}{detail.profile.social_category ?? "—"}</p>
+                      <p>Irrigation:{" "}{detail.profile.irrigation_source ?? "—"}</p>
+                      <p>Village:{" "}{detail.profile.village_code ?? "—"}</p>
                     </div>
                   ) : null}
                   {detail.farms.length > 0 ? (
@@ -725,7 +711,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
                   ) : null}
                   {detail.schemes.length > 0 ? (
                     <p className="text-sm">
-                      Scheme applications: {detail.schemes.length} — latest{" "}
+                      Scheme applications:{" "}{detail.schemes.length} — latest{" "}
                       {detail.schemes[0]?.status.replaceAll("_", " ")}
                     </p>
                   ) : null}

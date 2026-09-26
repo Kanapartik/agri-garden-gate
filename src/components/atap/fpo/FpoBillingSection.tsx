@@ -223,8 +223,7 @@ export function FpoBillingSection({
       <div className={`${card} space-y-2`}>
         <h3 className="text-base font-semibold text-foreground">Billing &amp; collections</h3>
         <p className="text-sm text-muted-foreground">
-          One place for member collections and operating expenses, with a maker, checker and
-          approver step on every voucher. {data.disclaimer}
+          One place for member collections and operating expenses, with a maker, checker and approver step on every voucher.{" "}{data.disclaimer}
         </p>
       </div>
 
@@ -275,8 +274,7 @@ export function FpoBillingSection({
             </Button>
           ) : (
             <span className="text-xs text-muted-foreground">
-              Your role can view vouchers but not prepare them.
-            </span>
+              Your role can view vouchers but not prepare them.</span>
           )}
         </div>
       </div>
@@ -388,10 +386,7 @@ export function FpoBillingSection({
           {selectedMember ? (
             <p className="rounded-md border border-border bg-muted/40 p-3 text-xs text-muted-foreground">
               {selectedMember.display_name} currently owes the FPO{" "}
-              <strong className="text-foreground">{money(selectedMember.owesFpo)}</strong> and is
-              owed <strong className="text-foreground">{money(selectedMember.fpoOwes)}</strong> on
-              approved vouchers.
-            </p>
+              <strong className="text-foreground">{money(selectedMember.owesFpo)}</strong> and is owed{" "}<strong className="text-foreground">{money(selectedMember.fpoOwes)}</strong> on approved vouchers.</p>
           ) : null}
 
           <div className="flex flex-wrap gap-2">
@@ -410,8 +405,7 @@ export function FpoBillingSection({
                 )
               }
             >
-              Save &amp; send for verification
-            </Button>
+              Save &amp; send for verification</Button>
             <Button
               size="sm"
               variant="outline"
@@ -428,16 +422,14 @@ export function FpoBillingSection({
                 )
               }
             >
-              Save as draft
-            </Button>
+              Save as draft</Button>
           </div>
         </div>
       ) : null}
 
       {visible.length === 0 ? (
         <p className={`${card} text-sm text-muted-foreground`}>
-          Nothing in this stage right now.
-        </p>
+          Nothing in this stage right now.</p>
       ) : (
         <div className="space-y-3">
           {visible.map((v) => {
@@ -453,8 +445,7 @@ export function FpoBillingSection({
                       <StageChip stage={v.workflow_stage} />
                       {v.overdue ? (
                         <span className="rounded-full bg-destructive/15 px-2.5 py-0.5 text-xs font-medium text-destructive">
-                          Overdue
-                        </span>
+                          Overdue</span>
                       ) : null}
                     </div>
                     <p className="mt-1 font-medium text-foreground">{v.description}</p>
@@ -468,29 +459,29 @@ export function FpoBillingSection({
                   <div className="text-right">
                     <p className="text-lg font-semibold text-foreground">{money(v.amount)}</p>
                     <p className="text-xs text-muted-foreground">
-                      {PAYMENT_STATE_LABEL[v.payment_state]} · open {money(v.outstanding)}
+                      {PAYMENT_STATE_LABEL[v.payment_state]} · open{" "}{money(v.outstanding)}
                     </p>
                   </div>
                 </div>
 
                 <div className="grid gap-2 text-xs text-muted-foreground sm:grid-cols-3">
                   <p>
-                    Prepared: <span className="text-foreground">{v.maker_name ?? "—"}</span>{" "}
+                    Prepared:{" "}<span className="text-foreground">{v.maker_name ?? "—"}</span>{" "}
                     {when(v.maker_at)}
                   </p>
                   <p>
-                    Verified: <span className="text-foreground">{v.checker_name ?? "—"}</span>{" "}
+                    Verified:{" "}<span className="text-foreground">{v.checker_name ?? "—"}</span>{" "}
                     {when(v.checker_at)}
                   </p>
                   <p>
-                    Approved: <span className="text-foreground">{v.approver_name ?? "—"}</span>{" "}
+                    Approved:{" "}<span className="text-foreground">{v.approver_name ?? "—"}</span>{" "}
                     {when(v.approver_at)}
                   </p>
                 </div>
 
                 {v.returned_reason ? (
                   <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive">
-                    Returned: {v.returned_reason}
+                    Returned:{" "}{v.returned_reason}
                   </p>
                 ) : null}
 
@@ -517,8 +508,7 @@ export function FpoBillingSection({
                         setRemarks("");
                       }}
                     >
-                      Return for correction
-                    </Button>
+                      Return for correction</Button>
                   ) : null}
                   {v.workflow_stage === "approved" && v.outstanding > 0 && data.canApprove ? (
                     <Button
@@ -529,12 +519,10 @@ export function FpoBillingSection({
                         setSettleRef("");
                       }}
                     >
-                      Record settlement
-                    </Button>
+                      Record settlement</Button>
                   ) : null}
                   <Button size="sm" variant="ghost" onClick={() => printVoucher(v, orgLabel)}>
-                    Print voucher
-                  </Button>
+                    Print voucher</Button>
                 </div>
 
                 {remarksFor === v.id ? (
@@ -558,8 +546,7 @@ export function FpoBillingSection({
                         )
                       }
                     >
-                      Return
-                    </Button>
+                      Return</Button>
                   </div>
                 ) : null}
 
@@ -597,8 +584,7 @@ export function FpoBillingSection({
                         )
                       }
                     >
-                      Save settlement
-                    </Button>
+                      Save settlement</Button>
                   </div>
                 ) : null}
               </div>

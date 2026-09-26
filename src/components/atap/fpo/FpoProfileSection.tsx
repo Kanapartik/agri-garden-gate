@@ -111,9 +111,7 @@ export function FpoProfileSection({
       <section className="panel space-y-2 p-5">
         <h2 className="font-display text-base font-semibold">Organization profile</h2>
         <p className="text-sm text-muted-foreground">
-          Only an admin of this FPO can edit the organization profile. You can view the profile
-          summary on the dashboard.
-        </p>
+          Only an admin of this FPO can edit the organization profile. You can view the profile summary on the dashboard.</p>
       </section>
     );
   }
@@ -139,8 +137,7 @@ export function FpoProfileSection({
               }}
               disabled={!overview.profile}
             >
-              Submit for verification
-            </Button>
+              Submit for verification</Button>
           </div>
         </div>
 
@@ -165,12 +162,11 @@ export function FpoProfileSection({
         ))}
 
         <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending}>
-          Save profile
-        </Button>
+          Save profile</Button>
       </section>
 
       <section className="panel space-y-3 p-5">
-        <h2 className="font-display text-base font-semibold">Leadership & signatories</h2>
+        <h2 className="font-display text-base font-semibold">Leadership &amp; signatories</h2>
         {overview.leadership.length === 0 ? (
           <p className="text-sm text-muted-foreground">No leadership records yet.</p>
         ) : (
@@ -205,8 +201,7 @@ export function FpoProfileSection({
                         }
                       }}
                     >
-                      Remove
-                    </Button>
+                      Remove</Button>
                   </td>
                 </tr>
               ))}
@@ -222,7 +217,7 @@ export function FpoProfileSection({
           />
           <input
             className="field-base"
-            placeholder="Person name"
+            placeholder="Person’ name"
             value={leader.personName}
             onChange={(e) => setLeader((l) => ({ ...l, personName: e.target.value }))}
           />
@@ -244,8 +239,7 @@ export function FpoProfileSection({
               checked={leader.signatory}
               onChange={(e) => setLeader((l) => ({ ...l, signatory: e.target.checked }))}
             />
-            Authorized signatory
-          </label>
+            Authorized signatory</label>
           <Button
             onClick={async () => {
               try {
@@ -268,8 +262,7 @@ export function FpoProfileSection({
             }}
             disabled={!leader.roleTitle || !leader.personName}
           >
-            Add leader
-          </Button>
+            Add leader</Button>
         </div>
       </section>
 
@@ -277,9 +270,7 @@ export function FpoProfileSection({
         <section className="panel space-y-3 p-5">
           <h2 className="font-display text-base font-semibold">Bank accounts</h2>
           <p className="field-hint">
-            Only the last four digits of an account number are stored. Access to this section is
-            audited.
-          </p>
+            Only the last four digits of an account number are stored. Access to this section is audited.</p>
           {overview.bank.length === 0 ? (
             <p className="text-sm text-muted-foreground">No bank account recorded yet.</p>
           ) : (
@@ -309,7 +300,7 @@ export function FpoProfileSection({
           <div className="grid gap-3 border-t border-border pt-3 sm:grid-cols-2">
             <input
               className="field-base"
-              placeholder="Bank name"
+              placeholder="Bank’ name"
               value={bank.bankName}
               onChange={(e) => setBank((b) => ({ ...b, bankName: e.target.value }))}
             />
@@ -321,7 +312,7 @@ export function FpoProfileSection({
             />
             <input
               className="field-base"
-              placeholder="Account type (current / savings)"
+              placeholder="Account’ type (current / savings)"
               value={bank.accountType}
               onChange={(e) => setBank((b) => ({ ...b, accountType: e.target.value }))}
             />
@@ -362,14 +353,12 @@ export function FpoProfileSection({
               }}
               disabled={!bank.bankName}
             >
-              Add bank account
-            </Button>
+              Add bank account</Button>
           </div>
         </section>
       ) : (
         <section className="panel p-5 text-sm text-muted-foreground">
-          Bank details are visible only to authorized FPO administrators.
-        </section>
+          Bank details are visible only to authorized FPO administrators.</section>
       )}
     </div>
   );

@@ -188,7 +188,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
   return (
     <section className="space-y-6">
       <header className="space-y-2">
-        <h2 className="text-lg font-semibold text-foreground">Accounts & transactions</h2>
+        <h2 className="text-lg font-semibold text-foreground">Accounts &amp; transactions</h2>
         <p className="text-sm text-muted-foreground">{data.disclaimer}</p>
       </header>
 
@@ -242,8 +242,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                   {data.categories.length === 0 ? (
                     <tr>
                       <td className="py-3 text-muted-foreground" colSpan={5}>
-                        No transactions recorded yet.
-                      </td>
+                        No transactions recorded yet.</td>
                     </tr>
                   ) : null}
                 </tbody>
@@ -333,14 +332,11 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                 disabled={addEntry.isPending || !description || !amount}
                 onClick={() => addEntry.mutate(undefined as never)}
               >
-                Record transaction
-              </Button>
+                Record transaction</Button>
             </div>
           ) : (
             <p className="text-sm text-muted-foreground">
-              You have read-only access to finance records. Recording transactions requires FPO
-              finance authority.
-            </p>
+              You have read-only access to finance records. Recording transactions requires FPO finance authority.</p>
           )}
 
           <div className={card}>
@@ -379,8 +375,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                   {entries.length === 0 ? (
                     <tr>
                       <td className="py-3 text-muted-foreground" colSpan={6}>
-                        No transactions recorded yet.
-                      </td>
+                        No transactions recorded yet.</td>
                     </tr>
                   ) : null}
                 </tbody>
@@ -407,7 +402,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                   <div>
                     <p className="text-sm font-medium text-foreground">{e.description}</p>
                     <p className="text-xs text-muted-foreground">
-                      {e.member_name ?? e.party_name ?? "—"} · due {e.due_date ?? "not set"} ·{" "}
+                      {e.member_name ?? e.party_name ?? "—"} · due{" "}{e.due_date ?? "not set"} ·{" "}
                       {LEDGER_CATEGORY_LABEL[e.category]}
                       {e.overdue ? " · overdue" : ""}
                     </p>
@@ -415,7 +410,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                   <div className="text-right">
                     <p className="text-sm font-semibold text-foreground">{money(e.outstanding)}</p>
                     <p className="text-xs text-muted-foreground">
-                      of {money(e.amount)} · {PAYMENT_STATE_LABEL[e.payment_state]}
+                      of{" "}{money(e.amount)} · {PAYMENT_STATE_LABEL[e.payment_state]}
                     </p>
                   </div>
                 </div>
@@ -427,8 +422,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                       disabled={settle.isPending}
                       onClick={() => settle.mutate({ entryId: e.id, amountSettled: e.amount })}
                     >
-                      Mark fully settled
-                    </Button>
+                      Mark fully settled</Button>
                     <Button
                       size="sm"
                       variant="outline"
@@ -440,8 +434,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                         })
                       }
                     >
-                      Record half settled
-                    </Button>
+                      Record half settled</Button>
                     <Button
                       size="sm"
                       variant="ghost"
@@ -454,8 +447,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                         })
                       }
                     >
-                      Waive balance
-                    </Button>
+                      Waive balance</Button>
                   </div>
                 ) : null}
               </div>
@@ -471,9 +463,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
         <div className={card}>
           <h3 className="text-sm font-semibold text-foreground">Farmer ledger</h3>
           <p className="mt-1 text-xs text-muted-foreground">
-            Amounts the FPO owes a member and amounts a member owes the FPO are shown separately,
-            never netted into a single figure.
-          </p>
+            Amounts the FPO owes a member and amounts a member owes the FPO are shown separately, never netted into a single figure.</p>
           <div className="mt-3 overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="text-left text-xs uppercase text-muted-foreground">
@@ -500,8 +490,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                 {data.members.length === 0 ? (
                   <tr>
                     <td className="py-3 text-muted-foreground" colSpan={6}>
-                      No member-linked transactions yet.
-                    </td>
+                      No member-linked transactions yet.</td>
                   </tr>
                 ) : null}
               </tbody>
@@ -547,8 +536,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                 disabled={addGrant.isPending || !grantTitle || !funder || !sanctioned}
                 onClick={() => addGrant.mutate(undefined as never)}
               >
-                Record grant
-              </Button>
+                Record grant</Button>
             </div>
           ) : null}
 
@@ -566,38 +554,33 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                 </div>
                 <div className="mt-3 grid gap-2 text-sm sm:grid-cols-2 lg:grid-cols-5">
                   <p>
-                    Sanctioned
-                    <span className="block font-medium text-foreground">
+                    Sanctioned<span className="block font-medium text-foreground">
                       {money(g.position.sanctioned)}
                     </span>
                   </p>
                   <p>
-                    Received
-                    <span className="block font-medium text-foreground">
+                    Received<span className="block font-medium text-foreground">
                       {money(g.position.received)}
                     </span>
                   </p>
                   <p>
-                    Utilized
-                    <span className="block font-medium text-foreground">
+                    Utilized<span className="block font-medium text-foreground">
                       {money(g.position.utilized)}
                     </span>
                   </p>
                   <p>
-                    Balance in hand
-                    <span className="block font-medium text-foreground">
+                    Balance in hand<span className="block font-medium text-foreground">
                       {money(g.position.balance)}
                     </span>
                   </p>
                   <p>
-                    Awaiting release
-                    <span className="block font-medium text-foreground">
+                    Awaiting release<span className="block font-medium text-foreground">
                       {money(g.position.awaitingRelease)}
                     </span>
                   </p>
                 </div>
                 <p className="mt-2 text-xs text-muted-foreground">
-                  Utilization {g.position.utilizationPercent}% of funds received · certificate:{" "}
+                  Utilization{" "}{g.position.utilizationPercent}% of funds received · certificate:{" "}
                   {UC_STATE_LABEL[g.uc_state]}
                   {g.reporting_deadline ? ` · reporting by ${g.reporting_deadline}` : ""}
                 </p>
@@ -630,8 +613,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                           })
                         }
                       >
-                        Record installment received
-                      </Button>
+                        Record installment received</Button>
                       {g.uc_state === "pending" ? (
                         <Button
                           size="sm"
@@ -639,8 +621,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                           disabled={setUc.isPending}
                           onClick={() => setUc.mutate({ grantId: g.id, state: "submitted" })}
                         >
-                          Submit utilization certificate
-                        </Button>
+                          Submit utilization certificate</Button>
                       ) : null}
                     </>
                   ) : null}
@@ -679,7 +660,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                         />
                         <input
                           className={input}
-                          placeholder="Voucher reference"
+                          placeholder="Voucher’ reference"
                           value={voucher}
                           onChange={(e) => setVoucher(e.target.value)}
                         />
@@ -688,8 +669,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                           disabled={addUtilization.isPending || !utilPurpose || !utilAmount}
                           onClick={() => addUtilization.mutate({ grantId: g.id })}
                         >
-                          Record utilization
-                        </Button>
+                          Record utilization</Button>
                       </div>
                     ) : null}
                   </div>
@@ -708,8 +688,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
           <h3 className="text-sm font-semibold text-foreground">Bank reconciliation</h3>
           <p className="mt-1 text-xs text-muted-foreground">
             {data.summary.unreconciled} settled line(s) worth{" "}
-            {money(data.summary.unreconciledAmount)} are not yet matched to a bank reference.
-          </p>
+            {money(data.summary.unreconciledAmount)} are not yet matched to a bank reference.</p>
           <div className="mt-3 space-y-3">
             {unreconciled.map((e) => (
               <ReconcileRow
@@ -724,8 +703,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
             ))}
             {unreconciled.length === 0 ? (
               <p className="text-sm text-muted-foreground">
-                Every settled line carries a bank reference.
-              </p>
+                Every settled line carries a bank reference.</p>
             ) : null}
           </div>
         </div>
@@ -753,7 +731,7 @@ function ReconcileRow({
       <div className="mt-2 flex flex-wrap gap-2">
         <input
           className={`${input} sm:w-64`}
-          placeholder="Bank reference / UTR"
+          placeholder="Bank’ reference / UTR"
           value={value}
           onChange={(e) => setValue(e.target.value)}
         />
@@ -762,8 +740,7 @@ function ReconcileRow({
           disabled={disabled || !value.trim()}
           onClick={() => onSubmit(value.trim())}
         >
-          Mark reconciled
-        </Button>
+          Mark reconciled</Button>
       </div>
     </div>
   );

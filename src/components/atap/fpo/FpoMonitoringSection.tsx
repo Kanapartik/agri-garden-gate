@@ -68,9 +68,7 @@ export function FpoMonitoringSection({ tenantId }: { tenantId: string }) {
       <section className="panel space-y-3 p-5">
         <h2 className="font-display text-base font-semibold">Field monitoring</h2>
         <p className="field-hint">
-          Notes are available only for farmers who have consented to “Membership & farm planning”.
-          Every read, note and AI summary is recorded in the audit trail.
-        </p>
+          Notes are available only for farmers who have consented to “Membership &amp; farm planning”. Every read, note and AI summary is recorded in the audit trail.</p>
         <select
           className="field-base max-w-md"
           value={memberId}
@@ -94,9 +92,7 @@ export function FpoMonitoringSection({ tenantId }: { tenantId: string }) {
         <section className="panel p-5">
           <h3 className="font-display text-sm font-semibold">Consent required</h3>
           <p className="text-sm text-muted-foreground">
-            This farmer has not given the FPO consent for farm monitoring, so no notes can be viewed
-            or added. Ask the farmer to grant “Membership & farm planning” consent.
-          </p>
+            This farmer has not given the FPO consent for farm monitoring, so no notes can be viewed or added. Ask the farmer to grant “Membership &amp; farm planning” consent.</p>
         </section>
       ) : null}
 
@@ -127,8 +123,7 @@ export function FpoMonitoringSection({ tenantId }: { tenantId: string }) {
                   onChange={(e) => setBody(e.target.value)}
                 />
                 <Button onClick={() => addM.mutate()} disabled={body.trim().length < 5 || addM.isPending}>
-                  Save note
-                </Button>
+                  Save note</Button>
               </>
             ) : (
               <p className="text-sm text-muted-foreground">Your role can read notes but not add them.</p>
@@ -163,12 +158,10 @@ export function FpoMonitoringSection({ tenantId }: { tenantId: string }) {
                   <div className="flex gap-2">
                     {d.canWrite ? (
                       <Button size="sm" onClick={() => saveM.mutate()} disabled={saveM.isPending}>
-                        Save as reviewed
-                      </Button>
+                        Save as reviewed</Button>
                     ) : null}
                     <Button size="sm" variant="ghost" onClick={() => setDraft(null)}>
-                      Discard
-                    </Button>
+                      Discard</Button>
                   </div>
                 </div>
               ) : (

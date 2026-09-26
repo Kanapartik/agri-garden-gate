@@ -86,8 +86,7 @@ export function FpoInsightsSection({
             aria-label="Search this organization"
           />
           <Button type="submit" disabled={query.trim().length < 2}>
-            Search
-          </Button>
+            Search</Button>
         </form>
         {submitted.trim().length >= 2 ? (
           results.isLoading ? (
@@ -121,7 +120,7 @@ export function FpoInsightsSection({
                             size="sm"
                             onClick={() => onOpenSection(hit.section as FpoSection)}
                           >
-                            Open {hit.section}
+                            Open{" "}{hit.section}
                           </Button>
                         ) : null}
                       </li>
@@ -152,8 +151,7 @@ export function FpoInsightsSection({
                 </span>
                 {onOpenSection ? (
                   <Button variant="outline" size="sm" onClick={() => onOpenSection(item.section)}>
-                    Review
-                  </Button>
+                    Review</Button>
                 ) : null}
               </li>
             ))}
@@ -197,8 +195,7 @@ export function FpoInsightsSection({
         </div>
         {!data.canSeeTimeline ? (
           <p className="text-sm text-muted-foreground">
-            The audited activity trail is visible to organization admins and auditors only.
-          </p>
+            The audited activity trail is visible to organization admins and auditors only.</p>
         ) : (
           <>
             <div className="flex flex-wrap gap-2">

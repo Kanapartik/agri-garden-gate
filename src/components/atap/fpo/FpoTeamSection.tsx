@@ -138,7 +138,7 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
               <div className="grid gap-3 sm:grid-cols-2">
                 <input
                   className={input}
-                  placeholder="Full name"
+                  placeholder="Full’ name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
@@ -211,18 +211,13 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
                   )
                 }
               >
-                Save staff seat
-              </Button>
+                Save staff seat</Button>
               <p className="text-xs text-muted-foreground">
-                A staff seat records delegation inside this organization. Sign-in access is granted
-                separately through the invitation flow below.
-              </p>
+                A staff seat records delegation inside this organization. Sign-in access is granted separately through the invitation flow below.</p>
             </section>
           ) : (
             <p className="text-sm text-muted-foreground">
-              Only an organization admin can change staff access. You have read-only access to the
-              directory.
-            </p>
+              Only an organization admin can change staff access. You have read-only access to the directory.</p>
           )}
 
           <section className="space-y-3">
@@ -243,8 +238,7 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
                     <div className="flex items-center gap-2">
                       {s.review_due ? (
                         <span className="rounded-md border border-border px-2 py-1 text-xs text-muted-foreground">
-                          Review due
-                        </span>
+                          Review due</span>
                       ) : null}
                       <StateBadge state={s.status} />
                     </div>
@@ -258,7 +252,7 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
                   </p>
                   {s.suspended_reason ? (
                     <p className="text-xs text-muted-foreground">
-                      Suspension reason: {s.suspended_reason}
+                      Suspension reason:{" "}{s.suspended_reason}
                     </p>
                   ) : null}
                   {data.canManage ? (
@@ -286,8 +280,7 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
                         variant="outline"
                         onClick={() => setOpenStaff(openStaff === s.id ? null : s.id)}
                       >
-                        Record access review
-                      </Button>
+                        Record access review</Button>
                     </div>
                   ) : null}
 
@@ -344,8 +337,7 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
                           )
                         }
                       >
-                        Save review
-                      </Button>
+                        Save review</Button>
                     </div>
                   ) : null}
                 </div>
@@ -358,10 +350,7 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
       {tab === "permissions" ? (
         <section className="space-y-3">
           <p className="text-xs text-muted-foreground">
-            Configuration can only narrow a role. A level above what a role may ever hold is
-            refused, and existing over-generous rows are shown clamped to the effective level that
-            the server enforces.
-          </p>
+            Configuration can only narrow a role. A level above what a role may ever hold is refused, and existing over-generous rows are shown clamped to the effective level that the server enforces.</p>
           <div className="overflow-x-auto">
             <table className="data-table">
               <thead>
@@ -417,8 +406,7 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
                                 clear.mutate({ tenantId, staffRole: r, section: def.key })
                               }
                             >
-                              Reset to default
-                            </button>
+                              Reset to default</button>
                           ) : null}
                         </td>
                       );

@@ -91,8 +91,7 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
   if (!tenantId) {
     return (
       <section className="panel p-5 text-sm text-muted-foreground">
-        Select an FPO organization to see its scheme applications.
-      </section>
+        Select an FPO organization to see its scheme applications.</section>
     );
   }
   if (board.isLoading) {
@@ -136,7 +135,7 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
         <div className="flex flex-wrap gap-2">
           <input
             className="input-field max-w-xs"
-            placeholder="Search title or reference"
+            placeholder="Search title or’ reference"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -224,8 +223,7 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
               {rows.length === 0 ? (
                 <tr>
                   <td className="py-4 text-sm text-muted-foreground" colSpan={5}>
-                    No applications match these filters.
-                  </td>
+                    No applications match these filters.</td>
                 </tr>
               ) : null}
             </tbody>
@@ -238,12 +236,10 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
           <div className="flex items-center justify-between">
             <h3 className="font-display text-sm font-semibold">Application history</h3>
             <Button variant="ghost" size="sm" onClick={() => setOpenId(null)}>
-              Close
-            </Button>
+              Close</Button>
           </div>
           <p className="field-hint">
-            This trail is append-only — entries can never be edited or removed.
-          </p>
+            This trail is append-only — entries can never be edited or removed.</p>
           <ul className="space-y-1 text-sm">
             {(history.data ?? []).map((e) => (
               <li key={e.id} className="border-t border-border py-2">
@@ -294,8 +290,7 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
             disabled={!schemeId || !title.trim() || create.isPending}
             onClick={() => create.mutate()}
           >
-            Create draft application
-          </Button>
+            Create draft application</Button>
         </section>
       ) : null}
     </div>

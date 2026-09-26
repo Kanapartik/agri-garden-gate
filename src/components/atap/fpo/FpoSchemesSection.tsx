@@ -67,8 +67,7 @@ export function FpoSchemesSection({ tenantId }: { tenantId: string }) {
   if (!tenantId) {
     return (
       <section className="panel p-5 text-sm text-muted-foreground">
-        Select an FPO organization to see scheme eligibility.
-      </section>
+        Select an FPO organization to see scheme eligibility.</section>
     );
   }
   if (intel.isLoading) {
@@ -148,8 +147,7 @@ export function FpoSchemesSection({ tenantId }: { tenantId: string }) {
 
             {isDecisionBucket(c.bucket) ? (
               <p className="text-sm text-muted-foreground">
-                This outcome was recorded by the authorized reviewer and cannot be edited here.
-              </p>
+                This outcome was recorded by the authorized reviewer and cannot be edited here.</p>
             ) : null}
 
             {data.canManage ? (
@@ -160,8 +158,7 @@ export function FpoSchemesSection({ tenantId }: { tenantId: string }) {
                   disabled={reassess.isPending}
                   onClick={() => reassess.mutate(c.id)}
                 >
-                  Re-check against profile
-                </Button>
+                  Re-check against profile</Button>
                 {FPO_SETTABLE_BUCKETS.filter((b) => b !== c.bucket).map((b) => (
                   <Button
                     key={b}
@@ -170,14 +167,13 @@ export function FpoSchemesSection({ tenantId }: { tenantId: string }) {
                     disabled={update.isPending || isDecisionBucket(c.bucket)}
                     onClick={() => update.mutate({ schemeId: c.id, bucket: b })}
                   >
-                    Mark {ELIGIBILITY_BUCKET_LABEL[b]}
+                    Mark{" "}{ELIGIBILITY_BUCKET_LABEL[b]}
                   </Button>
                 ))}
               </div>
             ) : (
               <p className="field-hint">
-                Only an FPO admin or scheme reviewer can update scheme status.
-              </p>
+                Only an FPO admin or scheme reviewer can update scheme status.</p>
             )}
           </article>
         ))}
@@ -185,8 +181,7 @@ export function FpoSchemesSection({ tenantId }: { tenantId: string }) {
 
       {cards.length === 0 ? (
         <section className="panel p-5 text-sm text-muted-foreground">
-          No published schemes match these filters.
-        </section>
+          No published schemes match these filters.</section>
       ) : null}
     </div>
   );

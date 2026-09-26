@@ -156,8 +156,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
   if (!tenantId) {
     return (
       <section className="panel p-5 text-sm text-muted-foreground">
-        Select an FPO organization to see input procurement.
-      </section>
+        Select an FPO organization to see input procurement.</section>
     );
   }
   if (board.isLoading) return <section className="panel p-5 text-sm">Loading procurement…</section>;
@@ -201,7 +200,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
           <div className="flex flex-wrap gap-2">
             <input
               className="input-field max-w-xs"
-              placeholder="Campaign name"
+              placeholder="Campaign’ name"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -227,8 +226,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
               disabled={!name.trim() || create.isPending}
               onClick={() => create.mutate(undefined as never)}
             >
-              Open campaign
-            </Button>
+              Open campaign</Button>
           </div>
         ) : null}
 
@@ -290,8 +288,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
               {data.campaigns.length === 0 ? (
                 <tr>
                   <td className="py-4 text-sm text-muted-foreground" colSpan={5}>
-                    No procurement campaigns yet.
-                  </td>
+                    No procurement campaigns yet.</td>
                 </tr>
               ) : null}
             </tbody>
@@ -308,12 +305,11 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
           <div className="flex items-center justify-between">
             <h3 className="font-display text-sm font-semibold">{d.campaign.name}</h3>
             <Button variant="ghost" size="sm" onClick={() => setOpenId(null)}>
-              Close
-            </Button>
+              Close</Button>
           </div>
 
           <div className="rounded-md border border-border p-3 text-xs">
-            Member authorization: <strong>{d.authorization.authorized}</strong> of{" "}
+            Member authorization:{" "}<strong>{d.authorization.authorized}</strong> of{" "}
             <strong>{d.authorization.total}</strong> demand lines authorized.{" "}
             {d.authorization.reason ?? "Ready to order."}
           </div>
@@ -352,8 +348,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                             raiseRfq.mutate({ productName: a.product_name, unit: a.unit })
                           }
                         >
-                          Raise RFQ
-                        </Button>
+                          Raise RFQ</Button>
                       ) : null}
                     </td>
                   </tr>
@@ -361,8 +356,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                 {d.aggregated.length === 0 ? (
                   <tr>
                     <td className="py-3 text-sm text-muted-foreground" colSpan={6}>
-                      No member demand recorded yet.
-                    </td>
+                      No member demand recorded yet.</td>
                   </tr>
                 ) : null}
               </tbody>
@@ -412,8 +406,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                 disabled={!product.trim() || !Number(quantity)}
                 onClick={() => addDemand.mutate(undefined as never)}
               >
-                Record demand
-              </Button>
+                Record demand</Button>
             </div>
           ) : null}
 
@@ -445,8 +438,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                           variant="secondary"
                           onClick={() => authorize.mutate({ demandId: row.id, authorized: true })}
                         >
-                          Record member authorization
-                        </Button>
+                          Record member authorization</Button>
                       ) : (
                         <span className="field-hint">Pending</span>
                       )}
@@ -465,7 +457,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                   <div className="text-sm font-medium">
                     {rfq.product_name} — {rfq.aggregated_quantity} {rfq.unit}
                   </div>
-                  <div className="field-hint">Delivery by {rfq.delivery_by ?? "not specified"}</div>
+                  <div className="field-hint">Delivery by{" "}{rfq.delivery_by ?? "not specified"}</div>
                 </div>
                 <table className="mt-2 w-full text-sm">
                   <thead className="text-left text-xs uppercase text-muted-foreground">
@@ -506,8 +498,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                               variant="secondary"
                               onClick={() => choose.mutate({ rfqId: rfq.id, quoteId: q.id })}
                             >
-                              Select supplier
-                            </Button>
+                              Select supplier</Button>
                           ) : null}
                         </td>
                       </tr>
@@ -515,8 +506,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                     {rfq.quotes.length === 0 ? (
                       <tr>
                         <td className="py-3 text-sm text-muted-foreground" colSpan={5}>
-                          No quotes recorded for this RFQ yet.
-                        </td>
+                          No quotes recorded for this RFQ yet.</td>
                       </tr>
                     ) : null}
                   </tbody>
@@ -540,7 +530,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                 </select>
                 <input
                   className="input-field max-w-xs"
-                  placeholder="Supplier name"
+                  placeholder="Supplier’ name"
                   value={supplier}
                   onChange={(e) => setSupplier(e.target.value)}
                 />
@@ -567,8 +557,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                   disabled={!quoteRfqId || !supplier.trim() || !unitPrice}
                   onClick={() => addQuote.mutate(undefined as never)}
                 >
-                  Record quote
-                </Button>
+                  Record quote</Button>
               </div>
             ) : null}
           </div>
@@ -576,7 +565,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
           <div>
             <h4 className="text-sm font-semibold">Distribution and settlement</h4>
             <p className="field-hint">
-              Due {d.settlement.amount_due}; collected {d.settlement.amount_collected}; outstanding{" "}
+              Due{" "}{d.settlement.amount_due}; collected{" "}{d.settlement.amount_collected}; outstanding{" "}
               {d.settlement.outstanding}.
             </p>
             <table className="w-full text-sm">
@@ -612,8 +601,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                             })
                           }
                         >
-                          Record full payment
-                        </Button>
+                          Record full payment</Button>
                       ) : null}
                     </td>
                   </tr>
@@ -621,8 +609,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                 {d.distributions.length === 0 ? (
                   <tr>
                     <td className="py-3 text-sm text-muted-foreground" colSpan={5}>
-                      Nothing distributed yet.
-                    </td>
+                      Nothing distributed yet.</td>
                   </tr>
                 ) : null}
               </tbody>
@@ -643,8 +630,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                   })
                 }
               >
-                Record a distribution line
-              </Button>
+                Record a distribution line</Button>
             ) : null}
           </div>
         </section>

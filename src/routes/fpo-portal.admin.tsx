@@ -49,7 +49,7 @@ function AdminPage() {
   if (!isAdmin) {
     return (
       <section className="panel p-5">
-        <h1 className="font-display text-lg font-semibold">Staff & roles</h1>
+        <h1 className="font-display text-lg font-semibold">Staff &amp; roles</h1>
         <p className="text-sm text-muted-foreground">Only an FPO administrator can manage staff.</p>
       </section>
     );
@@ -57,7 +57,7 @@ function AdminPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="font-display text-xl font-semibold">Staff & roles</h1>
+      <h1 className="font-display text-xl font-semibold">Staff &amp; roles</h1>
 
       <section className="grid gap-6 lg:grid-cols-2">
         <div className="panel space-y-3 p-5">
@@ -70,13 +70,10 @@ function AdminPage() {
           </select>
           <input className="field-base" placeholder="Note (optional)" value={note} onChange={(e) => setNote(e.target.value)} />
           <Button onClick={() => inviteM.mutate()} disabled={!email.includes("@") || inviteM.isPending}>
-            Create invitation
-          </Button>
+            Create invitation</Button>
           {lastRef ? (
             <p className="field-hint break-all">
-              Share this reference with the invitee: <code>{lastRef}</code>. They sign in (or sign up) with that
-              email and enter it on the FPO Portal sign-in page.
-            </p>
+              Share this reference with the invitee:{" "}<code>{lastRef}</code>. They sign in (or sign up) with that email and enter it on the FPO Portal sign-in page.</p>
           ) : null}
           <p className="field-hint">Platform admin and auditor roles can never be given from here.</p>
         </div>
@@ -107,8 +104,7 @@ function AdminPage() {
                             await qc.invalidateQueries({ queryKey: ["atap", "fpo-workspace"] });
                           }}
                         >
-                          Revoke
-                        </Button>
+                          Revoke</Button>
                       ) : null}
                     </td>
                   </tr>

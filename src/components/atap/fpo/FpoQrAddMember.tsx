@@ -62,9 +62,7 @@ export function FpoQrAddMember({ tenantId }: { tenantId: string }) {
       <div>
         <h2 className="font-display text-base font-semibold">Add a farmer by QR code</h2>
         <p className="text-sm text-muted-foreground">
-          Scan the QR on the farmer's profile. They join as "approval pending" and must approve membership and
-          consent before you can see any farm data.
-        </p>
+          Scan the QR on the farmer's profile. They join as "approval pending" and must approve membership and consent before you can see any farm data.</p>
       </div>
       {scanning && <video ref={videoRef} className="aspect-square w-full max-w-xs rounded-lg bg-muted object-cover" />}
       <div className="flex flex-wrap gap-2">
@@ -73,7 +71,7 @@ export function FpoQrAddMember({ tenantId }: { tenantId: string }) {
         </Button>
         <Input
           className="max-w-xs"
-          placeholder="Or type code, e.g. 1A2B-3C4D-…"
+          placeholder="Or’ type code, e.g. 1A2B-3C4D-…"
           value={manual}
           onChange={(e) => setManual(e.target.value)}
         />
@@ -82,8 +80,7 @@ export function FpoQrAddMember({ tenantId }: { tenantId: string }) {
           disabled={!manual.trim() || m.isPending}
           onClick={() => m.mutate(manual.replace(/[\s-]/g, ""))}
         >
-          Add
-        </Button>
+          Add</Button>
       </div>
     </section>
   );

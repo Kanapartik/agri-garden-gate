@@ -62,8 +62,7 @@ export function FpoOpportunitiesSection({ tenantId }: { tenantId: string }) {
   if (!tenantId) {
     return (
       <section className="panel p-5 text-sm text-muted-foreground">
-        Select an FPO organization to see its opportunities.
-      </section>
+        Select an FPO organization to see its opportunities.</section>
     );
   }
   if (board.isLoading) {
@@ -126,22 +125,18 @@ export function FpoOpportunitiesSection({ tenantId }: { tenantId: string }) {
                 checked={openOnly}
                 onChange={(e) => setOpenOnly(e.target.checked)}
               />
-              Open only
-            </label>
+              Open only</label>
             <label className="flex items-center gap-2">
               <input
                 type="checkbox"
                 checked={geoOnly}
                 onChange={(e) => setGeoOnly(e.target.checked)}
               />
-              My geography
-            </label>
+              My geography</label>
           </div>
         </div>
         <p className="field-hint">
-          {cards.length} of {data.cards.length} opportunities shown. Ordering is a transparent
-          relevance hint based on member crops, geography and deadline — nothing is hidden.
-        </p>
+          {cards.length} of{" "}{data.cards.length} opportunities shown. Ordering is a transparent relevance hint based on member crops, geography and deadline — nothing is hidden.</p>
       </section>
 
       <div className="grid gap-4 lg:grid-cols-2">
@@ -158,7 +153,7 @@ export function FpoOpportunitiesSection({ tenantId }: { tenantId: string }) {
             </div>
 
             <p className="text-sm">{c.benefit_summary}</p>
-            <p className="text-sm text-muted-foreground">Eligibility: {c.eligibility_summary}</p>
+            <p className="text-sm text-muted-foreground">Eligibility:{" "}{c.eligibility_summary}</p>
 
             <dl className="grid gap-1 text-sm sm:grid-cols-2">
               <div>
@@ -202,17 +197,14 @@ export function FpoOpportunitiesSection({ tenantId }: { tenantId: string }) {
 
             {!c.open ? (
               <p className="text-sm text-muted-foreground">
-                Closed for applications — kept visible for the record.
-              </p>
+                Closed for applications — kept visible for the record.</p>
             ) : null}
             {!c.inGeography ? (
               <p className="text-sm text-muted-foreground">
-                Outside this FPO&apos;s recorded geography — verify with the provider before
-                applying.
-              </p>
+                Outside this FPO's recorded geography — verify with the provider before applying.</p>
             ) : null}
 
-            {c.note ? <p className="text-sm">Note: {c.note}</p> : null}
+            {c.note ? <p className="text-sm">Note:{" "}{c.note}</p> : null}
 
             {canManage ? (
               <div className="space-y-2">
@@ -245,8 +237,7 @@ export function FpoOpportunitiesSection({ tenantId }: { tenantId: string }) {
               </div>
             ) : (
               <p className="field-hint">
-                Only an FPO admin or scheme reviewer can change tracking status.
-              </p>
+                Only an FPO admin or scheme reviewer can change tracking status.</p>
             )}
           </article>
         ))}
@@ -254,8 +245,7 @@ export function FpoOpportunitiesSection({ tenantId }: { tenantId: string }) {
 
       {cards.length === 0 ? (
         <section className="panel p-5 text-sm text-muted-foreground">
-          No opportunities match these filters.
-        </section>
+          No opportunities match these filters.</section>
       ) : null}
     </div>
   );
