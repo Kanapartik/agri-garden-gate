@@ -1,3 +1,4 @@
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -21,6 +22,7 @@ import {
 } from "@/lib/atap/fpoApplications";
 
 export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
+  const { t } = useLanguage();
   const qc = useQueryClient();
   const boardFn = useServerFn(getApplicationBoard);
   const createFn = useServerFn(createFpoApplication);
@@ -65,7 +67,7 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
         },
       }),
     onSuccess: async () => {
-      toast.success("Application created as a draft");
+      toast.success(t("fpo.ui.8d6e416842"));
       setTitle("");
       setPendingDocs("");
       await invalidate();
@@ -77,7 +79,7 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
     mutationFn: (input: { applicationId: string; status: ApplicationStatus }) =>
       statusFn({ data: { tenantId, ...input } }),
     onSuccess: async () => {
-      toast.success("Application stage updated");
+      toast.success(t("fpo.ui.ba10cc4aba"));
       await invalidate();
     },
     onError: (e: Error) => toast.error(e.message),
@@ -91,12 +93,11 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
   if (!tenantId) {
     return (
       <section className="panel p-5 text-sm text-muted-foreground">
-        Select an FPO organization to see its scheme applications.
-      </section>
+        {t("fpo.ui.b41af42908")}</section>
     );
   }
   if (board.isLoading) {
-    return <section className="panel p-5 text-sm">Loading applications…</section>;
+    return <section className="panel p-5 text-sm">{t("fpo.ui.b37eb242dc")}</section>;
   }
   if (board.isError) {
     return (
@@ -113,7 +114,7 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
       <section className="panel space-y-3 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="font-display text-base font-semibold">FPO scheme applications</h2>
+            <h2 className="font-display text-base font-semibold">{t("fpo.ui.72f003f3df")}</h2>
             <p className="field-hint">{data.disclaimer}</p>
           </div>
           <div className="flex flex-wrap gap-2 text-xs">
@@ -136,7 +137,7 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
         <div className="flex flex-wrap gap-2">
           <input
             className="input-field max-w-xs"
-            placeholder="Search title or reference"
+            placeholder={t("fpo.ui.58a7917fca")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -145,7 +146,7 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
             value={status}
             onChange={(e) => setStatus(e.target.value as ApplicationStatus | "")}
           >
-            <option value="">All stages</option>
+            <option value="">{t("fpo.ui.17e9b24055")}</option>
             {APPLICATION_STATUSES.map((s) => (
               <option key={s} value={s}>
                 {APPLICATION_STATUS_LABEL[s]}
@@ -158,11 +159,11 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
           <table className="w-full text-sm">
             <thead className="text-left text-xs uppercase text-muted-foreground">
               <tr>
-                <th className="py-2">Application</th>
-                <th className="py-2">Scheme</th>
-                <th className="py-2">Stage</th>
-                <th className="py-2">Pending documents</th>
-                <th className="py-2">Actions</th>
+                <th className="py-2">{t("fpo.ui.b291beb879")}</th>
+                <th className="py-2">{t("fpo.ui.990897a59f")}</th>
+                <th className="py-2">{t("fpo.ui.ca6d0e3aaa")}</th>
+                <th className="py-2">{t("fpo.ui.1337ed1e2d")}</th>
+                <th className="py-2">{t("fpo.ui.c3cd636a58")}</th>
               </tr>
             </thead>
             <tbody>
@@ -186,7 +187,7 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
                     <td className="py-2 text-xs">
                       {row.pending_documents.length > 0 ? row.pending_documents.join(", ") : "None"}
                       {row.requires_signatory ? (
-                        <div className="field-hint">Signatory submission required</div>
+                        <div className="field-hint">{t("fpo.ui.e69e5b74d6")}</div>
                       ) : null}
                     </td>
                     <td className="py-2">
@@ -201,7 +202,7 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
                             })
                           }
                         >
-                          <option value="">Move to…</option>
+                          <option value="">{t("fpo.ui.c0a3ef619a")}</option>
                           {nextApplicationStatuses(row.status)
                             .filter((s) => !isDecisionStatus(s) || data.canDecide)
                             .filter((s) => s !== "submitted" || readiness.ready)
@@ -212,7 +213,7 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
                             ))}
                         </select>
                       ) : (
-                        <span className="field-hint">View only</span>
+                        <span className="field-hint">{t("fpo.ui.5559dd041f")}</span>
                       )}
                       {!readiness.ready && row.status === "ready_to_submit" ? (
                         <div className="field-hint">{readiness.blockers.join("; ")}</div>
@@ -224,8 +225,7 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
               {rows.length === 0 ? (
                 <tr>
                   <td className="py-4 text-sm text-muted-foreground" colSpan={5}>
-                    No applications match these filters.
-                  </td>
+                    {t("fpo.ui.52dc925ecf")}</td>
                 </tr>
               ) : null}
             </tbody>
@@ -236,14 +236,12 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
       {openId ? (
         <section className="panel space-y-2 p-5">
           <div className="flex items-center justify-between">
-            <h3 className="font-display text-sm font-semibold">Application history</h3>
+            <h3 className="font-display text-sm font-semibold">{t("fpo.ui.8597eab28c")}</h3>
             <Button variant="ghost" size="sm" onClick={() => setOpenId(null)}>
-              Close
-            </Button>
+              {t("fpo.ui.bbfa773e5a")}</Button>
           </div>
           <p className="field-hint">
-            This trail is append-only — entries can never be edited or removed.
-          </p>
+            {t("fpo.ui.953dcf1239")}</p>
           <ul className="space-y-1 text-sm">
             {(history.data ?? []).map((e) => (
               <li key={e.id} className="border-t border-border py-2">
@@ -254,7 +252,7 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
               </li>
             ))}
             {(history.data ?? []).length === 0 ? (
-              <li className="field-hint">No history recorded yet.</li>
+              <li className="field-hint">{t("fpo.ui.ebab110701")}</li>
             ) : null}
           </ul>
         </section>
@@ -262,14 +260,14 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
 
       {data.canManage ? (
         <section className="panel space-y-3 p-5">
-          <h3 className="font-display text-sm font-semibold">Start a new application</h3>
+          <h3 className="font-display text-sm font-semibold">{t("fpo.ui.9d878ad11d")}</h3>
           <div className="grid gap-2 md:grid-cols-3">
             <select
               className="input-field"
               value={schemeId}
               onChange={(e) => setSchemeId(e.target.value)}
             >
-              <option value="">Select scheme</option>
+              <option value="">{t("fpo.ui.728181f1b3")}</option>
               {data.schemes.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.title}
@@ -278,13 +276,13 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
             </select>
             <input
               className="input-field"
-              placeholder="Application title"
+              placeholder={t("fpo.ui.ee3ac8b2de")}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
             <input
               className="input-field"
-              placeholder="Pending documents (comma separated)"
+              placeholder={t("fpo.ui.693ce87d9e")}
               value={pendingDocs}
               onChange={(e) => setPendingDocs(e.target.value)}
             />
@@ -294,8 +292,7 @@ export function FpoApplicationsSection({ tenantId }: { tenantId: string }) {
             disabled={!schemeId || !title.trim() || create.isPending}
             onClick={() => create.mutate()}
           >
-            Create draft application
-          </Button>
+            {t("fpo.ui.5f4293a2c3")}</Button>
         </section>
       ) : null}
     </div>

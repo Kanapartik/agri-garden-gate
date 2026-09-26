@@ -1,3 +1,4 @@
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -18,6 +19,7 @@ import {
 } from "@/lib/atap/fpoOpportunities";
 
 export function FpoSchemesSection({ tenantId }: { tenantId: string }) {
+  const { t } = useLanguage();
   const qc = useQueryClient();
   const intelFn = useServerFn(getSchemeIntelligence);
   const reassessFn = useServerFn(reassessSchemeEligibility);
@@ -39,7 +41,7 @@ export function FpoSchemesSection({ tenantId }: { tenantId: string }) {
   const reassess = useMutation({
     mutationFn: (schemeId: string) => reassessFn({ data: { tenantId, schemeId } }),
     onSuccess: async () => {
-      toast.success("Advisory assessment refreshed from the FPO profile");
+      toast.success(t("fpo.ui.028aff9734"));
       await invalidate();
     },
     onError: (e: Error) => toast.error(e.message),
@@ -49,7 +51,7 @@ export function FpoSchemesSection({ tenantId }: { tenantId: string }) {
     mutationFn: (input: { schemeId: string; bucket: EligibilityBucket }) =>
       setBucketFn({ data: { tenantId, ...input } }),
     onSuccess: async () => {
-      toast.success("Scheme status updated");
+      toast.success(t("fpo.ui.514b41ffb8"));
       await invalidate();
     },
     onError: (e: Error) => toast.error(e.message),
@@ -67,12 +69,11 @@ export function FpoSchemesSection({ tenantId }: { tenantId: string }) {
   if (!tenantId) {
     return (
       <section className="panel p-5 text-sm text-muted-foreground">
-        Select an FPO organization to see scheme eligibility.
-      </section>
+        {t("fpo.ui.7ecfb932ce")}</section>
     );
   }
   if (intel.isLoading) {
-    return <section className="panel p-5 text-sm">Loading scheme intelligence…</section>;
+    return <section className="panel p-5 text-sm">{t("fpo.ui.14021a83bc")}</section>;
   }
   if (intel.isError) {
     return (
@@ -87,7 +88,7 @@ export function FpoSchemesSection({ tenantId }: { tenantId: string }) {
   return (
     <div className="space-y-6">
       <section className="panel space-y-3 p-5">
-        <h2 className="font-display text-base font-semibold">FPO scheme intelligence</h2>
+        <h2 className="font-display text-base font-semibold">{t("fpo.ui.9a97628ee0")}</h2>
         <p className="field-hint">{data.advisory}</p>
         <div className="flex flex-wrap gap-2 text-sm">
           {ELIGIBILITY_BUCKETS.map((b) => (
@@ -103,7 +104,7 @@ export function FpoSchemesSection({ tenantId }: { tenantId: string }) {
         </div>
         <input
           className="field-base"
-          placeholder="Search schemes"
+          placeholder={t("fpo.ui.d67997ead4")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -122,7 +123,7 @@ export function FpoSchemesSection({ tenantId }: { tenantId: string }) {
             <p className="text-sm">{c.summary}</p>
 
             <div className="text-sm">
-              <p className="field-hint">Why this FPO may be eligible</p>
+              <p className="field-hint">{t("fpo.ui.0e03068d11")}</p>
               <ul className="list-disc pl-5 text-muted-foreground">
                 {c.reasons.map((r, i) => (
                   <li key={i}>{r}</li>
@@ -132,7 +133,7 @@ export function FpoSchemesSection({ tenantId }: { tenantId: string }) {
 
             {c.missing.length ? (
               <div className="text-sm">
-                <p className="field-hint">Information still needed</p>
+                <p className="field-hint">{t("fpo.ui.d871ad53ae")}</p>
                 <ul className="list-disc pl-5 text-muted-foreground">
                   {c.missing.map((m, i) => (
                     <li key={i}>{m}</li>
@@ -148,8 +149,7 @@ export function FpoSchemesSection({ tenantId }: { tenantId: string }) {
 
             {isDecisionBucket(c.bucket) ? (
               <p className="text-sm text-muted-foreground">
-                This outcome was recorded by the authorized reviewer and cannot be edited here.
-              </p>
+                {t("fpo.ui.8f820c833c")}</p>
             ) : null}
 
             {data.canManage ? (
@@ -160,8 +160,7 @@ export function FpoSchemesSection({ tenantId }: { tenantId: string }) {
                   disabled={reassess.isPending}
                   onClick={() => reassess.mutate(c.id)}
                 >
-                  Re-check against profile
-                </Button>
+                  {t("fpo.ui.79f8c580e5")}</Button>
                 {FPO_SETTABLE_BUCKETS.filter((b) => b !== c.bucket).map((b) => (
                   <Button
                     key={b}
@@ -170,14 +169,13 @@ export function FpoSchemesSection({ tenantId }: { tenantId: string }) {
                     disabled={update.isPending || isDecisionBucket(c.bucket)}
                     onClick={() => update.mutate({ schemeId: c.id, bucket: b })}
                   >
-                    Mark {ELIGIBILITY_BUCKET_LABEL[b]}
+                    {t("fpo.ui.31e9697d43")}{" "}{ELIGIBILITY_BUCKET_LABEL[b]}
                   </Button>
                 ))}
               </div>
             ) : (
               <p className="field-hint">
-                Only an FPO admin or scheme reviewer can update scheme status.
-              </p>
+                {t("fpo.ui.6f71ac427f")}</p>
             )}
           </article>
         ))}
@@ -185,8 +183,7 @@ export function FpoSchemesSection({ tenantId }: { tenantId: string }) {
 
       {cards.length === 0 ? (
         <section className="panel p-5 text-sm text-muted-foreground">
-          No published schemes match these filters.
-        </section>
+          {t("fpo.ui.c32e2f5e73")}</section>
       ) : null}
     </div>
   );

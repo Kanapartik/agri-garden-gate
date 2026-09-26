@@ -1,3 +1,4 @@
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -16,6 +17,7 @@ import {
 } from "@/lib/atap/fpoOpportunities";
 
 export function FpoOpportunitiesSection({ tenantId }: { tenantId: string }) {
+  const { t } = useLanguage();
   const qc = useQueryClient();
   const boardFn = useServerFn(getOpportunityBoard);
   const trackFn = useServerFn(setOpportunityTracking);
@@ -41,7 +43,7 @@ export function FpoOpportunitiesSection({ tenantId }: { tenantId: string }) {
       assignToMe?: boolean;
     }) => trackFn({ data: { tenantId, ...input } }),
     onSuccess: async () => {
-      toast.success("Opportunity updated");
+      toast.success(t("fpo.ui.6ac4a919ba"));
       await qc.invalidateQueries({ queryKey: ["fpo-opportunities", tenantId] });
     },
     onError: (e: Error) => toast.error(e.message),
@@ -62,12 +64,11 @@ export function FpoOpportunitiesSection({ tenantId }: { tenantId: string }) {
   if (!tenantId) {
     return (
       <section className="panel p-5 text-sm text-muted-foreground">
-        Select an FPO organization to see its opportunities.
-      </section>
+        {t("fpo.ui.cd1a0501e8")}</section>
     );
   }
   if (board.isLoading) {
-    return <section className="panel p-5 text-sm">Loading opportunities…</section>;
+    return <section className="panel p-5 text-sm">{t("fpo.ui.78fc889e3f")}</section>;
   }
   if (board.isError) {
     return (
@@ -83,7 +84,7 @@ export function FpoOpportunitiesSection({ tenantId }: { tenantId: string }) {
   return (
     <div className="space-y-6">
       <section className="panel space-y-3 p-5">
-        <h2 className="font-display text-base font-semibold">Opportunity Center</h2>
+        <h2 className="font-display text-base font-semibold">{t("fpo.ui.ab1bbd3336")}</h2>
         <p className="field-hint">{data.advisory}</p>
         <div className="flex flex-wrap gap-2 text-sm">
           {TRACK_STATUSES.map((s) => (
@@ -103,7 +104,7 @@ export function FpoOpportunitiesSection({ tenantId }: { tenantId: string }) {
         <div className="grid gap-3 md:grid-cols-3">
           <input
             className="field-base"
-            placeholder="Search title, provider or benefit"
+            placeholder={t("fpo.ui.f850a8af52")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -112,7 +113,7 @@ export function FpoOpportunitiesSection({ tenantId }: { tenantId: string }) {
             value={category}
             onChange={(e) => setCategory(e.target.value as OpportunityCategory | "")}
           >
-            <option value="">All categories</option>
+            <option value="">{t("fpo.ui.060be00f4f")}</option>
             {data.categories.map((c) => (
               <option key={c} value={c}>
                 {OPPORTUNITY_CATEGORY_LABEL[c]}
@@ -126,22 +127,18 @@ export function FpoOpportunitiesSection({ tenantId }: { tenantId: string }) {
                 checked={openOnly}
                 onChange={(e) => setOpenOnly(e.target.checked)}
               />
-              Open only
-            </label>
+              {t("fpo.ui.37bdf89e17")}</label>
             <label className="flex items-center gap-2">
               <input
                 type="checkbox"
                 checked={geoOnly}
                 onChange={(e) => setGeoOnly(e.target.checked)}
               />
-              My geography
-            </label>
+              {t("fpo.ui.de62fe74bb")}</label>
           </div>
         </div>
         <p className="field-hint">
-          {cards.length} of {data.cards.length} opportunities shown. Ordering is a transparent
-          relevance hint based on member crops, geography and deadline — nothing is hidden.
-        </p>
+          {cards.length} {t("fpo.ui.de04fa0e29")}{" "}{data.cards.length} {t("fpo.ui.4c171cb67c")}</p>
       </section>
 
       <div className="grid gap-4 lg:grid-cols-2">
@@ -158,18 +155,18 @@ export function FpoOpportunitiesSection({ tenantId }: { tenantId: string }) {
             </div>
 
             <p className="text-sm">{c.benefit_summary}</p>
-            <p className="text-sm text-muted-foreground">Eligibility: {c.eligibility_summary}</p>
+            <p className="text-sm text-muted-foreground">{t("fpo.ui.126beee3cd")}{" "}{c.eligibility_summary}</p>
 
             <dl className="grid gap-1 text-sm sm:grid-cols-2">
               <div>
-                <dt className="field-hint">Geography</dt>
+                <dt className="field-hint">{t("fpo.ui.77fc6221d7")}</dt>
                 <dd>
                   {c.geography_note ??
                     ([c.district_code, c.state_code].filter(Boolean).join(", ") || "All districts")}
                 </dd>
               </div>
               <div>
-                <dt className="field-hint">Deadline</dt>
+                <dt className="field-hint">{t("fpo.ui.2b12f36924")}</dt>
                 <dd>
                   {c.application_deadline
                     ? `${c.application_deadline}${c.daysLeft !== null ? ` (${c.daysLeft} days)` : ""}`
@@ -177,11 +174,11 @@ export function FpoOpportunitiesSection({ tenantId }: { tenantId: string }) {
                 </dd>
               </div>
               <div>
-                <dt className="field-hint">Commodities</dt>
+                <dt className="field-hint">{t("fpo.ui.6abb1b41c4")}</dt>
                 <dd>{c.commodities.length ? c.commodities.join(", ") : "Any"}</dd>
               </div>
               <div>
-                <dt className="field-hint">Source</dt>
+                <dt className="field-hint">{t("fpo.ui.6da13addb0")}</dt>
                 <dd>
                   {c.source_name}
                   {c.last_verified_at ? ` · verified ${c.last_verified_at.slice(0, 10)}` : ""}
@@ -191,7 +188,7 @@ export function FpoOpportunitiesSection({ tenantId }: { tenantId: string }) {
 
             {c.required_documents.length ? (
               <div className="text-sm">
-                <p className="field-hint">Documents required</p>
+                <p className="field-hint">{t("fpo.ui.69adaf521c")}</p>
                 <ul className="list-disc pl-5 text-muted-foreground">
                   {c.required_documents.map((d) => (
                     <li key={d}>{d}</li>
@@ -202,23 +199,20 @@ export function FpoOpportunitiesSection({ tenantId }: { tenantId: string }) {
 
             {!c.open ? (
               <p className="text-sm text-muted-foreground">
-                Closed for applications — kept visible for the record.
-              </p>
+                {t("fpo.ui.9016727ce2")}</p>
             ) : null}
             {!c.inGeography ? (
               <p className="text-sm text-muted-foreground">
-                Outside this FPO&apos;s recorded geography — verify with the provider before
-                applying.
-              </p>
+                {t("fpo.ui.f9c3634488")}</p>
             ) : null}
 
-            {c.note ? <p className="text-sm">Note: {c.note}</p> : null}
+            {c.note ? <p className="text-sm">{t("fpo.ui.83423c198b")}{" "}{c.note}</p> : null}
 
             {canManage ? (
               <div className="space-y-2">
                 <input
                   className="field-base"
-                  placeholder="Internal note (optional)"
+                  placeholder={t("fpo.ui.cf1db178d8")}
                   value={notes[c.id] ?? ""}
                   onChange={(e) => setNotes((n) => ({ ...n, [c.id]: e.target.value }))}
                 />
@@ -245,8 +239,7 @@ export function FpoOpportunitiesSection({ tenantId }: { tenantId: string }) {
               </div>
             ) : (
               <p className="field-hint">
-                Only an FPO admin or scheme reviewer can change tracking status.
-              </p>
+                {t("fpo.ui.d37776259e")}</p>
             )}
           </article>
         ))}
@@ -254,8 +247,7 @@ export function FpoOpportunitiesSection({ tenantId }: { tenantId: string }) {
 
       {cards.length === 0 ? (
         <section className="panel p-5 text-sm text-muted-foreground">
-          No opportunities match these filters.
-        </section>
+          {t("fpo.ui.96ef50416b")}</section>
       ) : null}
     </div>
   );

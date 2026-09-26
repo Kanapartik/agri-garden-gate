@@ -1,3 +1,4 @@
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -14,6 +15,7 @@ const ERRORS: Record<string, string> = {
 };
 
 export function FpoQrAddMember({ tenantId }: { tenantId: string }) {
+  const { t } = useLanguage();
   const [scanning, setScanning] = useState(false);
   const [manual, setManual] = useState("");
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -46,7 +48,7 @@ export function FpoQrAddMember({ tenantId }: { tenantId: string }) {
       );
       scanner = s;
       s.start().catch(() => {
-        toast.error("Camera not available — type the code instead.");
+        toast.error(t("fpo.ui.22d35b1be6"));
         setScanning(false);
       });
     });
@@ -60,11 +62,9 @@ export function FpoQrAddMember({ tenantId }: { tenantId: string }) {
   return (
     <section className="panel space-y-3 p-5">
       <div>
-        <h2 className="font-display text-base font-semibold">Add a farmer by QR code</h2>
+        <h2 className="font-display text-base font-semibold">{t("fpo.ui.9a3637d027")}</h2>
         <p className="text-sm text-muted-foreground">
-          Scan the QR on the farmer's profile. They join as "approval pending" and must approve membership and
-          consent before you can see any farm data.
-        </p>
+          {t("fpo.ui.3716495875")}</p>
       </div>
       {scanning && <video ref={videoRef} className="aspect-square w-full max-w-xs rounded-lg bg-muted object-cover" />}
       <div className="flex flex-wrap gap-2">
@@ -73,7 +73,7 @@ export function FpoQrAddMember({ tenantId }: { tenantId: string }) {
         </Button>
         <Input
           className="max-w-xs"
-          placeholder="Or type code, e.g. 1A2B-3C4D-…"
+          placeholder={t("fpo.ui.ec5705f84a")}
           value={manual}
           onChange={(e) => setManual(e.target.value)}
         />
@@ -82,8 +82,7 @@ export function FpoQrAddMember({ tenantId }: { tenantId: string }) {
           disabled={!manual.trim() || m.isPending}
           onClick={() => m.mutate(manual.replace(/[\s-]/g, ""))}
         >
-          Add
-        </Button>
+          {t("fpo.ui.61cc55aa04")}</Button>
       </div>
     </section>
   );

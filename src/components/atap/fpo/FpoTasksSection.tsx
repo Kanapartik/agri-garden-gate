@@ -1,3 +1,4 @@
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -29,6 +30,7 @@ const input =
 const card = "rounded-lg border border-border bg-card p-4";
 
 export function FpoTasksSection({ tenantId }: { tenantId: string }) {
+  const { t } = useLanguage();
   const qc = useQueryClient();
   const boardFn = useServerFn(getNotificationsBoard);
   const createFn = useServerFn(createTask);
@@ -69,9 +71,9 @@ export function FpoTasksSection({ tenantId }: { tenantId: string }) {
   const assign = useAction(assignFn, "Task assigned");
   const addComment = useAction(commentFn, "Progress note added");
 
-  if (board.isLoading) return <p className="text-sm text-muted-foreground">Loading…</p>;
+  if (board.isLoading) return <p className="text-sm text-muted-foreground">{t("fpo.ui.33ce417454")}</p>;
   const data = board.data;
-  if (!data) return <p className="text-sm text-muted-foreground">No tasks yet.</p>;
+  if (!data) return <p className="text-sm text-muted-foreground">{t("fpo.ui.c1c785eaec")}</p>;
 
   return (
     <div className="space-y-6">
@@ -95,16 +97,16 @@ export function FpoTasksSection({ tenantId }: { tenantId: string }) {
 
       {data.canManageTasks ? (
         <section className={`${card} space-y-3`}>
-          <h3 className="font-display text-base font-semibold">Create a task</h3>
+          <h3 className="font-display text-base font-semibold">{t("fpo.ui.c071049b8d")}</h3>
           <input
             className={input}
-            placeholder="Task title"
+            placeholder={t("fpo.ui.624d94d824")}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
           <textarea
             className={`${input} min-h-20`}
-            placeholder="What needs doing?"
+            placeholder={t("fpo.ui.9455e10034")}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
@@ -139,13 +141,13 @@ export function FpoTasksSection({ tenantId }: { tenantId: string }) {
             />
             <input
               className={input}
-              placeholder="Assign to (name / role)"
+              placeholder={t("fpo.ui.749670566d")}
               value={assignee}
               onChange={(e) => setAssignee(e.target.value)}
             />
           </div>
           <select className={input} value={memberId} onChange={(e) => setMemberId(e.target.value)}>
-            <option value="">No linked member</option>
+            <option value="">{t("fpo.ui.11041da9d6")}</option>
             {data.memberOptions.map((m) => (
               <option key={m.id} value={m.id}>
                 {m.display_name}
@@ -167,15 +169,14 @@ export function FpoTasksSection({ tenantId }: { tenantId: string }) {
             }
             disabled={create.isPending}
           >
-            Create task
-          </Button>
+            {t("fpo.ui.f1f1450ff8")}</Button>
         </section>
       ) : null}
 
       <section className="space-y-3">
-        <h3 className="font-display text-base font-semibold">Task queue</h3>
+        <h3 className="font-display text-base font-semibold">{t("fpo.ui.79b0317f47")}</h3>
         {data.tasks.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No tasks recorded.</p>
+          <p className="text-sm text-muted-foreground">{t("fpo.ui.58d1fa7c4d")}</p>
         ) : (
           data.tasks.map((t) => {
             const comments = data.comments.filter((c) => c.task_id === t.id);
@@ -239,7 +240,7 @@ export function FpoTasksSection({ tenantId }: { tenantId: string }) {
                       <>
                         <textarea
                           className={`${input} min-h-16`}
-                          placeholder="Progress note"
+                          placeholder={t("fpo.ui.fcc6ed491f")}
                           value={comment}
                           onChange={(e) => setComment(e.target.value)}
                         />
@@ -252,8 +253,7 @@ export function FpoTasksSection({ tenantId }: { tenantId: string }) {
                             }}
                             disabled={!comment.trim()}
                           >
-                            Add note
-                          </Button>
+                            {t("fpo.ui.757092db3c")}</Button>
                           {data.canManageTasks ? (
                             <Button
                               size="sm"
@@ -266,7 +266,7 @@ export function FpoTasksSection({ tenantId }: { tenantId: string }) {
                                 })
                               }
                             >
-                              Reassign to “{assignee || t.assignee_label || "Unassigned"}”
+                              {t("fpo.ui.0016ba3974")}{assignee || t.assignee_label || "Unassigned"}”
                             </Button>
                           ) : null}
                         </div>

@@ -1,3 +1,4 @@
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import { createFileRoute, Link, Outlet, redirect, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { BarChart3, LayoutDashboard, LogOut, Receipt, ShieldCheck, Users } from "lucide-react";
@@ -65,7 +66,7 @@ function PortalShell() {
           <img src={agrivahMark.url} alt="Agrivah logo" className="h-9 w-auto" />
           <div className="leading-tight">
              <p className="font-display text-sm font-bold text-primary">{t("fpo.portal.title")}</p>
-            <p className="text-[10px] uppercase text-muted-foreground">Agrivah</p>
+            <p className="text-[10px] uppercase text-muted-foreground">{t("fpo.ui.dc53c5d356")}</p>
           </div>
         </div>
         <nav className="space-y-1">

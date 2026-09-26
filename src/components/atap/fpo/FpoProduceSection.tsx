@@ -1,3 +1,4 @@
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -31,6 +32,7 @@ const input =
 const card = "rounded-lg border border-border bg-card p-4";
 
 export function FpoProduceSection({ tenantId }: { tenantId: string }) {
+  const { t } = useLanguage();
   const qc = useQueryClient();
   const boardFn = useServerFn(getProduceBoard);
   const detailFn = useServerFn(getProduceLotDetail);
@@ -88,10 +90,10 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
     mutationFn: (lotId: string) => publishFn({ data: { tenantId, lotId } }),
     onSuccess: async (result) => {
       if (result.status === "listed") {
-        toast.success("Lot is live on the marketplace.");
+        toast.success(t("fpo.ui.fb55f02e77"));
       } else {
         toast.info(
-          "Marketplace seller profile submitted for internal review. Listing will be possible once approved.",
+          t("fpo.ui.1b494e5e36"),
         );
       }
       await invalidate();
@@ -157,10 +159,10 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
   );
 
   if (!tenantId) {
-    return <p className="text-sm text-muted-foreground">Select an FPO organization first.</p>;
+    return <p className="text-sm text-muted-foreground">{t("fpo.ui.cd34fb3ddf")}</p>;
   }
   if (board.isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading produce and market linkage…</p>;
+    return <p className="text-sm text-muted-foreground">{t("fpo.ui.d5c7f2ad66")}</p>;
   }
   if (board.error) {
     return <p className="text-sm text-destructive">{(board.error as Error).message}</p>;
@@ -183,9 +185,9 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
       </div>
 
       <section className={card}>
-        <h3 className="text-sm font-semibold">Mandi price observations</h3>
+        <h3 className="text-sm font-semibold">{t("fpo.ui.0a2097509f")}</h3>
         {data.prices.length === 0 ? (
-          <p className="mt-2 text-sm text-muted-foreground">No price observations recorded yet.</p>
+          <p className="mt-2 text-sm text-muted-foreground">{t("fpo.ui.87cf7dea00")}</p>
         ) : (
           <ul className="mt-3 space-y-2">
             {data.prices.map((p) => (
@@ -210,16 +212,16 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
       </section>
 
       <section className={card}>
-        <h3 className="text-sm font-semibold">Harvest windows by commodity</h3>
+        <h3 className="text-sm font-semibold">{t("fpo.ui.139f010e8a")}</h3>
         {data.windows.length === 0 ? (
-          <p className="mt-2 text-sm text-muted-foreground">No lots planned yet.</p>
+          <p className="mt-2 text-sm text-muted-foreground">{t("fpo.ui.96339dd4ed")}</p>
         ) : (
           <ul className="mt-3 space-y-1 text-sm">
             {data.windows.map((w) => (
               <li key={w.commodity} className="flex flex-wrap justify-between gap-2">
                 <span className="font-medium">{w.commodity}</span>
                 <span className="text-muted-foreground">
-                  {w.aggregated}/{w.expected} {w.unit} aggregated · {w.lots} lot(s) ·{" "}
+                  {w.aggregated}/{w.expected} {w.unit} {t("fpo.ui.ae3340d676")}{" "}{w.lots} {t("fpo.ui.b7ed028a0c")}{" "}
                   {w.window_start ?? "window TBD"} → {w.window_end ?? "TBD"}
                 </span>
               </li>
@@ -230,35 +232,35 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
 
       {data.canManage ? (
         <section className={card}>
-          <h3 className="text-sm font-semibold">Create a produce lot</h3>
+          <h3 className="text-sm font-semibold">{t("fpo.ui.0513c5c08f")}</h3>
           <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             <input
               className={input}
-              placeholder="Commodity"
+              placeholder={t("fpo.ui.38dfc23319")}
               value={commodity}
               onChange={(e) => setCommodity(e.target.value)}
             />
             <input
               className={input}
-              placeholder="Variety"
+              placeholder={t("fpo.ui.85e646fbb9")}
               value={variety}
               onChange={(e) => setVariety(e.target.value)}
             />
             <input
               className={input}
-              placeholder="Season"
+              placeholder={t("fpo.ui.62255f5671")}
               value={season}
               onChange={(e) => setSeason(e.target.value)}
             />
             <input
               className={input}
-              placeholder="Expected quantity"
+              placeholder={t("fpo.ui.24c24bc097")}
               value={expected}
               onChange={(e) => setExpected(e.target.value)}
             />
             <input
               className={input}
-              placeholder="Reserve price / unit"
+              placeholder={t("fpo.ui.7c98a3a52b")}
               value={reserve}
               onChange={(e) => setReserve(e.target.value)}
             />
@@ -269,15 +271,14 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
             disabled={!commodity || create.isPending}
             onClick={() => create.mutate(undefined as never)}
           >
-            Create lot
-          </Button>
+            {t("fpo.ui.548e6304fa")}</Button>
         </section>
       ) : null}
 
       <section className="space-y-3">
-        <h3 className="text-sm font-semibold">Produce lots</h3>
+        <h3 className="text-sm font-semibold">{t("fpo.ui.0c84c5517a")}</h3>
         {data.lots.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No produce lots yet.</p>
+          <p className="text-sm text-muted-foreground">{t("fpo.ui.dc1e842fe3")}</p>
         ) : null}
         {data.lots.map((lot) => (
           <div key={lot.id} className={card}>
@@ -289,8 +290,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                   {lot.lot_code ? ` · ${lot.lot_code}` : ""}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {lot.aggregated_quantity}/{lot.expected_quantity} {lot.unit} aggregated
-                  {lot.reserve_price_per_unit
+                  {lot.aggregated_quantity}/{lot.expected_quantity} {lot.unit} {t("fpo.ui.a1036feb49")}{lot.reserve_price_per_unit
                     ? ` · reserve ₹${lot.reserve_price_per_unit}/${lot.unit}`
                     : " · no reserve price set"}
                   {lot.season ? ` · ${lot.season}` : ""}
@@ -326,16 +326,14 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
 
             {openId === lot.id ? (
               detail.isLoading ? (
-                <p className="mt-4 text-sm text-muted-foreground">Loading lot…</p>
+                <p className="mt-4 text-sm text-muted-foreground">{t("fpo.ui.5961f7dcc5")}</p>
               ) : detail.error ? (
                 <p className="mt-4 text-sm text-destructive">{(detail.error as Error).message}</p>
               ) : detail.data ? (
                 <div className="mt-5 space-y-5 border-t border-border pt-4">
                   {lot.marketplace_listing_id ? (
                     <p className="rounded-md border border-border bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
-                      Listed on the marketplace — buyers can discover and order this lot from the
-                      Market page.
-                    </p>
+                      {t("fpo.ui.9c48af5f06")}</p>
                   ) : detail.data.canManage && detail.data.readiness.ready ? (
                     <div className="flex flex-wrap items-center gap-2">
                       <Button
@@ -346,9 +344,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                         {publishLot.isPending ? "Listing…" : "List on marketplace"}
                       </Button>
                       <span className="text-xs text-muted-foreground">
-                        Publishes the aggregate as a single FPO listing at the reserve price.
-                        Member identities are never shared.
-                      </span>
+                        {t("fpo.ui.d6bc603ba0")}</span>
                     </div>
                   ) : null}
                   {!detail.data.readiness.ready ? (
@@ -360,14 +356,12 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                   ) : null}
 
                   <div>
-                    <h4 className="text-sm font-semibold">Member declarations</h4>
+                    <h4 className="text-sm font-semibold">{t("fpo.ui.42140ad886")}</h4>
                     <p className="text-xs text-muted-foreground">
-                      {detail.data.aggregation.members} member(s) ·{" "}
-                      {detail.data.aggregation.confirmed} {detail.data.aggregation.unit} confirmed (
-                      {detail.data.aggregation.confirmation_rate}%) ·{" "}
-                      {detail.data.aggregation.delivered} delivered ·{" "}
-                      {detail.data.aggregation.outstanding_delivery} outstanding
-                    </p>
+                      {detail.data.aggregation.members} {t("fpo.ui.b83f2ba0f2")}{" "}
+                      {detail.data.aggregation.confirmed} {detail.data.aggregation.unit} {t("fpo.ui.0bdab2f8cc")}{detail.data.aggregation.confirmation_rate}%) ·{" "}
+                      {detail.data.aggregation.delivered} {t("fpo.ui.adc6bad0fe")}{" "}
+                      {detail.data.aggregation.outstanding_delivery} {t("fpo.ui.b5efd49071")}</p>
                     <ul className="mt-2 space-y-2">
                       {detail.data.contributions.map((c) => (
                         <li
@@ -375,8 +369,8 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                           className="flex flex-wrap items-center justify-between gap-2 text-sm"
                         >
                           <span>
-                            {c.member_name} — {c.expected_quantity} expected /{" "}
-                            {c.confirmed_quantity} confirmed / {c.delivered_quantity} delivered{" "}
+                            {c.member_name} — {c.expected_quantity} {t("fpo.ui.b80ef48c91")}{" "}
+                            {c.confirmed_quantity} {t("fpo.ui.36f9a4b466")}{" "}{c.delivered_quantity} {t("fpo.ui.f818910a3e")}{" "}
                             {c.unit}
                           </span>
                           {detail.data.canRecordContribution ? (
@@ -391,8 +385,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                                   })
                                 }
                               >
-                                Confirm expected
-                              </Button>
+                                {t("fpo.ui.b280d24701")}</Button>
                               <Button
                                 size="sm"
                                 variant="outline"
@@ -403,8 +396,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                                   })
                                 }
                               >
-                                Mark delivered
-                              </Button>
+                                {t("fpo.ui.2a90783e08")}</Button>
                             </span>
                           ) : null}
                         </li>
@@ -417,7 +409,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                           value={memberId}
                           onChange={(e) => setMemberId(e.target.value)}
                         >
-                          <option value="">Unlinked member</option>
+                          <option value="">{t("fpo.ui.f0f0f64a10")}</option>
                           {detail.data.members.map((m) => (
                             <option key={m.id} value={m.id}>
                               {m.display_name}
@@ -426,7 +418,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                         </select>
                         <input
                           className={`${input} sm:w-40`}
-                          placeholder="Expected qty"
+                          placeholder={t("fpo.ui.6dc390e221")}
                           value={memberQty}
                           onChange={(e) => setMemberQty(e.target.value)}
                         />
@@ -435,16 +427,15 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                           disabled={!memberQty || addContribution.isPending}
                           onClick={() => addContribution.mutate(undefined as never)}
                         >
-                          Add declaration
-                        </Button>
+                          {t("fpo.ui.c1d360df47")}</Button>
                       </div>
                     ) : null}
                   </div>
 
                   <div>
-                    <h4 className="text-sm font-semibold">Buyer & processor enquiries</h4>
+                    <h4 className="text-sm font-semibold">{t("fpo.ui.9fa53cabe4")}</h4>
                     {detail.data.enquiries.length === 0 ? (
-                      <p className="mt-1 text-sm text-muted-foreground">No enquiries yet.</p>
+                      <p className="mt-1 text-sm text-muted-foreground">{t("fpo.ui.455b7dc123")}</p>
                     ) : (
                       <ul className="mt-2 space-y-3">
                         {detail.data.enquiries.map((e) => (
@@ -464,7 +455,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                             </p>
                             {e.flags.length > 0 ? (
                               <p className="mt-1 text-xs text-muted-foreground">
-                                Flags: {e.flags.join("; ")}
+                                {t("fpo.ui.2a476f8687")}{" "}{e.flags.join("; ")}
                               </p>
                             ) : null}
                             {detail.data.canManage ? (
@@ -490,7 +481,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                       <div className="mt-3 grid gap-2 sm:grid-cols-3 lg:grid-cols-6">
                         <input
                           className={input}
-                          placeholder="Buyer name"
+                          placeholder={t("fpo.ui.8eb808e9e2")}
                           value={buyer}
                           onChange={(ev) => setBuyer(ev.target.value)}
                         />
@@ -507,25 +498,25 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                         </select>
                         <input
                           className={input}
-                          placeholder="Offer / unit"
+                          placeholder={t("fpo.ui.3c1692002e")}
                           value={offerPrice}
                           onChange={(ev) => setOfferPrice(ev.target.value)}
                         />
                         <input
                           className={input}
-                          placeholder="Quantity"
+                          placeholder={t("fpo.ui.44f6af6945")}
                           value={offerQty}
                           onChange={(ev) => setOfferQty(ev.target.value)}
                         />
                         <input
                           className={input}
-                          placeholder="Payment terms"
+                          placeholder={t("fpo.ui.8744d51917")}
                           value={payTerms}
                           onChange={(ev) => setPayTerms(ev.target.value)}
                         />
                         <input
                           className={input}
-                          placeholder="Delivery terms"
+                          placeholder={t("fpo.ui.1e5e2846ec")}
                           value={delTerms}
                           onChange={(ev) => setDelTerms(ev.target.value)}
                         />
@@ -534,8 +525,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                           disabled={!buyer || addEnquiry.isPending}
                           onClick={() => addEnquiry.mutate(undefined as never)}
                         >
-                          Record enquiry
-                        </Button>
+                          {t("fpo.ui.5276d23571")}</Button>
                       </div>
                     ) : null}
                   </div>
@@ -543,8 +533,7 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
                   {detail.data.prices.length > 0 ? (
                     <div>
                       <h4 className="text-sm font-semibold">
-                        {detail.data.lot.commodity} price context
-                      </h4>
+                        {detail.data.lot.commodity} {t("fpo.ui.2b68f9c098")}</h4>
                       <ul className="mt-1 space-y-1 text-xs text-muted-foreground">
                         {detail.data.prices.map((p) => (
                           <li key={`${p.commodity}-${p.basis}`}>
@@ -563,9 +552,9 @@ export function FpoProduceSection({ tenantId }: { tenantId: string }) {
       </section>
 
       <section className={card}>
-        <h3 className="text-sm font-semibold">Logistics, storage & processing options</h3>
+        <h3 className="text-sm font-semibold">{t("fpo.ui.1be6d818a3")}</h3>
         {data.logistics.length === 0 ? (
-          <p className="mt-2 text-sm text-muted-foreground">No options listed yet.</p>
+          <p className="mt-2 text-sm text-muted-foreground">{t("fpo.ui.8b98eafa16")}</p>
         ) : (
           <ul className="mt-3 space-y-2 text-sm">
             {data.logistics.map((l) => (

@@ -1,3 +1,4 @@
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
@@ -11,6 +12,7 @@ const inr = (v: number | null | undefined) =>
   v === null || v === undefined ? "—" : `₹${Math.round(v).toLocaleString("en-IN")}`;
 
 export function FpoInsuranceSection({ tenantId }: { tenantId: string }) {
+  const { t } = useLanguage();
   const boardFn = useServerFn(getFpoCoverBoard);
   const syncFn = useServerFn(syncFpoMemberCover);
   const queryClient = useQueryClient();
@@ -39,11 +41,11 @@ export function FpoInsuranceSection({ tenantId }: { tenantId: string }) {
   });
 
   if (board.isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading insurance cover board…</p>;
+    return <p className="text-sm text-muted-foreground">{t("fpo.ui.ea6b81797e")}</p>;
   }
   const data = board.data;
   if (!data) {
-    return <p className="text-sm text-muted-foreground">Insurance cover board is not available.</p>;
+    return <p className="text-sm text-muted-foreground">{t("fpo.ui.fe17d94059")}</p>;
   }
 
   return (
@@ -52,20 +54,20 @@ export function FpoInsuranceSection({ tenantId }: { tenantId: string }) {
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className={card}>
-          <p className="text-xs text-muted-foreground">Linked policies</p>
+          <p className="text-xs text-muted-foreground">{t("fpo.ui.e62e3834fb")}</p>
           <p className="text-lg font-semibold tabular-nums">{data.policies.length}</p>
           <p className="text-xs text-muted-foreground">{data.provenance.label}</p>
         </div>
         <div className={card}>
-          <p className="text-xs text-muted-foreground">Members on roster</p>
+          <p className="text-xs text-muted-foreground">{t("fpo.ui.a9cf4b9d5c")}</p>
           <p className="text-lg font-semibold tabular-nums">{data.members}</p>
         </div>
         <div className={card}>
-          <p className="text-xs text-muted-foreground">Authorized for facilitation</p>
+          <p className="text-xs text-muted-foreground">{t("fpo.ui.7cb554f62c")}</p>
           <p className="text-lg font-semibold tabular-nums">{data.consentedMembers}</p>
         </div>
         <div className={card}>
-          <p className="text-xs text-muted-foreground">Member cover indicators bound</p>
+          <p className="text-xs text-muted-foreground">{t("fpo.ui.dbce43d0fe")}</p>
           <p className="text-lg font-semibold tabular-nums">{data.boundSnapshots}</p>
           <p className="text-xs text-muted-foreground">
             {data.lastSyncedAt
@@ -78,12 +80,9 @@ export function FpoInsuranceSection({ tenantId }: { tenantId: string }) {
       <div className={card}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h3 className="text-sm font-semibold">Refresh member cover indicators</h3>
+            <h3 className="text-sm font-semibold">{t("fpo.ui.5900850f42")}</h3>
             <p className="mt-1 text-xs text-muted-foreground">
-              Writes the notified policy&apos;s sum insured and farmer share to each authorized
-              member&apos;s insurance corner. Members without an active authorization are never
-              included, and no enrolment is created.
-            </p>
+              {t("fpo.ui.c03d0fce2e")}</p>
           </div>
           <Button
             onClick={() => sync.mutate()}
@@ -94,29 +93,26 @@ export function FpoInsuranceSection({ tenantId }: { tenantId: string }) {
         </div>
         {!data.canManage ? (
           <p className="mt-2 text-xs text-muted-foreground">
-            Read-only: only an FPO administrator can refresh cover indicators.
-          </p>
+            {t("fpo.ui.574d1d388f")}</p>
         ) : null}
       </div>
 
       <div className={card}>
-        <h3 className="text-sm font-semibold">Policies covering this organization</h3>
+        <h3 className="text-sm font-semibold">{t("fpo.ui.2b18be4393")}</h3>
         {data.policies.length === 0 ? (
           <p className="mt-2 text-sm text-muted-foreground">
-            No insurer policy is linked to this organization yet. Figures in member insurance corners
-            stay indicative until an insurer links a policy.
-          </p>
+            {t("fpo.ui.05a97ada8e")}</p>
         ) : (
           <div className="mt-3 overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-secondary text-secondary-foreground">
                 <tr>
-                  <th className="p-3 text-left">Policy</th>
-                  <th className="p-3 text-left">Scheme</th>
-                  <th className="p-3 text-left">Crop / season</th>
-                  <th className="p-3 text-right">Sum insured / acre</th>
-                  <th className="p-3 text-right">Farmer share</th>
-                  <th className="p-3 text-left">Binding</th>
+                  <th className="p-3 text-left">{t("fpo.ui.bb9cf14180")}</th>
+                  <th className="p-3 text-left">{t("fpo.ui.990897a59f")}</th>
+                  <th className="p-3 text-left">{t("fpo.ui.5ef9333255")}</th>
+                  <th className="p-3 text-right">{t("fpo.ui.42b015cff1")}</th>
+                  <th className="p-3 text-right">{t("fpo.ui.70c5fa1b3f")}</th>
+                  <th className="p-3 text-left">{t("fpo.ui.7f0043e684")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -145,10 +141,10 @@ export function FpoInsuranceSection({ tenantId }: { tenantId: string }) {
       </div>
 
       <div className={card}>
-        <h3 className="text-sm font-semibold">Claim status from the insurer</h3>
+        <h3 className="text-sm font-semibold">{t("fpo.ui.cd2d40f504")}</h3>
         <p className="mt-1 text-xs text-muted-foreground">{data.claimNote}</p>
         {data.claims.length === 0 ? (
-          <p className="mt-2 text-sm text-muted-foreground">No claims reported for this organization.</p>
+          <p className="mt-2 text-sm text-muted-foreground">{t("fpo.ui.2d423434e7")}</p>
         ) : (
           <div className="mt-3 space-y-2">
             {data.claims.map((c) => (
@@ -161,7 +157,7 @@ export function FpoInsuranceSection({ tenantId }: { tenantId: string }) {
                     {c.reference} · {c.crop ?? "all crops"} · {c.season}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {c.peril.replace(/_/g, " ")} · reported{" "}
+                    {c.peril.replace(/_/g, " ")} {t("fpo.ui.f73b2c6c90")}{" "}
                     {new Date(c.reportedAt).toLocaleDateString("en-IN")}
                   </p>
                 </div>

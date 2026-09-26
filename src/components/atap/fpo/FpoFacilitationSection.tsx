@@ -1,3 +1,4 @@
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -17,6 +18,7 @@ import {
 } from "@/lib/atap/fpoApplications";
 
 export function FpoFacilitationSection({ tenantId }: { tenantId: string }) {
+  const { t } = useLanguage();
   const qc = useQueryClient();
   const boardFn = useServerFn(getFacilitationBoard);
   const createFn = useServerFn(createMemberCampaign);
@@ -36,7 +38,7 @@ export function FpoFacilitationSection({ tenantId }: { tenantId: string }) {
   const create = useMutation({
     mutationFn: () => createFn({ data: { tenantId, name, schemeId: schemeId || null } }),
     onSuccess: async () => {
-      toast.success("Campaign created");
+      toast.success(t("fpo.ui.a89a841b0c"));
       setName("");
       await invalidate();
     },
@@ -47,7 +49,7 @@ export function FpoFacilitationSection({ tenantId }: { tenantId: string }) {
     mutationFn: (input: { cohortMemberId: string; state: FacilitationState }) =>
       stateFn({ data: { tenantId, ...input } }),
     onSuccess: async () => {
-      toast.success("Member facilitation updated");
+      toast.success(t("fpo.ui.3068bf6e58"));
       await invalidate();
     },
     onError: (e: Error) => toast.error(e.message),
@@ -56,12 +58,11 @@ export function FpoFacilitationSection({ tenantId }: { tenantId: string }) {
   if (!tenantId) {
     return (
       <section className="panel p-5 text-sm text-muted-foreground">
-        Select an FPO organization to see member facilitation.
-      </section>
+        {t("fpo.ui.209cdaf26d")}</section>
     );
   }
   if (board.isLoading) {
-    return <section className="panel p-5 text-sm">Loading facilitation campaigns…</section>;
+    return <section className="panel p-5 text-sm">{t("fpo.ui.f7471f84c3")}</section>;
   }
   if (board.isError) {
     return (
@@ -76,7 +77,7 @@ export function FpoFacilitationSection({ tenantId }: { tenantId: string }) {
   return (
     <div className="space-y-6">
       <section className="panel space-y-2 p-5">
-        <h2 className="font-display text-base font-semibold">Member scheme facilitation</h2>
+        <h2 className="font-display text-base font-semibold">{t("fpo.ui.5551485e9f")}</h2>
         <p className="field-hint">{data.disclaimer}</p>
       </section>
 
@@ -109,10 +110,10 @@ export function FpoFacilitationSection({ tenantId }: { tenantId: string }) {
             <table className="w-full text-sm">
               <thead className="text-left text-xs uppercase text-muted-foreground">
                 <tr>
-                  <th className="py-2">Member</th>
-                  <th className="py-2">Stage</th>
-                  <th className="py-2">Farmer authorization</th>
-                  <th className="py-2">Actions</th>
+                  <th className="py-2">{t("fpo.ui.6853c98a6f")}</th>
+                  <th className="py-2">{t("fpo.ui.ca6d0e3aaa")}</th>
+                  <th className="py-2">{t("fpo.ui.3ac90dc608")}</th>
+                  <th className="py-2">{t("fpo.ui.c3cd636a58")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -139,7 +140,7 @@ export function FpoFacilitationSection({ tenantId }: { tenantId: string }) {
                             })
                           }
                         >
-                          <option value="">Move to…</option>
+                          <option value="">{t("fpo.ui.c0a3ef619a")}</option>
                           {nextFacilitationStates(m.state).map((s) => (
                             <option key={s} value={s}>
                               {FACILITATION_STATE_LABEL[s]}
@@ -147,7 +148,7 @@ export function FpoFacilitationSection({ tenantId }: { tenantId: string }) {
                           ))}
                         </select>
                       ) : (
-                        <span className="field-hint">View only</span>
+                        <span className="field-hint">{t("fpo.ui.5559dd041f")}</span>
                       )}
                     </td>
                   </tr>
@@ -155,8 +156,7 @@ export function FpoFacilitationSection({ tenantId }: { tenantId: string }) {
                 {c.members.length === 0 ? (
                   <tr>
                     <td className="py-4 text-sm text-muted-foreground" colSpan={4}>
-                      No members in this cohort yet.
-                    </td>
+                      {t("fpo.ui.183b6f107a")}</td>
                   </tr>
                 ) : null}
               </tbody>
@@ -167,17 +167,16 @@ export function FpoFacilitationSection({ tenantId }: { tenantId: string }) {
 
       {data.campaigns.length === 0 ? (
         <section className="panel p-5 text-sm text-muted-foreground">
-          No facilitation campaigns yet.
-        </section>
+          {t("fpo.ui.9090608cd4")}</section>
       ) : null}
 
       {data.canManage ? (
         <section className="panel space-y-3 p-5">
-          <h3 className="font-display text-sm font-semibold">Create a campaign</h3>
+          <h3 className="font-display text-sm font-semibold">{t("fpo.ui.c9b732d2ec")}</h3>
           <div className="grid gap-2 md:grid-cols-2">
             <input
               className="input-field"
-              placeholder="Campaign name"
+              placeholder={t("fpo.ui.aa5d0e720b")}
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -186,7 +185,7 @@ export function FpoFacilitationSection({ tenantId }: { tenantId: string }) {
               value={schemeId}
               onChange={(e) => setSchemeId(e.target.value)}
             >
-              <option value="">No scheme linked</option>
+              <option value="">{t("fpo.ui.e245fe4ff5")}</option>
               {data.schemes.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.title}
@@ -199,8 +198,7 @@ export function FpoFacilitationSection({ tenantId }: { tenantId: string }) {
             disabled={!name.trim() || create.isPending}
             onClick={() => create.mutate()}
           >
-            Create campaign
-          </Button>
+            {t("fpo.ui.59812bbcc7")}</Button>
         </section>
       ) : null}
     </div>
