@@ -26,21 +26,20 @@ export const Route = createFileRoute("/mobile/v1/auth/otp/request")({
             options: { shouldCreateUser: false },
           });
           if (error?.status === 429) return mobileError("otp_rate_limited", 429, correlationId);
-           if (error) {
+          if (error) {
             const sandboxChallengeId = await createSandboxStaticOtpChallenge(phone);
-             // Never reveal whether this number belongs to the sandbox pilot.
-             // Only the pilot's issued challenge is backed by an audit record.
-             const now = Date.now();
-             return mobileJson(
-               {
-                 challengeId: sandboxChallengeId ?? crypto.randomUUID(),
-                 delivery: { channel: "sms", maskedDestination: maskIndianMobile(phone) },
-                 expiresAt: new Date(now + 10 * 60 * 1000).toISOString(),
-                 resendAfterSeconds: 60,
-                 sandboxStaticOtp: true,
-               },
-               202,
-             );
+            // Return the same public challenge shape regardless of whether this
+            // phone has the audited synthetic fallback. Do not expose its status.
+            const now = Date.now();
+            return mobileJson(
+              {
+                challengeId: sandboxChallengeId ?? crypto.randomUUID(),
+                delivery: { channel: "sms", maskedDestination: maskIndianMobile(phone) },
+                expiresAt: new Date(now + 10 * 60 * 1000).toISOString(),
+                resendAfterSeconds: 60,
+              },
+              202,
+            );
           }
           const now = Date.now();
           return mobileJson(
