@@ -62,13 +62,13 @@ function AdminPage() {
       <section className="grid gap-6 lg:grid-cols-2">
         <div className="panel space-y-3 p-5">
           <h2 className="font-display text-base font-semibold">Invite staff</h2>
-          <input className="field-base" type="email" placeholder="staff@example.org' value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input className="field-base" type="email" placeholder="staff@example.org" value={email} onChange={(e) => setEmail(e.target.value)} />
           <select className="field-base" value={role || roles[0] || ""} onChange={(e) => setRole(e.target.value as AppRole)}>
             {roles.map((r) => (
               <option key={r} value={r}>{r.replaceAll("_", " ")}</option>
             ))}
           </select>
-          <input className="field-base" placeholder="Note (optional)' value={note} onChange={(e) => setNote(e.target.value)} />
+          <input className="field-base" placeholder="Note (optional)" value={note} onChange={(e) => setNote(e.target.value)} />
           <Button onClick={() => inviteM.mutate()} disabled={!email.includes("@") || inviteM.isPending}>
             Create invitation</Button>
           {lastRef ? (
