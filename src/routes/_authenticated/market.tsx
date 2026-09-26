@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import { PageHeader } from "@/components/atap/AppShell";
 import { FlagBadge, StateBadge } from "@/components/atap/StatusBadge";
 import { Button } from "@/components/ui/button";
@@ -57,6 +58,7 @@ const KIND_LABEL: Record<MarketPartyKind, string> = {
 };
 
 function MarketPage() {
+  const { t } = useLanguage();
   const queryClient = useQueryClient();
   const fetchWorkspace = useServerFn(getMarketplaceWorkspace);
   const createProfile = useServerFn(createMarketProfile);
@@ -147,7 +149,7 @@ function MarketPage() {
         },
       }),
     onSuccess: async () => {
-      toast.success("Commerce profile drafted");
+      toast.success(t("mk.drafted"));
       setDisplayName("");
       setEmail("");
       setProfileCategories([]);
@@ -195,7 +197,7 @@ function MarketPage() {
         },
       }),
     onSuccess: async () => {
-      toast.success("RFQ published to sellers");
+      toast.success(t("mk.rfqPublished"));
       setRfq((r) => ({ ...r, title: "", quantity: "", notes: "" }));
       await refresh();
     },
@@ -216,7 +218,7 @@ function MarketPage() {
   });
 
   if (workspace.isLoading) {
-    return <main className="mx-auto max-w-6xl px-6 py-12 text-sm text-muted-foreground">Loading…</main>;
+    return <main className="mx-auto max-w-6xl px-6 py-12 text-sm text-muted-foreground">{t("mk.loading")}</main>;
   }
 
   if (!data) {
@@ -232,8 +234,8 @@ function MarketPage() {
       <main className="mx-auto max-w-3xl space-y-4 px-6 py-12">
         <PageHeader
           eyebrow="B5"
-          title="Inputs & produce marketplace"
-          description="The base commerce slice is currently deactivated by configuration. No seller or buyer onboarding is accepted while the flag is off."
+          title={t("mk.title")}
+          description={t("mk.offDesc")}
         />
       </main>
     );
@@ -242,9 +244,9 @@ function MarketPage() {
   return (
     <main className="mx-auto max-w-6xl space-y-10 px-6 py-10">
       <PageHeader
-        eyebrow="B5 — base commerce"
-        title="Inputs & produce marketplace"
-        description="Neutral commerce onboarding for sellers and buyers. Listing quality, consent and matching rules apply identically on every commercial plan; disputes always reach a human reviewer."
+        eyebrow={t("mk.eyebrow")}
+        title={t("mk.title")}
+        description={t("mk.desc")}
       />
 
       <section className="grid gap-3 sm:grid-cols-5">
@@ -263,7 +265,7 @@ function MarketPage() {
       </section>
 
       <section className="panel space-y-3 p-5">
-        <h2 className="font-display text-sm font-semibold">Activation state</h2>
+        <h2 className="font-display text-sm font-semibold">{t("mk.activation")}</h2>
         <div className="flex flex-wrap gap-4 text-xs">
           <span className="flex items-center gap-2">
             Base commerce <FlagBadge enabled={data.flags.baseCommerce} />
@@ -287,10 +289,10 @@ function MarketPage() {
 
       {/* ------------------------------------------------- onboarding */}
       <section className="panel space-y-4 p-5">
-        <h2 className="font-display text-sm font-semibold">1 · Commerce onboarding</h2>
+        <h2 className="font-display text-sm font-semibold">{t("mk.s1")}</h2>
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="space-y-1">
-            <span className="field-hint">Party kind</span>
+            <span className="field-hint">{t("mk.partyKind")}</span>
             <select
               className="field-base"
               value={partyKind}
@@ -304,11 +306,11 @@ function MarketPage() {
             </select>
           </label>
           <label className="space-y-1">
-            <span className="field-hint">Side (derived from party kind)</span>
+            <span className="field-hint">{t("mk.side")}</span>
             <input className="field-base" value={kindDefaultSide(partyKind)} readOnly />
           </label>
           <label className="space-y-1">
-            <span className="field-hint">Legal / trade name</span>
+            <span className="field-hint">{t("mk.legalName")}</span>
             <input
               className="field-base"
               value={displayName}
@@ -317,7 +319,7 @@ function MarketPage() {
             />
           </label>
           <label className="space-y-1">
-            <span className="field-hint">Contact email</span>
+            <span className="field-hint">{t("mk.email")}</span>
             <input
               className="field-base"
               value={email}
@@ -326,12 +328,12 @@ function MarketPage() {
             />
           </label>
           <label className="space-y-1 sm:col-span-2">
-            <span className="field-hint">Regions (comma separated)</span>
+            <span className="field-hint">{t("mk.regions")}</span>
             <input className="field-base" value={regions} onChange={(e) => setRegions(e.target.value)} />
           </label>
         </div>
         <div className="space-y-2">
-          <p className="field-hint">Categories</p>
+          <p className="field-hint">{t("mk.categories")}</p>
           <div className="flex flex-wrap gap-2">
             {data.categories.map((c) => {
               const active = profileCategories.includes(c.code);
@@ -363,7 +365,7 @@ function MarketPage() {
 
         <div className="space-y-2 pt-2">
           {data.myProfiles.length === 0 ? (
-            <p className="field-hint">No commerce profile yet.</p>
+            <p className="field-hint">{t("mk.noProfile")}</p>
           ) : (
             data.myProfiles.map((p) => (
               <div key={p.id} className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border p-3">
@@ -385,7 +387,7 @@ function MarketPage() {
                       onClick={() =>
                         submitProfile({ data: { profileId: p.id } })
                           .then(() => {
-                            toast.success("Submitted for review");
+                            toast.success(t("mk.submitted"));
                             return refresh();
                           })
                           .catch(fail)
@@ -404,14 +406,14 @@ function MarketPage() {
       {/* ------------------------------------------------- listings */}
       {sellerProfiles.length > 0 && (
         <section className="panel space-y-4 p-5">
-          <h2 className="font-display text-sm font-semibold">2 · Catalog listing</h2>
+          <h2 className="font-display text-sm font-semibold">{t("mk.s2")}</h2>
           <p className="field-hint">
             Publishing requires an approved seller profile and a quality score of at least{" "}
             {data.minPublishScore}/100. No commercial plan changes either requirement.
           </p>
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="space-y-1">
-              <span className="field-hint">Seller profile</span>
+              <span className="field-hint">{t("mk.sellerProfile")}</span>
               <select
                 className="field-base"
                 value={listingProfileId || sellerProfiles[0]?.id || ""}
@@ -425,7 +427,7 @@ function MarketPage() {
               </select>
             </label>
             <label className="space-y-1">
-              <span className="field-hint">Category</span>
+              <span className="field-hint">{t("mk.category")}</span>
               <select
                 className="field-base"
                 value={listing.category}
@@ -439,7 +441,7 @@ function MarketPage() {
               </select>
             </label>
             <label className="space-y-1 sm:col-span-2">
-              <span className="field-hint">Title</span>
+              <span className="field-hint">{t("mk.titleF")}</span>
               <input
                 className="field-base"
                 value={listing.title}
@@ -447,7 +449,7 @@ function MarketPage() {
               />
             </label>
             <label className="space-y-1 sm:col-span-2">
-              <span className="field-hint">Description (40+ characters for full quality credit)</span>
+              <span className="field-hint">{t("mk.descF")}</span>
               <textarea
                 className="field-base min-h-20"
                 value={listing.description}
@@ -526,7 +528,7 @@ function MarketPage() {
 
       {/* ------------------------------------------------- discovery */}
       <section className="panel space-y-4 p-5">
-        <h2 className="font-display text-sm font-semibold">3 · Search & discovery</h2>
+        <h2 className="font-display text-sm font-semibold">{t("mk.s3")}</h2>
         <p className="field-hint">
           Ranking uses query fit and listing quality only. Seller plan and sponsorship are not ranking
           inputs, so two identical listings always rank identically.
@@ -537,7 +539,7 @@ function MarketPage() {
             value={query.category}
             onChange={(e) => setQuery({ ...query, category: e.target.value })}
           >
-            <option value="">Any category</option>
+            <option value="">{t("mk.anyCat")}</option>
             {data.categories.map((c) => (
               <option key={c.code} value={c.code}>
                 {c.label}
@@ -546,13 +548,13 @@ function MarketPage() {
           </select>
           <input
             className="field-base"
-            placeholder="Region code"
+            placeholder={t("mk.regionCode")}
             value={query.region}
             onChange={(e) => setQuery({ ...query, region: e.target.value })}
           />
           <input
             className="field-base"
-            placeholder="Max price"
+            placeholder={t("mk.maxPrice")}
             value={query.maxPrice}
             onChange={(e) => setQuery({ ...query, maxPrice: e.target.value })}
           />
@@ -572,7 +574,7 @@ function MarketPage() {
             </div>
           ))}
           {(results ?? data.publishedListings).length === 0 ? (
-            <p className="field-hint">No published listings match.</p>
+            <p className="field-hint">{t("mk.noListings")}</p>
           ) : null}
         </div>
       </section>
@@ -580,10 +582,10 @@ function MarketPage() {
       {/* ------------------------------------------------- RFQ */}
       {buyerProfiles.length > 0 && (
         <section className="panel space-y-4 p-5">
-          <h2 className="font-display text-sm font-semibold">4 · Sourcing request (RFQ)</h2>
+          <h2 className="font-display text-sm font-semibold">{t("mk.s4")}</h2>
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="space-y-1">
-              <span className="field-hint">Buyer profile</span>
+              <span className="field-hint">{t("mk.buyerProfile")}</span>
               <select
                 className="field-base"
                 value={rfqProfileId || buyerProfiles[0]?.id || ""}
@@ -597,7 +599,7 @@ function MarketPage() {
               </select>
             </label>
             <label className="space-y-1">
-              <span className="field-hint">Category</span>
+              <span className="field-hint">{t("mk.category")}</span>
               <select
                 className="field-base"
                 value={rfq.category}
@@ -611,7 +613,7 @@ function MarketPage() {
               </select>
             </label>
             <label className="space-y-1 sm:col-span-2">
-              <span className="field-hint">Requirement title</span>
+              <span className="field-hint">{t("mk.reqTitle")}</span>
               <input
                 className="field-base"
                 value={rfq.title}
@@ -619,7 +621,7 @@ function MarketPage() {
               />
             </label>
             <label className="space-y-1">
-              <span className="field-hint">Quantity</span>
+              <span className="field-hint">{t("mk.qty")}</span>
               <input
                 className="field-base"
                 value={rfq.quantity}
@@ -627,7 +629,7 @@ function MarketPage() {
               />
             </label>
             <label className="space-y-1">
-              <span className="field-hint">Unit</span>
+              <span className="field-hint">{t("mk.unit")}</span>
               <input
                 className="field-base"
                 value={rfq.unit}
@@ -650,7 +652,7 @@ function MarketPage() {
           {rfq.isAggregated && (
             <input
               className="field-base"
-              placeholder="Authority reference (board resolution id)"
+              placeholder={t("mk.authRef")}
               value={rfq.authorityRef}
               onChange={(e) => setRfq({ ...rfq, authorityRef: e.target.value })}
             />
@@ -663,9 +665,9 @@ function MarketPage() {
 
       {/* ------------------------------------------------- open RFQs / quotes */}
       <section className="panel space-y-3 p-5">
-        <h2 className="font-display text-sm font-semibold">5 · Open requests & quotes</h2>
+        <h2 className="font-display text-sm font-semibold">{t("mk.s5")}</h2>
         {data.openRfqs.length === 0 ? (
-          <p className="field-hint">No open sourcing requests.</p>
+          <p className="field-hint">{t("mk.noOpen")}</p>
         ) : (
           data.openRfqs.map((r) => {
             const quotes = data.quotes.filter((q) => q.rfq_id === r.id);
@@ -687,7 +689,7 @@ function MarketPage() {
                   <div className="grid gap-2 sm:grid-cols-3">
                     <input
                       className="field-base"
-                      placeholder="Quote price"
+                      placeholder={t("mk.quotePrice")}
                       value={quoteDraft.rfqId === r.id ? quoteDraft.price : ""}
                       onChange={(e) =>
                         setQuoteDraft({
@@ -700,7 +702,7 @@ function MarketPage() {
                     />
                     <input
                       className="field-base"
-                      placeholder="Note"
+                      placeholder={t("mk.note")}
                       value={quoteDraft.rfqId === r.id ? quoteDraft.note : ""}
                       onChange={(e) => setQuoteDraft({ ...quoteDraft, rfqId: r.id, note: e.target.value })}
                     />
@@ -716,7 +718,7 @@ function MarketPage() {
                           },
                         })
                           .then(() => {
-                            toast.success("Quote submitted");
+                            toast.success(t("mk.quoteSubmitted"));
                             setQuoteDraft({ rfqId: "", sellerProfileId: "", price: "", note: "" });
                             return refresh();
                           })
@@ -739,7 +741,7 @@ function MarketPage() {
                         onClick={() =>
                           acceptFn({ data: { quoteId: q.id } })
                             .then(() => {
-                              toast.success("Order created from quote");
+                              toast.success(t("mk.orderCreated"));
                               return refresh();
                             })
                             .catch(fail)
@@ -758,9 +760,9 @@ function MarketPage() {
 
       {/* ------------------------------------------------- orders + disputes */}
       <section className="panel space-y-3 p-5">
-        <h2 className="font-display text-sm font-semibold">6 · Orders & disputes</h2>
+        <h2 className="font-display text-sm font-semibold">{t("mk.s6")}</h2>
         {data.orders.length === 0 ? (
-          <p className="field-hint">No orders yet.</p>
+          <p className="field-hint">{t("mk.noOrders")}</p>
         ) : (
           data.orders.map((o) => {
             const isSeller = o.seller_user_id === data.userId;
@@ -822,7 +824,7 @@ function MarketPage() {
                   <div className="grid gap-2 sm:grid-cols-3">
                     <input
                       className="field-base"
-                      placeholder="Dispute category"
+                      placeholder={t("mk.disputeCat")}
                       value={disputeDraft.orderId === o.id ? disputeDraft.category : "quality_mismatch"}
                       onChange={(e) =>
                         setDisputeDraft({ ...disputeDraft, orderId: o.id, category: e.target.value })
@@ -830,7 +832,7 @@ function MarketPage() {
                     />
                     <input
                       className="field-base"
-                      placeholder="What went wrong (20+ chars)"
+                      placeholder={t("mk.wrong")}
                       value={disputeDraft.orderId === o.id ? disputeDraft.summary : ""}
                       onChange={(e) =>
                         setDisputeDraft({ ...disputeDraft, orderId: o.id, summary: e.target.value })
@@ -848,7 +850,7 @@ function MarketPage() {
                           },
                         })
                           .then(() => {
-                            toast.success("Dispute routed to human review");
+                            toast.success(t("mk.disputeRouted"));
                             setDisputeDraft({ orderId: "", category: "quality_mismatch", summary: "" });
                             return refresh();
                           })
@@ -868,12 +870,12 @@ function MarketPage() {
       {/* ------------------------------------------------- operator queues */}
       {data.canReview && (
         <section className="panel space-y-5 p-5">
-          <h2 className="font-display text-sm font-semibold">Market operator review</h2>
+          <h2 className="font-display text-sm font-semibold">{t("mk.opReview")}</h2>
 
           <div className="space-y-2">
-            <p className="field-hint">Commerce profiles awaiting decision</p>
+            <p className="field-hint">{t("mk.awaiting")}</p>
             {data.reviewProfiles.length === 0 ? (
-              <p className="field-hint">Queue empty.</p>
+              <p className="field-hint">{t("mk.empty")}</p>
             ) : (
               data.reviewProfiles.map((p) => (
                 <div key={p.id} className="space-y-2 rounded-lg border border-border p-3">
@@ -885,7 +887,7 @@ function MarketPage() {
                   </p>
                   <textarea
                     className="field-base min-h-16"
-                    placeholder="Decision note (required, 10+ chars)"
+                    placeholder={t("mk.decisionNote")}
                     value={decisionNotes[p.id] ?? ""}
                     onChange={(e) => setDecisionNotes({ ...decisionNotes, [p.id]: e.target.value })}
                   />
@@ -916,9 +918,9 @@ function MarketPage() {
           </div>
 
           <div className="space-y-2">
-            <p className="field-hint">Disputes in human review</p>
+            <p className="field-hint">{t("mk.disputes")}</p>
             {data.reviewDisputes.length === 0 ? (
-              <p className="field-hint">Queue empty.</p>
+              <p className="field-hint">{t("mk.empty")}</p>
             ) : (
               data.reviewDisputes.map((d) => (
                 <div key={d.id} className="space-y-2 rounded-lg border border-border p-3">
@@ -926,7 +928,7 @@ function MarketPage() {
                   <p className="field-hint">{d.summary}</p>
                   <textarea
                     className="field-base min-h-16"
-                    placeholder="Resolution note (required, 10+ chars)"
+                    placeholder={t("mk.resolutionNote")}
                     value={decisionNotes[d.id] ?? ""}
                     onChange={(e) => setDecisionNotes({ ...decisionNotes, [d.id]: e.target.value })}
                   />

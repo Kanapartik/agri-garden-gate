@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import { PageHeader } from "@/components/atap/AppShell";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -145,6 +146,7 @@ function Stat({
 }
 
 function FarmHistoryPage() {
+  const { t: tr } = useLanguage();
   const queryClient = useQueryClient();
   const fetchWorkspace = useServerFn(getFarmHistoryWorkspace);
   const saveSeason = useServerFn(saveFarmSeason);
@@ -210,7 +212,7 @@ function FarmHistoryPage() {
       setDraft(null);
       await queryClient.invalidateQueries({ queryKey: ["atap", "farm-history"] });
     },
-    onError: () => toast.error("Could not save this season"),
+    onError: () => toast.error(tr("fh.saveSeasonErr")),
   });
 
   const deleteMutation = useMutation({
@@ -222,10 +224,10 @@ function FarmHistoryPage() {
       return removeSeason({ data: { id } });
     },
     onSuccess: async () => {
-      toast.success("Season removed");
+      toast.success(tr("fh.seasonRemoved"));
       await queryClient.invalidateQueries({ queryKey: ["atap", "farm-history"] });
     },
-    onError: () => toast.error("Could not remove this season"),
+    onError: () => toast.error(tr("fh.removeSeasonErr")),
   });
 
   const fetchPlans = useServerFn(listSeasonPlans);
@@ -247,7 +249,7 @@ function FarmHistoryPage() {
   const savePlanMutation = useMutation({
     mutationFn: (input: Parameters<typeof savePlan>[0]) => savePlan(input),
     onSuccess: async () => {
-      toast.success("Advisory plan saved");
+      toast.success(tr("fh.planSaved"));
       await queryClient.invalidateQueries({ queryKey: ["atap", "season-plans"] });
     },
     onError: (e: Error) => toast.error(e.message || "Could not save this plan"),
@@ -256,10 +258,10 @@ function FarmHistoryPage() {
   const deletePlanMutation = useMutation({
     mutationFn: (planId: string) => removePlan({ data: { planId } }),
     onSuccess: async () => {
-      toast.success("Plan removed");
+      toast.success(tr("fh.planRemoved"));
       await queryClient.invalidateQueries({ queryKey: ["atap", "season-plans"] });
     },
-    onError: () => toast.error("Could not remove this plan"),
+    onError: () => toast.error(tr("fh.removePlanErr")),
   });
 
   const candidates = useMemo(
@@ -322,9 +324,9 @@ function FarmHistoryPage() {
   return (
     <div className="space-y-8">
       <PageHeader
-        eyebrow="Farmer command centre"
-        title="My farm history"
-        description="Your own crops, costs, yields and income for the last five years — compared with what your district typically achieves, plus insurance indicators and field services near you. Everything here is advisory; approvals stay with the authorised officer."
+        eyebrow={tr("fh.eyebrow")}
+        title={tr("fh.title")}
+        description={tr("fh.description")}
         actions={
           data ? (
             <div className="flex items-center gap-2">
@@ -386,13 +388,13 @@ function FarmHistoryPage() {
                 : "rounded-full border border-border px-4 py-2 text-sm text-muted-foreground hover:text-foreground"
             }
           >
-            {t.label}
+            {tr(`fh.tab.${t.id}`)}
           </button>
         ))}
       </div>
 
       {workspace.isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading your farm history…</p>
+        <p className="text-sm text-muted-foreground">{tr("fh.loading")}</p>
       ) : null}
 
       {data ? (
@@ -401,17 +403,17 @@ function FarmHistoryPage() {
             <section className="space-y-6">
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <Stat
-                  label="Total extent"
+                  label={tr("fh.totalExtent")}
                   value={`${data.totalAcres.toLocaleString("en-IN")} acres`}
                   helper={`${data.parcels.length} parcel${data.parcels.length === 1 ? "" : "s"} · ${data.scale.helper}`}
                 />
                 <Stat
-                  label="Avg net income / acre"
+                  label={tr("fh.avgNet")}
                   value={inr(data.summary.avgNetPerAcre)}
                   helper={`${data.summary.yearsCovered} year(s) recorded · trend ${data.summary.trend.replace("_", " ")}`}
                 />
                 <Stat
-                  label="Best year"
+                  label={tr("fh.bestYear")}
                   value={
                     data.summary.bestYear
                       ? `${data.summary.bestYear.crop_year} · ${inr(data.summary.bestYear.netPerAcre)}/ac`
@@ -420,7 +422,7 @@ function FarmHistoryPage() {
                   helper={data.summary.bestYear?.crops.join(", ") || "Add a season to see this"}
                 />
                 <Stat
-                  label="Insurance"
+                  label={tr("fh.insurance")}
                   value={COVER_LABEL[data.insurance.coverState]}
                   helper={`Indicative farmer share ${inr(data.insurance.estimatedFarmerShare)} · advisory only`}
                 />
@@ -428,7 +430,7 @@ function FarmHistoryPage() {
 
               <div className="rounded-xl border border-border bg-card p-5">
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  <h2 className="text-base font-semibold">Five-year completeness</h2>
+                  <h2 className="text-base font-semibold">{tr("fh.completeness")}</h2>
                   <Badge variant="secondary">{data.readiness.score}%</Badge>
                 </div>
                 <p className="mt-1 text-sm text-muted-foreground">{data.readiness.message}</p>
@@ -457,12 +459,12 @@ function FarmHistoryPage() {
                   <table className="w-full text-sm">
                     <thead className="bg-secondary text-secondary-foreground">
                       <tr>
-                        <th className="p-3 text-left">Year</th>
-                        <th className="p-3 text-left">Crops</th>
-                        <th className="p-3 text-right">Acres</th>
-                        <th className="p-3 text-right">Cost</th>
-                        <th className="p-3 text-right">Revenue</th>
-                        <th className="p-3 text-right">Net / acre</th>
+                        <th className="p-3 text-left">{tr("fh.year")}</th>
+                        <th className="p-3 text-left">{tr("fh.crops")}</th>
+                        <th className="p-3 text-right">{tr("fh.acres")}</th>
+                        <th className="p-3 text-right">{tr("fh.cost")}</th>
+                        <th className="p-3 text-right">{tr("fh.revenue")}</th>
+                        <th className="p-3 text-right">{tr("fh.netAcre")}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -490,7 +492,7 @@ function FarmHistoryPage() {
 
               {data.scale.showParcelBreakdown && data.parcels.length ? (
                 <div className="rounded-xl border border-border bg-card p-5">
-                  <h2 className="text-base font-semibold">Parcel-wise view</h2>
+                  <h2 className="text-base font-semibold">{tr("fh.parcelView")}</h2>
                   <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                     {data.parcels.map((p) => (
                       <div key={p.id} className="rounded-lg border border-border p-4">
@@ -510,7 +512,7 @@ function FarmHistoryPage() {
             <section className="space-y-4">
               {sync.optimistic.length > 0 ? (
                 <div className="space-y-2 rounded-xl border border-dashed border-border p-4">
-                  <p className="text-sm font-semibold">Waiting to sync from this device</p>
+                  <p className="text-sm font-semibold">{tr("fh.waitingSync")}</p>
                   {sync.optimistic.map((o) => (
                     <div
                       key={o.key}
@@ -556,14 +558,14 @@ function FarmHistoryPage() {
                   <table className="w-full text-sm">
                     <thead className="bg-secondary text-secondary-foreground">
                       <tr>
-                        <th className="p-3 text-left">Season</th>
-                        <th className="p-3 text-left">Crop</th>
-                        <th className="p-3 text-right">Acres</th>
-                        <th className="p-3 text-right">Input cost</th>
-                        <th className="p-3 text-right">Yield</th>
-                        <th className="p-3 text-right">Price</th>
-                        <th className="p-3 text-right">Revenue</th>
-                        <th className="p-3 text-right">Net</th>
+                        <th className="p-3 text-left">{tr("fh.season")}</th>
+                        <th className="p-3 text-left">{tr("fh.crop")}</th>
+                        <th className="p-3 text-right">{tr("fh.acres")}</th>
+                        <th className="p-3 text-right">{tr("fh.inputCost")}</th>
+                        <th className="p-3 text-right">{tr("fh.yield")}</th>
+                        <th className="p-3 text-right">{tr("fh.price")}</th>
+                        <th className="p-3 text-right">{tr("fh.revenue")}</th>
+                        <th className="p-3 text-right">{tr("fh.net")}</th>
                         <th className="p-3" />
                       </tr>
                     </thead>
@@ -660,8 +662,8 @@ function FarmHistoryPage() {
                   <Badge variant={data.officialReference.fields.price === "official" ? "default" : "outline"}>
                     Price: {data.officialReference.fields.price === "official" ? "Official (MSP)" : "Indicative"}
                   </Badge>
-                  <Badge variant="outline">Yield: indicative</Badge>
-                  <Badge variant="outline">Cost: indicative</Badge>
+                  <Badge variant="outline">{tr("fh.yieldInd")}</Badge>
+                  <Badge variant="outline">{tr("fh.costInd")}</Badge>
                   <span className="text-xs text-muted-foreground">{data.areaProvenance.label}</span>
                 </div>
                 <ul className="list-disc pl-5 text-xs text-muted-foreground space-y-1">
@@ -681,12 +683,12 @@ function FarmHistoryPage() {
                 <table className="w-full text-sm">
                   <thead className="bg-secondary text-secondary-foreground">
                     <tr>
-                      <th className="p-3 text-left">Crop</th>
-                      <th className="p-3 text-right">Typical yield / acre</th>
-                      <th className="p-3 text-right">Typical cost / acre</th>
-                      <th className="p-3 text-right">Typical price / qtl</th>
-                      <th className="p-3 text-right">Indicative net / acre</th>
-                      <th className="p-3 text-right">Area share</th>
+                      <th className="p-3 text-left">{tr("fh.crop")}</th>
+                      <th className="p-3 text-right">{tr("fh.typYield")}</th>
+                      <th className="p-3 text-right">{tr("fh.typCost")}</th>
+                      <th className="p-3 text-right">{tr("fh.typPrice")}</th>
+                      <th className="p-3 text-right">{tr("fh.indNet")}</th>
+                      <th className="p-3 text-right">{tr("fh.areaShare")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -717,7 +719,7 @@ function FarmHistoryPage() {
               </div>
 
               <div className="rounded-xl border border-border bg-card p-5">
-                <h2 className="text-base font-semibold">My yield vs my area</h2>
+                <h2 className="text-base font-semibold">{tr("fh.yieldVsArea")}</h2>
                 <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   {data.comparison.map((row) => (
                     <div key={row.crop} className="rounded-lg border border-border p-4">
@@ -796,7 +798,7 @@ function FarmHistoryPage() {
                   </h2>
                   <div className="mt-4 grid gap-4 sm:grid-cols-3">
                     <div>
-                      <Label htmlFor="plan-acres">Acres you plan to sow</Label>
+                      <Label htmlFor="plan-acres">{tr("fh.planAcres")}</Label>
                       <Input
                         id="plan-acres"
                         inputMode="decimal"
@@ -806,14 +808,14 @@ function FarmHistoryPage() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="plan-parcel">Parcel</Label>
+                      <Label htmlFor="plan-parcel">{tr("fh.parcel")}</Label>
                       <select
                         id="plan-parcel"
                         className="mt-1 h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
                         value={planParcel}
                         onChange={(e) => setPlanParcel(e.target.value)}
                       >
-                        <option value="">Select a parcel</option>
+                        <option value="">{tr("fh.selectParcel")}</option>
                         {data.parcels.map((p) => (
                           <option key={p.id} value={p.id}>
                             {p.label || p.id.slice(0, 8)}
@@ -854,8 +856,8 @@ function FarmHistoryPage() {
                     <table className="w-full text-sm">
                       <thead className="bg-secondary text-secondary-foreground">
                         <tr>
-                          <th className="p-3 text-left">Input head</th>
-                          <th className="p-3 text-right">Per acre</th>
+                          <th className="p-3 text-left">{tr("fh.inputHead")}</th>
+                          <th className="p-3 text-right">{tr("fh.perAcre")}</th>
                           <th className="p-3 text-right">
                             Total ({planBudget.acres} ac)
                           </th>
@@ -874,11 +876,11 @@ function FarmHistoryPage() {
                   </div>
 
                   <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <Stat label="Total input budget" value={inr(planBudget.totalCost)} />
-                    <Stat label="Indicative gross" value={inr(planBudget.expectedGross)} />
-                    <Stat label="Indicative net" value={inr(planBudget.expectedNet)} />
+                    <Stat label={tr("fh.totalBudget")} value={inr(planBudget.totalCost)} />
+                    <Stat label={tr("fh.indGross")} value={inr(planBudget.expectedGross)} />
+                    <Stat label={tr("fh.indNetShort")} value={inr(planBudget.expectedNet)} />
                     <Stat
-                      label="Break-even"
+                      label={tr("fh.breakEven")}
                       value={
                         planBudget.breakEvenYieldPerAcre !== null
                           ? `${planBudget.breakEvenYieldPerAcre} qtl/ac`
@@ -914,7 +916,7 @@ function FarmHistoryPage() {
               ) : null}
 
               <div className="rounded-xl border border-border bg-card p-5">
-                <h2 className="text-base font-semibold">Saved plans</h2>
+                <h2 className="text-base font-semibold">{tr("fh.savedPlans")}</h2>
                 {(plans.data ?? []).length === 0 ? (
                   <p className="mt-2 text-sm text-muted-foreground">
                     No advisory plan saved yet.
@@ -953,19 +955,19 @@ function FarmHistoryPage() {
           {tab === "insurance" ? (
             <section className="space-y-5">
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <Stat label="Cover status" value={COVER_LABEL[data.insurance.coverState]} />
+                <Stat label={tr("fh.coverStatus")} value={COVER_LABEL[data.insurance.coverState]} />
                 <Stat
-                  label="Sum insured (indicative)"
+                  label={tr("fh.sumInsured")}
                   value={inr(data.insurance.estimatedSumInsured)}
                   helper={`${inr(data.insurance.sumInsuredPerAcre)} per acre`}
                 />
                 <Stat
-                  label="Your share (indicative)"
+                  label={tr("fh.yourShare")}
                   value={inr(data.insurance.estimatedFarmerShare)}
                   helper={`${inr(data.insurance.farmerSharePerAcre)} per acre`}
                 />
                 <Stat
-                  label="Season"
+                  label={tr("fh.season")}
                   value={`${SEASON_LABEL[data.insurance.seasonCode] ?? data.insurance.seasonCode} ${data.insurance.cropYear}`}
                   helper={data.insurance.crop ?? "crop not set"}
                 />
@@ -984,7 +986,7 @@ function FarmHistoryPage() {
 
               <div className="rounded-xl border border-border bg-card p-5">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <h2 className="text-base font-semibold">My cover record</h2>
+                  <h2 className="text-base font-semibold">{tr("fh.coverRecord")}</h2>
                   <Badge variant={cover.data?.bound ? "default" : "secondary"}>
                     {cover.data?.bound ? "Bound to a notified policy" : "Indicative only"}
                   </Badge>
@@ -1026,7 +1028,7 @@ function FarmHistoryPage() {
               </div>
 
               <div className="rounded-xl border border-border bg-card p-5">
-                <h2 className="text-base font-semibold">Claim status at my organization</h2>
+                <h2 className="text-base font-semibold">{tr("fh.claimStatus")}</h2>
                 <p className="mt-1 text-xs text-muted-foreground">
                   {cover.data?.claimNote ??
                     "Claim status is mirrored from the insurer at organization level."}
@@ -1062,7 +1064,7 @@ function FarmHistoryPage() {
 
 
               <div className="rounded-xl border border-border bg-card p-5">
-                <h2 className="text-base font-semibold">My applications</h2>
+                <h2 className="text-base font-semibold">{tr("fh.myApps")}</h2>
                 {data.insuranceApplications.length === 0 ? (
                   <p className="mt-2 text-sm text-muted-foreground">
                     No applications yet. Open Schemes to see what you can apply for; a human reviewer
@@ -1156,7 +1158,7 @@ function FarmHistoryPage() {
           </h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div>
-              <Label htmlFor="year">Crop year</Label>
+              <Label htmlFor="year">{tr("fh.cropYear")}</Label>
               <Input
                 id="year"
                 inputMode="numeric"
@@ -1165,7 +1167,7 @@ function FarmHistoryPage() {
               />
             </div>
             <div>
-              <Label htmlFor="season">Season</Label>
+              <Label htmlFor="season">{tr("fh.season")}</Label>
               <select
                 id="season"
                 className="mt-1 h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -1180,7 +1182,7 @@ function FarmHistoryPage() {
               </select>
             </div>
             <div>
-              <Label htmlFor="crop">Crop</Label>
+              <Label htmlFor="crop">{tr("fh.crop")}</Label>
               <Input
                 id="crop"
                 value={draft.crop}
@@ -1188,7 +1190,7 @@ function FarmHistoryPage() {
               />
             </div>
             <div>
-              <Label htmlFor="acres">Area (acres)</Label>
+              <Label htmlFor="acres">{tr("fh.areaAcres")}</Label>
               <Input
                 id="acres"
                 inputMode="decimal"
@@ -1197,7 +1199,7 @@ function FarmHistoryPage() {
               />
             </div>
             <div>
-              <Label htmlFor="yield">Yield (quintals)</Label>
+              <Label htmlFor="yield">{tr("fh.yieldQtl")}</Label>
               <Input
                 id="yield"
                 inputMode="decimal"
@@ -1206,7 +1208,7 @@ function FarmHistoryPage() {
               />
             </div>
             <div>
-              <Label htmlFor="price">Price realised (₹ / quintal)</Label>
+              <Label htmlFor="price">{tr("fh.priceReal")}</Label>
               <Input
                 id="price"
                 inputMode="decimal"
@@ -1216,14 +1218,14 @@ function FarmHistoryPage() {
             </div>
             {data?.parcels.length ? (
               <div>
-                <Label htmlFor="parcel">Parcel (optional)</Label>
+                <Label htmlFor="parcel">{tr("fh.parcelOpt")}</Label>
                 <select
                   id="parcel"
                   className="mt-1 h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
                   value={draft.farm_id}
                   onChange={(e) => setDraft({ ...draft, farm_id: e.target.value })}
                 >
-                  <option value="">Whole farm</option>
+                  <option value="">{tr("fh.wholeFarm")}</option>
                   {data.parcels.map((p) => (
                     <option key={p.id} value={p.id}>
                       {p.label}
@@ -1233,7 +1235,7 @@ function FarmHistoryPage() {
               </div>
             ) : null}
             <div>
-              <Label htmlFor="notes">Notes</Label>
+              <Label htmlFor="notes">{tr("fh.notes")}</Label>
               <Input
                 id="notes"
                 value={draft.notes}
@@ -1242,7 +1244,7 @@ function FarmHistoryPage() {
             </div>
           </div>
 
-          <h3 className="mt-6 text-sm font-semibold">Input costs (₹)</h3>
+          <h3 className="mt-6 text-sm font-semibold">{tr("fh.inputCosts")}</h3>
           <div className="mt-3 grid gap-4 sm:grid-cols-3 lg:grid-cols-6">
             {COST_HEADS.map((head) => (
               <div key={head}>

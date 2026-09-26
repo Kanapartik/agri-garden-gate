@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import { PageHeader } from "@/components/atap/AppShell";
 import { Button } from "@/components/ui/button";
 import {
@@ -99,6 +100,7 @@ function Empty({ text }: { text: string }) {
 }
 
 function IntelligencePage() {
+  const { t } = useLanguage();
   const fetchIntel = useServerFn(getFarmIntelligence);
   const queryClient = useQueryClient();
   const [farmId, setFarmId] = useState<string | null>(null);
@@ -139,9 +141,9 @@ function IntelligencePage() {
   return (
     <main className="mx-auto max-w-6xl space-y-6 px-6 py-10">
       <PageHeader
-        eyebrow="B2A · My Farm Intelligence"
-        title="Everything known about your farm, in one place"
-        description="AgriGhar collates location, weather, soil, crop, price and value-add information for your parcel instead of asking you to visit several portals. Every number shows whether it is an OBSERVED market price, a FORECAST or a DERIVED SCENARIO, and no recommendation replaces an authorised human decision."
+        eyebrow={t("intel.eyebrow")}
+        title={t("intel.title")}
+        description={t("intel.description")}
         actions={
           data.farmId ? (
             <Button
@@ -157,13 +159,13 @@ function IntelligencePage() {
       />
 
       {data.parcels.length === 0 ? (
-        <Card title="No parcel on record yet">
+        <Card title={t("intel.noParcel")}>
           <Empty text="Capture a farm parcel first — location is what unlocks this workspace. Go to My farm to add one." />
         </Card>
       ) : (
         <>
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-medium text-muted-foreground">Parcel</span>
+            <span className="text-xs font-medium text-muted-foreground">{t("intel.parcel")}</span>
             {data.parcels.map((p) => (
               <button
                 key={p.id}
@@ -192,7 +194,7 @@ function IntelligencePage() {
                     : "text-muted-foreground hover:bg-secondary"
                 }`}
               >
-                {s.label}
+                {t(`intel.tab.${s.key}`)}
               </button>
             ))}
           </nav>
@@ -218,29 +220,30 @@ function IntelligencePage() {
 }
 
 function LocationSection({ data }: { data: FarmIntelligence }) {
+  const { t } = useLanguage();
   const loc = data.location;
   if (!loc) return <Empty text="No location resolved for this parcel yet." />;
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      <Card title="Resolved location" note={`Source ${loc.sourceKey}`}>
+      <Card title={t("intel.resolved")} note={`Source ${loc.sourceKey}`}>
         <dl className="grid grid-cols-2 gap-y-2 text-sm">
-          <dt className="text-muted-foreground">Village</dt>
+          <dt className="text-muted-foreground">{t("intel.village")}</dt>
           <dd>{loc.villageName ?? loc.villageCode ?? "Not recorded"}</dd>
-          <dt className="text-muted-foreground">Block / mandal</dt>
+          <dt className="text-muted-foreground">{t("intel.block")}</dt>
           <dd>{loc.blockName ?? "Not recorded"}</dd>
-          <dt className="text-muted-foreground">District</dt>
+          <dt className="text-muted-foreground">{t("intel.district")}</dt>
           <dd>{loc.districtName ?? "Not resolved"}</dd>
-          <dt className="text-muted-foreground">State</dt>
+          <dt className="text-muted-foreground">{t("intel.state")}</dt>
           <dd>{loc.stateName ?? "Not resolved"}</dd>
-          <dt className="text-muted-foreground">Centroid</dt>
+          <dt className="text-muted-foreground">{t("intel.centroid")}</dt>
           <dd>
             {loc.lat.toFixed(4)}, {loc.lng.toFixed(4)}
           </dd>
-          <dt className="text-muted-foreground">Agro-climatic zone</dt>
+          <dt className="text-muted-foreground">{t("intel.zone")}</dt>
           <dd>{loc.agroClimaticZone}</dd>
         </dl>
       </Card>
-      <Card title="Season basis">
+      <Card title={t("intel.seasonBasis")}>
         <p>
           <strong>{loc.seasonLabel}</strong> — sowing {loc.sowingWindow}, harvest {loc.harvestWindow}.
         </p>
@@ -254,24 +257,25 @@ function LocationSection({ data }: { data: FarmIntelligence }) {
 }
 
 function WeatherSection({ data }: { data: FarmIntelligence }) {
+  const { t } = useLanguage();
   const w = data.weather;
   if (!w) return <Empty text="No agromet reading available." />;
   return (
     <div className="space-y-4">
       <Card
-        title="Current conditions"
+        title={t("intel.current")}
         note={`${w.envelope.sourceKey} · ${freshnessLabel(w.envelope.freshnessSeconds)} · ${confidenceLabel(
           w.envelope.confidence,
         )}`}
       >
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <Stat label="Temperature" value={`${w.current.temperatureC} °C`} />
-          <Stat label="Humidity" value={`${w.current.humidityPct} %`} />
-          <Stat label="Rain (24h)" value={`${w.current.rainfallMm24h} mm`} />
-          <Stat label="Wind" value={`${w.current.windKph} kph`} />
+          <Stat label={t("intel.temp")} value={`${w.current.temperatureC} °C`} />
+          <Stat label={t("intel.humidity")} value={`${w.current.humidityPct} %`} />
+          <Stat label={t("intel.rain")} value={`${w.current.rainfallMm24h} mm`} />
+          <Stat label={t("intel.wind")} value={`${w.current.windKph} kph`} />
         </div>
       </Card>
-      <Card title="Short-range outlook" note="Forecast — not an observed measurement.">
+      <Card title={t("intel.outlook")} note={t("intel.outlookNote")}>
         <ul className="space-y-1">
           {w.forecast.map((f) => (
             <li key={f.date} className="flex flex-wrap gap-x-4 text-sm">
@@ -285,7 +289,7 @@ function WeatherSection({ data }: { data: FarmIntelligence }) {
         </ul>
       </Card>
       {w.advisories.length > 0 ? (
-        <Card title="Agromet advisories" note="Curated guidance. Any action needing a decision goes to a human.">
+        <Card title={t("intel.agromet")} note={t("intel.agrometNote")}>
           <ul className="list-disc space-y-1 pl-5">
             {w.advisories.map((a) => (
               <li key={a}>{a}</li>
@@ -307,6 +311,7 @@ function Stat({ label, value }: { label: string; value: string }) {
 }
 
 function SoilSection({ data }: { data: FarmIntelligence }) {
+  const { t } = useLanguage();
   const soil = data.soil;
   if (!soil) return <Empty text="No soil information available." />;
   return (
@@ -317,13 +322,13 @@ function SoilSection({ data }: { data: FarmIntelligence }) {
       >
         {soil.lab ? (
           <dl className="grid grid-cols-2 gap-y-2">
-            <dt className="text-muted-foreground">Lab</dt>
+            <dt className="text-muted-foreground">{t("intel.lab")}</dt>
             <dd>{soil.lab.labName}</dd>
-            <dt className="text-muted-foreground">Tested on</dt>
+            <dt className="text-muted-foreground">{t("intel.testedOn")}</dt>
             <dd>{soil.lab.testedOn}</dd>
             <dt className="text-muted-foreground">pH</dt>
             <dd>{soil.lab.ph}</dd>
-            <dt className="text-muted-foreground">Organic carbon</dt>
+            <dt className="text-muted-foreground">{t("intel.oc")}</dt>
             <dd>{soil.lab.organicCarbonPct} %</dd>
             <dt className="text-muted-foreground">N / P / K</dt>
             <dd>
@@ -334,15 +339,15 @@ function SoilSection({ data }: { data: FarmIntelligence }) {
           <Empty text="No Soil Health Card or laboratory test on record for this parcel." />
         )}
       </Card>
-      <Card title="Location soil context" note={`Source ${soil.general.sourceKey}`}>
+      <Card title={t("intel.soilCtx")} note={`Source ${soil.general.sourceKey}`}>
         <dl className="grid grid-cols-2 gap-y-2">
-          <dt className="text-muted-foreground">Major soils</dt>
+          <dt className="text-muted-foreground">{t("intel.majorSoils")}</dt>
           <dd>{soil.general.majorSoils.join(", ")}</dd>
-          <dt className="text-muted-foreground">Texture</dt>
+          <dt className="text-muted-foreground">{t("intel.texture")}</dt>
           <dd>{soil.general.texture}</dd>
-          <dt className="text-muted-foreground">Typical pH</dt>
+          <dt className="text-muted-foreground">{t("intel.ph")}</dt>
           <dd>{soil.general.phRange}</dd>
-          <dt className="text-muted-foreground">Organic carbon</dt>
+          <dt className="text-muted-foreground">{t("intel.oc")}</dt>
           <dd>{soil.general.organicCarbonRange}</dd>
         </dl>
       </Card>
@@ -351,6 +356,7 @@ function SoilSection({ data }: { data: FarmIntelligence }) {
 }
 
 function CropSection({ data }: { data: FarmIntelligence }) {
+  const { t } = useLanguage();
   if (data.crops.length === 0) return <Empty text="No crop candidates for this location yet." />;
   return (
     <div className="space-y-4">
@@ -390,7 +396,7 @@ function CropSection({ data }: { data: FarmIntelligence }) {
               </ul>
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Sources used</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("intel.sources")}</p>
               <ul className="mt-1 list-disc pl-5 text-xs text-muted-foreground">
                 {c.sources.map((s) => (
                   <li key={s}>{s}</li>
@@ -405,24 +411,25 @@ function CropSection({ data }: { data: FarmIntelligence }) {
 }
 
 function MarketSection({ prices }: { prices: PriceView[] }) {
+  const { t } = useLanguage();
   if (prices.length === 0) return <Empty text="No mandi price observations for this area yet." />;
   return (
     <Card
-      title="Nearby mandi prices"
+      title={t("intel.mandi")}
       note="OBSERVED prices are what markets actually reported, with the date and source. Forecasts and derived scenarios are never shown as observed prices."
     >
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead className="text-xs uppercase tracking-wide text-muted-foreground">
             <tr>
-              <th className="py-1 pr-3">Market</th>
-              <th className="py-1 pr-3">Commodity</th>
-              <th className="py-1 pr-3">Modal</th>
-              <th className="py-1 pr-3">Range</th>
-              <th className="py-1 pr-3">Arrivals</th>
-              <th className="py-1 pr-3">Date</th>
-              <th className="py-1 pr-3">Label</th>
-              <th className="py-1 pr-3">Distance</th>
+              <th className="py-1 pr-3">{t("intel.market")}</th>
+              <th className="py-1 pr-3">{t("intel.commodity")}</th>
+              <th className="py-1 pr-3">{t("intel.modal")}</th>
+              <th className="py-1 pr-3">{t("intel.range")}</th>
+              <th className="py-1 pr-3">{t("intel.arrivals")}</th>
+              <th className="py-1 pr-3">{t("intel.date")}</th>
+              <th className="py-1 pr-3">{t("intel.label")}</th>
+              <th className="py-1 pr-3">{t("intel.distance")}</th>
             </tr>
           </thead>
           <tbody>
@@ -460,6 +467,7 @@ function MarketSection({ prices }: { prices: PriceView[] }) {
 }
 
 function ValueAddSection({ data }: { data: FarmIntelligence }) {
+  const { t } = useLanguage();
   const compute = useServerFn(computeValueAddScenario);
   const [pathId, setPathId] = useState(data.processingPaths[0]?.id ?? "");
   const [quintal, setQuintal] = useState(100);
@@ -491,7 +499,7 @@ function ValueAddSection({ data }: { data: FarmIntelligence }) {
   return (
     <div className="space-y-4">
       <Card
-        title="Value-add economics"
+        title={t("intel.vaEcon")}
         note="Every output here is a DERIVED SCENARIO. Recovery percentages and costs come from the configured processing path — a processor or FPO quotation replaces them, they are never hard-coded."
       >
         <div className="grid gap-3 sm:grid-cols-4">
@@ -509,9 +517,9 @@ function ValueAddSection({ data }: { data: FarmIntelligence }) {
               ))}
             </select>
           </label>
-          <NumberField label="Quantity (quintal)" value={quintal} onChange={setQuintal} />
-          <NumberField label="Packaging ₹/quintal" value={packaging} onChange={setPackaging} />
-          <NumberField label="Transport ₹/quintal" value={transport} onChange={setTransport} />
+          <NumberField label={t("intel.qty")} value={quintal} onChange={setQuintal} />
+          <NumberField label={t("intel.packaging")} value={packaging} onChange={setPackaging} />
+          <NumberField label={t("intel.transport")} value={transport} onChange={setTransport} />
         </div>
         {path ? (
           <p className="mt-3 text-xs text-muted-foreground">
@@ -530,17 +538,17 @@ function ValueAddSection({ data }: { data: FarmIntelligence }) {
         <Card title={`${result.pathLabel} — derived scenario`} note={`Assumption source: ${result.assumptionSource}`}>
           <div className="grid gap-3 sm:grid-cols-3">
             <LabeledStat
-              label="Sell raw (comparison)"
+              label={t("intel.sellRaw")}
               value={rupees(result.rawRealization.amount)}
               priceLabel={result.rawRealization.label}
             />
             <LabeledStat
-              label="After processing (estimate)"
+              label={t("intel.afterProc")}
               value={rupees(result.estimatedRealization.amount)}
               priceLabel={result.estimatedRealization.label}
             />
             <LabeledStat
-              label="Processed market price used"
+              label={t("intel.procPrice")}
               value={
                 result.processedObservedPrice
                   ? `${rupees(result.processedObservedPrice.amount)}/${result.processedObservedPrice.unit}`
@@ -562,7 +570,7 @@ function ValueAddSection({ data }: { data: FarmIntelligence }) {
             ))}
           </ul>
           <details className="mt-3 text-xs">
-            <summary className="cursor-pointer text-muted-foreground">All assumptions used</summary>
+            <summary className="cursor-pointer text-muted-foreground">{t("intel.assumptions")}</summary>
             <ul className="mt-1 space-y-0.5">
               {Object.entries(result.assumptions).map(([k, v]) => (
                 <li key={k}>
@@ -621,6 +629,7 @@ function LabeledStat({
 }
 
 function PlannerSection({ data }: { data: FarmIntelligence }) {
+  const { t } = useLanguage();
   const compute = useServerFn(computeCropOutcomeScenarios);
   const [crop, setCrop] = useState(data.crops[0]?.crop ?? data.parcels[0]?.primaryCrop ?? "Paddy");
   const [scenarios, setScenarios] = useState<OutcomeScenario[] | null>(null);
@@ -642,7 +651,7 @@ function PlannerSection({ data }: { data: FarmIntelligence }) {
   return (
     <div className="space-y-4">
       <Card
-        title="Outcome planner"
+        title={t("intel.planner")}
         note="Low / base / high scenarios with break-even price and yield. These are DERIVED SCENARIOS for planning, not a guarantee or an offer."
       >
         <div className="flex flex-wrap items-end gap-3">
@@ -676,25 +685,25 @@ function PlannerSection({ data }: { data: FarmIntelligence }) {
           {scenarios.map((s) => (
             <Card key={s.scenario} title={`${s.scenario.toUpperCase()} case`}>
               <dl className="grid grid-cols-2 gap-y-1 text-xs">
-                <dt className="text-muted-foreground">Expected yield</dt>
+                <dt className="text-muted-foreground">{t("intel.expYield")}</dt>
                 <dd>{s.expectedYieldQuintal} qtl</dd>
-                <dt className="text-muted-foreground">Selling price</dt>
+                <dt className="text-muted-foreground">{t("intel.sellPrice")}</dt>
                 <dd className="flex items-center gap-1">
                   {rupees(s.sellingPrice)} <PriceTag label={s.sellingPriceLabel} />
                 </dd>
-                <dt className="text-muted-foreground">Total cost</dt>
+                <dt className="text-muted-foreground">{t("intel.totalCost")}</dt>
                 <dd>{rupees(s.totalCost)}</dd>
-                <dt className="text-muted-foreground">Gross realization</dt>
+                <dt className="text-muted-foreground">{t("intel.gross")}</dt>
                 <dd>{rupees(s.grossRealization)}</dd>
-                <dt className="text-muted-foreground">Net contribution</dt>
+                <dt className="text-muted-foreground">{t("intel.netContrib")}</dt>
                 <dd className="font-semibold">{rupees(s.netContribution)}</dd>
-                <dt className="text-muted-foreground">Break-even price</dt>
+                <dt className="text-muted-foreground">{t("intel.bePrice")}</dt>
                 <dd>{rupees(s.breakEvenPrice)}/qtl</dd>
-                <dt className="text-muted-foreground">Break-even yield</dt>
+                <dt className="text-muted-foreground">{t("intel.beYield")}</dt>
                 <dd>{s.breakEvenYield} qtl</dd>
-                <dt className="text-muted-foreground">Harvest window</dt>
+                <dt className="text-muted-foreground">{t("intel.harvest")}</dt>
                 <dd>{s.harvestWindow}</dd>
-                <dt className="text-muted-foreground">Target market</dt>
+                <dt className="text-muted-foreground">{t("intel.target")}</dt>
                 <dd>{s.targetMarket}</dd>
               </dl>
               <p className="mt-2 text-xs text-muted-foreground">Value-add alternative: {s.valueAddAlternative}</p>
@@ -712,6 +721,7 @@ function PlannerSection({ data }: { data: FarmIntelligence }) {
 }
 
 function NearbySection({ data }: { data: FarmIntelligence }) {
+  const { t } = useLanguage();
   const escalate = useServerFn(escalateToHuman);
   const queryClient = useQueryClient();
   const [kind, setKind] = useState<EscalationKind>("talk_to_fpo");
@@ -734,7 +744,7 @@ function NearbySection({ data }: { data: FarmIntelligence }) {
         },
       }),
     onSuccess: () => {
-      toast.success("Request sent to a human. Someone authorised will follow up.");
+      toast.success(t("intel.sent"));
       setMessage("");
       void queryClient.invalidateQueries({ queryKey: ["atap", "farm-intelligence"] });
     },
@@ -766,7 +776,7 @@ function NearbySection({ data }: { data: FarmIntelligence }) {
       </div>
 
       <Card
-        title="Talk to a human"
+        title={t("intel.talk")}
         note="Any advisory that could affect credit, insurance, a scheme or a contract is routed to an authorised person — the platform never decides it."
       >
         <div className="grid gap-3 sm:grid-cols-3">
@@ -794,7 +804,7 @@ function NearbySection({ data }: { data: FarmIntelligence }) {
               onChange={(e) => setFacilityId(e.target.value)}
               className="mt-1 w-full rounded-md border border-input bg-background px-2 py-1.5 text-sm"
             >
-              <option value="">Let the platform route it</option>
+              <option value="">{t("intel.route")}</option>
               {candidates.map((f) => (
                 <option key={f.id} value={f.id}>
                   {f.name} ({Math.round(f.distanceKm)} km)
@@ -808,7 +818,7 @@ function NearbySection({ data }: { data: FarmIntelligence }) {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               className="mt-1 w-full rounded-md border border-input bg-background px-2 py-1.5 text-sm"
-              placeholder="What would you like help with?"
+              placeholder={t("intel.helpPh")}
             />
           </label>
         </div>
@@ -817,7 +827,7 @@ function NearbySection({ data }: { data: FarmIntelligence }) {
         </Button>
       </Card>
 
-      <Card title="Your requests">
+      <Card title={t("intel.requests")}>
         {data.escalations.length === 0 ? (
           <Empty text="No help requests raised from this workspace yet." />
         ) : (
