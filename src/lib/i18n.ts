@@ -11,6 +11,7 @@
 
 import { PAGE_DICTS } from "./i18n.pages";
 import { PAGE_DICTS_2 } from "./i18n.pages2";
+import { PAGE_DICTS_3 } from "./i18n.pages3";
 
 export const LOCALES = ["en", "te", "hi", "ta", "kn"] as const;
 export type Locale = (typeof LOCALES)[number];
@@ -453,11 +454,11 @@ const kn: Dict = {
 };
 
 export const DICTIONARIES: Record<Locale, Dict> = {
-  en: { ...PAGE_DICTS.en, ...PAGE_DICTS_2.en, ...en },
-  te: { ...PAGE_DICTS.te, ...PAGE_DICTS_2.te, ...te },
-  hi: { ...PAGE_DICTS.hi, ...PAGE_DICTS_2.hi, ...hi },
-  ta: { ...PAGE_DICTS.ta, ...PAGE_DICTS_2.ta, ...ta },
-  kn: { ...PAGE_DICTS.kn, ...PAGE_DICTS_2.kn, ...kn },
+  en: { ...PAGE_DICTS.en, ...PAGE_DICTS_2.en, ...PAGE_DICTS_3.en, ...en },
+  te: { ...PAGE_DICTS.te, ...PAGE_DICTS_2.te, ...PAGE_DICTS_3.te, ...te },
+  hi: { ...PAGE_DICTS.hi, ...PAGE_DICTS_2.hi, ...PAGE_DICTS_3.hi, ...hi },
+  ta: { ...PAGE_DICTS.ta, ...PAGE_DICTS_2.ta, ...PAGE_DICTS_3.ta, ...ta },
+  kn: { ...PAGE_DICTS.kn, ...PAGE_DICTS_2.kn, ...PAGE_DICTS_3.kn, ...kn },
 };
 
 /**
