@@ -1,4 +1,3 @@
-import { useLanguage } from "@/components/atap/LanguageProvider";
 import { useState } from "react";
 import {
   ArrowRight,
@@ -72,7 +71,7 @@ function ReadinessRing({ score }: { score: number }) {
         <div>
           <p className="text-3xl font-bold tabular-nums">{score}%</p>
           <p className="text-[10px] font-semibold uppercase tracking-[0.14em] opacity-75">
-            {t("fpo.ui.eb830bc025")}</p>
+            readiness</p>
         </div>
       </div>
     </div>
@@ -100,7 +99,6 @@ export function FpoCommandCenter({
   overview: FpoOverview;
   onOpenSection: (section: FpoSection) => void;
 }) {
-  const { t } = useLanguage();
   const [lens, setLens] = useState<FpoDashboardLens>(() => defaultFpoDashboardLens(overview.roles));
   const complianceActions = numericMetric(overview, "compliance");
   const readiness = deriveFpoReadiness({
@@ -127,27 +125,27 @@ export function FpoCommandCenter({
           <div>
             <div className="mb-5 flex flex-wrap items-center gap-2">
               <span className="rounded-full border border-surface-deep-foreground/20 bg-surface-deep-foreground/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em]">
-                {t("fpo.ui.c6a5943076")}</span>
+                FPO intelligence &amp; governance</span>
               {overview.profile ? <StateBadge state={overview.profile.state} /> : null}
             </div>
             <p className="text-sm font-semibold text-accent">{organization}</p>
             <h2 className="mt-2 max-w-2xl text-3xl font-bold leading-tight sm:text-4xl">
-              {t("fpo.ui.0ffe2e3fb0")}</h2>
+              Run the farmer-to-market business from one operating view.</h2>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-surface-deep-foreground/70">
-              {t("fpo.ui.22b777cb51")}</p>
+              Connect membership, crop plans, inputs, aggregation, quality, buyers, settlements and governance without re-entering the same record in separate systems.</p>
             <div className="mt-6 flex flex-wrap gap-2">
               <Button
                 className="bg-accent text-accent-foreground hover:bg-accent/90"
                 onClick={() => onOpenSection(attention[0]?.section ?? "insights")}
               >
-                {t("fpo.ui.1b32892aaa")}{" "}<ArrowRight className="h-4 w-4" />
+                Review priority work{" "}<ArrowRight className="h-4 w-4" />
               </Button>
               <Button
                 variant="outline"
                 className="border-surface-deep-foreground/25 bg-transparent text-surface-deep-foreground hover:bg-surface-deep-foreground/10 hover:text-surface-deep-foreground"
                 onClick={() => onOpenSection("insights")}
               >
-                {t("fpo.ui.f2257778a8")}</Button>
+                Open operational insights</Button>
             </div>
           </div>
 
@@ -158,7 +156,7 @@ export function FpoCommandCenter({
               <ReadinessBar label="Active members" value={readiness.memberActivation} />
               <ReadinessBar label="Required documents" value={readiness.compliance} />
               <p className="pt-1 text-[10px] leading-4 text-surface-deep-foreground/55">
-                {t("fpo.ui.48705e235e")}</p>
+                DERIVED operating readiness only. It is not a credit, scheme, insurance or governance decision score.</p>
             </div>
           </div>
         </div>
@@ -168,12 +166,12 @@ export function FpoCommandCenter({
         <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-              {t("fpo.ui.dafc7d9e45")}</p>
+              Observed organization snapshot</p>
             <h2 id="fpo-snapshot-title" className="mt-1 text-xl font-semibold">
-              {t("fpo.ui.0155a18000")}</h2>
+              What is recorded now</h2>
           </div>
           <span className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">
-            {t("fpo.ui.26f9ddf7b0")}</span>
+            OBSERVED + transparent derivations</span>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {topMetrics.map((metric) => (
@@ -205,8 +203,8 @@ export function FpoCommandCenter({
             </div>
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                {t("fpo.ui.1656a7a295")}</p>
-              <h2 className="text-lg font-semibold">{t("fpo.ui.d2a8be2591")}</h2>
+                Attention queue</p>
+              <h2 className="text-lg font-semibold">Act before work becomes a bottleneck</h2>
             </div>
           </div>
           <ol className="mt-5 space-y-2">
@@ -243,14 +241,14 @@ export function FpoCommandCenter({
             </div>
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                {t("fpo.ui.178e6fa9a0")}</p>
-              <h2 className="text-lg font-semibold">{t("fpo.ui.d3daea4505")}</h2>
+                Role view</p>
+              <h2 className="text-lg font-semibold">Focus the dashboard on your work</h2>
             </div>
           </div>
           <div
             className="mt-4 flex flex-wrap gap-2"
             role="tablist"
-            aria-label={t("fpo.ui.c96f8595d3")}
+            aria-label=Dashboard role view
           >
             {FPO_DASHBOARD_LENSES.map((item) => (
               <button
@@ -284,16 +282,16 @@ export function FpoCommandCenter({
             ))}
           </div>
           <p className="mt-4 text-[11px] leading-4 text-muted-foreground">
-            {t("fpo.ui.aeff6157a9")}</p>
+            A role view changes presentation only. Server-side permissions continue to decide what each person may read or change.</p>
         </div>
       </section>
 
       <section aria-labelledby="operating-chain-title">
         <div className="mb-3">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-            {t("fpo.ui.96a73cc212")}</p>
+            Enter once, reuse everywhere</p>
           <h2 id="operating-chain-title" className="mt-1 text-xl font-semibold">
-            {t("fpo.ui.d0d054bf20")}</h2>
+            Farmer-to-market operating chain</h2>
         </div>
         <div className="overflow-x-auto pb-2">
           <ol className="flex min-w-max items-stretch gap-2">
@@ -323,12 +321,12 @@ export function FpoCommandCenter({
         <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-              {t("fpo.ui.707d3c9299")}</p>
+              Digital core</p>
             <h2 id="core-modules-title" className="mt-1 text-xl font-semibold">
-              {t("fpo.ui.6edf1b7b6b")}</h2>
+              Ten connected operating modules</h2>
           </div>
           <p className="max-w-md text-xs leading-5 text-muted-foreground">
-            {t("fpo.ui.6ef7e31e8f")}</p>
+            “Foundation” means the transaction trail exists, but prediction or external ecosystem integration is not yet production-ready.</p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {FPO_CORE_MODULES.map((module) => {
@@ -371,21 +369,21 @@ export function FpoCommandCenter({
           <Network className="h-5 w-5" />
         </div>
         <div>
-          <h2 className="text-base font-semibold">{t("fpo.ui.0f262a0378")}</h2>
+          <h2 className="text-base font-semibold">Prediction is staged behind evidence</h2>
           <p className="mt-1 text-sm leading-6 text-muted-foreground">
-            {t("fpo.ui.7ca16ba1b5")}</p>
+            Yield, price, demand, spoilage, logistics and cash-flow forecasts will activate only after validated farm, weather, market, warehouse and finance feeds are connected. Recommendations will remain decision-support for authorized people.</p>
         </div>
         <Button variant="outline" onClick={() => onOpenSection("insights")}>
-          <Boxes className="h-4 w-4" /> {t("fpo.ui.f563ec9b29")}</Button>
+          <Boxes className="h-4 w-4" /> Review data foundation</Button>
       </section>
 
       <section className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-border pt-5 text-xs text-muted-foreground">
         <span className="inline-flex items-center gap-1.5">
-          <ShieldCheck className="h-3.5 w-3.5 text-primary" /> {t("fpo.ui.9f469f8731")}</span>
+          <ShieldCheck className="h-3.5 w-3.5 text-primary" /> Purpose-scoped farmer access</span>
         <span className="inline-flex items-center gap-1.5">
-          <FileCheck2 className="h-3.5 w-3.5 text-primary" /> {t("fpo.ui.02ef16daa0")}</span>
+          <FileCheck2 className="h-3.5 w-3.5 text-primary" /> Audited sensitive actions</span>
         <span className="inline-flex items-center gap-1.5">
-          <Handshake className="h-3.5 w-3.5 text-primary" /> {t("fpo.ui.06d9995b07")}</span>
+          <Handshake className="h-3.5 w-3.5 text-primary" /> Human commercial decisions</span>
       </section>
     </div>
   );

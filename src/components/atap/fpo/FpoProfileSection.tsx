@@ -1,4 +1,3 @@
-import { useLanguage } from "@/components/atap/LanguageProvider";
 import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -69,7 +68,6 @@ export function FpoProfileSection({
   overview: FpoOverview;
   onChanged: () => Promise<void>;
 }) {
-  const { t } = useLanguage();
   const tenantId = overview.activeTenantId ?? "";
   const save = useServerFn(saveFpoProfile);
   const upsertLeader = useServerFn(saveLeader);
@@ -102,7 +100,7 @@ export function FpoProfileSection({
       return save({ data: { tenantId, values: payload } });
     },
     onSuccess: async () => {
-      toast.success(t("fpo.ui.5b0dabaeeb"));
+      toast.success("Organization profile saved");
       await onChanged();
     },
     onError: (e: Error) => toast.error(e.message),
@@ -111,9 +109,9 @@ export function FpoProfileSection({
   if (!overview.canManage) {
     return (
       <section className="panel space-y-2 p-5">
-        <h2 className="font-display text-base font-semibold">{t("fpo.ui.8f0e799ec4")}</h2>
+        <h2 className="font-display text-base font-semibold">Organization profile</h2>
         <p className="text-sm text-muted-foreground">
-          {t("fpo.ui.2ca9dbd4ba")}</p>
+          Only an admin of this FPO can edit the organization profile. You can view the profile summary on the dashboard.</p>
       </section>
     );
   }
@@ -122,7 +120,7 @@ export function FpoProfileSection({
     <div className="space-y-6">
       <section className="panel space-y-4 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="font-display text-base font-semibold">{t("fpo.ui.8f0e799ec4")}</h2>
+          <h2 className="font-display text-base font-semibold">Organization profile</h2>
           <div className="flex items-center gap-2">
             <StateBadge state={overview.profile?.state ?? "draft"} />
             <Button
@@ -131,7 +129,7 @@ export function FpoProfileSection({
               onClick={async () => {
                 try {
                   await setState({ data: { tenantId, state: "submitted" } });
-                  toast.success(t("fpo.ui.aea7963bfb"));
+                  toast.success("Profile submitted for platform verification");
                   await onChanged();
                 } catch (e) {
                   toast.error((e as Error).message);
@@ -139,7 +137,7 @@ export function FpoProfileSection({
               }}
               disabled={!overview.profile}
             >
-              {t("fpo.ui.973214ef08")}</Button>
+              Submit for verification</Button>
           </div>
         </div>
 
@@ -164,21 +162,21 @@ export function FpoProfileSection({
         ))}
 
         <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending}>
-          {t("fpo.ui.f597c0e820")}</Button>
+          Save profile</Button>
       </section>
 
       <section className="panel space-y-3 p-5">
-        <h2 className="font-display text-base font-semibold">{t("fpo.ui.6ff8a80439")}</h2>
+        <h2 className="font-display text-base font-semibold">Leadership &amp; signatories</h2>
         {overview.leadership.length === 0 ? (
-          <p className="text-sm text-muted-foreground">{t("fpo.ui.bde83d6493")}</p>
+          <p className="text-sm text-muted-foreground">No leadership records yet.</p>
         ) : (
           <table className="data-table">
             <thead>
               <tr>
-                <th>{t("fpo.ui.c3f104d136")}</th>
-                <th>{t("fpo.ui.709a23220f")}</th>
-                <th>{t("fpo.ui.b37456c453")}</th>
-                <th>{t("fpo.ui.70d5aa9c45")}</th>
+                <th>Role</th>
+                <th>Name</th>
+                <th>Contact</th>
+                <th>Signatory</th>
                 <th />
               </tr>
             </thead>
@@ -196,14 +194,14 @@ export function FpoProfileSection({
                       onClick={async () => {
                         try {
                           await dropLeader({ data: { tenantId, id: l.id } });
-                          toast.success(t("fpo.ui.f0ec31b645"));
+                          toast.success("Leadership record removed and audited");
                           await onChanged();
                         } catch (e) {
                           toast.error((e as Error).message);
                         }
                       }}
                     >
-                      {t("fpo.ui.e963907dac")}</Button>
+                      Remove</Button>
                   </td>
                 </tr>
               ))}
@@ -213,25 +211,25 @@ export function FpoProfileSection({
         <div className="grid gap-3 border-t border-border pt-3 sm:grid-cols-2">
           <input
             className="field-base"
-            placeholder={t("fpo.ui.2dd4bc28fb")}
+            placeholder=Role (e.g. Chairperson, CEO, Director)
             value={leader.roleTitle}
             onChange={(e) => setLeader((l) => ({ ...l, roleTitle: e.target.value }))}
           />
           <input
             className="field-base"
-            placeholder={t("fpo.ui.d735946210")}
+            placeholder=Person name
             value={leader.personName}
             onChange={(e) => setLeader((l) => ({ ...l, personName: e.target.value }))}
           />
           <input
             className="field-base"
-            placeholder={t("fpo.ui.77064d5265")}
+            placeholder=Phone
             value={leader.phone}
             onChange={(e) => setLeader((l) => ({ ...l, phone: e.target.value }))}
           />
           <input
             className="field-base"
-            placeholder={t("fpo.ui.84add5b295")}
+            placeholder=Email
             value={leader.email}
             onChange={(e) => setLeader((l) => ({ ...l, email: e.target.value }))}
           />
@@ -241,7 +239,7 @@ export function FpoProfileSection({
               checked={leader.signatory}
               onChange={(e) => setLeader((l) => ({ ...l, signatory: e.target.checked }))}
             />
-            {t("fpo.ui.e2dcd91a9e")}</label>
+            Authorized signatory</label>
           <Button
             onClick={async () => {
               try {
@@ -255,7 +253,7 @@ export function FpoProfileSection({
                     isSignatory: leader.signatory,
                   },
                 });
-                toast.success(t("fpo.ui.1807092b3c"));
+                toast.success("Leadership record added and audited");
                 setLeader({ roleTitle: "", personName: "", phone: "", email: "", signatory: false });
                 await onChanged();
               } catch (e) {
@@ -264,26 +262,26 @@ export function FpoProfileSection({
             }}
             disabled={!leader.roleTitle || !leader.personName}
           >
-            {t("fpo.ui.cee76facb8")}</Button>
+            Add leader</Button>
         </div>
       </section>
 
       {overview.canViewFinance ? (
         <section className="panel space-y-3 p-5">
-          <h2 className="font-display text-base font-semibold">{t("fpo.ui.8a64573da8")}</h2>
+          <h2 className="font-display text-base font-semibold">Bank accounts</h2>
           <p className="field-hint">
-            {t("fpo.ui.a3595c4fe0")}</p>
+            Only the last four digits of an account number are stored. Access to this section is audited.</p>
           {overview.bank.length === 0 ? (
-            <p className="text-sm text-muted-foreground">{t("fpo.ui.b7634769db")}</p>
+            <p className="text-sm text-muted-foreground">No bank account recorded yet.</p>
           ) : (
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>{t("fpo.ui.9e89988cc3")}</th>
-                  <th>{t("fpo.ui.1627510b24")}</th>
-                  <th>{t("fpo.ui.3deb745651")}</th>
-                  <th>{t("fpo.ui.85dfa32c97")}</th>
-                  <th>{t("fpo.ui.e704f8ce2b")}</th>
+                  <th>Bank</th>
+                  <th>Branch</th>
+                  <th>Type</th>
+                  <th>Account</th>
+                  <th>IFSC</th>
                 </tr>
               </thead>
               <tbody>
@@ -302,31 +300,31 @@ export function FpoProfileSection({
           <div className="grid gap-3 border-t border-border pt-3 sm:grid-cols-2">
             <input
               className="field-base"
-              placeholder={t("fpo.ui.6d83c93a90")}
+              placeholder=Bank name
               value={bank.bankName}
               onChange={(e) => setBank((b) => ({ ...b, bankName: e.target.value }))}
             />
             <input
               className="field-base"
-              placeholder={t("fpo.ui.1627510b24")}
+              placeholder=Branch
               value={bank.branch}
               onChange={(e) => setBank((b) => ({ ...b, branch: e.target.value }))}
             />
             <input
               className="field-base"
-              placeholder={t("fpo.ui.12f29e796a")}
+              placeholder=Account type (current / savings)
               value={bank.accountType}
               onChange={(e) => setBank((b) => ({ ...b, accountType: e.target.value }))}
             />
             <input
               className="field-base"
-              placeholder={t("fpo.ui.25d74dd58e")}
+              placeholder=Account number
               value={bank.accountNumber}
               onChange={(e) => setBank((b) => ({ ...b, accountNumber: e.target.value }))}
             />
             <input
               className="field-base"
-              placeholder={t("fpo.ui.e704f8ce2b")}
+              placeholder=IFSC
               value={bank.ifsc}
               onChange={(e) => setBank((b) => ({ ...b, ifsc: e.target.value }))}
             />
@@ -346,7 +344,7 @@ export function FpoProfileSection({
                         .map((l) => l.person_name),
                     },
                   });
-                  toast.success(t("fpo.ui.d3c6140788"));
+                  toast.success("Bank account recorded and audited");
                   setBank({ bankName: "", branch: "", accountType: "", accountNumber: "", ifsc: "" });
                   await onChanged();
                 } catch (e) {
@@ -355,12 +353,12 @@ export function FpoProfileSection({
               }}
               disabled={!bank.bankName}
             >
-              {t("fpo.ui.7cf6c06ea9")}</Button>
+              Add bank account</Button>
           </div>
         </section>
       ) : (
         <section className="panel p-5 text-sm text-muted-foreground">
-          {t("fpo.ui.d286145af7")}</section>
+          Bank details are visible only to authorized FPO administrators.</section>
       )}
     </div>
   );

@@ -1,4 +1,3 @@
-import { useLanguage } from "@/components/atap/LanguageProvider";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -28,7 +27,6 @@ import {
 } from "@/lib/atap/fpoProcurement";
 
 export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
-  const { t } = useLanguage();
   const qc = useQueryClient();
   const boardFn = useServerFn(getProcurementBoard);
   const detailFn = useServerFn(getCampaignDetail);
@@ -158,10 +156,10 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
   if (!tenantId) {
     return (
       <section className="panel p-5 text-sm text-muted-foreground">
-        {t("fpo.ui.dd3fbcdfff")}</section>
+        Select an FPO organization to see input procurement.</section>
     );
   }
-  if (board.isLoading) return <section className="panel p-5 text-sm">{t("fpo.ui.7f0cdf8dd6")}</section>;
+  if (board.isLoading) return <section className="panel p-5 text-sm">Loading procurement…</section>;
   if (board.isError) {
     return (
       <section className="panel p-5 text-sm text-muted-foreground">
@@ -178,7 +176,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
       <section className="panel space-y-3 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="font-display text-base font-semibold">{t("fpo.ui.e176ac9754")}</h2>
+            <h2 className="font-display text-base font-semibold">Input procurement</h2>
             <p className="field-hint">{data.disclaimer}</p>
           </div>
           <div className="flex flex-wrap gap-2 text-xs">
@@ -202,7 +200,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
           <div className="flex flex-wrap gap-2">
             <input
               className="input-field max-w-xs"
-              placeholder={t("fpo.ui.aa5d0e720b")}
+              placeholder=Campaign name
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -219,7 +217,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
             </select>
             <input
               className="input-field max-w-[10rem]"
-              placeholder={t("fpo.ui.62255f5671")}
+              placeholder=Season
               value={season}
               onChange={(e) => setSeason(e.target.value)}
             />
@@ -228,7 +226,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
               disabled={!name.trim() || create.isPending}
               onClick={() => create.mutate(undefined as never)}
             >
-              {t("fpo.ui.ebcad11747")}</Button>
+              Open campaign</Button>
           </div>
         ) : null}
 
@@ -236,11 +234,11 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
           <table className="w-full text-sm">
             <thead className="text-left text-xs uppercase text-muted-foreground">
               <tr>
-                <th className="py-2">{t("fpo.ui.69390e1665")}</th>
-                <th className="py-2">{t("fpo.ui.a3c686e711")}</th>
-                <th className="py-2">{t("fpo.ui.ca6d0e3aaa")}</th>
-                <th className="py-2">{t("fpo.ui.41dfc0a6c9")}</th>
-                <th className="py-2">{t("fpo.ui.c3cd636a58")}</th>
+                <th className="py-2">Campaign</th>
+                <th className="py-2">Category</th>
+                <th className="py-2">Stage</th>
+                <th className="py-2">Window</th>
+                <th className="py-2">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -274,7 +272,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                           })
                         }
                       >
-                        <option value="">{t("fpo.ui.c0a3ef619a")}</option>
+                        <option value="">Move to…</option>
                         {nextCampaignStatuses(c.status).map((s) => (
                           <option key={s} value={s}>
                             {PROCUREMENT_STATUS_LABEL[s]}
@@ -282,7 +280,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                         ))}
                       </select>
                     ) : (
-                      <span className="field-hint">{t("fpo.ui.5559dd041f")}</span>
+                      <span className="field-hint">View only</span>
                     )}
                   </td>
                 </tr>
@@ -290,7 +288,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
               {data.campaigns.length === 0 ? (
                 <tr>
                   <td className="py-4 text-sm text-muted-foreground" colSpan={5}>
-                    {t("fpo.ui.8de4794654")}</td>
+                    No procurement campaigns yet.</td>
                 </tr>
               ) : null}
             </tbody>
@@ -299,7 +297,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
       </section>
 
       {openId && detail.isLoading ? (
-        <section className="panel p-5 text-sm">{t("fpo.ui.4dab908a85")}</section>
+        <section className="panel p-5 text-sm">Loading campaign…</section>
       ) : null}
 
       {d ? (
@@ -307,25 +305,25 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
           <div className="flex items-center justify-between">
             <h3 className="font-display text-sm font-semibold">{d.campaign.name}</h3>
             <Button variant="ghost" size="sm" onClick={() => setOpenId(null)}>
-              {t("fpo.ui.bbfa773e5a")}</Button>
+              Close</Button>
           </div>
 
           <div className="rounded-md border border-border p-3 text-xs">
-            {t("fpo.ui.d0ffad8560")}{" "}<strong>{d.authorization.authorized}</strong> {t("fpo.ui.de04fa0e29")}{" "}
-            <strong>{d.authorization.total}</strong> {t("fpo.ui.607de24183")}{" "}
+            Member authorization:{" "}<strong>{d.authorization.authorized}</strong> of{" "}
+            <strong>{d.authorization.total}</strong> demand lines authorized.{" "}
             {d.authorization.reason ?? "Ready to order."}
           </div>
 
           <div>
-            <h4 className="text-sm font-semibold">{t("fpo.ui.dae0ff7920")}</h4>
+            <h4 className="text-sm font-semibold">Aggregated demand</h4>
             <table className="w-full text-sm">
               <thead className="text-left text-xs uppercase text-muted-foreground">
                 <tr>
-                  <th className="py-2">{t("fpo.ui.dd3b86d1ef")}</th>
-                  <th className="py-2">{t("fpo.ui.b25928c699")}</th>
-                  <th className="py-2">{t("fpo.ui.991f4cba92")}</th>
-                  <th className="py-2">{t("fpo.ui.1cb449c112")}</th>
-                  <th className="py-2">{t("fpo.ui.3da8cf8509")}</th>
+                  <th className="py-2">Product</th>
+                  <th className="py-2">Total</th>
+                  <th className="py-2">Authorized</th>
+                  <th className="py-2">Members</th>
+                  <th className="py-2">Indicative value</th>
                   <th className="py-2" />
                 </tr>
               </thead>
@@ -350,7 +348,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                             raiseRfq.mutate({ productName: a.product_name, unit: a.unit })
                           }
                         >
-                          {t("fpo.ui.18540ff81f")}</Button>
+                          Raise RFQ</Button>
                       ) : null}
                     </td>
                   </tr>
@@ -358,7 +356,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                 {d.aggregated.length === 0 ? (
                   <tr>
                     <td className="py-3 text-sm text-muted-foreground" colSpan={6}>
-                      {t("fpo.ui.3a1ae17887")}</td>
+                      No member demand recorded yet.</td>
                   </tr>
                 ) : null}
               </tbody>
@@ -372,7 +370,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                 value={memberId}
                 onChange={(e) => setMemberId(e.target.value)}
               >
-                <option value="">{t("fpo.ui.f0f0f64a10")}</option>
+                <option value="">Unlinked member</option>
                 {d.members.map((m) => (
                   <option key={m.id} value={m.id}>
                     {m.display_name}
@@ -381,25 +379,25 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
               </select>
               <input
                 className="input-field max-w-xs"
-                placeholder={t("fpo.ui.dd3b86d1ef")}
+                placeholder=Product
                 value={product}
                 onChange={(e) => setProduct(e.target.value)}
               />
               <input
                 className="input-field max-w-[8rem]"
-                placeholder={t("fpo.ui.44f6af6945")}
+                placeholder=Quantity
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
               />
               <input
                 className="input-field max-w-[6rem]"
-                placeholder={t("fpo.ui.f6b935ab33")}
+                placeholder=Unit
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
               />
               <input
                 className="input-field max-w-[9rem]"
-                placeholder={t("fpo.ui.8e0934a0bd")}
+                placeholder=Indicative price
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
               />
@@ -408,19 +406,19 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                 disabled={!product.trim() || !Number(quantity)}
                 onClick={() => addDemand.mutate(undefined as never)}
               >
-                {t("fpo.ui.5bb23811a7")}</Button>
+                Record demand</Button>
             </div>
           ) : null}
 
           <div>
-            <h4 className="text-sm font-semibold">{t("fpo.ui.7d603f963d")}</h4>
+            <h4 className="text-sm font-semibold">Member demand lines</h4>
             <table className="w-full text-sm">
               <thead className="text-left text-xs uppercase text-muted-foreground">
                 <tr>
-                  <th className="py-2">{t("fpo.ui.6853c98a6f")}</th>
-                  <th className="py-2">{t("fpo.ui.dd3b86d1ef")}</th>
-                  <th className="py-2">{t("fpo.ui.44f6af6945")}</th>
-                  <th className="py-2">{t("fpo.ui.5e25ce007a")}</th>
+                  <th className="py-2">Member</th>
+                  <th className="py-2">Product</th>
+                  <th className="py-2">Quantity</th>
+                  <th className="py-2">Authorization</th>
                 </tr>
               </thead>
               <tbody>
@@ -440,9 +438,9 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                           variant="secondary"
                           onClick={() => authorize.mutate({ demandId: row.id, authorized: true })}
                         >
-                          {t("fpo.ui.5bfa01c5bf")}</Button>
+                          Record member authorization</Button>
                       ) : (
-                        <span className="field-hint">{t("fpo.ui.96f608c16c")}</span>
+                        <span className="field-hint">Pending</span>
                       )}
                     </td>
                   </tr>
@@ -452,22 +450,22 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
           </div>
 
           <div className="space-y-4">
-            <h4 className="text-sm font-semibold">{t("fpo.ui.f4384f5a23")}</h4>
+            <h4 className="text-sm font-semibold">RFQs and supplier quotes</h4>
             {d.rfqs.map((rfq) => (
               <div key={rfq.id} className="rounded-md border border-border p-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="text-sm font-medium">
                     {rfq.product_name} — {rfq.aggregated_quantity} {rfq.unit}
                   </div>
-                  <div className="field-hint">{t("fpo.ui.6b19201632")}{" "}{rfq.delivery_by ?? "not specified"}</div>
+                  <div className="field-hint">Delivery by{" "}{rfq.delivery_by ?? "not specified"}</div>
                 </div>
                 <table className="mt-2 w-full text-sm">
                   <thead className="text-left text-xs uppercase text-muted-foreground">
                     <tr>
-                      <th className="py-2">{t("fpo.ui.55edd46287")}</th>
-                      <th className="py-2">{t("fpo.ui.1f5574e30c")}</th>
-                      <th className="py-2">{t("fpo.ui.90f6c6dfa8")}</th>
-                      <th className="py-2">{t("fpo.ui.70440046a3")}</th>
+                      <th className="py-2">Supplier</th>
+                      <th className="py-2">Landed cost</th>
+                      <th className="py-2">Per unit</th>
+                      <th className="py-2">Notes</th>
                       <th className="py-2" />
                     </tr>
                   </thead>
@@ -486,7 +484,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                         </td>
                         <td className="py-2">{q.landed_cost_per_unit}</td>
                         <td className="py-2 text-xs">
-                          {q.is_lowest_landed_cost ? <div>{t("fpo.ui.7b3ab7d562")}</div> : null}
+                          {q.is_lowest_landed_cost ? <div>Lowest landed cost</div> : null}
                           {q.flags.map((f) => (
                             <div key={f}>{f}</div>
                           ))}
@@ -500,7 +498,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                               variant="secondary"
                               onClick={() => choose.mutate({ rfqId: rfq.id, quoteId: q.id })}
                             >
-                              {t("fpo.ui.cfce526861")}</Button>
+                              Select supplier</Button>
                           ) : null}
                         </td>
                       </tr>
@@ -508,7 +506,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                     {rfq.quotes.length === 0 ? (
                       <tr>
                         <td className="py-3 text-sm text-muted-foreground" colSpan={5}>
-                          {t("fpo.ui.f91f8e49ac")}</td>
+                          No quotes recorded for this RFQ yet.</td>
                       </tr>
                     ) : null}
                   </tbody>
@@ -523,7 +521,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                   value={quoteRfqId}
                   onChange={(e) => setQuoteRfqId(e.target.value)}
                 >
-                  <option value="">{t("fpo.ui.46e3cb1e1e")}</option>
+                  <option value="">Select RFQ</option>
                   {d.rfqs.map((r) => (
                     <option key={r.id} value={r.id}>
                       {r.product_name}
@@ -532,25 +530,25 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                 </select>
                 <input
                   className="input-field max-w-xs"
-                  placeholder={t("fpo.ui.1b6428e32f")}
+                  placeholder=Supplier name
                   value={supplier}
                   onChange={(e) => setSupplier(e.target.value)}
                 />
                 <input
                   className="input-field max-w-[8rem]"
-                  placeholder={t("fpo.ui.3c6c777f4d")}
+                  placeholder=Unit price
                   value={unitPrice}
                   onChange={(e) => setUnitPrice(e.target.value)}
                 />
                 <input
                   className="input-field max-w-[9rem]"
-                  placeholder={t("fpo.ui.3981affbec")}
+                  placeholder=Transport cost
                   value={transport}
                   onChange={(e) => setTransport(e.target.value)}
                 />
                 <input
                   className="input-field max-w-[11rem]"
-                  placeholder={t("fpo.ui.c9e5cafa69")}
+                  placeholder=Certification
                   value={certification}
                   onChange={(e) => setCertification(e.target.value)}
                 />
@@ -559,25 +557,25 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                   disabled={!quoteRfqId || !supplier.trim() || !unitPrice}
                   onClick={() => addQuote.mutate(undefined as never)}
                 >
-                  {t("fpo.ui.64a68796fd")}</Button>
+                  Record quote</Button>
               </div>
             ) : null}
           </div>
 
           <div>
-            <h4 className="text-sm font-semibold">{t("fpo.ui.918005aa0a")}</h4>
+            <h4 className="text-sm font-semibold">Distribution and settlement</h4>
             <p className="field-hint">
-              {t("fpo.ui.145caf2928")}{" "}{d.settlement.amount_due}{t("fpo.ui.3a14e9240a")}{" "}{d.settlement.amount_collected}{t("fpo.ui.e6e6133600")}{" "}
+              Due{" "}{d.settlement.amount_due}; collected{" "}{d.settlement.amount_collected}; outstanding{" "}
               {d.settlement.outstanding}.
             </p>
             <table className="w-full text-sm">
               <thead className="text-left text-xs uppercase text-muted-foreground">
                 <tr>
-                  <th className="py-2">{t("fpo.ui.6853c98a6f")}</th>
-                  <th className="py-2">{t("fpo.ui.dd3b86d1ef")}</th>
-                  <th className="py-2">{t("fpo.ui.44f6af6945")}</th>
-                  <th className="py-2">{t("fpo.ui.145caf2928")}</th>
-                  <th className="py-2">{t("fpo.ui.b41a92bed0")}</th>
+                  <th className="py-2">Member</th>
+                  <th className="py-2">Product</th>
+                  <th className="py-2">Quantity</th>
+                  <th className="py-2">Due</th>
+                  <th className="py-2">Payment</th>
                 </tr>
               </thead>
               <tbody>
@@ -603,7 +601,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                             })
                           }
                         >
-                          {t("fpo.ui.5be0d1c966")}</Button>
+                          Record full payment</Button>
                       ) : null}
                     </td>
                   </tr>
@@ -611,7 +609,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                 {d.distributions.length === 0 ? (
                   <tr>
                     <td className="py-3 text-sm text-muted-foreground" colSpan={5}>
-                      {t("fpo.ui.21703099d7")}</td>
+                      Nothing distributed yet.</td>
                   </tr>
                 ) : null}
               </tbody>
@@ -632,7 +630,7 @@ export function FpoProcurementSection({ tenantId }: { tenantId: string }) {
                   })
                 }
               >
-                {t("fpo.ui.c769dca4a4")}</Button>
+                Record a distribution line</Button>
             ) : null}
           </div>
         </section>

@@ -1,4 +1,3 @@
-import { useLanguage } from "@/components/atap/LanguageProvider";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -25,7 +24,6 @@ export function FpoInsightsSection({
   tenantId: string;
   onOpenSection?: (section: FpoSection) => void;
 }) {
-  const { t } = useLanguage();
   const boardFn = useServerFn(getInsightsBoard);
   const searchFn = useServerFn(searchWorkspace);
 
@@ -59,7 +57,7 @@ export function FpoInsightsSection({
   const hits = results.data?.hits ?? [];
 
   if (board.isLoading) {
-    return <p className="text-sm text-muted-foreground">{t("fpo.ui.cec63e498b")}</p>;
+    return <p className="text-sm text-muted-foreground">Loading insights…</p>;
   }
   if (board.error) {
     return <p className="text-sm text-destructive">{(board.error as Error).message}</p>;
@@ -70,7 +68,7 @@ export function FpoInsightsSection({
     <div className="space-y-6">
       <section className="panel space-y-4 p-5">
         <div className="space-y-1">
-          <h2 className="font-display text-base font-semibold">{t("fpo.ui.b7a53f5f5b")}</h2>
+          <h2 className="font-display text-base font-semibold">Universal search</h2>
           <p className="field-hint">{data.disclaimers.search}</p>
         </div>
         <form
@@ -82,20 +80,20 @@ export function FpoInsightsSection({
         >
           <input
             className={`${input} max-w-md flex-1`}
-            placeholder={t("fpo.ui.d07b12b381")}
+            placeholder=Search members, applications, lots, ledger, tasks, team…
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            aria-label={t("fpo.ui.f2d445849d")}
+            aria-label=Search this organization
           />
           <Button type="submit" disabled={query.trim().length < 2}>
-            {t("fpo.ui.bce0641417")}</Button>
+            Search</Button>
         </form>
         {submitted.trim().length >= 2 ? (
           results.isLoading ? (
-            <p className="text-sm text-muted-foreground">{t("fpo.ui.1a6a5ba8c2")}</p>
+            <p className="text-sm text-muted-foreground">Searching…</p>
           ) : hits.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              {t("fpo.ui.b8f35ae792")}{submitted}”.
+              No records in this organization match “{submitted}”.
             </p>
           ) : (
             <div className="space-y-4">
@@ -122,7 +120,7 @@ export function FpoInsightsSection({
                             size="sm"
                             onClick={() => onOpenSection(hit.section as FpoSection)}
                           >
-                            {t("fpo.ui.cf9b77061f")}{" "}{hit.section}
+                            Open{" "}{hit.section}
                           </Button>
                         ) : null}
                       </li>
@@ -137,7 +135,7 @@ export function FpoInsightsSection({
 
       <section className="space-y-4">
         <div className="space-y-1">
-          <h2 className="font-display text-base font-semibold">{t("fpo.ui.90bfc2d1f4")}</h2>
+          <h2 className="font-display text-base font-semibold">Operational insights</h2>
           <p className="field-hint">{data.disclaimers.insights}</p>
         </div>
         {data.attention.length > 0 ? (
@@ -153,13 +151,13 @@ export function FpoInsightsSection({
                 </span>
                 {onOpenSection ? (
                   <Button variant="outline" size="sm" onClick={() => onOpenSection(item.section)}>
-                    {t("fpo.ui.e29a79fe0c")}</Button>
+                    Review</Button>
                 ) : null}
               </li>
             ))}
           </ul>
         ) : (
-          <p className="text-sm text-muted-foreground">{t("fpo.ui.b86b30a2b9")}</p>
+          <p className="text-sm text-muted-foreground">Nothing needs attention right now.</p>
         )}
 
         {groups.map((group) => (
@@ -192,12 +190,12 @@ export function FpoInsightsSection({
 
       <section className="panel space-y-4 p-5">
         <div className="space-y-1">
-          <h2 className="font-display text-base font-semibold">{t("fpo.ui.3e53cf9577")}</h2>
+          <h2 className="font-display text-base font-semibold">Activity timeline</h2>
           <p className="field-hint">{data.disclaimers.timeline}</p>
         </div>
         {!data.canSeeTimeline ? (
           <p className="text-sm text-muted-foreground">
-            {t("fpo.ui.639a4ff8f6")}</p>
+            The audited activity trail is visible to organization admins and auditors only.</p>
         ) : (
           <>
             <div className="flex flex-wrap gap-2">
@@ -205,9 +203,9 @@ export function FpoInsightsSection({
                 className={`${input} max-w-xs`}
                 value={sectionFilter}
                 onChange={(e) => setSectionFilter(e.target.value as FpoSection | "all")}
-                aria-label={t("fpo.ui.2b793f03d9")}
+                aria-label=Filter by section
               >
-                <option value="all">{t("fpo.ui.2dbf73acf3")}</option>
+                <option value="all">All sections</option>
                 {FPO_SECTION_DEFS.map((s) => (
                   <option key={s.key} value={s.key}>
                     {s.label}
@@ -218,15 +216,15 @@ export function FpoInsightsSection({
                 className={`${input} max-w-xs`}
                 value={decisionFilter}
                 onChange={(e) => setDecisionFilter(e.target.value)}
-                aria-label={t("fpo.ui.be42bca7df")}
+                aria-label=Filter by decision
               >
-                <option value="all">{t("fpo.ui.8769f8f20d")}</option>
-                <option value="allow">{t("fpo.ui.77c7b4909d")}</option>
-                <option value="deny">{t("fpo.ui.63b16bd41e")}</option>
+                <option value="all">All outcomes</option>
+                <option value="allow">Allowed</option>
+                <option value="deny">Denied</option>
               </select>
             </div>
             {timeline.length === 0 ? (
-              <p className="text-sm text-muted-foreground">{t("fpo.ui.06d97e8b45")}</p>
+              <p className="text-sm text-muted-foreground">No audited activity for this filter.</p>
             ) : (
               <ol className="space-y-2">
                 {timeline.map((entry) => (

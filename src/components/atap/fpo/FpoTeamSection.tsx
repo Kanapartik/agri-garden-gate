@@ -1,4 +1,3 @@
-import { useLanguage } from "@/components/atap/LanguageProvider";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -36,7 +35,6 @@ const roleLabel = (role: string) => role.replaceAll("_", " ");
 type Tab = "directory" | "permissions" | "reviews" | "my_access";
 
 export function FpoTeamSection({ tenantId }: { tenantId: string }) {
-  const { t } = useLanguage();
   const qc = useQueryClient();
   const boardFn = useServerFn(getTeamBoard);
   const upsertFn = useServerFn(upsertStaffMember);
@@ -82,9 +80,9 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
   const clear = useAction(clearFn, "Reset to the platform default");
   const review = useAction(reviewFn, "Access review recorded");
 
-  if (board.isLoading) return <p className="text-sm text-muted-foreground">{t("fpo.ui.33ce417454")}</p>;
+  if (board.isLoading) return <p className="text-sm text-muted-foreground">Loading…</p>;
   const data = board.data;
-  if (!data) return <p className="text-sm text-muted-foreground">{t("fpo.ui.a1dac1ca19")}</p>;
+  if (!data) return <p className="text-sm text-muted-foreground">No team records yet.</p>;
 
   const csv = (value: string) =>
     value
@@ -136,23 +134,23 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
         <div className="space-y-6">
           {data.canManage ? (
             <section className={`${card} space-y-3`}>
-              <h3 className="font-display text-base font-semibold">{t("fpo.ui.47fb8b69c9")}</h3>
+              <h3 className="font-display text-base font-semibold">Add or update a staff seat</h3>
               <div className="grid gap-3 sm:grid-cols-2">
                 <input
                   className={input}
-                  placeholder={t("fpo.ui.eeb692087d")}
+                  placeholder=Full name
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
                 <input
                   className={input}
-                  placeholder={t("fpo.ui.b8a9e40236")}
+                  placeholder=Designation (e.g. CEO, field agent)
                   value={designation}
                   onChange={(e) => setDesignation(e.target.value)}
                 />
                 <input
                   className={input}
-                  placeholder={t("fpo.ui.45cf5edca2")}
+                  placeholder=Contact hint (masked)
                   value={contact}
                   onChange={(e) => setContact(e.target.value)}
                 />
@@ -169,20 +167,20 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
                 </select>
                 <input
                   className={input}
-                  placeholder={t("fpo.ui.5d557a20b2")}
+                  placeholder=District scope (comma separated)
                   value={districts}
                   onChange={(e) => setDistricts(e.target.value)}
                 />
                 <input
                   className={input}
-                  placeholder={t("fpo.ui.01f2591df6")}
+                  placeholder=Mandal scope (comma separated)
                   value={mandals}
                   onChange={(e) => setMandals(e.target.value)}
                 />
               </div>
               <textarea
                 className={`${input} min-h-16`}
-                placeholder={t("fpo.ui.4d56ca9be0")}
+                placeholder=Notes (optional)
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
               />
@@ -213,18 +211,18 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
                   )
                 }
               >
-                {t("fpo.ui.0f08958229")}</Button>
+                Save staff seat</Button>
               <p className="text-xs text-muted-foreground">
-                {t("fpo.ui.97afc0472f")}</p>
+                A staff seat records delegation inside this organization. Sign-in access is granted separately through the invitation flow below.</p>
             </section>
           ) : (
             <p className="text-sm text-muted-foreground">
-              {t("fpo.ui.d002869a49")}</p>
+              Only an organization admin can change staff access. You have read-only access to the directory.</p>
           )}
 
           <section className="space-y-3">
             {data.staff.length === 0 ? (
-              <p className="text-sm text-muted-foreground">{t("fpo.ui.f0b63ece54")}</p>
+              <p className="text-sm text-muted-foreground">No staff recorded yet.</p>
             ) : (
               data.staff.map((s) => (
                 <div key={s.id} className={`${card} space-y-2`}>
@@ -240,13 +238,13 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
                     <div className="flex items-center gap-2">
                       {s.review_due ? (
                         <span className="rounded-md border border-border px-2 py-1 text-xs text-muted-foreground">
-                          {t("fpo.ui.4097ea297a")}</span>
+                          Review due</span>
                       ) : null}
                       <StateBadge state={s.status} />
                     </div>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    {t("fpo.ui.8402f05000")}{" "}
+                    Scope:{" "}
                     {(s.district_scope ?? []).length === 0
                       ? "no district scope recorded"
                       : s.district_scope.join(", ")}
@@ -254,7 +252,7 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
                   </p>
                   {s.suspended_reason ? (
                     <p className="text-xs text-muted-foreground">
-                      {t("fpo.ui.27ed2270ac")}{" "}{s.suspended_reason}
+                      Suspension reason:{" "}{s.suspended_reason}
                     </p>
                   ) : null}
                   {data.canManage ? (
@@ -282,7 +280,7 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
                         variant="outline"
                         onClick={() => setOpenStaff(openStaff === s.id ? null : s.id)}
                       >
-                        {t("fpo.ui.cff5a82c9d")}</Button>
+                        Record access review</Button>
                     </div>
                   ) : null}
 
@@ -314,7 +312,7 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
                       ) : null}
                       <textarea
                         className={`${input} min-h-16`}
-                        placeholder={t("fpo.ui.40b69a4702")}
+                        placeholder=Review notes
                         value={reviewNotes}
                         onChange={(e) => setReviewNotes(e.target.value)}
                       />
@@ -339,7 +337,7 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
                           )
                         }
                       >
-                        {t("fpo.ui.f450a9da05")}</Button>
+                        Save review</Button>
                     </div>
                   ) : null}
                 </div>
@@ -352,12 +350,12 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
       {tab === "permissions" ? (
         <section className="space-y-3">
           <p className="text-xs text-muted-foreground">
-            {t("fpo.ui.2d04c8bdab")}</p>
+            Configuration can only narrow a role. A level above what a role may ever hold is refused, and existing over-generous rows are shown clamped to the effective level that the server enforces.</p>
           <div className="overflow-x-auto">
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>{t("fpo.ui.f2c6b564bd")}</th>
+                  <th>Section</th>
                   {data.staffRoles.map((r) => (
                     <th key={r}>{roleLabel(r)}</th>
                   ))}
@@ -408,7 +406,7 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
                                 clear.mutate({ tenantId, staffRole: r, section: def.key })
                               }
                             >
-                              {t("fpo.ui.39c90eb758")}</button>
+                              Reset to default</button>
                           ) : null}
                         </td>
                       );
@@ -424,16 +422,16 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
       {tab === "reviews" ? (
         <section className="space-y-3">
           {data.reviews.length === 0 ? (
-            <p className="text-sm text-muted-foreground">{t("fpo.ui.09517264cf")}</p>
+            <p className="text-sm text-muted-foreground">No access reviews recorded yet.</p>
           ) : (
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>{t("fpo.ui.a4730a22cf")}</th>
-                  <th>{t("fpo.ui.7f59a1f1d5")}</th>
-                  <th>{t("fpo.ui.c3f104d136")}</th>
-                  <th>{t("fpo.ui.31ef859337")}</th>
-                  <th>{t("fpo.ui.70440046a3")}</th>
+                  <th>Staff</th>
+                  <th>Decision</th>
+                  <th>Role</th>
+                  <th>Reviewed</th>
+                  <th>Notes</th>
                 </tr>
               </thead>
               <tbody>
@@ -463,7 +461,7 @@ export function FpoTeamSection({ tenantId }: { tenantId: string }) {
       {tab === "my_access" ? (
         <section className="space-y-3">
           <p className="text-xs text-muted-foreground">
-            {t("fpo.ui.1342c97f6e")}{" "}
+            Your effective access in this organization, as the server enforces it. Roles held:{" "}
             {data.roles.map(roleLabel).join(", ") || "none"}.
           </p>
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">

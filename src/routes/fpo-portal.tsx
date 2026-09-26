@@ -45,7 +45,6 @@ const NAV = [
 ] as const;
 
 function PortalShell() {
-  const { t } = useLanguage();
   const { fpoTenant, staffName, isAdmin } = Route.useRouteContext();
   const nav = NAV.filter((n) => isAdmin || n.to !== "/fpo-portal/admin");
   const navigate = useNavigate();
@@ -64,8 +63,8 @@ function PortalShell() {
         <div className="mb-6 flex items-center gap-2">
           <img src={agrivahMark.url} alt="Agrivah logo" className="h-9 w-auto" />
           <div className="leading-tight">
-             <p className="font-display text-sm font-bold text-primary">{t("fpo.portal.title")}</p>
-            <p className="text-[10px] uppercase text-muted-foreground">{t("fpo.ui.dc53c5d356")}</p>
+             <p className="font-display text-sm font-bold text-primary">FPO Portal</p>
+            <p className="text-[10px] uppercase text-muted-foreground">Agrivah</p>
           </div>
         </div>
         <nav className="space-y-1">
@@ -86,7 +85,7 @@ function PortalShell() {
         <header className="flex items-center justify-between gap-3 border-b border-border bg-card px-4 py-3">
           <div className="min-w-0">
             <p className="truncate font-display text-base font-semibold">{fpoTenant.name}</p>
-             <p className="truncate text-xs text-muted-foreground">{t("fpo.portal.signedInAs")} {staffName}</p>
+             <p className="truncate text-xs text-muted-foreground">Signed in as {staffName}</p>
           </div>
            <div className="flex items-center gap-2"><LanguageSwitcher /><Button variant="ghost" size="sm" onClick={signOut}>
              <LogOut className="h-4 w-4" /> {t("shell.signOut")}

@@ -1,4 +1,3 @@
-import { useLanguage } from "@/components/atap/LanguageProvider";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -18,7 +17,6 @@ const TREND_TONE: Record<string, "default" | "secondary" | "destructive" | "outl
 };
 
 export function FpoMemberHistorySection({ tenantId }: { tenantId: string }) {
-  const { t } = useLanguage();
   const boardFn = useServerFn(getMemberHistoryInsights);
   const [growth, setGrowth] = useState("0");
 
@@ -29,16 +27,16 @@ export function FpoMemberHistorySection({ tenantId }: { tenantId: string }) {
   });
 
   if (board.isLoading) {
-    return <p className="text-sm text-muted-foreground">{t("fpo.ui.165180173f")}</p>;
+    return <p className="text-sm text-muted-foreground">Loading member history insights…</p>;
   }
   const data = board.data;
   if (!data) {
-    return <p className="text-sm text-muted-foreground">{t("fpo.ui.1bc111d113")}</p>;
+    return <p className="text-sm text-muted-foreground">Member history is not available.</p>;
   }
   if (!data.canView) {
     return (
       <p className="text-sm text-muted-foreground">
-        {t("fpo.ui.8cf98216f1")}</p>
+        Your role in this organization does not include member history planning views.</p>
     );
   }
 
@@ -48,46 +46,46 @@ export function FpoMemberHistorySection({ tenantId }: { tenantId: string }) {
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className={card}>
-          <p className="text-xs text-muted-foreground">{t("fpo.ui.a9cf4b9d5c")}</p>
+          <p className="text-xs text-muted-foreground">Members on roster</p>
           <p className="text-lg font-semibold tabular-nums">{data.coverage.members}</p>
         </div>
         <div className={card}>
-          <p className="text-xs text-muted-foreground">{t("fpo.ui.4b4299ec00")}</p>
+          <p className="text-xs text-muted-foreground">Authorized farm-planning consent</p>
           <p className="text-lg font-semibold tabular-nums">{data.coverage.consentedMembers}</p>
         </div>
         <div className={card}>
-          <p className="text-xs text-muted-foreground">{t("fpo.ui.06fe0b16bf")}</p>
+          <p className="text-xs text-muted-foreground">Contributing history</p>
           <p className="text-lg font-semibold tabular-nums">
             {data.coverage.contributingMembers}
           </p>
         </div>
         <div className={card}>
-          <p className="text-xs text-muted-foreground">{t("fpo.ui.4bff423fc6")}</p>
+          <p className="text-xs text-muted-foreground">Suppressed small cohorts</p>
           <p className="text-lg font-semibold tabular-nums">
             {data.coverage.suppressedCohorts}
           </p>
           <p className="text-xs text-muted-foreground">
-            {t("fpo.ui.bd164fdac8")}{" "}{data.minCohort} {t("fpo.ui.dcb3bbade7")}</p>
+            minimum{" "}{data.minCohort} members per group</p>
         </div>
       </div>
 
       {data.coverage.consentedMembers === 0 ? (
         <p className="rounded-lg border border-dashed border-border p-6 text-sm text-muted-foreground">
-          {t("fpo.ui.b41842f8ad")}</p>
+          No member has given an active membership &amp; farm-planning authorization yet. Collect consent in Farmer membership before planning from member history.</p>
       ) : null}
 
       {data.trends.length > 0 ? (
         <div className={card}>
-          <h3 className="text-sm font-semibold">{t("fpo.ui.f38d3d058b")}</h3>
+          <h3 className="text-sm font-semibold">Crop trends across consenting members</h3>
           <div className="mt-3 overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-secondary text-secondary-foreground">
                 <tr>
-                  <th className="p-3 text-left">{t("fpo.ui.c5db3d91c4")}</th>
-                  <th className="p-3 text-right">{t("fpo.ui.16e8a2fb47")}</th>
-                  <th className="p-3 text-right">{t("fpo.ui.938b76a924")}</th>
-                  <th className="p-3 text-right">{t("fpo.ui.1a406c0759")}</th>
-                  <th className="p-3 text-left">{t("fpo.ui.dae07c6ee8")}</th>
+                  <th className="p-3 text-left">Crop</th>
+                  <th className="p-3 text-right">Acres recorded</th>
+                  <th className="p-3 text-right">Avg yield / acre</th>
+                  <th className="p-3 text-right">Avg net / acre</th>
+                  <th className="p-3 text-left">Trend</th>
                 </tr>
               </thead>
               <tbody>
@@ -112,9 +110,9 @@ export function FpoMemberHistorySection({ tenantId }: { tenantId: string }) {
 
       <div className={card}>
         <div className="flex flex-wrap items-end justify-between gap-3">
-          <h3 className="text-sm font-semibold">{t("fpo.ui.a00ed44b2c")}</h3>
+          <h3 className="text-sm font-semibold">Indicative input demand for next season</h3>
           <div>
-            <Label htmlFor="growth">{t("fpo.ui.8751a22d0f")}</Label>
+            <Label htmlFor="growth">Planned change in area (%)</Label>
             <select
               id="growth"
               className="mt-1 h-10 rounded-md border border-input bg-background px-3 text-sm"
@@ -131,16 +129,16 @@ export function FpoMemberHistorySection({ tenantId }: { tenantId: string }) {
         </div>
         {data.demand.length === 0 ? (
           <p className="mt-3 text-sm text-muted-foreground">
-            {t("fpo.ui.ba9e1a5a9b")}</p>
+            Not enough consenting member history to project input demand.</p>
         ) : (
           <div className="mt-3 overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-secondary text-secondary-foreground">
                 <tr>
-                  <th className="p-3 text-left">{t("fpo.ui.c5db3d91c4")}</th>
-                  <th className="p-3 text-right">{t("fpo.ui.c1a2d76d90")}</th>
-                  <th className="p-3 text-right">{t("fpo.ui.9a12cb65c4")}</th>
-                  <th className="p-3 text-left">{t("fpo.ui.83d956f4d1")}</th>
+                  <th className="p-3 text-left">Crop</th>
+                  <th className="p-3 text-right">Projected acres</th>
+                  <th className="p-3 text-right">Indicative budget</th>
+                  <th className="p-3 text-left">Basis</th>
                 </tr>
               </thead>
               <tbody>
@@ -164,7 +162,7 @@ export function FpoMemberHistorySection({ tenantId }: { tenantId: string }) {
 
       {data.signals.length > 0 ? (
         <div className={card}>
-          <h3 className="text-sm font-semibold">{t("fpo.ui.a69464ed2f")}</h3>
+          <h3 className="text-sm font-semibold">Procurement &amp; yield-gap signals</h3>
           <ul className="mt-3 space-y-2 text-sm">
             {data.signals.map((s) => (
               <li key={`${s.crop}-${s.signal}`} className="flex items-start gap-2">

@@ -1,4 +1,3 @@
-import { useLanguage } from "@/components/atap/LanguageProvider";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
@@ -28,7 +27,6 @@ export function FpoDocumentsSection({
   overview: FpoOverview;
   onChanged: () => Promise<void>;
 }) {
-  const { t } = useLanguage();
   const tenantId = overview.activeTenantId ?? "";
   const add = useServerFn(addFpoDocument);
   const setStatus = useServerFn(setFpoDocumentStatus);
@@ -43,11 +41,11 @@ export function FpoDocumentsSection({
   return (
     <div className="space-y-6">
       <section className="panel space-y-3 p-5">
-        <h2 className="font-display text-base font-semibold">{t("fpo.ui.addf282c33")}</h2>
+        <h2 className="font-display text-base font-semibold">Compliance status</h2>
         <p className="field-hint">
-          {t("fpo.ui.6b5b48eb2f")}</p>
+          Required for a complete organization record: certificate of incorporation, PAN, bank proof and board resolution.</p>
         {overview.missingDocuments.length === 0 ? (
-          <p className="text-sm">{t("fpo.ui.18bb9c05b9")}</p>
+          <p className="text-sm">All required documents are on file.</p>
         ) : (
           <ul className="list-disc pl-5 text-sm text-muted-foreground">
             {overview.missingDocuments.map((d) => (
@@ -57,23 +55,23 @@ export function FpoDocumentsSection({
         )}
         {due.length > 0 ? (
           <p className="text-sm">
-            {due.length} {t("fpo.ui.4fd5806072")}</p>
+            {due.length} document(s) need attention — expired, rejected or expiring within 60 days.</p>
         ) : null}
       </section>
 
       <section className="panel space-y-3 p-5">
-        <h2 className="font-display text-base font-semibold">{t("fpo.ui.687c82861c")}</h2>
+        <h2 className="font-display text-base font-semibold">Documents</h2>
         {overview.documents.length === 0 ? (
-          <p className="text-sm text-muted-foreground">{t("fpo.ui.ec7eb3c93e")}</p>
+          <p className="text-sm text-muted-foreground">No documents uploaded yet.</p>
         ) : (
           <table className="data-table">
             <thead>
               <tr>
-                <th>{t("fpo.ui.3deb745651")}</th>
-                <th>{t("fpo.ui.768e0c1c69")}</th>
-                <th>{t("fpo.ui.deb5d5e2f0")}</th>
-                <th>{t("fpo.ui.a99be3da0c")}</th>
-                <th>{t("fpo.ui.bae7d5be70")}</th>
+                <th>Type</th>
+                <th>Title</th>
+                <th>Issued</th>
+                <th>Expires</th>
+                <th>Status</th>
                 <th />
               </tr>
             </thead>
@@ -98,7 +96,7 @@ export function FpoDocumentsSection({
                             onClick={async () => {
                               try {
                                 await setStatus({ data: { tenantId, id: d.id, status: next } });
-                                toast.success(t("fpo.ui.b182195383"));
+                                toast.success("Document status updated and audited");
                                 await onChanged();
                               } catch (e) {
                                 toast.error((e as Error).message);
@@ -132,12 +130,12 @@ export function FpoDocumentsSection({
             </select>
             <input
               className="field-base"
-              placeholder={t("fpo.ui.6d5daee81c")}
+              placeholder=Document title / reference
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
             <label className="space-y-1 text-sm">
-              <span className="font-medium">{t("fpo.ui.478832afa8")}</span>
+              <span className="font-medium">Issued on</span>
               <input
                 className="field-base"
                 type="date"
@@ -146,7 +144,7 @@ export function FpoDocumentsSection({
               />
             </label>
             <label className="space-y-1 text-sm">
-              <span className="font-medium">{t("fpo.ui.549cabe71f")}</span>
+              <span className="font-medium">Expires on</span>
               <input
                 className="field-base"
                 type="date"
@@ -158,7 +156,7 @@ export function FpoDocumentsSection({
               onClick={async () => {
                 try {
                   await add({ data: { tenantId, docType, title, issuedOn, expiresAt } });
-                  toast.success(t("fpo.ui.1e5bdbeff3"));
+                  toast.success("Document recorded and audited");
                   setTitle("");
                   setIssuedOn("");
                   setExpiresAt("");
@@ -169,11 +167,11 @@ export function FpoDocumentsSection({
               }}
               disabled={!title}
             >
-              {t("fpo.ui.3ead49321e")}</Button>
+              Add document</Button>
           </div>
         ) : (
           <p className="text-sm text-muted-foreground">
-            {t("fpo.ui.142fd9600d")}</p>
+            Only an admin of this FPO can add or review organization documents.</p>
         )}
       </section>
     </div>

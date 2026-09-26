@@ -1,4 +1,3 @@
-import { useLanguage } from "@/components/atap/LanguageProvider";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -33,7 +32,6 @@ const input =
 const card = "rounded-lg border border-border bg-card p-4";
 
 export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
-  const { t } = useLanguage();
   const qc = useQueryClient();
   const boardFn = useServerFn(getNotificationsBoard);
   const createFn = useServerFn(createNotice);
@@ -83,8 +81,8 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
 
   const data = board.data;
 
-  if (board.isLoading) return <p className="text-sm text-muted-foreground">{t("fpo.ui.33ce417454")}</p>;
-  if (!data) return <p className="text-sm text-muted-foreground">{t("fpo.ui.d83002e658")}</p>;
+  if (board.isLoading) return <p className="text-sm text-muted-foreground">Loading…</p>;
+  if (!data) return <p className="text-sm text-muted-foreground">No communication records yet.</p>;
 
   const toggleChannel = (c: NoticeChannel) =>
     setChannels((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
@@ -111,16 +109,16 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
 
       {data.canSend ? (
         <section className={`${card} space-y-3`}>
-          <h3 className="font-display text-base font-semibold">{t("fpo.ui.e2bafc078c")}</h3>
+          <h3 className="font-display text-base font-semibold">Compose a notification</h3>
           <input
             className={input}
-            placeholder={t("fpo.ui.768e0c1c69")}
+            placeholder=Title
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
           <textarea
             className={`${input} min-h-24`}
-            placeholder={t("fpo.ui.0e8c8a009d")}
+            placeholder=Message to members
             value={body}
             onChange={(e) => setBody(e.target.value)}
           />
@@ -161,7 +159,7 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
               value={segmentId}
               onChange={(e) => setSegmentId(e.target.value)}
             >
-              <option value="">{t("fpo.ui.8889a3b7e8")}</option>
+              <option value="">Select a saved segment</option>
               {data.segmentOptions.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
@@ -176,7 +174,7 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
               value={memberId}
               onChange={(e) => setMemberId(e.target.value)}
             >
-              <option value="">{t("fpo.ui.6d593674c4")}</option>
+              <option value="">Select a member</option>
               {data.memberOptions.map((m) => (
                 <option key={m.id} value={m.id}>
                   {m.display_name}
@@ -218,7 +216,7 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
               }
               disabled={create.isPending}
             >
-              {t("fpo.ui.fdb22e43fa")}</Button>
+              Save notification</Button>
             <Button
               variant="outline"
               onClick={async () => {
@@ -244,19 +242,19 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
                 }
               }}
             >
-              {t("fpo.ui.7e1b1e9554")}</Button>
+              Preview reach</Button>
           </div>
           {preview ? <p className="text-sm">{preview}</p> : null}
         </section>
       ) : (
         <p className="text-sm text-muted-foreground">
-          {t("fpo.ui.d9c0ae1de1")}</p>
+          Only an FPO admin can compose member communication. You have read access to the record.</p>
       )}
 
       <section className="space-y-3">
-        <h3 className="font-display text-base font-semibold">{t("fpo.ui.a83322af74")}</h3>
+        <h3 className="font-display text-base font-semibold">Notification record</h3>
         {data.notices.length === 0 ? (
-          <p className="text-sm text-muted-foreground">{t("fpo.ui.6fa60471c5")}</p>
+          <p className="text-sm text-muted-foreground">Nothing sent yet.</p>
         ) : (
           data.notices.map((n) => {
             const rows = data.deliveries.filter((d) => d.notification_id === n.id);
@@ -276,8 +274,8 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
                   <div className="flex flex-wrap items-center gap-2">
                     <StateBadge state={n.state} />
                     <span className="text-xs text-muted-foreground">
-                      {NOTICE_STATE_LABEL[n.state]} · {n.recipient_count} {t("fpo.ui.46c828bb20")}{" "}
-                      {n.withheld_count} {t("fpo.ui.7b2121e505")}</span>
+                      {NOTICE_STATE_LABEL[n.state]} · {n.recipient_count} reached,{" "}
+                      {n.withheld_count} withheld</span>
                   </div>
                 </div>
                 <p className="text-sm">{n.body}</p>
@@ -289,7 +287,7 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
                         onClick={() => send.mutate({ tenantId, noticeId: n.id })}
                         disabled={send.isPending}
                       >
-                        {t("fpo.ui.dae3301014")}</Button>
+                        Send now</Button>
                     ) : null}
                     {nextNoticeStates(n.state)
                       .filter((s) => s === "cancelled" || s === "draft" || s === "scheduled")
@@ -316,10 +314,10 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
                   <table className="data-table">
                     <thead>
                       <tr>
-                        <th>{t("fpo.ui.9034326017")}</th>
-                        <th>{t("fpo.ui.879f0b1bef")}</th>
-                        <th>{t("fpo.ui.5faa59d4bc")}</th>
-                        <th>{t("fpo.ui.f219cc0614")}</th>
+                        <th>Recipient</th>
+                        <th>Channel</th>
+                        <th>Result</th>
+                        <th>Reason</th>
                       </tr>
                     </thead>
                     <tbody>
