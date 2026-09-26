@@ -65,7 +65,7 @@ const STATE_TONE: Record<string, string> = {
   conflict: "bg-status-rejected text-status-rejected-foreground",
 };
 
-export function StateBadge({ state, className }: { state: string; className?: string }) {
+export function StateBadge({ state, className, label }: { state: string; className?: string; label?: string }) {
   return (
     <span
       className={cn(
@@ -74,12 +74,12 @@ export function StateBadge({ state, className }: { state: string; className?: st
         className,
       )}
     >
-      {state.replaceAll("_", " ")}
+      {label ?? state.replaceAll("_", " ")}
     </span>
   );
 }
 
-export function FlagBadge({ enabled }: { enabled: boolean }) {
+export function FlagBadge({ enabled, label }: { enabled: boolean; label?: string }) {
   return (
     <span
       className={cn(
@@ -89,7 +89,7 @@ export function FlagBadge({ enabled }: { enabled: boolean }) {
           : "bg-status-neutral text-status-neutral-foreground",
       )}
     >
-      {enabled ? "On" : "Off"}
+      {label ?? (enabled ? "On" : "Off")}
     </span>
   );
 }
