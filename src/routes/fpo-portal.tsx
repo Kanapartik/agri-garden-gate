@@ -45,6 +45,7 @@ const NAV = [
 ] as const;
 
 function PortalShell() {
+  const { t } = useLanguage();
   const { fpoTenant, staffName, isAdmin } = Route.useRouteContext();
   const nav = NAV.filter((n) => isAdmin || n.to !== "/fpo-portal/admin");
   const navigate = useNavigate();
