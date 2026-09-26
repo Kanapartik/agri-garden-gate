@@ -28,24 +28,18 @@ export const Route = createFileRoute("/mobile/v1/auth/otp/request")({
           if (error?.status === 429) return mobileError("otp_rate_limited", 429, correlationId);
           if (error) {
             const sandboxChallengeId = await createSandboxStaticOtpChallenge(phone);
-            if (sandboxChallengeId) {
-              const now = Date.now();
-              return mobileJson(
-                {
-                  challengeId: sandboxChallengeId,
-                  delivery: { channel: "sms", maskedDestination: maskIndianMobile(phone) },
-                  expiresAt: new Date(now + 10 * 60 * 1000).toISOString(),
-                  resendAfterSeconds: 60,
-                  sandboxStaticOtp: true,
-                },
-                202,
-              );
-            }
-          }
-          // Keep the response generic for unknown accounts and provider-safe 4xx failures.
-          if (error && (error.status ?? 500) >= 500) {
-            console.error("mobile_otp_provider_error", correlationId, error.code);
-            return mobileError("otp_delivery_unavailable", 503, correlationId);
+            // Return the same public challenge shape regardless of whether this
+            // phone has the audited synthetic fallback. Do not expose its status.
+            const now = Date.now();
+            return mobileJson(
+              {
+                challengeId: sandboxChallengeId ?? crypto.randomUUID(),
+                delivery: { channel: "sms", maskedDestination: maskIndianMobile(phone) },
+                expiresAt: new Date(now + 10 * 60 * 1000).toISOString(),
+                resendAfterSeconds: 60,
+              },
+              202,
+            );
           }
           const now = Date.now();
           return mobileJson(
