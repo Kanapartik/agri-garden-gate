@@ -3,6 +3,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/components/atap/LanguageProvider";
+import { fill } from "@/lib/i18n.fpoWs";
 import {
   actOnVoucher,
   createVoucher,
@@ -113,6 +115,7 @@ export function FpoBillingSection({
   tenantId: string;
   orgLabel?: string;
 }) {
+  const { t } = useLanguage();
   const qc = useQueryClient();
   const boardFn = useServerFn(getBillingBoard);
   const createFn = useServerFn(createVoucher);
@@ -175,17 +178,17 @@ export function FpoBillingSection({
           submit: i.submit,
         },
       }),
-    "Voucher prepared",
+    t("fpo.bill.prepared"),
   );
   const act = useAction(
     (i: { voucherId: string; action: VoucherAction; reason?: string | null }) =>
       actFn({ data: { tenantId, ...i } }),
-    "Voucher updated",
+    t("fpo.bill.updatedT"),
   );
   const settle = useAction(
     (i: { voucherId: string; amountSettled: number; bankReference?: string | null }) =>
       settleFn({ data: { tenantId, ...i } }),
-    "Settlement recorded",
+    t("fpo.bill.settledT"),
   );
 
   const data = board.data;
@@ -209,7 +212,7 @@ export function FpoBillingSection({
   };
 
   if (board.isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading billing &amp; collections…</p>;
+    return <p className="text-sm text-muted-foreground">{t("fpo.bill.loading")}</p>;
   }
   if (board.error) {
     return <p className="text-sm text-destructive">{(board.error as Error).message}</p>;
@@ -221,19 +224,19 @@ export function FpoBillingSection({
   return (
     <div className="space-y-6">
       <div className={`${card} space-y-2`}>
-        <h3 className="text-base font-semibold text-foreground">Billing &amp; collections</h3>
+        <h3 className="text-base font-semibold text-foreground">{t("fpo.bill.title")}</h3>
         <p className="text-sm text-muted-foreground">
-          One place for member collections and operating expenses, with a maker, checker and approver step on every voucher.{" "}{data.disclaimer}
+          {t("fpo.bill.intro")}{" "}{data.disclaimer}
         </p>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {[
-          { label: "Awaiting verification", value: s.awaitingCheck, hint: "Checker action due" },
-          { label: "Awaiting approval", value: s.awaitingApproval, hint: "Approver action due" },
-          { label: "Returned for correction", value: s.returned, hint: "Back with the maker" },
+          { label: t("fpo.bill.kCheck"), value: s.awaitingCheck, hint: t("fpo.bill.kCheckH") },
+          { label: t("fpo.bill.kAppr"), value: s.awaitingApproval, hint: t("fpo.bill.kApprH") },
+          { label: t("fpo.bill.kRet"), value: s.returned, hint: t("fpo.bill.kRetH") },
           {
-            label: "Approved, not settled",
+            label: t("fpo.bill.kUns"),
             value: s.approvedUnsettled,
             hint: money(s.approvedUnsettledAmount),
           },
@@ -263,18 +266,18 @@ export function FpoBillingSection({
                   : "border-border bg-card text-muted-foreground hover:text-foreground"
               }`}
             >
-              {key === "all" ? "All vouchers" : VOUCHER_STAGE_LABEL[key]} ({count})
+              {key === "all" ? t("fpo.bill.all") : VOUCHER_STAGE_LABEL[key]} ({count})
             </button>
           );
         })}
         <div className="ml-auto">
           {data.canMake ? (
             <Button size="sm" onClick={() => setShowForm((v) => !v)}>
-              {showForm ? "Close" : "New voucher"}
+              {showForm ? t("fpo.bill.close") : t("fpo.bill.new")}
             </Button>
           ) : (
             <span className="text-xs text-muted-foreground">
-              Your role can view vouchers but not prepare them.</span>
+              {t("fpo.bill.viewOnly")}</span>
           )}
         </div>
       </div>
@@ -284,8 +287,8 @@ export function FpoBillingSection({
           <div className="flex flex-wrap gap-2">
             {(
               [
-                ["inflow", "Collection / receipt"],
-                ["outflow", "Payment / expense"],
+                ["inflow", t("fpo.bill.inflow")],
+                ["outflow", t("fpo.bill.outflow")],
               ] as Array<[LedgerDirection, string]>
             ).map(([key, label]) => (
               <button
@@ -308,7 +311,7 @@ export function FpoBillingSection({
 
           <div className="grid gap-3 md:grid-cols-2">
             <label className="space-y-1 text-sm">
-              <span className="text-muted-foreground">Category</span>
+              <span className="text-muted-foreground">{t("fpo.bill.category")}</span>
               <select
                 className={input}
                 value={category}
@@ -322,7 +325,7 @@ export function FpoBillingSection({
               </select>
             </label>
             <label className="space-y-1 text-sm">
-              <span className="text-muted-foreground">Amount (₹)</span>
+              <span className="text-muted-foreground">{t("fpo.bill.amount")}</span>
               <input
                 className={input}
                 type="number"
@@ -332,22 +335,22 @@ export function FpoBillingSection({
               />
             </label>
             <label className="space-y-1 text-sm md:col-span-2">
-              <span className="text-muted-foreground">Particulars</span>
+              <span className="text-muted-foreground">{t("fpo.bill.particulars")}</span>
               <input
                 className={input}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="What is this collection or expense for?"
+                placeholder={t("fpo.bill.particularsPh")}
               />
             </label>
             <label className="space-y-1 text-sm">
-              <span className="text-muted-foreground">Member (optional)</span>
+              <span className="text-muted-foreground">{t("fpo.bill.member")}</span>
               <select
                 className={input}
                 value={memberId}
                 onChange={(e) => setMemberId(e.target.value)}
               >
-                <option value="">Not member-linked</option>
+                <option value="">{t("fpo.bill.noMember")}</option>
                 {data.members.map((m) => (
                   <option key={m.id} value={m.id}>
                     {m.display_name}
@@ -357,11 +360,11 @@ export function FpoBillingSection({
               </select>
             </label>
             <label className="space-y-1 text-sm">
-              <span className="text-muted-foreground">Other party (optional)</span>
+              <span className="text-muted-foreground">{t("fpo.bill.party")}</span>
               <input className={input} value={party} onChange={(e) => setParty(e.target.value)} />
             </label>
             <label className="space-y-1 text-sm">
-              <span className="text-muted-foreground">Due date</span>
+              <span className="text-muted-foreground">{t("fpo.bill.due")}</span>
               <input
                 className={input}
                 type="date"
@@ -370,7 +373,7 @@ export function FpoBillingSection({
               />
             </label>
             <label className="space-y-1 text-sm">
-              <span className="text-muted-foreground">Bill / receipt reference</span>
+              <span className="text-muted-foreground">{t("fpo.bill.ref")}</span>
               <input
                 className={input}
                 value={reference}
@@ -378,15 +381,15 @@ export function FpoBillingSection({
               />
             </label>
             <label className="space-y-1 text-sm md:col-span-2">
-              <span className="text-muted-foreground">Note for the checker</span>
+              <span className="text-muted-foreground">{t("fpo.bill.note")}</span>
               <input className={input} value={note} onChange={(e) => setNote(e.target.value)} />
             </label>
           </div>
 
           {selectedMember ? (
             <p className="rounded-md border border-border bg-muted/40 p-3 text-xs text-muted-foreground">
-              {selectedMember.display_name} currently owes the FPO{" "}
-              <strong className="text-foreground">{money(selectedMember.owesFpo)}</strong> and is owed{" "}<strong className="text-foreground">{money(selectedMember.fpoOwes)}</strong> on approved vouchers.</p>
+              {fill(t("fpo.bill.owes"), { m: selectedMember.display_name })}{" "}
+              <strong className="text-foreground">{money(selectedMember.owesFpo)}</strong> {t("fpo.bill.owed")}{" "}<strong className="text-foreground">{money(selectedMember.fpoOwes)}</strong> {t("fpo.bill.onApproved")}</p>
           ) : null}
 
           <div className="flex flex-wrap gap-2">
@@ -405,7 +408,7 @@ export function FpoBillingSection({
                 )
               }
             >
-              Save &amp; send for verification</Button>
+              {t("fpo.bill.send")}</Button>
             <Button
               size="sm"
               variant="outline"
@@ -422,14 +425,14 @@ export function FpoBillingSection({
                 )
               }
             >
-              Save as draft</Button>
+              {t("fpo.bill.draft")}</Button>
           </div>
         </div>
       ) : null}
 
       {visible.length === 0 ? (
         <p className={`${card} text-sm text-muted-foreground`}>
-          Nothing in this stage right now.</p>
+          {t("fpo.bill.empty")}</p>
       ) : (
         <div className="space-y-3">
           {visible.map((v) => {
@@ -445,12 +448,12 @@ export function FpoBillingSection({
                       <StageChip stage={v.workflow_stage} />
                       {v.overdue ? (
                         <span className="rounded-full bg-destructive/15 px-2.5 py-0.5 text-xs font-medium text-destructive">
-                          Overdue</span>
+                          {t("fpo.bill.overdue")}</span>
                       ) : null}
                     </div>
                     <p className="mt-1 font-medium text-foreground">{v.description}</p>
                     <p className="text-xs text-muted-foreground">
-                      {v.direction === "inflow" ? "Collection" : "Expense"} ·{" "}
+                      {v.direction === "inflow" ? t("fpo.bill.collection") : t("fpo.bill.expense")} ·{" "}
                       {LEDGER_CATEGORY_LABEL[v.category]} · {when(v.entry_date)}
                       {v.member_name ? ` · ${v.member_name}` : ""}
                       {v.party_name ? ` · ${v.party_name}` : ""}
@@ -459,29 +462,29 @@ export function FpoBillingSection({
                   <div className="text-right">
                     <p className="text-lg font-semibold text-foreground">{money(v.amount)}</p>
                     <p className="text-xs text-muted-foreground">
-                      {PAYMENT_STATE_LABEL[v.payment_state]} · open{" "}{money(v.outstanding)}
+                      {PAYMENT_STATE_LABEL[v.payment_state]} · {t("fpo.bill.open")}{" "}{money(v.outstanding)}
                     </p>
                   </div>
                 </div>
 
                 <div className="grid gap-2 text-xs text-muted-foreground sm:grid-cols-3">
                   <p>
-                    Prepared:{" "}<span className="text-foreground">{v.maker_name ?? "—"}</span>{" "}
+                    {t("fpo.bill.byMaker")}{" "}<span className="text-foreground">{v.maker_name ?? "—"}</span>{" "}
                     {when(v.maker_at)}
                   </p>
                   <p>
-                    Verified:{" "}<span className="text-foreground">{v.checker_name ?? "—"}</span>{" "}
+                    {t("fpo.bill.byChecker")}{" "}<span className="text-foreground">{v.checker_name ?? "—"}</span>{" "}
                     {when(v.checker_at)}
                   </p>
                   <p>
-                    Approved:{" "}<span className="text-foreground">{v.approver_name ?? "—"}</span>{" "}
+                    {t("fpo.bill.byApprover")}{" "}<span className="text-foreground">{v.approver_name ?? "—"}</span>{" "}
                     {when(v.approver_at)}
                   </p>
                 </div>
 
                 {v.returned_reason ? (
                   <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive">
-                    Returned:{" "}{v.returned_reason}
+                    {t("fpo.bill.returnedL")}{" "}{v.returned_reason}
                   </p>
                 ) : null}
 
@@ -508,7 +511,7 @@ export function FpoBillingSection({
                         setRemarks("");
                       }}
                     >
-                      Return for correction</Button>
+                      {t("fpo.bill.returnFor")}</Button>
                   ) : null}
                   {v.workflow_stage === "approved" && v.outstanding > 0 && data.canApprove ? (
                     <Button
@@ -519,21 +522,21 @@ export function FpoBillingSection({
                         setSettleRef("");
                       }}
                     >
-                      Record settlement</Button>
+                      {t("fpo.bill.recordSettle")}</Button>
                   ) : null}
                   <Button size="sm" variant="ghost" onClick={() => printVoucher(v, orgLabel)}>
-                    Print voucher</Button>
+                    {t("fpo.bill.print")}</Button>
                 </div>
 
                 {remarksFor === v.id ? (
                   <div className="flex flex-wrap items-end gap-2">
                     <label className="min-w-[240px] flex-1 space-y-1 text-sm">
-                      <span className="text-muted-foreground">Remarks for the maker</span>
+                      <span className="text-muted-foreground">{t("fpo.bill.remarks")}</span>
                       <input
                         className={input}
                         value={remarks}
                         onChange={(e) => setRemarks(e.target.value)}
-                        placeholder="What needs correcting?"
+                        placeholder={t("fpo.bill.remarksPh")}
                       />
                     </label>
                     <Button
@@ -546,14 +549,14 @@ export function FpoBillingSection({
                         )
                       }
                     >
-                      Return</Button>
+                      {t("fpo.bill.return")}</Button>
                   </div>
                 ) : null}
 
                 {settleFor === v.id ? (
                   <div className="flex flex-wrap items-end gap-2">
                     <label className="space-y-1 text-sm">
-                      <span className="text-muted-foreground">Amount settled (₹)</span>
+                      <span className="text-muted-foreground">{t("fpo.bill.settledAmt")}</span>
                       <input
                         className={input}
                         type="number"
@@ -563,7 +566,7 @@ export function FpoBillingSection({
                       />
                     </label>
                     <label className="min-w-[200px] flex-1 space-y-1 text-sm">
-                      <span className="text-muted-foreground">Bank / UTR reference</span>
+                      <span className="text-muted-foreground">{t("fpo.bill.utr")}</span>
                       <input
                         className={input}
                         value={settleRef}
@@ -584,7 +587,7 @@ export function FpoBillingSection({
                         )
                       }
                     >
-                      Save settlement</Button>
+                      {t("fpo.bill.saveSettle")}</Button>
                   </div>
                 ) : null}
               </div>
