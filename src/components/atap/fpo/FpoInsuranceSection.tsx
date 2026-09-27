@@ -3,6 +3,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/components/atap/LanguageProvider";
+import { fill } from "@/lib/i18n.fpoWs";
 import { getFpoCoverBoard, syncFpoMemberCover } from "@/lib/atap/insuranceBridge.functions";
 import { COVER_BINDING_LABEL, policyCoverState } from "@/lib/atap/insuranceBridge";
 
@@ -11,6 +13,7 @@ const inr = (v: number | null | undefined) =>
   v === null || v === undefined ? "—" : `₹${Math.round(v).toLocaleString("en-IN")}`;
 
 export function FpoInsuranceSection({ tenantId }: { tenantId: string }) {
+  const { t } = useLanguage();
   const boardFn = useServerFn(getFpoCoverBoard);
   const syncFn = useServerFn(syncFpoMemberCover);
   const queryClient = useQueryClient();
@@ -25,7 +28,7 @@ export function FpoInsuranceSection({ tenantId }: { tenantId: string }) {
     mutationFn: () => syncFn({ data: { tenantId } }),
     onSuccess: (res) => {
       toast.success(
-        `Cover indicators refreshed for ${res.bound} of ${res.consentedMembers} authorized members`,
+        fill(t("fpo.ins.synced"), { a: res.bound, b: res.consentedMembers }),
         {
           description:
             res.skippedNoPolicy || res.skippedNoAcreage
@@ -39,11 +42,11 @@ export function FpoInsuranceSection({ tenantId }: { tenantId: string }) {
   });
 
   if (board.isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading insurance cover board…</p>;
+    return <p className="text-sm text-muted-foreground">{t("fpo.ins.loading")}</p>;
   }
   const data = board.data;
   if (!data) {
-    return <p className="text-sm text-muted-foreground">Insurance cover board is not available.</p>;
+    return <p className="text-sm text-muted-foreground">{t("fpo.ins.na")}</p>;
   }
 
   return (
@@ -52,25 +55,25 @@ export function FpoInsuranceSection({ tenantId }: { tenantId: string }) {
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className={card}>
-          <p className="text-xs text-muted-foreground">Linked policies</p>
+          <p className="text-xs text-muted-foreground">{t("fpo.ins.linked")}</p>
           <p className="text-lg font-semibold tabular-nums">{data.policies.length}</p>
           <p className="text-xs text-muted-foreground">{data.provenance.label}</p>
         </div>
         <div className={card}>
-          <p className="text-xs text-muted-foreground">Members on roster</p>
+          <p className="text-xs text-muted-foreground">{t("fpo.ins.roster")}</p>
           <p className="text-lg font-semibold tabular-nums">{data.members}</p>
         </div>
         <div className={card}>
-          <p className="text-xs text-muted-foreground">Authorized for facilitation</p>
+          <p className="text-xs text-muted-foreground">{t("fpo.ins.auth")}</p>
           <p className="text-lg font-semibold tabular-nums">{data.consentedMembers}</p>
         </div>
         <div className={card}>
-          <p className="text-xs text-muted-foreground">Member cover indicators bound</p>
+          <p className="text-xs text-muted-foreground">{t("fpo.ins.bound")}</p>
           <p className="text-lg font-semibold tabular-nums">{data.boundSnapshots}</p>
           <p className="text-xs text-muted-foreground">
             {data.lastSyncedAt
-              ? `last refreshed ${new Date(data.lastSyncedAt).toLocaleDateString("en-IN")}`
-              : "not refreshed yet"}
+              ? `${t("fpo.ins.last")} ${new Date(data.lastSyncedAt).toLocaleDateString("en-IN")}`
+              : t("fpo.ins.notYet")}
           </p>
         </div>
       </div>
@@ -78,39 +81,39 @@ export function FpoInsuranceSection({ tenantId }: { tenantId: string }) {
       <div className={card}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h3 className="text-sm font-semibold">Refresh member cover indicators</h3>
+            <h3 className="text-sm font-semibold">{t("fpo.ins.refreshTitle")}</h3>
             <p className="mt-1 text-xs text-muted-foreground">
-              Writes the notified policy's sum insured and farmer share to each authorized member's insurance corner. Members without an active authorization are never included, and no enrolment is created.</p>
+              {t("fpo.ins.writes")}</p>
           </div>
           <Button
             onClick={() => sync.mutate()}
             disabled={!data.canManage || sync.isPending || data.consentedMembers === 0}
           >
-            {sync.isPending ? "Refreshing…" : "Refresh from policies"}
+            {sync.isPending ? t("fpo.ins.refreshing") : t("fpo.ins.refresh")}
           </Button>
         </div>
         {!data.canManage ? (
           <p className="mt-2 text-xs text-muted-foreground">
-            Read-only: only an FPO administrator can refresh cover indicators.</p>
+            {t("fpo.ins.readOnly")}</p>
         ) : null}
       </div>
 
       <div className={card}>
-        <h3 className="text-sm font-semibold">Policies covering this organization</h3>
+        <h3 className="text-sm font-semibold">{t("fpo.ins.policies")}</h3>
         {data.policies.length === 0 ? (
           <p className="mt-2 text-sm text-muted-foreground">
-            No insurer policy is linked to this organization yet. Figures in member insurance corners stay indicative until an insurer links a policy.</p>
+            {t("fpo.ins.noPolicy")}</p>
         ) : (
           <div className="mt-3 overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-secondary text-secondary-foreground">
                 <tr>
-                  <th className="p-3 text-left">Policy</th>
-                  <th className="p-3 text-left">Scheme</th>
-                  <th className="p-3 text-left">Crop / season</th>
-                  <th className="p-3 text-right">Sum insured / acre</th>
-                  <th className="p-3 text-right">Farmer share</th>
-                  <th className="p-3 text-left">Binding</th>
+                  <th className="p-3 text-left">{t("fpo.ins.cPolicy")}</th>
+                  <th className="p-3 text-left">{t("fpo.ins.cScheme")}</th>
+                  <th className="p-3 text-left">{t("fpo.ins.cCrop")}</th>
+                  <th className="p-3 text-right">{t("fpo.ins.cSum")}</th>
+                  <th className="p-3 text-right">{t("fpo.ins.cShare")}</th>
+                  <th className="p-3 text-left">{t("fpo.ins.cBind")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -119,7 +122,7 @@ export function FpoInsuranceSection({ tenantId }: { tenantId: string }) {
                     <td className="p-3 font-medium">{p.policy_reference}</td>
                     <td className="p-3">{p.scheme_name}</td>
                     <td className="p-3">
-                      {p.crop ?? "all crops"} · {p.season}
+                      {p.crop ?? t("fpo.ins.allCrops")} · {p.season}
                     </td>
                     <td className="p-3 text-right tabular-nums">
                       {inr(p.sum_insured_per_acre_inr)}
@@ -139,10 +142,10 @@ export function FpoInsuranceSection({ tenantId }: { tenantId: string }) {
       </div>
 
       <div className={card}>
-        <h3 className="text-sm font-semibold">Claim status from the insurer</h3>
+        <h3 className="text-sm font-semibold">{t("fpo.ins.claims")}</h3>
         <p className="mt-1 text-xs text-muted-foreground">{data.claimNote}</p>
         {data.claims.length === 0 ? (
-          <p className="mt-2 text-sm text-muted-foreground">No claims reported for this organization.</p>
+          <p className="mt-2 text-sm text-muted-foreground">{t("fpo.ins.noClaims")}</p>
         ) : (
           <div className="mt-3 space-y-2">
             {data.claims.map((c) => (
@@ -152,10 +155,10 @@ export function FpoInsuranceSection({ tenantId }: { tenantId: string }) {
               >
                 <div>
                   <p className="text-sm font-medium">
-                    {c.reference} · {c.crop ?? "all crops"} · {c.season}
+                    {c.reference} · {c.crop ?? t("fpo.ins.allCrops")} · {c.season}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {c.peril.replace(/_/g, " ")} · reported{" "}
+                    {c.peril.replace(/_/g, " ")} · {t("fpo.ins.reported")}{" "}
                     {new Date(c.reportedAt).toLocaleDateString("en-IN")}
                   </p>
                 </div>
