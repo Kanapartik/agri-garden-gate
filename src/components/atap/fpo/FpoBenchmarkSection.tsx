@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { getFpoBenchmark } from "@/lib/atap/fpoBenchmark.functions";
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import {
   BAND_LABEL,
   BENCHMARK_DISCLAIMER,
@@ -31,6 +32,7 @@ const bandClass = {
 } as const;
 
 export function FpoBenchmarkSection({ tenantId }: { tenantId: string }) {
+  const { t } = useLanguage();
   const fetchIt = useServerFn(getFpoBenchmark);
   const q = useQuery({
     queryKey: ["atap", "fpo-benchmark", tenantId],
@@ -50,7 +52,7 @@ export function FpoBenchmarkSection({ tenantId }: { tenantId: string }) {
     return { ranked, own, peers, trend };
   }, [q.data, active]);
 
-  if (q.isLoading) return <p className="text-sm text-muted-foreground">Loading comparison…</p>;
+  if (q.isLoading) return <p className="text-sm text-muted-foreground">{t("fpo.cmp.loading")}</p>;
   if (q.error) return <p className="text-sm text-destructive">{(q.error as Error).message}</p>;
 
   const { ranked, own, peers, trend } = view;
@@ -60,8 +62,8 @@ export function FpoBenchmarkSection({ tenantId }: { tenantId: string }) {
       <section className="panel space-y-3 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="font-display text-base font-semibold">FPO performance comparison</h2>
-            <p className="field-hint">How well each FPO adopts best practice across six measures.</p>
+            <h2 className="font-display text-base font-semibold">{t("fpo.cmp.title")}</h2>
+            <p className="field-hint">{t("fpo.cmp.subtitle")}</p>
           </div>
           <select className="field-base w-40" value={active} onChange={(e) => setPeriod(e.target.value)}>
             {periods.map((p) => (
@@ -71,32 +73,32 @@ export function FpoBenchmarkSection({ tenantId }: { tenantId: string }) {
         </div>
         <p className="text-xs text-muted-foreground">
           {BENCHMARK_DISCLAIMER}
-          {q.data?.namesRevealed ? "" : " Other FPOs are shown without their names."}
+          {q.data?.namesRevealed ? "" : t("fpo.cmp.namesHidden")}
         </p>
       </section>
 
       {own ? (
         <div className="grid gap-4 md:grid-cols-4">
           <div className="panel p-4">
-            <p className="text-xs text-muted-foreground">Overall score</p>
+            <p className="text-xs text-muted-foreground">{t("fpo.cmp.overallScore")}</p>
             <p className="font-display text-3xl font-semibold">{own.overall}</p>
             <span className={`mt-1 inline-block rounded px-2 py-0.5 text-xs ${bandClass[band(own.overall)]}`}>{BAND_LABEL[band(own.overall)]}</span>
           </div>
           <div className="panel p-4">
-            <p className="text-xs text-muted-foreground">Rank</p>
+            <p className="text-xs text-muted-foreground">{t("fpo.cmp.rank")}</p>
             <p className="font-display text-3xl font-semibold">{own.rank}<span className="text-base text-muted-foreground"> / {ranked.length}</span></p>
           </div>
           <div className="panel p-4">
-            <p className="text-xs text-muted-foreground">Change since{" "}{trend[0]?.period}</p>
+            <p className="text-xs text-muted-foreground">{t("fpo.cmp.changeSince")}{" "}{trend[0]?.period}</p>
             <p className="font-display text-3xl font-semibold">
               {trend.length > 1 ? `${(overallScore(trend[trend.length - 1]!) - overallScore(trend[0]!)) >= 0 ? "+" : ""}${(overallScore(trend[trend.length - 1]!) - overallScore(trend[0]!)).toFixed(1)}` : "—"}
             </p>
           </div>
           <div className="panel p-4">
-            <p className="text-xs text-muted-foreground">Focus next on</p>
+            <p className="text-xs text-muted-foreground">{t("fpo.cmp.focusNext")}</p>
             <ul className="mt-1 space-y-0.5 text-sm">
               {focusAreas(own, peers).map((f) => (
-                <li key={f.key}>{f.label} <span className="text-muted-foreground">({f.gap >= 0 ? "+" : ""}{f.gap.toFixed(1)} vs peers)</span></li>
+                <li key={f.key}>{f.label} <span className="text-muted-foreground">({f.gap >= 0 ? "+" : ""}{f.gap.toFixed(1)} {t("fpo.cmp.vsPeers")})</span></li>
               ))}
             </ul>
           </div>
@@ -105,12 +107,12 @@ export function FpoBenchmarkSection({ tenantId }: { tenantId: string }) {
 
       {own ? (
         <section className="panel space-y-4 p-5">
-          <h3 className="font-display text-sm font-semibold">Your FPO vs peer average</h3>
+          <h3 className="font-display text-sm font-semibold">{t("fpo.cmp.vsPeerAvg")}</h3>
           {BENCHMARK_MEASURES.map((m) => (
             <div key={m.key} className="space-y-1">
               <div className="flex justify-between text-sm">
                 <span title={m.hint}>{m.label}</span>
-                <span className="text-muted-foreground">{own[m.key]} · peers{" "}{peerAverage(peers, m.key)}</span>
+                <span className="text-muted-foreground">{own[m.key]} · {t("fpo.cmp.peers")}{" "}{peerAverage(peers, m.key)}</span>
               </div>
               <Bar value={own[m.key]} marker={peerAverage(peers, m.key)} />
               <p className="field-hint">{m.hint}</p>
@@ -120,24 +122,24 @@ export function FpoBenchmarkSection({ tenantId }: { tenantId: string }) {
       ) : null}
 
       <section className="panel overflow-x-auto p-5">
-        <h3 className="mb-3 font-display text-sm font-semibold">League table ·{" "}{active}</h3>
+        <h3 className="mb-3 font-display text-sm font-semibold">{t("fpo.cmp.leagueTable")} ·{" "}{active}</h3>
         <table className="w-full min-w-[720px] text-sm">
           <thead className="text-left text-xs text-muted-foreground">
             <tr>
               <th className="py-2">#</th>
               <th>FPO</th>
-              <th>District</th>
+              <th>{t("fpo.cmp.district")}</th>
               {BENCHMARK_MEASURES.map((m) => (
                 <th key={m.key} className="text-right">{m.label.split(" ")[0]}</th>
               ))}
-              <th className="text-right">Overall</th>
+              <th className="text-right">{t("fpo.cmp.overall")}</th>
             </tr>
           </thead>
           <tbody>
             {ranked.map((r) => (
               <tr key={r.label} className={`border-t border-border ${r.isOwn ? "bg-primary/5 font-medium" : ""}`}>
                 <td className="py-2">{r.rank}</td>
-                <td>{r.label}{r.isOwn ? " (you)" : ""}</td>
+                <td>{r.label}{r.isOwn ? ` ${t("fpo.cmp.you")}` : ""}</td>
                 <td className="text-muted-foreground">{r.district}</td>
                 {BENCHMARK_MEASURES.map((m) => (
                   <td key={m.key} className="text-right">{r[m.key]}</td>
@@ -153,7 +155,7 @@ export function FpoBenchmarkSection({ tenantId }: { tenantId: string }) {
 
       {trend.length > 0 ? (
         <section className="panel space-y-2 p-5">
-          <h3 className="font-display text-sm font-semibold">Your trend by quarter</h3>
+          <h3 className="font-display text-sm font-semibold">{t("fpo.cmp.trend")}</h3>
           {trend.map((t) => (
             <div key={t.period} className="flex items-center gap-3 text-sm">
               <span className="w-20 text-muted-foreground">{t.period}</span>

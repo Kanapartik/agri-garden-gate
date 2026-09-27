@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StateBadge } from "@/components/atap/StatusBadge";
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import { FPO_SECTION_DEFS, type FpoSection } from "@/lib/atap/fpo";
 import type { FpoOverview } from "@/lib/atap/fpo.functions";
 import {
@@ -57,7 +58,7 @@ function sectionLabel(section: FpoSection): string {
   return FPO_SECTION_DEFS.find((item) => item.key === section)?.label ?? section;
 }
 
-function ReadinessRing({ score }: { score: number }) {
+function ReadinessRing({ score, label, ariaLabel }: { score: number; label: string; ariaLabel: string }) {
   return (
     <div
       className="relative grid h-32 w-32 shrink-0 place-items-center rounded-full"
@@ -65,13 +66,13 @@ function ReadinessRing({ score }: { score: number }) {
         background: `conic-gradient(var(--color-accent) ${score * 3.6}deg, color-mix(in oklab, var(--color-surface-deep-foreground) 18%, transparent) 0deg)`,
       }}
       role="img"
-      aria-label={`Operating readiness ${score}%`}
+      aria-label={`${ariaLabel} ${score}%`}
     >
       <div className="grid h-24 w-24 place-items-center rounded-full bg-surface-deep text-center text-surface-deep-foreground">
         <div>
           <p className="text-3xl font-bold tabular-nums">{score}%</p>
           <p className="text-[10px] font-semibold uppercase tracking-[0.14em] opacity-75">
-            readiness</p>
+            {label}</p>
         </div>
       </div>
     </div>
@@ -99,6 +100,7 @@ export function FpoCommandCenter({
   overview: FpoOverview;
   onOpenSection: (section: FpoSection) => void;
 }) {
+  const { t } = useLanguage();
   const [lens, setLens] = useState<FpoDashboardLens>(() => defaultFpoDashboardLens(overview.roles));
   const complianceActions = numericMetric(overview, "compliance");
   const readiness = deriveFpoReadiness({
@@ -125,38 +127,38 @@ export function FpoCommandCenter({
           <div>
             <div className="mb-5 flex flex-wrap items-center gap-2">
               <span className="rounded-full border border-surface-deep-foreground/20 bg-surface-deep-foreground/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em]">
-                FPO intelligence &amp; governance</span>
+                {t("fpo.dash.badge")}</span>
               {overview.profile ? <StateBadge state={overview.profile.state} /> : null}
             </div>
             <p className="text-sm font-semibold text-accent">{organization}</p>
             <h2 className="mt-2 max-w-2xl text-3xl font-bold leading-tight sm:text-4xl">
-              Run the farmer-to-market business from one operating view.</h2>
+              {t("fpo.dash.heroTitle")}</h2>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-surface-deep-foreground/70">
-              Connect membership, crop plans, inputs, aggregation, quality, buyers, settlements and governance without re-entering the same record in separate systems.</p>
+              {t("fpo.dash.heroBody")}</p>
             <div className="mt-6 flex flex-wrap gap-2">
               <Button
                 className="bg-accent text-accent-foreground hover:bg-accent/90"
                 onClick={() => onOpenSection(attention[0]?.section ?? "insights")}
               >
-                Review priority work{" "}<ArrowRight className="h-4 w-4" />
+                {t("fpo.dash.reviewPriority")}{" "}<ArrowRight className="h-4 w-4" />
               </Button>
               <Button
                 variant="outline"
                 className="border-surface-deep-foreground/25 bg-transparent text-surface-deep-foreground hover:bg-surface-deep-foreground/10 hover:text-surface-deep-foreground"
                 onClick={() => onOpenSection("insights")}
               >
-                Open operational insights</Button>
+                {t("fpo.dash.openInsights")}</Button>
             </div>
           </div>
 
           <div className="grid gap-5 sm:grid-cols-[auto_minmax(12rem,1fr)] lg:grid-cols-1 xl:grid-cols-[auto_13rem] xl:items-center">
-            <ReadinessRing score={readiness.score} />
+            <ReadinessRing score={readiness.score} label={t("fpo.dash.readiness")} ariaLabel={t("fpo.dash.readinessAria")} />
             <div className="space-y-3">
-              <ReadinessBar label="Organization setup" value={readiness.onboarding} />
-              <ReadinessBar label="Active members" value={readiness.memberActivation} />
-              <ReadinessBar label="Required documents" value={readiness.compliance} />
+              <ReadinessBar label={t("fpo.dash.orgSetup")} value={readiness.onboarding} />
+              <ReadinessBar label={t("fpo.dash.activeMembers")} value={readiness.memberActivation} />
+              <ReadinessBar label={t("fpo.dash.requiredDocs")} value={readiness.compliance} />
               <p className="pt-1 text-[10px] leading-4 text-surface-deep-foreground/55">
-                DERIVED operating readiness only. It is not a credit, scheme, insurance or governance decision score.</p>
+                {t("fpo.dash.readinessNote")}</p>
             </div>
           </div>
         </div>
@@ -166,12 +168,12 @@ export function FpoCommandCenter({
         <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-              Observed organization snapshot</p>
+              {t("fpo.dash.snapshotKicker")}</p>
             <h2 id="fpo-snapshot-title" className="mt-1 text-xl font-semibold">
-              What is recorded now</h2>
+              {t("fpo.dash.snapshotTitle")}</h2>
           </div>
           <span className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">
-            OBSERVED + transparent derivations</span>
+            {t("fpo.dash.snapshotBadge")}</span>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {topMetrics.map((metric) => (
@@ -203,8 +205,8 @@ export function FpoCommandCenter({
             </div>
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Attention queue</p>
-              <h2 className="text-lg font-semibold">Act before work becomes a bottleneck</h2>
+                {t("fpo.dash.attentionKicker")}</p>
+              <h2 className="text-lg font-semibold">{t("fpo.dash.attentionTitle")}</h2>
             </div>
           </div>
           <ol className="mt-5 space-y-2">
@@ -241,8 +243,8 @@ export function FpoCommandCenter({
             </div>
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Role view</p>
-              <h2 className="text-lg font-semibold">Focus the dashboard on your work</h2>
+                {t("fpo.dash.roleViewKicker")}</p>
+              <h2 className="text-lg font-semibold">{t("fpo.dash.roleViewTitle")}</h2>
             </div>
           </div>
           <div
@@ -282,16 +284,16 @@ export function FpoCommandCenter({
             ))}
           </div>
           <p className="mt-4 text-[11px] leading-4 text-muted-foreground">
-            A role view changes presentation only. Server-side permissions continue to decide what each person may read or change.</p>
+            {t("fpo.dash.roleViewNote")}</p>
         </div>
       </section>
 
       <section aria-labelledby="operating-chain-title">
         <div className="mb-3">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-            Enter once, reuse everywhere</p>
+            {t("fpo.dash.chainKicker")}</p>
           <h2 id="operating-chain-title" className="mt-1 text-xl font-semibold">
-            Farmer-to-market operating chain</h2>
+            {t("fpo.dash.chainTitle")}</h2>
         </div>
         <div className="overflow-x-auto pb-2">
           <ol className="flex min-w-max items-stretch gap-2">
@@ -321,12 +323,12 @@ export function FpoCommandCenter({
         <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-              Digital core</p>
+              {t("fpo.dash.coreKicker")}</p>
             <h2 id="core-modules-title" className="mt-1 text-xl font-semibold">
-              Ten connected operating modules</h2>
+              {t("fpo.dash.coreTitle")}</h2>
           </div>
           <p className="max-w-md text-xs leading-5 text-muted-foreground">
-            “Foundation” means the transaction trail exists, but prediction or external ecosystem integration is not yet production-ready.</p>
+            {t("fpo.dash.coreNote")}</p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {FPO_CORE_MODULES.map((module) => {
@@ -369,21 +371,21 @@ export function FpoCommandCenter({
           <Network className="h-5 w-5" />
         </div>
         <div>
-          <h2 className="text-base font-semibold">Prediction is staged behind evidence</h2>
+          <h2 className="text-base font-semibold">{t("fpo.dash.predictionTitle")}</h2>
           <p className="mt-1 text-sm leading-6 text-muted-foreground">
-            Yield, price, demand, spoilage, logistics and cash-flow forecasts will activate only after validated farm, weather, market, warehouse and finance feeds are connected. Recommendations will remain decision-support for authorized people.</p>
+            {t("fpo.dash.predictionBody")}</p>
         </div>
         <Button variant="outline" onClick={() => onOpenSection("insights")}>
-          <Boxes className="h-4 w-4" /> Review data foundation</Button>
+          <Boxes className="h-4 w-4" /> {t("fpo.dash.reviewFoundation")}</Button>
       </section>
 
       <section className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-border pt-5 text-xs text-muted-foreground">
         <span className="inline-flex items-center gap-1.5">
-          <ShieldCheck className="h-3.5 w-3.5 text-primary" /> Purpose-scoped farmer access</span>
+          <ShieldCheck className="h-3.5 w-3.5 text-primary" /> {t("fpo.dash.trustAccess")}</span>
         <span className="inline-flex items-center gap-1.5">
-          <FileCheck2 className="h-3.5 w-3.5 text-primary" /> Audited sensitive actions</span>
+          <FileCheck2 className="h-3.5 w-3.5 text-primary" /> {t("fpo.dash.trustAudit")}</span>
         <span className="inline-flex items-center gap-1.5">
-          <Handshake className="h-3.5 w-3.5 text-primary" /> Human commercial decisions</span>
+          <Handshake className="h-3.5 w-3.5 text-primary" /> {t("fpo.dash.trustHuman")}</span>
       </section>
     </div>
   );

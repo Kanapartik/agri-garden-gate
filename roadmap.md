@@ -4,5 +4,5 @@
 - [x] Round 1: My onboarding, Consent
 - [x] Round 2: My profile (+ QR code), My farm, Schemes (already translated)
 - [x] Round 3: My farm history, Farm intelligence, Marketplace
-- [ ] Round 4: FPO portal + FPO workspace
+- [ ] Round 4: FPO portal + FPO workspace — portal shell, sign-in, dashboard, comparison, members/vouchers/admin pages done; workspace sections (farmers, billing, monitoring, etc.) pending; native-speaker review pending
 - [ ] Round 5: Insurer, admin and public website pages
