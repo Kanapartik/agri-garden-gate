@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useLanguage } from "@/components/atap/LanguageProvider";
+import { fill } from "@/lib/i18n.fpoWs";
 import { PageHeader } from "@/components/atap/AppShell";
 import { StateBadge } from "@/components/atap/StatusBadge";
 import { TrainingChecklistPanel } from "@/components/atap/TrainingChecklist";
@@ -116,7 +117,7 @@ function FpoPage() {
         },
       }),
     onSuccess: async (res) => {
-      toast.success("Invitation created — share the reference with the invitee");
+      toast.success(t("fpo.ws.inviteCreated"));
       setToken(res.id);
       setEmail("");
       setNote("");
@@ -128,7 +129,7 @@ function FpoPage() {
   const acceptMutation = useMutation({
     mutationFn: () => accept({ data: { inviteId: token } }),
     onSuccess: async () => {
-      toast.success("Invitation accepted — scoped role granted and audited");
+      toast.success(t("fpo.ws.accepted"));
       setToken("");
       await refresh();
     },
@@ -145,7 +146,7 @@ function FpoPage() {
         },
       }),
     onSuccess: async (res) => {
-      toast.success(`${res.accepted} member(s) added, ${res.rejected} row(s) rejected`);
+      toast.success(fill(t("fpo.ws.imported"), { a: res.accepted, r: res.rejected }));
       setRows("");
       await refresh();
     },
@@ -165,13 +166,13 @@ function FpoPage() {
       <main className="mx-auto max-w-3xl space-y-6 px-6 py-12">
         <PageHeader
           title={t("fpo.title")}
-          description="You are not currently a member of an approved FPO tenant. Accept an invitation below, or ask a platform admin to provision your organization."
+          description={t("fpo.ws.noTenant")}
         />
         <section className="panel space-y-3 p-5">
-          <h2 className="font-display text-sm font-semibold">Accept a staff invitation</h2>
+          <h2 className="font-display text-sm font-semibold">{t("fpo.ws.acceptTitle")}</h2>
           <input
             className="field-base"
-            placeholder="Invitation’ reference"
+            placeholder={t("fpo.ws.inviteRef")}
             value={token}
             onChange={(e) => setToken(e.target.value)}
           />
@@ -179,9 +180,9 @@ function FpoPage() {
             onClick={() => acceptMutation.mutate()}
             disabled={!token || acceptMutation.isPending}
           >
-            Accept invitation</Button>
+            {t("fpo.ws.accept")}</Button>
           <p className="field-hint">
-            Accepting grants only the scoped role named on the invitation, inside that one tenant.</p>
+            {t("fpo.ws.acceptHint")}</p>
         </section>
       </main>
     );
@@ -199,7 +200,7 @@ function FpoPage() {
       <section className="panel space-y-4 p-5">
         <div className="flex flex-wrap items-center gap-3">
           <label className="text-sm font-medium" htmlFor="tenant">
-            Organization</label>
+            {t("fpo.ws.org")}</label>
           <select
             id="tenant"
             className="field-base max-w-sm"
@@ -220,13 +221,13 @@ function FpoPage() {
           </div>
         </div>
         <p className="field-hint">
-          Delegated purchasing authority is{" "}
-          <strong>{data.delegatedPurchasingEnabled ? "enabled" : "disabled"}</strong> — it stays off until decision D-08 is validated, regardless of flag state.</p>
+          {t("fpo.ws.delegated")}{" "}
+          <strong>{data.delegatedPurchasingEnabled ? t("fpo.ws.enabled") : t("fpo.ws.disabled")}</strong> {t("fpo.ws.delegatedTail")}</p>
       </section>
 
       <nav
         className="flex flex-wrap gap-1 border-b border-border pb-2 text-sm"
-        aria-label="FPO sections"
+        aria-label={t("fpo.ws.sections")}
       >
         {FPO_SECTION_DEFS.map((s) => (
           <button
@@ -274,7 +275,7 @@ function FpoPage() {
 
           <section className="grid gap-6 lg:grid-cols-2">
             <div className="panel space-y-3 p-5">
-              <h2 className="font-display text-base font-semibold">Invite staff</h2>
+              <h2 className="font-display text-base font-semibold">{t("fpo.ws.inviteStaff")}</h2>
               {canManage ? (
                 <>
                   <input
@@ -296,7 +297,7 @@ function FpoPage() {
                   </select>
                   <input
                     className="field-base"
-                    placeholder="Note (optional)"
+                    placeholder={t("fpo.ws.note")}
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
                   />
@@ -304,32 +305,32 @@ function FpoPage() {
                     onClick={() => inviteMutation.mutate()}
                     disabled={inviteMutation.isPending}
                   >
-                    Create invitation</Button>
+                    {t("fpo.ws.create")}</Button>
                   {token ? (
                     <p className="field-hint break-all">
-                      Invitation reference:{" "}<code>{token}</code>
+                      {t("fpo.ws.refLabel")}{" "}<code>{token}</code>
                     </p>
                   ) : null}
                   <p className="field-hint">
-                    Platform admin and auditor roles are never delegable from a tenant — they require the privileged access workflow.</p>
+                    {t("fpo.ws.neverPlatform")}</p>
                 </>
               ) : (
                 <p className="text-sm text-muted-foreground">
-                  Only a tenant admin of this organization can invite staff.</p>
+                  {t("fpo.ws.onlyAdminInvite")}</p>
               )}
             </div>
 
             <div className="panel space-y-3 p-5">
-              <h2 className="font-display text-base font-semibold">Pending invitations</h2>
+              <h2 className="font-display text-base font-semibold">{t("fpo.ws.pending")}</h2>
               {tenantInvites.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No invitations yet.</p>
+                <p className="text-sm text-muted-foreground">{t("fpo.ws.noInvites")}</p>
               ) : (
                 <table className="data-table">
                   <thead>
                     <tr>
-                      <th>Email</th>
-                      <th>Role</th>
-                      <th>Status</th>
+                      <th>{t("fpo.ws.email")}</th>
+                      <th>{t("fpo.ws.role")}</th>
+                      <th>{t("fpo.ws.status")}</th>
                       <th />
                     </tr>
                   </thead>
@@ -348,11 +349,11 @@ function FpoPage() {
                               size="sm"
                               onClick={async () => {
                                 await revoke({ data: { inviteId: i.id } });
-                                toast.success("Invitation revoked and audited");
+                                toast.success(t("fpo.ws.revoked"));
                                 await refresh();
                               }}
                             >
-                              Revoke</Button>
+                              {t("fpo.ws.revoke")}</Button>
                           ) : null}
                         </td>
                       </tr>
@@ -363,7 +364,7 @@ function FpoPage() {
               <div className="space-y-2 border-t border-border pt-3">
                 <input
                   className="field-base"
-                  placeholder="Accept an invitation’ reference"
+                  placeholder={t("fpo.ws.inviteRef")}
                   value={token}
                   onChange={(e) => setToken(e.target.value)}
                 />
@@ -372,15 +373,15 @@ function FpoPage() {
                   onClick={() => acceptMutation.mutate()}
                   disabled={!token || acceptMutation.isPending}
                 >
-                  Accept invitation</Button>
+                  {t("fpo.ws.accept")}</Button>
               </div>
             </div>
           </section>
 
           <section className="panel space-y-3 p-5">
-            <h2 className="font-display text-base font-semibold">Scoped visibility probe</h2>
+            <h2 className="font-display text-base font-semibold">{t("fpo.ws.probeTitle")}</h2>
             <p className="field-hint">
-              Confirms that FPO staff authority stops at the roster: it returns the purposes this role grants over farmer data (expected: none).</p>
+              {t("fpo.ws.probeHint")}</p>
             <Button
               variant="outline"
               onClick={async () => {
@@ -394,12 +395,12 @@ function FpoPage() {
                 );
               }}
             >
-              Run probe</Button>
+              {t("fpo.ws.runProbe")}</Button>
             {probeResult ? <p className="text-sm">{probeResult}</p> : null}
           </section>
 
           <section className="space-y-3">
-            <h2 className="font-display text-base font-semibold">Role training</h2>
+            <h2 className="font-display text-base font-semibold">{t("fpo.ws.training")}</h2>
             <TrainingChecklistPanel progress={data.training} invalidateKey="fpo-workspace" />
           </section>
         </div>
@@ -450,15 +451,15 @@ function FpoPage() {
           <FpoFarmersSection tenantId={activeTenant?.id ?? ""} />
 
           <section className="panel space-y-3 p-5">
-            <h2 className="font-display text-base font-semibold">Bulk member onboarding</h2>
+            <h2 className="font-display text-base font-semibold">{t("fpo.ws.bulkTitle")}</h2>
             <p className="field-hint">
-              One member per line:{" "}<code>member_ref, display name, village_code, contact hint</code>
-              . Rows that fail are reported individually; re-importing the same file adds no duplicates.</p>
+              {t("fpo.ws.bulkHint")}{" "}<code>member_ref, display name, village_code, contact hint</code>
+              {t("fpo.ws.bulkTail")}</p>
             {canManage ? (
               <>
                 <input
                   className="field-base"
-                  placeholder="Source label (e.g. Warangal register sheet 3)"
+                  placeholder={t("fpo.ws.sourceLabel")}
                   value={sourceLabel}
                   onChange={(e) => setSourceLabel(e.target.value)}
                 />
@@ -472,25 +473,24 @@ function FpoPage() {
                   onClick={() => importMutation.mutate()}
                   disabled={!rows || importMutation.isPending}
                 >
-                  Import members</Button>
+                  {t("fpo.ws.import")}</Button>
               </>
             ) : (
               <p className="text-sm text-muted-foreground">
-                Only a tenant admin can import members. Staff and field agents have read-only roster access.</p>
+                {t("fpo.ws.onlyAdminImport")}</p>
             )}
             {tenantBatches.length > 0 ? (
               <div className="space-y-3 border-t border-border pt-3">
                 {tenantBatches.map((b) => (
                   <div key={b.id} className="text-sm">
                     <p className="font-medium">
-                      {b.source_label} — {b.accepted_count} accepted,{" "}{b.rejected_count} rejected of{" "}
-                      {b.row_count}
+                      {fill(t("fpo.ws.batch"), { s: b.source_label, a: b.accepted_count, r: b.rejected_count, n: b.row_count })}
                     </p>
                     {b.errors.length > 0 ? (
                       <ul className="mt-1 list-disc pl-5 text-xs text-muted-foreground">
                         {b.errors.map((err, idx) => (
                           <li key={`${b.id}-${idx}`}>
-                            Row{" "}{err.line}: {err.reason.replaceAll("_", " ")}
+                            {t("fpo.ws.row")}{" "}{err.line}: {err.reason.replaceAll("_", " ")}
                             {err.raw ? ` — ${err.raw}` : ""}
                           </li>
                         ))}

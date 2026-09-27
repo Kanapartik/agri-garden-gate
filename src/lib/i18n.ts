@@ -14,6 +14,7 @@ import { PAGE_DICTS_2 } from "./i18n.pages2";
 import { PAGE_DICTS_3 } from "./i18n.pages3";
 import { FPO_PORTAL_DICTS } from "./i18n.fpoPortal";
 import { FPO_WORKSPACE_DICTS } from "./i18n.fpoWorkspace";
+import { FPO_WS_DICTS } from "./i18n.fpoWs";
 
 export const LOCALES = ["en", "te", "hi", "ta", "kn"] as const;
 export type Locale = (typeof LOCALES)[number];
@@ -456,11 +457,11 @@ const kn: Dict = {
 };
 
 export const DICTIONARIES: Record<Locale, Dict> = {
-  en: { ...PAGE_DICTS.en, ...PAGE_DICTS_2.en, ...PAGE_DICTS_3.en, ...FPO_PORTAL_DICTS.en, ...FPO_WORKSPACE_DICTS.en, ...en },
-  te: { ...PAGE_DICTS.te, ...PAGE_DICTS_2.te, ...PAGE_DICTS_3.te, ...FPO_PORTAL_DICTS.te, ...FPO_WORKSPACE_DICTS.te, ...te },
-  hi: { ...PAGE_DICTS.hi, ...PAGE_DICTS_2.hi, ...PAGE_DICTS_3.hi, ...FPO_PORTAL_DICTS.hi, ...FPO_WORKSPACE_DICTS.hi, ...hi },
-  ta: { ...PAGE_DICTS.ta, ...PAGE_DICTS_2.ta, ...PAGE_DICTS_3.ta, ...FPO_PORTAL_DICTS.ta, ...FPO_WORKSPACE_DICTS.ta, ...ta },
-  kn: { ...PAGE_DICTS.kn, ...PAGE_DICTS_2.kn, ...PAGE_DICTS_3.kn, ...FPO_PORTAL_DICTS.kn, ...FPO_WORKSPACE_DICTS.kn, ...kn },
+  en: { ...PAGE_DICTS.en, ...PAGE_DICTS_2.en, ...PAGE_DICTS_3.en, ...FPO_PORTAL_DICTS.en, ...FPO_WORKSPACE_DICTS.en, ...FPO_WS_DICTS.en, ...en },
+  te: { ...PAGE_DICTS.te, ...PAGE_DICTS_2.te, ...PAGE_DICTS_3.te, ...FPO_PORTAL_DICTS.te, ...FPO_WORKSPACE_DICTS.te, ...FPO_WS_DICTS.te, ...te },
+  hi: { ...PAGE_DICTS.hi, ...PAGE_DICTS_2.hi, ...PAGE_DICTS_3.hi, ...FPO_PORTAL_DICTS.hi, ...FPO_WORKSPACE_DICTS.hi, ...FPO_WS_DICTS.hi, ...hi },
+  ta: { ...PAGE_DICTS.ta, ...PAGE_DICTS_2.ta, ...PAGE_DICTS_3.ta, ...FPO_PORTAL_DICTS.ta, ...FPO_WORKSPACE_DICTS.ta, ...FPO_WS_DICTS.ta, ...ta },
+  kn: { ...PAGE_DICTS.kn, ...PAGE_DICTS_2.kn, ...PAGE_DICTS_3.kn, ...FPO_PORTAL_DICTS.kn, ...FPO_WORKSPACE_DICTS.kn, ...FPO_WS_DICTS.kn, ...kn },
 };
 
 /**
