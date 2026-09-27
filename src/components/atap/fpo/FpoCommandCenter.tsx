@@ -168,12 +168,12 @@ export function FpoCommandCenter({
         <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-              Observed organization snapshot</p>
+              {t("fpo.dash.snapshotKicker")}</p>
             <h2 id="fpo-snapshot-title" className="mt-1 text-xl font-semibold">
-              What is recorded now</h2>
+              {t("fpo.dash.snapshotTitle")}</h2>
           </div>
           <span className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">
-            OBSERVED + transparent derivations</span>
+            {t("fpo.dash.snapshotBadge")}</span>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {topMetrics.map((metric) => (
@@ -205,8 +205,8 @@ export function FpoCommandCenter({
             </div>
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Attention queue</p>
-              <h2 className="text-lg font-semibold">Act before work becomes a bottleneck</h2>
+                {t("fpo.dash.attentionKicker")}</p>
+              <h2 className="text-lg font-semibold">{t("fpo.dash.attentionTitle")}</h2>
             </div>
           </div>
           <ol className="mt-5 space-y-2">
@@ -243,8 +243,8 @@ export function FpoCommandCenter({
             </div>
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Role view</p>
-              <h2 className="text-lg font-semibold">Focus the dashboard on your work</h2>
+                {t("fpo.dash.roleViewKicker")}</p>
+              <h2 className="text-lg font-semibold">{t("fpo.dash.roleViewTitle")}</h2>
             </div>
           </div>
           <div
@@ -284,7 +284,7 @@ export function FpoCommandCenter({
             ))}
           </div>
           <p className="mt-4 text-[11px] leading-4 text-muted-foreground">
-            A role view changes presentation only. Server-side permissions continue to decide what each person may read or change.</p>
+            {t("fpo.dash.roleViewNote")}</p>
         </div>
       </section>
 
