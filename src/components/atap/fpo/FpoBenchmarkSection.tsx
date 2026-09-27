@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { getFpoBenchmark } from "@/lib/atap/fpoBenchmark.functions";
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import {
   BAND_LABEL,
   BENCHMARK_DISCLAIMER,
@@ -31,6 +32,7 @@ const bandClass = {
 } as const;
 
 export function FpoBenchmarkSection({ tenantId }: { tenantId: string }) {
+  const { t } = useLanguage();
   const fetchIt = useServerFn(getFpoBenchmark);
   const q = useQuery({
     queryKey: ["atap", "fpo-benchmark", tenantId],
@@ -50,7 +52,7 @@ export function FpoBenchmarkSection({ tenantId }: { tenantId: string }) {
     return { ranked, own, peers, trend };
   }, [q.data, active]);
 
-  if (q.isLoading) return <p className="text-sm text-muted-foreground">Loading comparison…</p>;
+  if (q.isLoading) return <p className="text-sm text-muted-foreground">{t("fpo.cmp.loading")}</p>;
   if (q.error) return <p className="text-sm text-destructive">{(q.error as Error).message}</p>;
 
   const { ranked, own, peers, trend } = view;
@@ -60,8 +62,8 @@ export function FpoBenchmarkSection({ tenantId }: { tenantId: string }) {
       <section className="panel space-y-3 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="font-display text-base font-semibold">FPO performance comparison</h2>
-            <p className="field-hint">How well each FPO adopts best practice across six measures.</p>
+            <h2 className="font-display text-base font-semibold">{t("fpo.cmp.title")}</h2>
+            <p className="field-hint">{t("fpo.cmp.subtitle")}</p>
           </div>
           <select className="field-base w-40" value={active} onChange={(e) => setPeriod(e.target.value)}>
             {periods.map((p) => (
@@ -71,7 +73,7 @@ export function FpoBenchmarkSection({ tenantId }: { tenantId: string }) {
         </div>
         <p className="text-xs text-muted-foreground">
           {BENCHMARK_DISCLAIMER}
-          {q.data?.namesRevealed ? "" : " Other FPOs are shown without their names."}
+          {q.data?.namesRevealed ? "" : t("fpo.cmp.namesHidden")}
         </p>
       </section>
 
