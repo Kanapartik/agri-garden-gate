@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StateBadge } from "@/components/atap/StatusBadge";
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import { FPO_SECTION_DEFS, type FpoSection } from "@/lib/atap/fpo";
 import type { FpoOverview } from "@/lib/atap/fpo.functions";
 import {
@@ -57,7 +58,7 @@ function sectionLabel(section: FpoSection): string {
   return FPO_SECTION_DEFS.find((item) => item.key === section)?.label ?? section;
 }
 
-function ReadinessRing({ score }: { score: number }) {
+function ReadinessRing({ score, label, ariaLabel }: { score: number; label: string; ariaLabel: string }) {
   return (
     <div
       className="relative grid h-32 w-32 shrink-0 place-items-center rounded-full"
@@ -65,7 +66,7 @@ function ReadinessRing({ score }: { score: number }) {
         background: `conic-gradient(var(--color-accent) ${score * 3.6}deg, color-mix(in oklab, var(--color-surface-deep-foreground) 18%, transparent) 0deg)`,
       }}
       role="img"
-      aria-label={`Operating readiness ${score}%`}
+      aria-label={`${ariaLabel} ${score}%`}
     >
       <div className="grid h-24 w-24 place-items-center rounded-full bg-surface-deep text-center text-surface-deep-foreground">
         <div>
