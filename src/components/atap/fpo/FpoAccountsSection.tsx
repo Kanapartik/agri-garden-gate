@@ -3,6 +3,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/components/atap/LanguageProvider";
+import { fill } from "@/lib/i18n.fpoWs";
 import { StateBadge } from "@/components/atap/StatusBadge";
 import {
   getAccountsBoard,
@@ -29,12 +31,12 @@ const input =
 const card = "rounded-lg border border-border bg-card p-4";
 
 const TABS = [
-  { key: "overview", label: "Overview" },
-  { key: "receivables", label: "Receivables" },
-  { key: "payables", label: "Payables" },
-  { key: "members", label: "Farmer ledger" },
-  { key: "grants", label: "Scheme & grant funds" },
-  { key: "reconciliation", label: "Bank reconciliation" },
+  { key: "overview", label: "fpo.acc.tOverview" },
+  { key: "receivables", label: "fpo.acc.tRecv" },
+  { key: "payables", label: "fpo.acc.tPay" },
+  { key: "members", label: "fpo.acc.tLedger" },
+  { key: "grants", label: "fpo.acc.tGrants" },
+  { key: "reconciliation", label: "fpo.acc.tRecon" },
 ] as const;
 
 type TabKey = (typeof TABS)[number]["key"];
@@ -44,6 +46,7 @@ function money(value: number): string {
 }
 
 export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
+  const { t } = useLanguage();
   const qc = useQueryClient();
   const boardFn = useServerFn(getAccountsBoard);
   const entryFn = useServerFn(recordLedgerEntry);
@@ -110,17 +113,17 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
           reference: reference || null,
         },
       }),
-    "Transaction recorded",
+    t("fpo.acc.tx"),
   );
   const settle = useAction(
     (i: { entryId: string; amountSettled: number; waive?: boolean }) =>
       settleFn({ data: { tenantId, ...i } }),
-    "Settlement updated",
+    t("fpo.acc.settle"),
   );
   const reconcile = useAction(
     (i: { entryId: string; bankReference: string; reconciled: boolean }) =>
       reconcileFn({ data: { tenantId, ...i } }),
-    "Reconciliation updated",
+    t("fpo.acc.reconUpd"),
   );
   const addGrant = useAction(
     () =>
@@ -133,11 +136,11 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
           receivedAmount: Number(received || 0),
         },
       }),
-    "Grant fund recorded",
+    t("fpo.acc.grantRec"),
   );
   const addReceipt = useAction(
     (i: { grantId: string; amount: number }) => receiptFn({ data: { tenantId, ...i } }),
-    "Grant receipt recorded",
+    t("fpo.acc.grantRcpt"),
   );
   const addUtilization = useAction(
     (i: { grantId: string }) =>
@@ -150,11 +153,11 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
           voucherReference: voucher || null,
         },
       }),
-    "Utilization recorded",
+    t("fpo.acc.util"),
   );
   const setUc = useAction(
     (i: { grantId: string; state: UcState }) => ucFn({ data: { tenantId, ...i } }),
-    "Utilization certificate updated",
+    t("fpo.acc.ucUpd"),
   );
 
   if (!tenantId) {
@@ -177,18 +180,18 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
   const unreconciled = entries.filter((e) => !e.is_reconciled && e.amount_settled > 0);
 
   const metrics = [
-    { label: "Money received", value: money(data.summary.inflow) },
-    { label: "Money paid", value: money(data.summary.outflow) },
-    { label: "Net position", value: money(data.summary.net) },
-    { label: "Receivables", value: money(data.summary.receivable) },
-    { label: "Payables", value: money(data.summary.payable) },
-    { label: "Unreconciled lines", value: String(data.summary.unreconciled) },
+    { label: t("fpo.acc.mIn"), value: money(data.summary.inflow) },
+    { label: t("fpo.acc.mOut"), value: money(data.summary.outflow) },
+    { label: t("fpo.acc.mNet"), value: money(data.summary.net) },
+    { label: t("fpo.acc.tRecv"), value: money(data.summary.receivable) },
+    { label: t("fpo.acc.tPay"), value: money(data.summary.payable) },
+    { label: t("fpo.acc.mUnrec"), value: String(data.summary.unreconciled) },
   ];
 
   return (
     <section className="space-y-6">
       <header className="space-y-2">
-        <h2 className="text-lg font-semibold text-foreground">Accounts &amp; transactions</h2>
+        <h2 className="text-lg font-semibold text-foreground">{t("fpo.acc.title")}</h2>
         <p className="text-sm text-muted-foreground">{data.disclaimer}</p>
       </header>
 
@@ -202,14 +205,14 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
       </div>
 
       <nav className="flex flex-wrap gap-2">
-        {TABS.map((t) => (
+        {TABS.map((tb) => (
           <Button
-            key={t.key}
+            key={tb.key}
             size="sm"
-            variant={tab === t.key ? "default" : "outline"}
-            onClick={() => setTab(t.key)}
+            variant={tab === tb.key ? "default" : "outline"}
+            onClick={() => setTab(tb.key)}
           >
-            {t.label}
+            {t(tb.label)}
           </Button>
         ))}
       </nav>
@@ -217,16 +220,16 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
       {tab === "overview" ? (
         <div className="space-y-4">
           <div className={card}>
-            <h3 className="text-sm font-semibold text-foreground">By category</h3>
+            <h3 className="text-sm font-semibold text-foreground">{t("fpo.acc.byCat")}</h3>
             <div className="mt-3 overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="text-left text-xs uppercase text-muted-foreground">
                   <tr>
-                    <th className="py-2">Category</th>
-                    <th className="py-2">Received</th>
-                    <th className="py-2">Paid</th>
-                    <th className="py-2">Outstanding</th>
-                    <th className="py-2">Entries</th>
+                    <th className="py-2">{t("fpo.acc.cCat")}</th>
+                    <th className="py-2">{t("fpo.acc.cRecv")}</th>
+                    <th className="py-2">{t("fpo.acc.cPaid")}</th>
+                    <th className="py-2">{t("fpo.acc.cOut")}</th>
+                    <th className="py-2">{t("fpo.acc.cEnt")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -242,7 +245,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                   {data.categories.length === 0 ? (
                     <tr>
                       <td className="py-3 text-muted-foreground" colSpan={5}>
-                        No transactions recorded yet.</td>
+                        {t("fpo.acc.noTx")}</td>
                     </tr>
                   ) : null}
                 </tbody>
@@ -260,8 +263,8 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                   onChange={(e) => setDirection(e.target.value as LedgerDirection)}
                   aria-label="Direction"
                 >
-                  <option value="inflow">Money in</option>
-                  <option value="outflow">Money out</option>
+                  <option value="inflow">{t("fpo.acc.in")}</option>
+                  <option value="outflow">{t("fpo.acc.outO")}</option>
                 </select>
                 <select
                   className={input}
@@ -277,13 +280,13 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                 </select>
                 <input
                   className={input}
-                  placeholder="Description"
+                  placeholder={t("fpo.acc.desc")}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 />
                 <input
                   className={input}
-                  placeholder="Party (buyer, supplier, funder)"
+                  placeholder={t("fpo.acc.party")}
                   value={party}
                   onChange={(e) => setParty(e.target.value)}
                 />
@@ -293,7 +296,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                   onChange={(e) => setMemberId(e.target.value)}
                   aria-label="Member"
                 >
-                  <option value="">Not member-specific</option>
+                  <option value="">{t("fpo.acc.notMem")}</option>
                   {data.memberOptions.map((m) => (
                     <option key={m.id} value={m.id}>
                       {m.display_name}
@@ -302,13 +305,13 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                 </select>
                 <input
                   className={input}
-                  placeholder="Amount (₹)"
+                  placeholder={t("fpo.acc.amt")}
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                 />
                 <input
                   className={input}
-                  placeholder="Amount already settled (₹)"
+                  placeholder={t("fpo.acc.amtSet")}
                   value={settled}
                   onChange={(e) => setSettled(e.target.value)}
                 />
@@ -321,7 +324,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                 />
                 <input
                   className={input}
-                  placeholder="Reference / invoice"
+                  placeholder={t("fpo.acc.ref")}
                   value={reference}
                   onChange={(e) => setReference(e.target.value)}
                 />
@@ -332,25 +335,25 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                 disabled={addEntry.isPending || !description || !amount}
                 onClick={() => addEntry.mutate(undefined as never)}
               >
-                Record transaction</Button>
+                {t("fpo.acc.recTx")}</Button>
             </div>
           ) : (
             <p className="text-sm text-muted-foreground">
-              You have read-only access to finance records. Recording transactions requires FPO finance authority.</p>
+              {t("fpo.acc.readOnly")}</p>
           )}
 
           <div className={card}>
-            <h3 className="text-sm font-semibold text-foreground">Recent transactions</h3>
+            <h3 className="text-sm font-semibold text-foreground">{t("fpo.acc.recent")}</h3>
             <div className="mt-3 overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="text-left text-xs uppercase text-muted-foreground">
                   <tr>
-                    <th className="py-2">Date</th>
-                    <th className="py-2">Transaction</th>
-                    <th className="py-2">Category</th>
-                    <th className="py-2">Amount</th>
-                    <th className="py-2">Outstanding</th>
-                    <th className="py-2">Status</th>
+                    <th className="py-2">{t("fpo.acc.cDate")}</th>
+                    <th className="py-2">{t("fpo.acc.cTx")}</th>
+                    <th className="py-2">{t("fpo.acc.cCat")}</th>
+                    <th className="py-2">{t("fpo.acc.cAmt")}</th>
+                    <th className="py-2">{t("fpo.acc.cOut")}</th>
+                    <th className="py-2">{t("fpo.acc.cStatus")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -361,7 +364,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                         {e.description}
                         <span className="block text-xs text-muted-foreground">
                           {e.member_name ?? e.party_name ?? "—"}
-                          {e.direction === "inflow" ? " · money in" : " · money out"}
+                          {e.direction === "inflow" ? ` · ${t("fpo.acc.in")}` : ` · ${t("fpo.acc.outO")}`}
                         </span>
                       </td>
                       <td className="py-2">{LEDGER_CATEGORY_LABEL[e.category]}</td>
@@ -375,7 +378,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                   {entries.length === 0 ? (
                     <tr>
                       <td className="py-3 text-muted-foreground" colSpan={6}>
-                        No transactions recorded yet.</td>
+                        {t("fpo.acc.noTx")}</td>
                     </tr>
                   ) : null}
                 </tbody>
@@ -388,7 +391,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
       {tab === "receivables" || tab === "payables" ? (
         <div className={card}>
           <h3 className="text-sm font-semibold text-foreground">
-            {tab === "receivables" ? "Receivables" : "Payables"}
+            {tab === "receivables" ? t("fpo.acc.tRecv") : t("fpo.acc.tPay")}
           </h3>
           <p className="mt-1 text-xs text-muted-foreground">
             {tab === "receivables"
@@ -422,7 +425,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                       disabled={settle.isPending}
                       onClick={() => settle.mutate({ entryId: e.id, amountSettled: e.amount })}
                     >
-                      Mark fully settled</Button>
+                      {t("fpo.acc.full")}</Button>
                     <Button
                       size="sm"
                       variant="outline"
@@ -434,7 +437,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                         })
                       }
                     >
-                      Record half settled</Button>
+                      {t("fpo.acc.half")}</Button>
                     <Button
                       size="sm"
                       variant="ghost"
@@ -447,7 +450,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                         })
                       }
                     >
-                      Waive balance</Button>
+                      {t("fpo.acc.waive")}</Button>
                   </div>
                 ) : null}
               </div>
@@ -463,17 +466,17 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
         <div className={card}>
           <h3 className="text-sm font-semibold text-foreground">Farmer ledger</h3>
           <p className="mt-1 text-xs text-muted-foreground">
-            Amounts the FPO owes a member and amounts a member owes the FPO are shown separately, never netted into a single figure.</p>
+            {t("fpo.acc.separate")}</p>
           <div className="mt-3 overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="text-left text-xs uppercase text-muted-foreground">
                 <tr>
-                  <th className="py-2">Member</th>
-                  <th className="py-2">Paid to member</th>
-                  <th className="py-2">Collected from member</th>
-                  <th className="py-2">Payable to member</th>
-                  <th className="py-2">Due from member</th>
-                  <th className="py-2">Entries</th>
+                  <th className="py-2">{t("fpo.acc.cMember")}</th>
+                  <th className="py-2">{t("fpo.acc.cPaidTo")}</th>
+                  <th className="py-2">{t("fpo.acc.cColl")}</th>
+                  <th className="py-2">{t("fpo.acc.cPayTo")}</th>
+                  <th className="py-2">{t("fpo.acc.cDue")}</th>
+                  <th className="py-2">{t("fpo.acc.cEnt")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -490,7 +493,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                 {data.members.length === 0 ? (
                   <tr>
                     <td className="py-3 text-muted-foreground" colSpan={6}>
-                      No member-linked transactions yet.</td>
+                      {t("fpo.acc.noMemTx")}</td>
                   </tr>
                 ) : null}
               </tbody>
@@ -507,25 +510,25 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
               <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 <input
                   className={input}
-                  placeholder="Grant title"
+                  placeholder={t("fpo.acc.gTitle")}
                   value={grantTitle}
                   onChange={(e) => setGrantTitle(e.target.value)}
                 />
                 <input
                   className={input}
-                  placeholder="Funder"
+                  placeholder={t("fpo.acc.funder")}
                   value={funder}
                   onChange={(e) => setFunder(e.target.value)}
                 />
                 <input
                   className={input}
-                  placeholder="Sanctioned (₹)"
+                  placeholder={t("fpo.acc.sanc")}
                   value={sanctioned}
                   onChange={(e) => setSanctioned(e.target.value)}
                 />
                 <input
                   className={input}
-                  placeholder="Received so far (₹)"
+                  placeholder={t("fpo.acc.recSoFar")}
                   value={received}
                   onChange={(e) => setReceived(e.target.value)}
                 />
@@ -536,7 +539,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                 disabled={addGrant.isPending || !grantTitle || !funder || !sanctioned}
                 onClick={() => addGrant.mutate(undefined as never)}
               >
-                Record grant</Button>
+                {t("fpo.acc.recGrant")}</Button>
             </div>
           ) : null}
 
@@ -554,27 +557,27 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                 </div>
                 <div className="mt-3 grid gap-2 text-sm sm:grid-cols-2 lg:grid-cols-5">
                   <p>
-                    Sanctioned<span className="block font-medium text-foreground">
+                    {t("fpo.acc.gSanc")}<span className="block font-medium text-foreground">
                       {money(g.position.sanctioned)}
                     </span>
                   </p>
                   <p>
-                    Received<span className="block font-medium text-foreground">
+                    {t("fpo.acc.gRecv")}<span className="block font-medium text-foreground">
                       {money(g.position.received)}
                     </span>
                   </p>
                   <p>
-                    Utilized<span className="block font-medium text-foreground">
+                    {t("fpo.acc.gUtil")}<span className="block font-medium text-foreground">
                       {money(g.position.utilized)}
                     </span>
                   </p>
                   <p>
-                    Balance in hand<span className="block font-medium text-foreground">
+                    {t("fpo.acc.gBal")}<span className="block font-medium text-foreground">
                       {money(g.position.balance)}
                     </span>
                   </p>
                   <p>
-                    Awaiting release<span className="block font-medium text-foreground">
+                    {t("fpo.acc.gAwait")}<span className="block font-medium text-foreground">
                       {money(g.position.awaitingRelease)}
                     </span>
                   </p>
@@ -598,7 +601,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                     variant="outline"
                     onClick={() => setOpenGrantId(open ? null : g.id)}
                   >
-                    {open ? "Hide utilization" : `Utilization (${rows.length})`}
+                    {open ? t("fpo.acc.hideUtil") : fill(t("fpo.acc.utilN"), { n: rows.length })}
                   </Button>
                   {data.canManage ? (
                     <>
@@ -613,7 +616,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                           })
                         }
                       >
-                        Record installment received</Button>
+                        {t("fpo.acc.inst")}</Button>
                       {g.uc_state === "pending" ? (
                         <Button
                           size="sm"
@@ -621,7 +624,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                           disabled={setUc.isPending}
                           onClick={() => setUc.mutate({ grantId: g.id, state: "submitted" })}
                         >
-                          Submit utilization certificate</Button>
+                          {t("fpo.acc.uc")}</Button>
                       ) : null}
                     </>
                   ) : null}
@@ -648,19 +651,19 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                       <div className="grid gap-3 sm:grid-cols-3">
                         <input
                           className={input}
-                          placeholder="Purpose"
+                          placeholder={t("fpo.acc.purpose")}
                           value={utilPurpose}
                           onChange={(e) => setUtilPurpose(e.target.value)}
                         />
                         <input
                           className={input}
-                          placeholder="Amount (₹)"
+                          placeholder={t("fpo.acc.amt")}
                           value={utilAmount}
                           onChange={(e) => setUtilAmount(e.target.value)}
                         />
                         <input
                           className={input}
-                          placeholder="Voucher’ reference"
+                          placeholder={t("fpo.acc.vRef")}
                           value={voucher}
                           onChange={(e) => setVoucher(e.target.value)}
                         />
@@ -669,7 +672,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
                           disabled={addUtilization.isPending || !utilPurpose || !utilAmount}
                           onClick={() => addUtilization.mutate({ grantId: g.id })}
                         >
-                          Record utilization</Button>
+                          {t("fpo.acc.recUtil")}</Button>
                       </div>
                     ) : null}
                   </div>
@@ -703,7 +706,7 @@ export function FpoAccountsSection({ tenantId }: { tenantId: string }) {
             ))}
             {unreconciled.length === 0 ? (
               <p className="text-sm text-muted-foreground">
-                Every settled line carries a bank reference.</p>
+                {t("fpo.acc.bankRef")}</p>
             ) : null}
           </div>
         </div>
@@ -731,7 +734,7 @@ function ReconcileRow({
       <div className="mt-2 flex flex-wrap gap-2">
         <input
           className={`${input} sm:w-64`}
-          placeholder="Bank’ reference / UTR"
+          placeholder={t("fpo.acc.bRef")}
           value={value}
           onChange={(e) => setValue(e.target.value)}
         />
@@ -740,7 +743,7 @@ function ReconcileRow({
           disabled={disabled || !value.trim()}
           onClick={() => onSubmit(value.trim())}
         >
-          Mark reconciled</Button>
+          {t("fpo.acc.reconciled")}</Button>
       </div>
     </div>
   );
