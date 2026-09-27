@@ -3,6 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import { StateBadge } from "@/components/atap/StatusBadge";
 import {
   removeLeader,
@@ -68,6 +69,7 @@ export function FpoProfileSection({
   overview: FpoOverview;
   onChanged: () => Promise<void>;
 }) {
+  const { t } = useLanguage();
   const tenantId = overview.activeTenantId ?? "";
   const save = useServerFn(saveFpoProfile);
   const upsertLeader = useServerFn(saveLeader);
@@ -100,7 +102,7 @@ export function FpoProfileSection({
       return save({ data: { tenantId, values: payload } });
     },
     onSuccess: async () => {
-      toast.success("Organization profile saved");
+      toast.success(t("fpo.prof.saved"));
       await onChanged();
     },
     onError: (e: Error) => toast.error(e.message),
@@ -109,9 +111,9 @@ export function FpoProfileSection({
   if (!overview.canManage) {
     return (
       <section className="panel space-y-2 p-5">
-        <h2 className="font-display text-base font-semibold">Organization profile</h2>
+        <h2 className="font-display text-base font-semibold">{t("fpo.prof.title")}</h2>
         <p className="text-sm text-muted-foreground">
-          Only an admin of this FPO can edit the organization profile. You can view the profile summary on the dashboard.</p>
+          {t("fpo.prof.onlyAdmin")}</p>
       </section>
     );
   }
@@ -120,7 +122,7 @@ export function FpoProfileSection({
     <div className="space-y-6">
       <section className="panel space-y-4 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="font-display text-base font-semibold">Organization profile</h2>
+          <h2 className="font-display text-base font-semibold">{t("fpo.prof.title")}</h2>
           <div className="flex items-center gap-2">
             <StateBadge state={overview.profile?.state ?? "draft"} />
             <Button
@@ -129,7 +131,7 @@ export function FpoProfileSection({
               onClick={async () => {
                 try {
                   await setState({ data: { tenantId, state: "submitted" } });
-                  toast.success("Profile submitted for platform verification");
+                  toast.success(t("fpo.prof.submitted"));
                   await onChanged();
                 } catch (e) {
                   toast.error((e as Error).message);
@@ -137,22 +139,22 @@ export function FpoProfileSection({
               }}
               disabled={!overview.profile}
             >
-              Submit for verification</Button>
+              {t("fpo.prof.submit")}</Button>
           </div>
         </div>
 
         {GROUPS.map((group) => (
           <div key={group} className="space-y-3 border-t border-border pt-4 first:border-0 first:pt-0">
-            <h3 className="text-sm font-semibold">{group}</h3>
+            <h3 className="text-sm font-semibold">{t(`fpo.prof.g${GROUPS.indexOf(group)}`)}</h3>
             <div className="grid gap-3 sm:grid-cols-2">
               {FIELDS.filter((f) => f.group === group).map((f) => (
                 <label key={f.name} className="space-y-1 text-sm">
-                  <span className="font-medium">{f.label}</span>
+                  <span className="font-medium">{t(`fpo.prof.f_${f.name}`)}</span>
                   <input
                     className="field-base"
                     type={f.kind === "date" ? "date" : f.kind === "number" ? "number" : "text"}
                     value={values[f.name] ?? ""}
-                    placeholder={f.kind === "list" ? "Comma separated" : undefined}
+                    placeholder={f.kind === "list" ? t("fpo.prof.comma") : undefined}
                     onChange={(e) => setValues((v) => ({ ...v, [f.name]: e.target.value }))}
                   />
                 </label>
@@ -162,21 +164,21 @@ export function FpoProfileSection({
         ))}
 
         <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending}>
-          Save profile</Button>
+          {t("fpo.prof.save")}</Button>
       </section>
 
       <section className="panel space-y-3 p-5">
-        <h2 className="font-display text-base font-semibold">Leadership &amp; signatories</h2>
+        <h2 className="font-display text-base font-semibold">{t("fpo.prof.leaders")}</h2>
         {overview.leadership.length === 0 ? (
           <p className="text-sm text-muted-foreground">No leadership records yet.</p>
         ) : (
           <table className="data-table">
             <thead>
               <tr>
-                <th>Role</th>
-                <th>Name</th>
-                <th>Contact</th>
-                <th>Signatory</th>
+                <th>{t("fpo.prof.cRole")}</th>
+                <th>{t("fpo.prof.cName")}</th>
+                <th>{t("fpo.prof.cContact")}</th>
+                <th>{t("fpo.prof.cSign")}</th>
                 <th />
               </tr>
             </thead>
@@ -186,7 +188,7 @@ export function FpoProfileSection({
                   <td>{l.role_title}</td>
                   <td>{l.person_name}</td>
                   <td className="text-xs">{l.phone ?? l.email ?? "—"}</td>
-                  <td>{l.is_signatory ? "Yes" : "No"}</td>
+                  <td>{l.is_signatory ? t("fpo.prof.yes") : t("fpo.prof.no")}</td>
                   <td className="text-right">
                     <Button
                       variant="outline"
@@ -194,14 +196,14 @@ export function FpoProfileSection({
                       onClick={async () => {
                         try {
                           await dropLeader({ data: { tenantId, id: l.id } });
-                          toast.success("Leadership record removed and audited");
+                          toast.success(t("fpo.prof.removed"));
                           await onChanged();
                         } catch (e) {
                           toast.error((e as Error).message);
                         }
                       }}
                     >
-                      Remove</Button>
+{t("fpo.prof.remove")}</Button>
                   </td>
                 </tr>
               ))}
@@ -211,25 +213,25 @@ export function FpoProfileSection({
         <div className="grid gap-3 border-t border-border pt-3 sm:grid-cols-2">
           <input
             className="field-base"
-            placeholder="Role (e.g. Chairperson, CEO, Director)"
+            placeholder={t("fpo.prof.rolePh")}
             value={leader.roleTitle}
             onChange={(e) => setLeader((l) => ({ ...l, roleTitle: e.target.value }))}
           />
           <input
             className="field-base"
-            placeholder="Person’ name"
+            placeholder={t("fpo.prof.person")}
             value={leader.personName}
             onChange={(e) => setLeader((l) => ({ ...l, personName: e.target.value }))}
           />
           <input
             className="field-base"
-            placeholder="Phone"
+            placeholder={t("fpo.prof.phone")}
             value={leader.phone}
             onChange={(e) => setLeader((l) => ({ ...l, phone: e.target.value }))}
           />
           <input
             className="field-base"
-            placeholder="Email"
+            placeholder={t("fpo.prof.email")}
             value={leader.email}
             onChange={(e) => setLeader((l) => ({ ...l, email: e.target.value }))}
           />
@@ -239,7 +241,7 @@ export function FpoProfileSection({
               checked={leader.signatory}
               onChange={(e) => setLeader((l) => ({ ...l, signatory: e.target.checked }))}
             />
-            Authorized signatory</label>
+{t("fpo.prof.authSign")}</label>
           <Button
             onClick={async () => {
               try {
@@ -253,7 +255,7 @@ export function FpoProfileSection({
                     isSignatory: leader.signatory,
                   },
                 });
-                toast.success("Leadership record added and audited");
+                toast.success(t("fpo.prof.added"));
                 setLeader({ roleTitle: "", personName: "", phone: "", email: "", signatory: false });
                 await onChanged();
               } catch (e) {
@@ -262,25 +264,25 @@ export function FpoProfileSection({
             }}
             disabled={!leader.roleTitle || !leader.personName}
           >
-            Add leader</Button>
+            {t("fpo.prof.addLeader")}</Button>
         </div>
       </section>
 
       {overview.canViewFinance ? (
         <section className="panel space-y-3 p-5">
-          <h2 className="font-display text-base font-semibold">Bank accounts</h2>
+          <h2 className="font-display text-base font-semibold">{t("fpo.prof.banks")}</h2>
           <p className="field-hint">
-            Only the last four digits of an account number are stored. Access to this section is audited.</p>
+            {t("fpo.prof.last4")}</p>
           {overview.bank.length === 0 ? (
             <p className="text-sm text-muted-foreground">No bank account recorded yet.</p>
           ) : (
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>Bank</th>
-                  <th>Branch</th>
-                  <th>Type</th>
-                  <th>Account</th>
+                  <th>{t("fpo.prof.cBank")}</th>
+                  <th>{t("fpo.prof.cBranch")}</th>
+                  <th>{t("fpo.prof.cType")}</th>
+                  <th>{t("fpo.prof.cAcct")}</th>
                   <th>IFSC</th>
                 </tr>
               </thead>
@@ -300,25 +302,25 @@ export function FpoProfileSection({
           <div className="grid gap-3 border-t border-border pt-3 sm:grid-cols-2">
             <input
               className="field-base"
-              placeholder="Bank’ name"
+              placeholder={t("fpo.prof.bankName")}
               value={bank.bankName}
               onChange={(e) => setBank((b) => ({ ...b, bankName: e.target.value }))}
             />
             <input
               className="field-base"
-              placeholder="Branch"
+              placeholder={t("fpo.prof.branch")}
               value={bank.branch}
               onChange={(e) => setBank((b) => ({ ...b, branch: e.target.value }))}
             />
             <input
               className="field-base"
-              placeholder="Account’ type (current / savings)"
+              placeholder={t("fpo.prof.acctType")}
               value={bank.accountType}
               onChange={(e) => setBank((b) => ({ ...b, accountType: e.target.value }))}
             />
             <input
               className="field-base"
-              placeholder="Account number"
+              placeholder={t("fpo.prof.acctNo")}
               value={bank.accountNumber}
               onChange={(e) => setBank((b) => ({ ...b, accountNumber: e.target.value }))}
             />
@@ -344,7 +346,7 @@ export function FpoProfileSection({
                         .map((l) => l.person_name),
                     },
                   });
-                  toast.success("Bank account recorded and audited");
+                  toast.success(t("fpo.prof.bankRec"));
                   setBank({ bankName: "", branch: "", accountType: "", accountNumber: "", ifsc: "" });
                   await onChanged();
                 } catch (e) {
@@ -353,12 +355,12 @@ export function FpoProfileSection({
               }}
               disabled={!bank.bankName}
             >
-              Add bank account</Button>
+              {t("fpo.prof.addBank")}</Button>
           </div>
         </section>
       ) : (
         <section className="panel p-5 text-sm text-muted-foreground">
-          Bank details are visible only to authorized FPO administrators.</section>
+          {t("fpo.prof.bankOnly")}</section>
       )}
     </div>
   );
