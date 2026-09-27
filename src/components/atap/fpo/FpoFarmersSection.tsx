@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { useLanguage } from "@/components/atap/LanguageProvider";
+import { fill } from "@/lib/i18n.fpoWs";
 import { Button } from "@/components/ui/button";
 import { StateBadge } from "@/components/atap/StatusBadge";
 import {
@@ -123,7 +124,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
         },
       }),
     onSuccess: async (res) => {
-      toast.success(`Member added as ${res.membershipNumber ?? "invited"}`);
+      toast.success(fill(t("fpo.fm.added"), { n: res.membershipNumber ?? t("fpo.fm.invited") }));
       setName("");
       setCrops("");
       setAcreage("");
@@ -175,11 +176,11 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
         <section className="panel space-y-3 p-5">
           <h2 className="font-display text-base font-semibold">{t("fpo.members.add")}</h2>
           <p className="field-hint">
-            Adding a member creates a membership relationship only. Farmer records, farms and documents stay owned by the farmer.</p>
+            {t("fpo.fm.addHint")}</p>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             <input
               className="field-base"
-              placeholder="Farmer’ name"
+              placeholder={t("fpo.fm.name")}
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -196,31 +197,31 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
             </select>
             <input
               className="field-base"
-              placeholder="Village code"
+              placeholder={t("fpo.fm.villageCode")}
               value={village}
               onChange={(e) => setVillage(e.target.value)}
             />
             <input
               className="field-base"
-              placeholder="Village cluster"
+              placeholder={t("fpo.fm.cluster")}
               value={cluster}
               onChange={(e) => setCluster(e.target.value)}
             />
             <input
               className="field-base"
-              placeholder="Crops (comma separated)"
+              placeholder={t("fpo.fm.cropsCsv")}
               value={crops}
               onChange={(e) => setCrops(e.target.value)}
             />
             <input
               className="field-base"
-              placeholder="Acreage"
+              placeholder={t("fpo.fm.acreage")}
               value={acreage}
               onChange={(e) => setAcreage(e.target.value)}
             />
             <input
               className="field-base"
-              placeholder="Contact hint"
+              placeholder={t("fpo.fm.contact")}
               value={contact}
               onChange={(e) => setContact(e.target.value)}
             />
@@ -250,7 +251,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
               }))
             }
           >
-            <option value="">All statuses</option>
+            <option value="">{t("fpo.fm.allStatuses")}</option>
             {MEMBERSHIP_STATES.map((s) => (
               <option key={s} value={s}>
                 {MEMBERSHIP_STATE_LABEL[s]}
@@ -264,7 +265,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
               setFilters((f) => ({ ...f, crops: e.target.value ? [e.target.value] : undefined }))
             }
           >
-            <option value="">All crops</option>
+            <option value="">{t("fpo.fm.allCrops")}</option>
             {data.facets.crops.map((c) => (
               <option key={c} value={c}>
                 {c}
@@ -278,7 +279,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
               setFilters((f) => ({ ...f, tagCodes: e.target.value ? [e.target.value] : undefined }))
             }
           >
-            <option value="">All tags</option>
+            <option value="">{t("fpo.fm.allTags")}</option>
             {data.tags.map((tg) => (
               <option key={tg.id} value={tg.code}>
                 {tg.label} ({tg.memberCount})
@@ -305,12 +306,12 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
               setSearch("");
             }}
           >
-            Clear filters</Button>
+            {t("fpo.fm.clear")}</Button>
           {data.canClassify ? (
             <>
               <input
                 className="field-base max-w-48"
-                placeholder="Save as segment"
+                placeholder={t("fpo.fm.segName")}
                 value={segmentName}
                 onChange={(e) => setSegmentName(e.target.value)}
               />
@@ -323,11 +324,11 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
                     data: { tenantId, name: segmentName, filters: { ...filters, search } },
                   });
                   setSegmentName("");
-                  toast.success("Segment saved");
+                  toast.success(t("fpo.fm.segSaved"));
                   await refresh();
                 }}
               >
-                Save segment</Button>
+                {t("fpo.fm.saveSeg")}</Button>
             </>
           ) : null}
         </div>
@@ -350,7 +351,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
                 {data.canClassify ? (
                   <button
                     type="button"
-                    aria-label={`Delete segment ${s.name}`}
+                    aria-label={`${t("fpo.fm.delSeg")} ${s.name}`}
                     className="text-muted-foreground"
                     onClick={async () => {
                       await deleteSegmentFn({ data: { tenantId, segmentId: s.id } });
@@ -371,11 +372,11 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
         <section className="panel space-y-3 p-5">
           <h2 className="font-display text-base font-semibold">{t("fpo.members.tags")}</h2>
           <p className="field-hint">
-            Tags are FPO-local classification. They are never written back to farmer master data.</p>
+            {t("fpo.fm.tagHint")}</p>
           <div className="flex flex-wrap gap-2">
             <input
               className="field-base max-w-64"
-              placeholder="New tag label"
+              placeholder={t("fpo.fm.newTag")}
               value={tagLabel}
               onChange={(e) => setTagLabel(e.target.value)}
             />
@@ -385,15 +386,15 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
               onClick={async () => {
                 await saveTagFn({ data: { tenantId, label: tagLabel } });
                 setTagLabel("");
-                toast.success("Tag saved");
+                toast.success(t("fpo.fm.tagSaved"));
                 await refresh();
               }}
             >
-              Add tag</Button>
+              {t("fpo.fm.addTag")}</Button>
           </div>
           {selected.length > 0 && data.tags.length > 0 ? (
             <div className="flex flex-wrap items-center gap-2 border-t border-border pt-3">
-              <p className="text-sm">{selected.length} selected —</p>
+              <p className="text-sm">{fill(t("fpo.fm.selected"), { n: selected.length })}</p>
               {data.tags.map((tg) => (
                 <span key={tg.id} className="flex gap-1">
                   <Button
@@ -403,7 +404,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
                       await assignTagFn({
                         data: { tenantId, tagId: tg.id, memberIds: selected, mode: "add" },
                       });
-                      toast.success(`Tagged ${selected.length} member(s)`);
+                      toast.success(fill(t("fpo.fm.tagged"), { n: selected.length }));
                       setSelected([]);
                       await refresh();
                     }}
@@ -441,15 +442,15 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
               <thead>
                 <tr>
                   <th />
-                  <th>Membership no.</th>
-                  <th>Name</th>
-                  <th>Type</th>
-                  <th>Village / cluster</th>
-                  <th>Crops</th>
-                  <th>Acres</th>
-                  <th>Identity</th>
-                  <th>Consent</th>
-                  <th>Status</th>
+                  <th>{t("fpo.fm.colNo")}</th>
+                  <th>{t("fpo.fm.colName")}</th>
+                  <th>{t("fpo.fm.colType")}</th>
+                  <th>{t("fpo.fm.colVillage")}</th>
+                  <th>{t("fpo.fm.colCrops")}</th>
+                  <th>{t("fpo.fm.colAcres")}</th>
+                  <th>{t("fpo.fm.colIdentity")}</th>
+                  <th>{t("fpo.fm.colConsent")}</th>
+                  <th>{t("fpo.fm.colStatus")}</th>
                   <th />
                 </tr>
               </thead>
@@ -459,7 +460,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
                     <td>
                       <input
                         type="checkbox"
-                        aria-label={`Select ${m.display_name}`}
+                        aria-label={`${t("fpo.fm.select")} ${m.display_name}`}
                         checked={selected.includes(m.id)}
                         onChange={() => toggleSelected(m.id)}
                       />
@@ -502,21 +503,21 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
                         <select
                           className="field-base py-1 text-xs"
                           value=""
-                          aria-label={`Change status for ${m.display_name}`}
+                          aria-label={`${t("fpo.fm.changeStatusFor")} ${m.display_name}`}
                           onChange={async (e) => {
                             if (!e.target.value) return;
                             try {
                               await statusFn({
                                 data: { memberId: m.id, status: e.target.value as MembershipState },
                               });
-                              toast.success("Membership updated and audited");
+                              toast.success(t("fpo.fm.updated"));
                               await refresh();
                             } catch (err) {
                               toast.error((err as Error).message);
                             }
                           }}
                         >
-                          <option value="">Change status…</option>
+                          <option value="">{t("fpo.fm.changeStatus")}</option>
                           {NEXT_STATES[m.status].map((s) => (
                             <option key={s} value={s}>
                               {MEMBERSHIP_STATE_LABEL[s]}
@@ -541,23 +542,23 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
               {t("fpo.farmer360.title")} — {openRow.display_name}
             </h2>
             <Button variant="ghost" size="sm" onClick={() => setOpenMember(null)}>
-              Close</Button>
+              {t("fpo.fm.close")}</Button>
           </div>
 
           <div className="grid gap-2 text-sm sm:grid-cols-3">
-            <p>Membership:{" "}{openRow.membership_number ?? openRow.member_ref}</p>
-            <p>Status:{" "}{MEMBERSHIP_STATE_LABEL[openRow.status]}</p>
-            <p>Village:{" "}{openRow.village_code ?? "—"}</p>
+            <p>{t("fpo.fm.membership")}{" "}{openRow.membership_number ?? openRow.member_ref}</p>
+            <p>{t("fpo.fm.status")}{" "}{MEMBERSHIP_STATE_LABEL[openRow.status]}</p>
+            <p>{t("fpo.fm.village")}{" "}{openRow.village_code ?? "—"}</p>
           </div>
 
           {!openRow.farmer_user_id ? (
             <div className="space-y-3 border-t border-border pt-3">
               <h3 className="text-sm font-semibold">{t("fpo.members.link")}</h3>
               <p className="field-hint">
-                Search an existing AgriGhar farmer identity by name or village. Only minimal identifying fields are returned and every search is audited.</p>
+                {t("fpo.fm.linkHint")}</p>
               <input
                 className="field-base"
-                placeholder="Name or village code (min 3 characters)"
+                placeholder={t("fpo.fm.linkSearch")}
                 value={candidateQuery}
                 onChange={(e) => setCandidateQuery(e.target.value)}
               />
@@ -567,7 +568,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
                   className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-border px-3 py-2 text-sm"
                 >
                   <span>
-                    {c.full_name ?? "Unnamed"} · {c.village_code ?? "—"} ·{" "}
+                    {c.full_name ?? t("fpo.fm.unnamed")} · {c.village_code ?? "—"} ·{" "}
                     {c.total_extent_acres ?? "—"} ac</span>
                   <Button
                     size="sm"
@@ -578,14 +579,14 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
                         await linkFn({
                           data: { memberId: openRow.id, farmerUserId: c.farmer_user_id },
                         });
-                        toast.success("Farmer identity linked and audited");
+                        toast.success(t("fpo.fm.linked"));
                         await refresh();
                       } catch (err) {
                         toast.error((err as Error).message);
                       }
                     }}
                   >
-                    {c.alreadyMember ? "Already a member" : "Link"}
+                    {c.alreadyMember ? t("fpo.fm.already") : t("fpo.fm.link")}
                   </Button>
                 </div>
               ))}
@@ -610,11 +611,11 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
                           className="text-muted-foreground underline"
                           onClick={async () => {
                             await revokeFn({ data: { consentId: c.id } });
-                            toast.success("Consent revoked and audited");
+                            toast.success(t("fpo.fm.revoked"));
                             await refresh();
                           }}
                         >
-                          revoke</button>
+                          {t("fpo.fm.revoke")}</button>
                       ) : null}
                     </span>
                   ))
@@ -635,7 +636,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
                   </select>
                   <input
                     className="field-base"
-                    placeholder="How authorization was captured"
+                    placeholder={t("fpo.fm.evidence")}
                     value={consentEvidence}
                     onChange={(e) => setConsentEvidence(e.target.value)}
                   />
@@ -652,14 +653,14 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
                           },
                         });
                         setConsentEvidence("");
-                        toast.success("Farmer authorization recorded and audited");
+                        toast.success(t("fpo.fm.recorded"));
                         await refresh();
                       } catch (err) {
                         toast.error((err as Error).message);
                       }
                     }}
                   >
-                    Record authorization</Button>
+                    {t("fpo.fm.record")}</Button>
                 </div>
               ) : null}
 
@@ -668,25 +669,25 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
               ) : detail ? (
                 <div className="space-y-4 border-t border-border pt-3">
                   <p className="field-hint">
-                    Visible sections:{" "}{detail.tabs.join(", ")}. Bank, insurance and partner data are never shown here.</p>
+                    {t("fpo.fm.visible")}{" "}{detail.tabs.join(", ")}. {t("fpo.fm.visibleTail")}</p>
                   {detail.profile ? (
                     <div className="grid gap-2 text-sm sm:grid-cols-3">
-                      <p>Name:{" "}{detail.profile.full_name ?? "—"}</p>
-                      <p>Ownership:{" "}{detail.profile.ownership_type ?? "—"}</p>
-                      <p>Extent:{" "}{detail.profile.total_extent_acres ?? "—"} ac</p>
-                      <p>Category:{" "}{detail.profile.social_category ?? "—"}</p>
-                      <p>Irrigation:{" "}{detail.profile.irrigation_source ?? "—"}</p>
-                      <p>Village:{" "}{detail.profile.village_code ?? "—"}</p>
+                      <p>{t("fpo.fm.pName")}{" "}{detail.profile.full_name ?? "—"}</p>
+                      <p>{t("fpo.fm.pOwn")}{" "}{detail.profile.ownership_type ?? "—"}</p>
+                      <p>{t("fpo.fm.pExtent")}{" "}{detail.profile.total_extent_acres ?? "—"} ac</p>
+                      <p>{t("fpo.fm.pCat")}{" "}{detail.profile.social_category ?? "—"}</p>
+                      <p>{t("fpo.fm.pIrr")}{" "}{detail.profile.irrigation_source ?? "—"}</p>
+                      <p>{t("fpo.fm.village")}{" "}{detail.profile.village_code ?? "—"}</p>
                     </div>
                   ) : null}
                   {detail.farms.length > 0 ? (
                     <table className="data-table">
                       <thead>
                         <tr>
-                          <th>Plot</th>
-                          <th>Label</th>
-                          <th>Crop</th>
-                          <th>Acres</th>
+                          <th>{t("fpo.fm.cPlot")}</th>
+                          <th>{t("fpo.fm.cLabel")}</th>
+                          <th>{t("fpo.fm.cCrop")}</th>
+                          <th>{t("fpo.fm.colAcres")}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -703,7 +704,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
                   ) : null}
                   {detail.crops.length > 0 ? (
                     <p className="text-sm">
-                      Crop mix:{" "}
+                      {t("fpo.fm.mix")}{" "}
                       {detail.crops
                         .map((c) => `${c.crop} (${c.acres} ac, ${c.plots} plot(s))`)
                         .join(" · ")}
@@ -711,7 +712,7 @@ export function FpoFarmersSection({ tenantId }: { tenantId: string }) {
                   ) : null}
                   {detail.schemes.length > 0 ? (
                     <p className="text-sm">
-                      Scheme applications:{" "}{detail.schemes.length} — latest{" "}
+                      {t("fpo.fm.schemes")}{" "}{detail.schemes.length} — {t("fpo.fm.latest")}{" "}
                       {detail.schemes[0]?.status.replaceAll("_", " ")}
                     </p>
                   ) : null}
