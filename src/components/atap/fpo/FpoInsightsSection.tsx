@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import { StateBadge } from "@/components/atap/StatusBadge";
 import { getInsightsBoard, searchWorkspace } from "@/lib/atap/fpoInsights.functions";
 import {
@@ -24,6 +25,7 @@ export function FpoInsightsSection({
   tenantId: string;
   onOpenSection?: (section: FpoSection) => void;
 }) {
+  const { t } = useLanguage();
   const boardFn = useServerFn(getInsightsBoard);
   const searchFn = useServerFn(searchWorkspace);
 
@@ -57,7 +59,7 @@ export function FpoInsightsSection({
   const hits = results.data?.hits ?? [];
 
   if (board.isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading insights…</p>;
+    return <p className="text-sm text-muted-foreground">{t("fpo.ins2.loading")}</p>;
   }
   if (board.error) {
     return <p className="text-sm text-destructive">{(board.error as Error).message}</p>;
@@ -68,7 +70,7 @@ export function FpoInsightsSection({
     <div className="space-y-6">
       <section className="panel space-y-4 p-5">
         <div className="space-y-1">
-          <h2 className="font-display text-base font-semibold">Universal search</h2>
+          <h2 className="font-display text-base font-semibold">{t("fpo.ins2.search")}</h2>
           <p className="field-hint">{data.disclaimers.search}</p>
         </div>
         <form
@@ -80,20 +82,20 @@ export function FpoInsightsSection({
         >
           <input
             className={`${input} max-w-md flex-1`}
-            placeholder="Search members, applications, lots, ledger, tasks, team…"
+            placeholder={t("fpo.ins2.ph")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             aria-label="Search this organization"
           />
           <Button type="submit" disabled={query.trim().length < 2}>
-            Search</Button>
+{t("fpo.ins2.searchBtn")}</Button>
         </form>
         {submitted.trim().length >= 2 ? (
           results.isLoading ? (
-            <p className="text-sm text-muted-foreground">Searching…</p>
+            <p className="text-sm text-muted-foreground">{t("fpo.ins2.searching")}</p>
           ) : hits.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              No records in this organization match “{submitted}”.
+              {t("fpo.ins2.noHits")} “{submitted}”.
             </p>
           ) : (
             <div className="space-y-4">
@@ -135,7 +137,7 @@ export function FpoInsightsSection({
 
       <section className="space-y-4">
         <div className="space-y-1">
-          <h2 className="font-display text-base font-semibold">Operational insights</h2>
+          <h2 className="font-display text-base font-semibold">{t("fpo.ins2.ops")}</h2>
           <p className="field-hint">{data.disclaimers.insights}</p>
         </div>
         {data.attention.length > 0 ? (
@@ -151,7 +153,7 @@ export function FpoInsightsSection({
                 </span>
                 {onOpenSection ? (
                   <Button variant="outline" size="sm" onClick={() => onOpenSection(item.section)}>
-                    Review</Button>
+{t("fpo.ins2.review")}</Button>
                 ) : null}
               </li>
             ))}
@@ -190,12 +192,12 @@ export function FpoInsightsSection({
 
       <section className="panel space-y-4 p-5">
         <div className="space-y-1">
-          <h2 className="font-display text-base font-semibold">Activity timeline</h2>
+          <h2 className="font-display text-base font-semibold">{t("fpo.ins2.timeline")}</h2>
           <p className="field-hint">{data.disclaimers.timeline}</p>
         </div>
         {!data.canSeeTimeline ? (
           <p className="text-sm text-muted-foreground">
-            The audited activity trail is visible to organization admins and auditors only.</p>
+            {t("fpo.ins2.auditOnly")}</p>
         ) : (
           <>
             <div className="flex flex-wrap gap-2">
@@ -205,7 +207,7 @@ export function FpoInsightsSection({
                 onChange={(e) => setSectionFilter(e.target.value as FpoSection | "all")}
                 aria-label="Filter by section"
               >
-                <option value="all">All sections</option>
+                <option value="all">{t("fpo.ins2.allSec")}</option>
                 {FPO_SECTION_DEFS.map((s) => (
                   <option key={s.key} value={s.key}>
                     {s.label}
@@ -218,9 +220,9 @@ export function FpoInsightsSection({
                 onChange={(e) => setDecisionFilter(e.target.value)}
                 aria-label="Filter by decision"
               >
-                <option value="all">All outcomes</option>
-                <option value="allow">Allowed</option>
-                <option value="deny">Denied</option>
+                <option value="all">{t("fpo.ins2.allOut")}</option>
+                <option value="allow">{t("fpo.ins2.allowed")}</option>
+                <option value="deny">{t("fpo.ins2.denied")}</option>
               </select>
             </div>
             {timeline.length === 0 ? (
