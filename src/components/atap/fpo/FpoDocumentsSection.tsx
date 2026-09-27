@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import { StateBadge } from "@/components/atap/StatusBadge";
 import { addFpoDocument, setFpoDocumentStatus, type FpoOverview } from "@/lib/atap/fpo.functions";
 import {
@@ -27,6 +28,7 @@ export function FpoDocumentsSection({
   overview: FpoOverview;
   onChanged: () => Promise<void>;
 }) {
+  const { t } = useLanguage();
   const tenantId = overview.activeTenantId ?? "";
   const add = useServerFn(addFpoDocument);
   const setStatus = useServerFn(setFpoDocumentStatus);
@@ -41,9 +43,9 @@ export function FpoDocumentsSection({
   return (
     <div className="space-y-6">
       <section className="panel space-y-3 p-5">
-        <h2 className="font-display text-base font-semibold">Compliance status</h2>
+        <h2 className="font-display text-base font-semibold">{t("fpo.doc.compliance")}</h2>
         <p className="field-hint">
-          Required for a complete organization record: certificate of incorporation, PAN, bank proof and board resolution.</p>
+          {t("fpo.doc.required")}</p>
         {overview.missingDocuments.length === 0 ? (
           <p className="text-sm">All required documents are on file.</p>
         ) : (
@@ -67,11 +69,11 @@ export function FpoDocumentsSection({
           <table className="data-table">
             <thead>
               <tr>
-                <th>Type</th>
-                <th>Title</th>
-                <th>Issued</th>
-                <th>Expires</th>
-                <th>Status</th>
+                <th>{t("fpo.doc.cType")}</th>
+                <th>{t("fpo.doc.cTitle")}</th>
+                <th>{t("fpo.doc.cIssued")}</th>
+                <th>{t("fpo.doc.cExp")}</th>
+                <th>{t("fpo.doc.cStatus")}</th>
                 <th />
               </tr>
             </thead>
@@ -96,7 +98,7 @@ export function FpoDocumentsSection({
                             onClick={async () => {
                               try {
                                 await setStatus({ data: { tenantId, id: d.id, status: next } });
-                                toast.success("Document status updated and audited");
+                                toast.success(t("fpo.doc.stUpd"));
                                 await onChanged();
                               } catch (e) {
                                 toast.error((e as Error).message);
@@ -130,7 +132,7 @@ export function FpoDocumentsSection({
             </select>
             <input
               className="field-base"
-              placeholder="Document title /’ reference"
+              placeholder={t("fpo.doc.docTitle")}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
@@ -156,7 +158,7 @@ export function FpoDocumentsSection({
               onClick={async () => {
                 try {
                   await add({ data: { tenantId, docType, title, issuedOn, expiresAt } });
-                  toast.success("Document recorded and audited");
+                  toast.success(t("fpo.doc.recorded"));
                   setTitle("");
                   setIssuedOn("");
                   setExpiresAt("");
@@ -167,11 +169,11 @@ export function FpoDocumentsSection({
               }}
               disabled={!title}
             >
-              Add document</Button>
+              {t("fpo.doc.add")}</Button>
           </div>
         ) : (
           <p className="text-sm text-muted-foreground">
-            Only an admin of this FPO can add or review organization documents.</p>
+            {t("fpo.doc.onlyAdmin")}</p>
         )}
       </section>
     </div>
