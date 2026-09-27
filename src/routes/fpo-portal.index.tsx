@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getFpoOverview } from "@/lib/atap/fpo.functions";
 import { FpoCommandCenter } from "@/components/atap/fpo/FpoCommandCenter";
+import { useLanguage } from "@/components/atap/LanguageProvider";
 import type { FpoSection } from "@/lib/atap/fpo";
 
 export const Route = createFileRoute("/fpo-portal/")({
@@ -18,6 +19,7 @@ const PORTAL_TARGET: Partial<Record<FpoSection, string>> = {
 };
 
 function Dashboard() {
+  const { t } = useLanguage();
   const { fpoTenant } = Route.useRouteContext();
   const fetchOverview = useServerFn(getFpoOverview);
   const navigate = useNavigate();
@@ -25,8 +27,8 @@ function Dashboard() {
     queryKey: ["atap", "fpo-overview", fpoTenant.id],
     queryFn: () => fetchOverview({ data: { tenantId: fpoTenant.id } }),
   });
-  if (q.isLoading) return <p className="text-sm text-muted-foreground">Loading dashboard…</p>;
-  if (q.error || !q.data) return <p className="text-sm text-destructive">Could not load the dashboard.</p>;
+  if (q.isLoading) return <p className="text-sm text-muted-foreground">{t("fpo.dash.loading")}</p>;
+  if (q.error || !q.data) return <p className="text-sm text-destructive">{t("fpo.dash.loadError")}</p>;
   return (
     <FpoCommandCenter
       overview={q.data}
