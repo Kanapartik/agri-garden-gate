@@ -3,6 +3,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/components/atap/LanguageProvider";
+import { fill } from "@/lib/i18n.fpoWs";
 import { StateBadge } from "@/components/atap/StatusBadge";
 import {
   createNotice,
@@ -32,6 +34,7 @@ const input =
 const card = "rounded-lg border border-border bg-card p-4";
 
 export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
+  const { t } = useLanguage();
   const qc = useQueryClient();
   const boardFn = useServerFn(getNotificationsBoard);
   const createFn = useServerFn(createNotice);
@@ -68,12 +71,12 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
       onError: (e: Error) => toast.error(e.message),
     });
 
-  const create = useAction(createFn, "Notification drafted");
-  const changeState = useAction(stateFn, "Notification updated");
+  const create = useAction(createFn, t("fpo.notif.drafted"));
+  const changeState = useAction(stateFn, t("fpo.notif.updated"));
   const send = useMutation({
     mutationFn: (payload: { tenantId: string; noticeId: string }) => sendFn({ data: payload }),
     onSuccess: async (res) => {
-      toast.success(`Delivered to ${res.queued} recipient(s), ${res.withheld} withheld`);
+      toast.success(fill(t("fpo.notif.sent"), { a: res.queued, b: res.withheld }));
       await refresh();
     },
     onError: (e: Error) => toast.error(e.message),
@@ -82,7 +85,7 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
   const data = board.data;
 
   if (board.isLoading) return <p className="text-sm text-muted-foreground">Loading…</p>;
-  if (!data) return <p className="text-sm text-muted-foreground">No communication records yet.</p>;
+  if (!data) return <p className="text-sm text-muted-foreground">{t("fpo.notif.none")}</p>;
 
   const toggleChannel = (c: NoticeChannel) =>
     setChannels((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
@@ -95,10 +98,10 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
 
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {[
-          { label: "Notifications", value: data.notices.length },
-          { label: "Delivered", value: data.deliverySummary.delivered },
-          { label: "Withheld", value: data.deliverySummary.withheld },
-          { label: "Reachable members", value: data.reachableMembers },
+          { label: t("fpo.notif.mNotif"), value: data.notices.length },
+          { label: t("fpo.notif.mDel"), value: data.deliverySummary.delivered },
+          { label: t("fpo.notif.mWith"), value: data.deliverySummary.withheld },
+          { label: t("fpo.notif.mReach"), value: data.reachableMembers },
         ].map((m) => (
           <div key={m.label} className={card}>
             <p className="text-xs uppercase tracking-wide text-muted-foreground">{m.label}</p>
@@ -109,16 +112,16 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
 
       {data.canSend ? (
         <section className={`${card} space-y-3`}>
-          <h3 className="font-display text-base font-semibold">Compose a notification</h3>
+          <h3 className="font-display text-base font-semibold">{t("fpo.notif.compose")}</h3>
           <input
             className={input}
-            placeholder="Title"
+            placeholder={t("fpo.notif.title")}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
           <textarea
             className={`${input} min-h-24`}
-            placeholder="Message to members"
+            placeholder={t("fpo.notif.msg")}
             value={body}
             onChange={(e) => setBody(e.target.value)}
           />
@@ -159,7 +162,7 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
               value={segmentId}
               onChange={(e) => setSegmentId(e.target.value)}
             >
-              <option value="">Select a saved segment</option>
+              <option value="">{t("fpo.notif.selSeg")}</option>
               {data.segmentOptions.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
@@ -174,7 +177,7 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
               value={memberId}
               onChange={(e) => setMemberId(e.target.value)}
             >
-              <option value="">Select a member</option>
+              <option value="">{t("fpo.notif.selMem")}</option>
               {data.memberOptions.map((m) => (
                 <option key={m.id} value={m.id}>
                   {m.display_name}
@@ -216,7 +219,7 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
               }
               disabled={create.isPending}
             >
-              Save notification</Button>
+              {t("fpo.notif.save")}</Button>
             <Button
               variant="outline"
               onClick={async () => {
@@ -242,17 +245,17 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
                 }
               }}
             >
-              Preview reach</Button>
+              {t("fpo.notif.preview")}</Button>
           </div>
           {preview ? <p className="text-sm">{preview}</p> : null}
         </section>
       ) : (
         <p className="text-sm text-muted-foreground">
-          Only an FPO admin can compose member communication. You have read access to the record.</p>
+          {t("fpo.notif.onlyAdmin")}</p>
       )}
 
       <section className="space-y-3">
-        <h3 className="font-display text-base font-semibold">Notification record</h3>
+        <h3 className="font-display text-base font-semibold">{t("fpo.notif.record")}</h3>
         {data.notices.length === 0 ? (
           <p className="text-sm text-muted-foreground">Nothing sent yet.</p>
         ) : (
@@ -287,7 +290,7 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
                         onClick={() => send.mutate({ tenantId, noticeId: n.id })}
                         disabled={send.isPending}
                       >
-                        Send now</Button>
+                        {t("fpo.notif.send")}</Button>
                     ) : null}
                     {nextNoticeStates(n.state)
                       .filter((s) => s === "cancelled" || s === "draft" || s === "scheduled")
@@ -306,7 +309,7 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
                       variant="ghost"
                       onClick={() => setOpenNotice(openNotice === n.id ? null : n.id)}
                     >
-                      {openNotice === n.id ? "Hide delivery log" : `Delivery log (${rows.length})`}
+                      {openNotice === n.id ? t("fpo.notif.hideLog") : fill(t("fpo.notif.logN"), { n: rows.length })}
                     </Button>
                   </div>
                 ) : null}
@@ -314,10 +317,10 @@ export function FpoNotificationsSection({ tenantId }: { tenantId: string }) {
                   <table className="data-table">
                     <thead>
                       <tr>
-                        <th>Recipient</th>
-                        <th>Channel</th>
-                        <th>Result</th>
-                        <th>Reason</th>
+                        <th>{t("fpo.notif.cRec")}</th>
+                        <th>{t("fpo.notif.cCh")}</th>
+                        <th>{t("fpo.notif.cRes")}</th>
+                        <th>{t("fpo.notif.cReason")}</th>
                       </tr>
                     </thead>
                     <tbody>
