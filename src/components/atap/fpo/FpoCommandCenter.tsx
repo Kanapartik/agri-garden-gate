@@ -291,9 +291,9 @@ export function FpoCommandCenter({
       <section aria-labelledby="operating-chain-title">
         <div className="mb-3">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-            Enter once, reuse everywhere</p>
+            {t("fpo.dash.chainKicker")}</p>
           <h2 id="operating-chain-title" className="mt-1 text-xl font-semibold">
-            Farmer-to-market operating chain</h2>
+            {t("fpo.dash.chainTitle")}</h2>
         </div>
         <div className="overflow-x-auto pb-2">
           <ol className="flex min-w-max items-stretch gap-2">
@@ -323,12 +323,12 @@ export function FpoCommandCenter({
         <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-              Digital core</p>
+              {t("fpo.dash.coreKicker")}</p>
             <h2 id="core-modules-title" className="mt-1 text-xl font-semibold">
-              Ten connected operating modules</h2>
+              {t("fpo.dash.coreTitle")}</h2>
           </div>
           <p className="max-w-md text-xs leading-5 text-muted-foreground">
-            “Foundation” means the transaction trail exists, but prediction or external ecosystem integration is not yet production-ready.</p>
+            {t("fpo.dash.coreNote")}</p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {FPO_CORE_MODULES.map((module) => {
@@ -371,21 +371,21 @@ export function FpoCommandCenter({
           <Network className="h-5 w-5" />
         </div>
         <div>
-          <h2 className="text-base font-semibold">Prediction is staged behind evidence</h2>
+          <h2 className="text-base font-semibold">{t("fpo.dash.predictionTitle")}</h2>
           <p className="mt-1 text-sm leading-6 text-muted-foreground">
-            Yield, price, demand, spoilage, logistics and cash-flow forecasts will activate only after validated farm, weather, market, warehouse and finance feeds are connected. Recommendations will remain decision-support for authorized people.</p>
+            {t("fpo.dash.predictionBody")}</p>
         </div>
         <Button variant="outline" onClick={() => onOpenSection("insights")}>
-          <Boxes className="h-4 w-4" /> Review data foundation</Button>
+          <Boxes className="h-4 w-4" /> {t("fpo.dash.reviewFoundation")}</Button>
       </section>
 
       <section className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-border pt-5 text-xs text-muted-foreground">
         <span className="inline-flex items-center gap-1.5">
-          <ShieldCheck className="h-3.5 w-3.5 text-primary" /> Purpose-scoped farmer access</span>
+          <ShieldCheck className="h-3.5 w-3.5 text-primary" /> {t("fpo.dash.trustAccess")}</span>
         <span className="inline-flex items-center gap-1.5">
-          <FileCheck2 className="h-3.5 w-3.5 text-primary" /> Audited sensitive actions</span>
+          <FileCheck2 className="h-3.5 w-3.5 text-primary" /> {t("fpo.dash.trustAudit")}</span>
         <span className="inline-flex items-center gap-1.5">
-          <Handshake className="h-3.5 w-3.5 text-primary" /> Human commercial decisions</span>
+          <Handshake className="h-3.5 w-3.5 text-primary" /> {t("fpo.dash.trustHuman")}</span>
       </section>
     </div>
   );
