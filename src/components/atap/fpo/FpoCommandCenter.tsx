@@ -127,38 +127,38 @@ export function FpoCommandCenter({
           <div>
             <div className="mb-5 flex flex-wrap items-center gap-2">
               <span className="rounded-full border border-surface-deep-foreground/20 bg-surface-deep-foreground/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em]">
-                FPO intelligence &amp; governance</span>
+                {t("fpo.dash.badge")}</span>
               {overview.profile ? <StateBadge state={overview.profile.state} /> : null}
             </div>
             <p className="text-sm font-semibold text-accent">{organization}</p>
             <h2 className="mt-2 max-w-2xl text-3xl font-bold leading-tight sm:text-4xl">
-              Run the farmer-to-market business from one operating view.</h2>
+              {t("fpo.dash.heroTitle")}</h2>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-surface-deep-foreground/70">
-              Connect membership, crop plans, inputs, aggregation, quality, buyers, settlements and governance without re-entering the same record in separate systems.</p>
+              {t("fpo.dash.heroBody")}</p>
             <div className="mt-6 flex flex-wrap gap-2">
               <Button
                 className="bg-accent text-accent-foreground hover:bg-accent/90"
                 onClick={() => onOpenSection(attention[0]?.section ?? "insights")}
               >
-                Review priority work{" "}<ArrowRight className="h-4 w-4" />
+                {t("fpo.dash.reviewPriority")}{" "}<ArrowRight className="h-4 w-4" />
               </Button>
               <Button
                 variant="outline"
                 className="border-surface-deep-foreground/25 bg-transparent text-surface-deep-foreground hover:bg-surface-deep-foreground/10 hover:text-surface-deep-foreground"
                 onClick={() => onOpenSection("insights")}
               >
-                Open operational insights</Button>
+                {t("fpo.dash.openInsights")}</Button>
             </div>
           </div>
 
           <div className="grid gap-5 sm:grid-cols-[auto_minmax(12rem,1fr)] lg:grid-cols-1 xl:grid-cols-[auto_13rem] xl:items-center">
-            <ReadinessRing score={readiness.score} />
+            <ReadinessRing score={readiness.score} label={t("fpo.dash.readiness")} ariaLabel={t("fpo.dash.readinessAria")} />
             <div className="space-y-3">
-              <ReadinessBar label="Organization setup" value={readiness.onboarding} />
-              <ReadinessBar label="Active members" value={readiness.memberActivation} />
-              <ReadinessBar label="Required documents" value={readiness.compliance} />
+              <ReadinessBar label={t("fpo.dash.orgSetup")} value={readiness.onboarding} />
+              <ReadinessBar label={t("fpo.dash.activeMembers")} value={readiness.memberActivation} />
+              <ReadinessBar label={t("fpo.dash.requiredDocs")} value={readiness.compliance} />
               <p className="pt-1 text-[10px] leading-4 text-surface-deep-foreground/55">
-                DERIVED operating readiness only. It is not a credit, scheme, insurance or governance decision score.</p>
+                {t("fpo.dash.readinessNote")}</p>
             </div>
           </div>
         </div>
