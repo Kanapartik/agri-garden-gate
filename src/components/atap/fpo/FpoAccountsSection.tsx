@@ -726,6 +726,7 @@ function ReconcileRow({
   disabled: boolean;
   onSubmit: (bankReference: string) => void;
 }) {
+  const { t } = useLanguage();
   const [value, setValue] = useState("");
   return (
     <div className="rounded-md border border-border p-3">
