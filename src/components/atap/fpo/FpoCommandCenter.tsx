@@ -72,7 +72,7 @@ function ReadinessRing({ score, label, ariaLabel }: { score: number; label: stri
         <div>
           <p className="text-3xl font-bold tabular-nums">{score}%</p>
           <p className="text-[10px] font-semibold uppercase tracking-[0.14em] opacity-75">
-            readiness</p>
+            {label}</p>
         </div>
       </div>
     </div>
@@ -100,6 +100,7 @@ export function FpoCommandCenter({
   overview: FpoOverview;
   onOpenSection: (section: FpoSection) => void;
 }) {
+  const { t } = useLanguage();
   const [lens, setLens] = useState<FpoDashboardLens>(() => defaultFpoDashboardLens(overview.roles));
   const complianceActions = numericMetric(overview, "compliance");
   const readiness = deriveFpoReadiness({
