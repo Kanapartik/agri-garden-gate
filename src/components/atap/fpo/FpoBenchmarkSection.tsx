@@ -80,25 +80,25 @@ export function FpoBenchmarkSection({ tenantId }: { tenantId: string }) {
       {own ? (
         <div className="grid gap-4 md:grid-cols-4">
           <div className="panel p-4">
-            <p className="text-xs text-muted-foreground">Overall score</p>
+            <p className="text-xs text-muted-foreground">{t("fpo.cmp.overallScore")}</p>
             <p className="font-display text-3xl font-semibold">{own.overall}</p>
             <span className={`mt-1 inline-block rounded px-2 py-0.5 text-xs ${bandClass[band(own.overall)]}`}>{BAND_LABEL[band(own.overall)]}</span>
           </div>
           <div className="panel p-4">
-            <p className="text-xs text-muted-foreground">Rank</p>
+            <p className="text-xs text-muted-foreground">{t("fpo.cmp.rank")}</p>
             <p className="font-display text-3xl font-semibold">{own.rank}<span className="text-base text-muted-foreground"> / {ranked.length}</span></p>
           </div>
           <div className="panel p-4">
-            <p className="text-xs text-muted-foreground">Change since{" "}{trend[0]?.period}</p>
+            <p className="text-xs text-muted-foreground">{t("fpo.cmp.changeSince")}{" "}{trend[0]?.period}</p>
             <p className="font-display text-3xl font-semibold">
               {trend.length > 1 ? `${(overallScore(trend[trend.length - 1]!) - overallScore(trend[0]!)) >= 0 ? "+" : ""}${(overallScore(trend[trend.length - 1]!) - overallScore(trend[0]!)).toFixed(1)}` : "—"}
             </p>
           </div>
           <div className="panel p-4">
-            <p className="text-xs text-muted-foreground">Focus next on</p>
+            <p className="text-xs text-muted-foreground">{t("fpo.cmp.focusNext")}</p>
             <ul className="mt-1 space-y-0.5 text-sm">
               {focusAreas(own, peers).map((f) => (
-                <li key={f.key}>{f.label} <span className="text-muted-foreground">({f.gap >= 0 ? "+" : ""}{f.gap.toFixed(1)} vs peers)</span></li>
+                <li key={f.key}>{f.label} <span className="text-muted-foreground">({f.gap >= 0 ? "+" : ""}{f.gap.toFixed(1)} {t("fpo.cmp.vsPeers")})</span></li>
               ))}
             </ul>
           </div>
