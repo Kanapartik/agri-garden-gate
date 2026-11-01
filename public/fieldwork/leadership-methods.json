@@ -1,0 +1,153 @@
+{
+  "title": "JAIP integrated leadership analytics",
+  "version": "2026-11-02.1",
+  "classification": "questionnaire-derived metric contract; no completed response dataset supplied",
+  "sourceFiles": [
+    "Household Survey – Jigawa State.pdf",
+    "FGD Survey – Jigawa State.pdf",
+    "Key Informant Interview (KII) Survey – Jigawa State.pdf",
+    "Enterprise Survey – Jigawa State.pdf",
+    "Final-Staffing-LivelihoodStudy-v03 (1).xlsx",
+    "JAIP – Integrated Leadership Analytics & Investment Planning Framework (user-supplied pasted text)"
+  ],
+  "grain": {
+    "HH": "one household interview",
+    "FGD": "one group discussion, not a household count",
+    "KII": "one informant interview, not a household count",
+    "ENT": "one enterprise interview, not deduplicated business entities"
+  },
+  "inclusion": "approved records; mode actual excludes all demo records; examples contains only fictional records; apply role scope then all visible filters",
+  "filters": [
+    "division",
+    "canonical LGA alias",
+    "capture date from/to inclusive (created date fallback)",
+    "instrument",
+    "commodity",
+    "enterprise sector (enterprises only)"
+  ],
+  "measures": [
+    {
+      "id": "lga-coverage",
+      "formula": "count of target LGAs with >=1 included interview / count target LGAs in role/geographic scope",
+      "limitation": "coverage is not priority or population prevalence"
+    },
+    {
+      "id": "option-prevalence",
+      "formula": "records selecting option / records with nonmissing answer",
+      "limitation": "multi-select counts may exceed denominator; no sampling weights"
+    },
+    {
+      "id": "household-loss",
+      "formula": "unweighted mean(loss) over valid 0<=loss<=100 HH answers",
+      "limitation": "not total losses or a state estimate"
+    },
+    {
+      "id": "financial-bands",
+      "fields": [
+        "ENT61",
+        "ENT62",
+        "ENT63",
+        "ENT65",
+        "ENT66"
+      ],
+      "calculation": "categorical distributions only",
+      "limitation": "no midpoint imputation; no exact ROI, margin or peak/lean change from bands"
+    },
+    {
+      "id": "exact-monthly-reconciliation",
+      "fields": [
+        "financialMonth",
+        "revenueExact",
+        "costExact",
+        "profitExact"
+      ],
+      "formula": "computedProfit=revenueExact-costExact; derivedMargin=computedProfit/revenueExact only if revenueExact>0",
+      "qualityFlag": "reported profit differs from computed by >max(NGN1000,2% of revenue)",
+      "limitation": "optional self-reported proposed fields; not audited financial verification or loan approval; keep periods separate"
+    },
+    {
+      "id": "capacity-utilization",
+      "formula": "monthlyOutput/installedMonthlyCapacity when capacity>0 and same stated unit",
+      "limitation": "never sum different units/commodities; output>installed flags review"
+    },
+    {
+      "id": "worker-headcount",
+      "formula": "sum supplemental unique headcounts across reporting enterprises; do not sum overlapping worker-category counts",
+      "limitation": "a worker may appear in multiple businesses; not unique statewide employment"
+    },
+    {
+      "id": "ownership",
+      "fields": [
+        "ENT14"
+      ],
+      "limitation": "do not infer business ownership from respondent gender or age"
+    },
+    {
+      "id": "readiness-scenario",
+      "weights": [
+        25,
+        20,
+        20,
+        15,
+        10,
+        10
+      ],
+      "formula": "sum(score/5*weight); six scores0..5",
+      "limitation": "hypothetical scenario only; no enterprise scoring/eligibility/funding automation"
+    },
+    {
+      "id": "capacity-scenario",
+      "formula": "installedMonthlyCapacity*(targetUtilization-currentUtilization)/100",
+      "limitation": "illustrative fixed capacity; assumes demand, labour, inputs and infrastructure"
+    }
+  ],
+  "riskDomains": {
+    "Financial": [
+      "ENT72",
+      "ENT45"
+    ],
+    "Operational": [
+      "ENT49",
+      "ENT59",
+      "ENT48"
+    ],
+    "Infrastructure": [
+      "ENT87",
+      "ENT53",
+      "ENT54"
+    ],
+    "Market": [
+      "ENT83",
+      "ENT80"
+    ],
+    "Environmental": [
+      "ENT88",
+      "ENT74"
+    ],
+    "Safety": [
+      "ENT89",
+      "ENT90"
+    ],
+    "Governance": [
+      "ENT17",
+      "ENT18",
+      "ENT21"
+    ]
+  },
+  "missingRequirements": [
+    "validated response dataset",
+    "population weights and targets",
+    "stable entity identifiers for deduplication",
+    "verified finances and physical units",
+    "approved investment costs and disbursements",
+    "baseline/follow-up outcomes and attribution design"
+  ],
+  "sourceAdaptations": {
+    "enterpriseSourceMap": "enterprise-source.json",
+    "numericWorkerCounts": "supplement, do not reinterpret original Q25 checkboxes",
+    "inputQuantity": "supplement quantity/unit/period; preserve Q40 frequency choices",
+    "exclusiveAnswers": "specified status/financial-band questions adapted from checkboxes to single choice, marked cardinalityAdapted",
+    "otherDetails": "conditional Other descriptions added",
+    "applicability": "Q8,19,71 conditional; source required flags preserved in source mapping"
+  }
+}

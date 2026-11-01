@@ -17,7 +17,7 @@
   if(translated===undefined){
    const demo=s.match(/^Demonstration workspace · (\d+) sample records in this view\. New records are stored locally; online status does not indicate server sync\.$/);
    if(demo)translated=lang==='ha'?`Filin gwaji · bayanan misali ${demo[1]} a nan. Sabbin bayanai suna a na'ura; intanet ba ya nufin an daidaita da uwar garke.`:`Nokku ƴeewtagol · humpito misal ${demo[1]} ɗoo. Humpito keso ena rese e masiŋel; enternet wonaa jokkondiral e server.`;
-   const adapted=s.match(/^(HH|FGD|KII) · SOURCE-ADAPTED PREVIEW$/i);
+   const adapted=s.match(/^(HH|FGD|KII|ENT) · SOURCE-ADAPTED PREVIEW$/i);
    if(adapted)translated=adapted[1]+' · '+(lang==='ha'?'GWAIJIN DA AKA DANGANTA DA TUSHE':'ƳEEWTAGOL IWNGOL E ASLI');
   }
   if(translated===undefined){
@@ -92,6 +92,6 @@
   root.querySelectorAll('[data-user-content]').forEach(el=>el.setAttribute('lang',el.hasAttribute('data-answer-key')?language:'und'));
   toolbar();
  }
- window.fieldworkI18n={get language(){return language},text,apply,version:'2026-11-02.1',supported:allowed};
+ window.fieldworkI18n={get language(){return language},text,apply,version:'2026-11-02.2',supported:allowed};
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply);else apply();
 })();
