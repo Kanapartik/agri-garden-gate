@@ -22,7 +22,7 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k.startsWith("atap-shell-") && k !== CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim()),
   );
 });
@@ -42,6 +42,8 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
+  // The fieldwork preview owns its own scoped service worker and cache.
+  if (url.pathname === "/fieldwork" || url.pathname.startsWith("/fieldwork/")) return;
   if (isPrivatePath(url)) return;
 
   if (request.mode === "navigate") {
