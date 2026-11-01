@@ -107,3 +107,7 @@ Phase 3: implement Android offline storage and native location; pilot with a sma
 Phase 4: train staff, deploy controlled devices, helpdesk and incident response; confirm backup restoration, retention/deletion, role revocation and assignment changes; expand only after a supervised pilot.
 
 Prototype checks: syntax checks, first-login flow, role navigation, draft persistence across reload, review notes and status changes, export, browser offline shell and small-screen layout. Production gates above remain unverified until backend and Android implementation exist.
+
+## Multilingual preview update — 2 November 2026
+
+The preview now offers English, Hausa and Fulfulde (Fula). Kanuri was excluded at the owner's request. Language choice and the optional English prompt reference persist locally. Bundled translations work with the cached application; canonical response codes remain unchanged. All guided-form labels/options have draft Hausa and Fulfulde entries, plus core navigation, dashboard labels and review controls. The original source catalog, technical blueprint and unmatched design notes retain English. Native-speaker validation of both draft language packs is required before live interviews. See locales/README.md for review scope and pack maintenance.
