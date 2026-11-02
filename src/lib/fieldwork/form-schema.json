@@ -1,0 +1,5245 @@
+{
+  "HH": {
+    "version": "preview-v1",
+    "fields": [
+      {
+        "id": "consent",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No"
+        ]
+      },
+      {
+        "id": "ward",
+        "type": "text",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "community",
+        "type": "text",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "date",
+        "type": "date",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "locationReason",
+        "type": "text",
+        "required": false,
+        "options": []
+      },
+      {
+        "id": "name",
+        "type": "text",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "gender",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Male",
+          "Female"
+        ]
+      },
+      {
+        "id": "age",
+        "type": "select",
+        "required": true,
+        "options": [
+          "18-25",
+          "26-35",
+          "36-50",
+          "50+"
+        ]
+      },
+      {
+        "id": "education",
+        "type": "select",
+        "required": true,
+        "options": [
+          "None",
+          "Primary",
+          "Secondary",
+          "Graduation",
+          "Post Graduation",
+          "Islamic Education or Informal Education"
+        ]
+      },
+      {
+        "id": "religion",
+        "type": "text",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "housing",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Mudhouse",
+          "Thatched House",
+          "Bamboo House",
+          "Wooden House",
+          "Compound house",
+          "Brick / Stones House",
+          "Not applicable"
+        ]
+      },
+      {
+        "id": "ownership",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Owned",
+          "Rented",
+          "Squatted",
+          "Provided Free"
+        ]
+      },
+      {
+        "id": "water",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Borewell",
+          "Tap",
+          "Well",
+          "Stream",
+          "Other"
+        ]
+      },
+      {
+        "id": "family",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Nuclear Family",
+          "Extended Family"
+        ]
+      },
+      {
+        "id": "size",
+        "type": "number",
+        "required": true,
+        "options": [],
+        "min": 0
+      },
+      {
+        "id": "employment",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Employed",
+          "Self-Employed",
+          "Unemployed",
+          "Student",
+          "Retired"
+        ]
+      },
+      {
+        "id": "agri",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Crop Production",
+          "Livestock Rearing",
+          "Fishing and Aquaculture",
+          "Forestry and Gathering",
+          "Subsistence Farming",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "rural",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Handicrafts and Artisanal work",
+          "Petty Trading and Retail",
+          "Service provider",
+          "Rural Construction",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "urban",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Formal Employment",
+          "Informal Urban Enterprises",
+          "Digital Trades",
+          "Passive Income",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "income",
+        "type": "number",
+        "required": true,
+        "options": [],
+        "min": 0
+      },
+      {
+        "id": "finance",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Bank Account",
+          "Mobile Banking",
+          "Credit",
+          "Savings",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "farmsize",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Less than 1 hectare",
+          "1-5 hectares",
+          "6-10 hectares",
+          "More than 10 hectares",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "farmstatus",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Individual Owned",
+          "Family Owned",
+          "Leased",
+          "Government Land",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "crops",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Maize",
+          "Cowpea",
+          "Cassava",
+          "Hibiscus",
+          "Tomato",
+          "Paddy",
+          "Sorghum",
+          "Pearl Millet",
+          "Sesame",
+          "Groundnut",
+          "Melon Seeds",
+          "Onion",
+          "Bell pepper",
+          "Potato",
+          "Sugarcane",
+          "Okra",
+          "Chillies",
+          "Cabbage",
+          "Leafy Vegetables",
+          "Mango",
+          "Guava",
+          "Neem",
+          "Date Palm",
+          "Moringa",
+          "Gum Arabic",
+          "Citrus",
+          "Eucalyptus",
+          "Acacia Nilotica",
+          "Doum Palm",
+          "Cashew",
+          "Ginger",
+          "Hot Pepper",
+          "Garden Egg",
+          "Sweet Potato",
+          "Wheat",
+          "Soybean",
+          "Other",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "yield",
+        "type": "matrix",
+        "required": true,
+        "options": [
+          "Less than 1 ton",
+          "1-3 tons",
+          "3-5 tons",
+          "5-10 tons",
+          "Above 10 tons",
+          "Not applicable"
+        ],
+        "rows": "crops"
+      },
+      {
+        "id": "varieties",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Local / Farmer Saved",
+          "Improved",
+          "Hybrid",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "productionChallenge",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Access to inputs",
+          "Pests/disease",
+          "Low yield",
+          "Finance",
+          "Mechanization",
+          "Other"
+        ]
+      },
+      {
+        "id": "fertilizer",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No"
+        ]
+      },
+      {
+        "id": "agrochemical",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No"
+        ]
+      },
+      {
+        "id": "inputSource",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Local source",
+          "LGA headquarters",
+          "State govt",
+          "Out of state",
+          "Out of country",
+          "Other"
+        ],
+        "show": [
+          "agrochemical",
+          "Yes"
+        ]
+      },
+      {
+        "id": "grading",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No",
+          "Sometimes"
+        ]
+      },
+      {
+        "id": "storage",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Own barn",
+          "Rented warehouse",
+          "Cooperative storage",
+          "None",
+          "Other"
+        ]
+      },
+      {
+        "id": "storageOther",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "storage",
+          "Other"
+        ]
+      },
+      {
+        "id": "loss",
+        "type": "number",
+        "required": true,
+        "options": [],
+        "min": 0,
+        "max": 100
+      },
+      {
+        "id": "lossCause",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Poor Storage",
+          "Handling Damage",
+          "Over Supply",
+          "Price Crash",
+          "Transport Issues",
+          "Animals invasion",
+          "Other"
+        ]
+      },
+      {
+        "id": "pastSupport",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Loan",
+          "Input support",
+          "Training",
+          "Equipment",
+          "Irrigation technologies",
+          "Grants",
+          "None",
+          "Other"
+        ]
+      },
+      {
+        "id": "expand",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No"
+        ]
+      },
+      {
+        "id": "support",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Cold storage",
+          "Processing linkage",
+          "Market access",
+          "Improved seed",
+          "Irrigation facilities",
+          "Finance",
+          "Other"
+        ]
+      },
+      {
+        "id": "comments",
+        "type": "textarea",
+        "required": false,
+        "options": []
+      },
+      {
+        "id": "process",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No"
+        ]
+      },
+      {
+        "id": "processedCrops",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Maize",
+          "Cowpea",
+          "Cassava",
+          "Hibiscus",
+          "Tomato",
+          "Paddy",
+          "Sorghum",
+          "Pearl Millet",
+          "Sesame",
+          "Groundnut",
+          "Melon Seeds",
+          "Onion",
+          "Bell pepper",
+          "Potato",
+          "Sugarcane",
+          "Okra",
+          "Chillies",
+          "Cabbage",
+          "Leafy Vegetables",
+          "Mango",
+          "Guava",
+          "Neem",
+          "Date Palm",
+          "Moringa",
+          "Gum Arabic",
+          "Citrus",
+          "Eucalyptus",
+          "Acacia Nilotica",
+          "Doum Palm",
+          "Cashew",
+          "Ginger",
+          "Hot Pepper",
+          "Garden Egg",
+          "Sweet Potato",
+          "Wheat",
+          "Soybean",
+          "Other",
+          "Bread wheat",
+          "Garlic"
+        ],
+        "show": [
+          "process",
+          "Yes"
+        ]
+      },
+      {
+        "id": "processQty",
+        "type": "matrix",
+        "required": true,
+        "options": [
+          "Less than 500 kg",
+          "501 kg - 1 ton",
+          "1-3 tons",
+          "3-5 tons",
+          "5-10 tons",
+          "Above 10 tons",
+          "Not applicable"
+        ],
+        "rows": "processedCrops",
+        "show": [
+          "process",
+          "Yes"
+        ]
+      },
+      {
+        "id": "operations",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Sorting & grading",
+          "Primary processing",
+          "Secondary processing",
+          "Tertiary processing",
+          "Value added products",
+          "Other"
+        ],
+        "show": [
+          "process",
+          "Yes"
+        ]
+      },
+      {
+        "id": "capacity",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "process",
+          "Yes"
+        ]
+      },
+      {
+        "id": "equipment",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Manual",
+          "Semi-mechanized",
+          "Industrial mechanized",
+          "Not applicable"
+        ],
+        "show": [
+          "process",
+          "Yes"
+        ]
+      },
+      {
+        "id": "equipmentSource",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Local fabricator",
+          "Imported",
+          "Donated",
+          "Other"
+        ],
+        "show": [
+          "process",
+          "Yes"
+        ]
+      },
+      {
+        "id": "trade",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Fresh",
+          "Processed",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "market",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Farm gate",
+          "Local",
+          "Regional",
+          "National",
+          "Export",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "tradedCrops",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Maize",
+          "Cowpea",
+          "Cassava",
+          "Hibiscus",
+          "Tomato",
+          "Paddy",
+          "Sorghum",
+          "Pearl Millet",
+          "Sesame",
+          "Groundnut",
+          "Melon Seeds",
+          "Onion",
+          "Bell pepper",
+          "Potato",
+          "Sugarcane",
+          "Okra",
+          "Chillies",
+          "Cabbage",
+          "Leafy Vegetables",
+          "Mango",
+          "Guava",
+          "Neem",
+          "Date Palm",
+          "Moringa",
+          "Gum Arabic",
+          "Citrus",
+          "Eucalyptus",
+          "Acacia Nilotica",
+          "Doum Palm",
+          "Cashew",
+          "Ginger",
+          "Hot Pepper",
+          "Garden Egg",
+          "Sweet Potato",
+          "Wheat",
+          "Soybean",
+          "Other",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "tradeQty",
+        "type": "matrix",
+        "required": true,
+        "options": [
+          "1-3 tons",
+          "3-5 tons",
+          "5-10 tons",
+          "Above 10 tons",
+          "Not applicable"
+        ],
+        "rows": "tradedCrops"
+      },
+      {
+        "id": "rawPrice",
+        "type": "matrix",
+        "required": true,
+        "options": [
+          "Below ₦500k",
+          "₦500k-₦1m",
+          "₦1m-₦2m",
+          "₦2m-₦5m",
+          "Above ₦5m",
+          "Not applicable"
+        ],
+        "rows": "tradedCrops"
+      },
+      {
+        "id": "processedPrice",
+        "type": "matrix",
+        "required": true,
+        "options": [
+          "Below ₦500k",
+          "₦500k-₦1m",
+          "₦1m-₦2m",
+          "₦2m-₦5m",
+          "Above ₦5m",
+          "Not applicable"
+        ],
+        "rows": "tradedCrops"
+      },
+      {
+        "id": "processChallenges",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Power",
+          "Lack of processing facilities",
+          "High raw material loss",
+          "Packaging",
+          "Finance",
+          "Certification",
+          "Machinery breakdown",
+          "Market access",
+          "Other",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "buyers",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Households",
+          "Retailers",
+          "Processors",
+          "Exporters",
+          "Aggregators",
+          "Other",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "marketChallenges",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "High perishability",
+          "Price fluctuation",
+          "Middlemen",
+          "Transport",
+          "Storage",
+          "Standards / certification",
+          "Packaging",
+          "Market access",
+          "Import competition",
+          "Other",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "stableBuyers",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No",
+          "Not applicable"
+        ]
+      },
+      {
+        "id": "mainBuyers",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Households",
+          "Processors",
+          "Exporters",
+          "Aggregators",
+          "Retail chains",
+          "Other",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "marketSupport",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No"
+        ]
+      },
+      {
+        "id": "cooperative",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Farm production",
+          "Processing",
+          "Packaging / branding",
+          "Collective marketing / export",
+          "Financial services",
+          "Not Applicable",
+          "Other"
+        ]
+      },
+      {
+        "id": "communityStorage",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Cold room",
+          "Crates",
+          "Warehouse",
+          "Drying Platforms",
+          "Other",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "communityFinance",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No"
+        ]
+      },
+      {
+        "id": "financeSource",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Cooperative savings",
+          "Commercial banks",
+          "Microfinance",
+          "Bank of Industry",
+          "Bank of Agriculture",
+          "SMEDAN",
+          "Donor",
+          "Other"
+        ],
+        "show": [
+          "communityFinance",
+          "Yes"
+        ]
+      },
+      {
+        "id": "collectiveLoss",
+        "type": "number",
+        "required": true,
+        "options": [],
+        "min": 0,
+        "max": 100
+      },
+      {
+        "id": "collectiveReason",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "communitySupport",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Inputs",
+          "Loans",
+          "Equipment",
+          "Training",
+          "None",
+          "Other"
+        ]
+      },
+      {
+        "id": "communityNeed",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Cold storage",
+          "Processing equipment",
+          "Packaging",
+          "Market linkage",
+          "Finance",
+          "Export facilitation",
+          "Other"
+        ]
+      },
+      {
+        "id": "training",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Cooperative governance",
+          "Agronomy",
+          "Post-harvest handling & cold chain",
+          "Processing / value addition",
+          "Packaging & branding",
+          "Food safety & certification",
+          "Market / export standards",
+          "Other"
+        ]
+      },
+      {
+        "id": "communityComments",
+        "type": "textarea",
+        "required": false,
+        "options": []
+      },
+      {
+        "id": "package",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No"
+        ]
+      },
+      {
+        "id": "packType",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Plastic packs",
+          "Sachets / pouches",
+          "Bottles",
+          "Branded cartons",
+          "Sacks / bags",
+          "Not Applicable",
+          "Other"
+        ],
+        "show": [
+          "package",
+          "Yes"
+        ]
+      },
+      {
+        "id": "certification",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No",
+          "Not applicable"
+        ]
+      }
+    ]
+  },
+  "FGD": {
+    "version": "preview-v1",
+    "fields": [
+      {
+        "id": "consent",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No"
+        ]
+      },
+      {
+        "id": "ward",
+        "type": "text",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "community",
+        "type": "text",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "date",
+        "type": "date",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "locationReason",
+        "type": "text",
+        "required": false,
+        "options": []
+      },
+      {
+        "id": "participants",
+        "type": "number",
+        "required": true,
+        "options": [],
+        "min": 1
+      },
+      {
+        "id": "genderMix",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "ageMix",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "educationMix",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "groupReligion",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "housing",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Mudhouse",
+          "Thatched House",
+          "Bamboo House",
+          "Wooden House",
+          "Compound house",
+          "Brick / Stones House",
+          "Not applicable"
+        ]
+      },
+      {
+        "id": "ownership",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Owned",
+          "Rented",
+          "Squatted",
+          "Provided Free"
+        ]
+      },
+      {
+        "id": "water",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Borewell",
+          "Tap",
+          "Well",
+          "Stream",
+          "Other"
+        ]
+      },
+      {
+        "id": "family",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Nuclear Family",
+          "Extended Family"
+        ]
+      },
+      {
+        "id": "size",
+        "type": "number",
+        "required": true,
+        "options": [],
+        "min": 0
+      },
+      {
+        "id": "employment",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Employed",
+          "Self-Employed",
+          "Unemployed",
+          "Student",
+          "Retired"
+        ]
+      },
+      {
+        "id": "discussion0",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion1",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion2",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion3",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion4",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion5",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion6",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion7",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion8",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion9",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion10",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion11",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion12",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion13",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion14",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion15",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion16",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion17",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "agri",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Crop Production",
+          "Livestock Rearing",
+          "Fishing and Aquaculture",
+          "Forestry and Gathering",
+          "Subsistence Farming",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "rural",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Handicrafts and Artisanal work",
+          "Petty Trading and Retail",
+          "Service provider",
+          "Rural Construction",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "urban",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Formal Employment",
+          "Informal Urban Enterprises",
+          "Digital Trades",
+          "Passive Income",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "income",
+        "type": "number",
+        "required": true,
+        "options": [],
+        "min": 0
+      },
+      {
+        "id": "finance",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Bank Account",
+          "Mobile Banking",
+          "Credit",
+          "Savings",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "farmsize",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Less than 1 hectare",
+          "1-5 hectares",
+          "6-10 hectares",
+          "More than 10 hectares",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "farmstatus",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Individual Owned",
+          "Family Owned",
+          "Leased",
+          "Government Land",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "crops",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Maize",
+          "Cowpea",
+          "Cassava",
+          "Hibiscus",
+          "Tomato",
+          "Paddy",
+          "Sorghum",
+          "Pearl Millet",
+          "Sesame",
+          "Groundnut",
+          "Melon Seeds",
+          "Onion",
+          "Bell pepper",
+          "Potato",
+          "Sugarcane",
+          "Okra",
+          "Chillies",
+          "Cabbage",
+          "Leafy Vegetables",
+          "Mango",
+          "Guava",
+          "Neem",
+          "Date Palm",
+          "Moringa",
+          "Gum Arabic",
+          "Citrus",
+          "Eucalyptus",
+          "Acacia Nilotica",
+          "Doum Palm",
+          "Cashew",
+          "Ginger",
+          "Hot Pepper",
+          "Garden Egg",
+          "Sweet Potato",
+          "Wheat",
+          "Soybean",
+          "Other",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "yield",
+        "type": "matrix",
+        "required": true,
+        "options": [
+          "Less than 1 ton",
+          "1-3 tons",
+          "3-5 tons",
+          "5-10 tons",
+          "Above 10 tons",
+          "Not applicable"
+        ],
+        "rows": "crops"
+      },
+      {
+        "id": "varieties",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Local / Farmer Saved",
+          "Improved",
+          "Hybrid",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "productionChallenge",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Access to inputs",
+          "Pests/disease",
+          "Low yield",
+          "Finance",
+          "Mechanization",
+          "Other"
+        ]
+      },
+      {
+        "id": "fertilizer",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No"
+        ]
+      },
+      {
+        "id": "agrochemical",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No"
+        ]
+      },
+      {
+        "id": "inputSource",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Local source",
+          "LGA headquarters",
+          "State govt",
+          "Out of state",
+          "Out of country",
+          "Other"
+        ],
+        "show": [
+          "agrochemical",
+          "Yes"
+        ]
+      },
+      {
+        "id": "grading",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No",
+          "Sometimes"
+        ]
+      },
+      {
+        "id": "storage",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Own barn",
+          "Rented warehouse",
+          "Cooperative storage",
+          "None",
+          "Other"
+        ]
+      },
+      {
+        "id": "storageOther",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "storage",
+          "Other"
+        ]
+      },
+      {
+        "id": "loss",
+        "type": "number",
+        "required": true,
+        "options": [],
+        "min": 0,
+        "max": 100
+      },
+      {
+        "id": "lossCause",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Poor Storage",
+          "Handling Damage",
+          "Over Supply",
+          "Price Crash",
+          "Transport Issues",
+          "Animals invasion",
+          "Other"
+        ]
+      },
+      {
+        "id": "pastSupport",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Loan",
+          "Input support",
+          "Training",
+          "Equipment",
+          "Irrigation technologies",
+          "Grants",
+          "None",
+          "Other"
+        ]
+      },
+      {
+        "id": "expand",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No"
+        ]
+      },
+      {
+        "id": "support",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Cold storage",
+          "Processing linkage",
+          "Market access",
+          "Improved seed",
+          "Irrigation facilities",
+          "Finance",
+          "Other"
+        ]
+      },
+      {
+        "id": "comments",
+        "type": "textarea",
+        "required": false,
+        "options": []
+      },
+      {
+        "id": "marketChallenges",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "High perishability",
+          "Price fluctuation",
+          "Middlemen",
+          "Transport",
+          "Storage",
+          "Standards / certification",
+          "Packaging",
+          "Market access",
+          "Import competition",
+          "Other",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "stableBuyers",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No",
+          "Not applicable"
+        ]
+      },
+      {
+        "id": "marketSupport",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No"
+        ]
+      },
+      {
+        "id": "package",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No"
+        ]
+      },
+      {
+        "id": "packType",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Plastic packs",
+          "Sachets / pouches",
+          "Bottles",
+          "Branded cartons",
+          "Sacks / bags",
+          "Not Applicable",
+          "Other"
+        ],
+        "show": [
+          "package",
+          "Yes"
+        ]
+      },
+      {
+        "id": "certification",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No",
+          "Not applicable"
+        ]
+      }
+    ]
+  },
+  "KII": {
+    "version": "preview-v1",
+    "fields": [
+      {
+        "id": "consent",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No"
+        ]
+      },
+      {
+        "id": "ward",
+        "type": "text",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "community",
+        "type": "text",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "date",
+        "type": "date",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "locationReason",
+        "type": "text",
+        "required": false,
+        "options": []
+      },
+      {
+        "id": "name",
+        "type": "text",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "gender",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Male",
+          "Female"
+        ]
+      },
+      {
+        "id": "age",
+        "type": "select",
+        "required": true,
+        "options": [
+          "18-25",
+          "26-35",
+          "36-50",
+          "50+"
+        ]
+      },
+      {
+        "id": "education",
+        "type": "select",
+        "required": true,
+        "options": [
+          "None",
+          "Primary",
+          "Secondary",
+          "Graduation",
+          "Post Graduation",
+          "Islamic Education or Informal Education"
+        ]
+      },
+      {
+        "id": "religion",
+        "type": "text",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "informantRole",
+        "type": "text",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "housing",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Mudhouse",
+          "Thatched House",
+          "Bamboo House",
+          "Wooden House",
+          "Compound house",
+          "Brick / Stones House",
+          "Not applicable"
+        ]
+      },
+      {
+        "id": "ownership",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Owned",
+          "Rented",
+          "Squatted",
+          "Provided Free"
+        ]
+      },
+      {
+        "id": "water",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Borewell",
+          "Tap",
+          "Well",
+          "Stream",
+          "Other"
+        ]
+      },
+      {
+        "id": "family",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Nuclear Family",
+          "Extended Family"
+        ]
+      },
+      {
+        "id": "size",
+        "type": "number",
+        "required": true,
+        "options": [],
+        "min": 0
+      },
+      {
+        "id": "employment",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Employed",
+          "Self-Employed",
+          "Unemployed",
+          "Student",
+          "Retired"
+        ]
+      },
+      {
+        "id": "agri",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Crop Production",
+          "Livestock Rearing",
+          "Fishing and Aquaculture",
+          "Forestry and Gathering",
+          "Subsistence Farming",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "rural",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Handicrafts and Artisanal work",
+          "Petty Trading and Retail",
+          "Service provider",
+          "Rural Construction",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "urban",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Formal Employment",
+          "Informal Urban Enterprises",
+          "Digital Trades",
+          "Passive Income",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "income",
+        "type": "number",
+        "required": true,
+        "options": [],
+        "min": 0
+      },
+      {
+        "id": "finance",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Bank Account",
+          "Mobile Banking",
+          "Credit",
+          "Savings",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "farmsize",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Less than 1 hectare",
+          "1-5 hectares",
+          "6-10 hectares",
+          "More than 10 hectares",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "farmstatus",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Individual Owned",
+          "Family Owned",
+          "Leased",
+          "Government Land",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "crops",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Maize",
+          "Cowpea",
+          "Cassava",
+          "Hibiscus",
+          "Tomato",
+          "Paddy",
+          "Sorghum",
+          "Pearl Millet",
+          "Sesame",
+          "Groundnut",
+          "Melon Seeds",
+          "Onion",
+          "Bell pepper",
+          "Potato",
+          "Sugarcane",
+          "Okra",
+          "Chillies",
+          "Cabbage",
+          "Leafy Vegetables",
+          "Mango",
+          "Guava",
+          "Neem",
+          "Date Palm",
+          "Moringa",
+          "Gum Arabic",
+          "Citrus",
+          "Eucalyptus",
+          "Acacia Nilotica",
+          "Doum Palm",
+          "Cashew",
+          "Ginger",
+          "Hot Pepper",
+          "Garden Egg",
+          "Sweet Potato",
+          "Wheat",
+          "Soybean",
+          "Other",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "yield",
+        "type": "matrix",
+        "required": true,
+        "options": [
+          "Less than 1 ton",
+          "1-3 tons",
+          "3-5 tons",
+          "5-10 tons",
+          "Above 10 tons",
+          "Not applicable"
+        ],
+        "rows": "crops"
+      },
+      {
+        "id": "varieties",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Local / Farmer Saved",
+          "Improved",
+          "Hybrid",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "productionChallenge",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Access to inputs",
+          "Pests/disease",
+          "Low yield",
+          "Finance",
+          "Mechanization",
+          "Other"
+        ]
+      },
+      {
+        "id": "fertilizer",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No"
+        ]
+      },
+      {
+        "id": "agrochemical",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No"
+        ]
+      },
+      {
+        "id": "inputSource",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Local source",
+          "LGA headquarters",
+          "State govt",
+          "Out of state",
+          "Out of country",
+          "Other"
+        ],
+        "show": [
+          "agrochemical",
+          "Yes"
+        ]
+      },
+      {
+        "id": "grading",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No",
+          "Sometimes"
+        ]
+      },
+      {
+        "id": "storage",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Own barn",
+          "Rented warehouse",
+          "Cooperative storage",
+          "None",
+          "Other"
+        ]
+      },
+      {
+        "id": "storageOther",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "storage",
+          "Other"
+        ]
+      },
+      {
+        "id": "loss",
+        "type": "number",
+        "required": true,
+        "options": [],
+        "min": 0,
+        "max": 100
+      },
+      {
+        "id": "lossCause",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Poor Storage",
+          "Handling Damage",
+          "Over Supply",
+          "Price Crash",
+          "Transport Issues",
+          "Animals invasion",
+          "Other"
+        ]
+      },
+      {
+        "id": "pastSupport",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Loan",
+          "Input support",
+          "Training",
+          "Equipment",
+          "Irrigation technologies",
+          "Grants",
+          "None",
+          "Other"
+        ]
+      },
+      {
+        "id": "expand",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No"
+        ]
+      },
+      {
+        "id": "support",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Cold storage",
+          "Processing linkage",
+          "Market access",
+          "Improved seed",
+          "Irrigation facilities",
+          "Finance",
+          "Other"
+        ]
+      },
+      {
+        "id": "comments",
+        "type": "textarea",
+        "required": false,
+        "options": []
+      },
+      {
+        "id": "discussion0",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion1",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion2",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion3",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion4",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion5",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion6",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion7",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion8",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion9",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion10",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion11",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion12",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion13",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion14",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion15",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion16",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "discussion17",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "kii0",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "kii1",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "kii2",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "kii3",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "kii4",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "kii5",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "kii6",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "kii7",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "kii8",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "kii9",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "kii10",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "kii11",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "kii12",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "kii13",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "kii14",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "kii15",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "kii16",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "kii17",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "kii18",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "kii19",
+        "type": "textarea",
+        "required": true,
+        "options": []
+      }
+    ]
+  },
+  "ENT": {
+    "version": "enterprise-2026-11-02-v1",
+    "fields": [
+      {
+        "id": "consent",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No"
+        ]
+      },
+      {
+        "id": "ward",
+        "type": "text",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "community",
+        "type": "text",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "date",
+        "type": "date",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "locationReason",
+        "type": "text",
+        "required": false,
+        "options": []
+      },
+      {
+        "id": "name",
+        "type": "text",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "gender",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Male",
+          "Female"
+        ]
+      },
+      {
+        "id": "age",
+        "type": "select",
+        "required": true,
+        "options": [
+          "18-25",
+          "26-35",
+          "36-50",
+          "50+"
+        ]
+      },
+      {
+        "id": "education",
+        "type": "select",
+        "required": true,
+        "options": [
+          "None",
+          "Primary",
+          "Secondary",
+          "Graduation",
+          "Post Graduation",
+          "Islamic Education or Informal Education"
+        ]
+      },
+      {
+        "id": "religion",
+        "type": "text",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "ent1",
+        "type": "text",
+        "required": true,
+        "options": []
+      },
+      {
+        "id": "ent2",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Crop production",
+          "Livestock rearing",
+          "Poultry farming",
+          "Fishing",
+          "Agricultural processing",
+          "Food processing",
+          "Retail / petty trading",
+          "Wholesale trading",
+          "Artisanal work / handicrafts",
+          "Tailoring / garment making",
+          "Transport services",
+          "Construction / skilled labour",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent2Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent2",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent3",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Sole proprietorship",
+          "Family-owned enterprise",
+          "Partnership",
+          "Registered private company",
+          "Cooperative society",
+          "Women-led group",
+          "Youth-led group",
+          "Community-based group",
+          "Informal business group",
+          "Government-owned enterprise",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent3Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent3",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent4",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Owner",
+          "Co-owner",
+          "Managing Director / Manager",
+          "Partner",
+          "Family member involved in business",
+          "Employee",
+          "Cooperative / group leader",
+          "Representative",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent4Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent4",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent5",
+        "type": "number",
+        "required": true,
+        "options": [],
+        "min": 1900,
+        "max": 2026,
+        "integer": true
+      },
+      {
+        "id": "ent6",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Less than 1 year",
+          "1–3 years",
+          "4–5 years",
+          "6–10 years",
+          "11–20 years",
+          "More than 20 years"
+        ]
+      },
+      {
+        "id": "ent7",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Fully active throughout the year",
+          "Active seasonally",
+          "Temporarily closed",
+          "Permanently closed",
+          "Started but not yet operational",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent7Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent7",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent8",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Seasonal availability of raw materials",
+          "Lack of working capital",
+          "Low customer demand",
+          "Lack of equipment or infrastructure",
+          "Shortage of labour",
+          "Insecurity / confict",
+          "Flooding / drought / weather conditions",
+          "High operating costs",
+          "Business restructuring",
+          "Other"
+        ],
+        "showIn": [
+          "ent7",
+          [
+            "Active seasonally",
+            "Temporarily closed"
+          ]
+        ]
+      },
+      {
+        "id": "ent8Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent8",
+          "Other"
+        ],
+        "showIn": [
+          "ent7",
+          [
+            "Active seasonally",
+            "Temporarily closed"
+          ]
+        ]
+      },
+      {
+        "id": "ent9",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Rain-fed farmers",
+          "Irrigation farmers",
+          "Agro-pastoral households (crop farming and livestock)",
+          "Pastoralists / livestock herders",
+          "Fisherfolk / fishing communities",
+          "Agricultural labourers",
+          "Non-agricultural daily wage labourers",
+          "Petty traders / small retailers",
+          "Artisans / skilled workers",
+          "Service providers",
+          "Agro-micro processors",
+          "Women in informal businesses",
+          "Women-led enterprises",
+          "Youth entrepreneurs",
+          "Vulnerable households",
+          "Persons with disabilities",
+          "Internally displaced persons (IDPs)",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent9Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent9",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent10",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Production",
+          "Processing",
+          "Buying and selling",
+          "Retailing",
+          "Wholesale trading",
+          "Service provision",
+          "Mixed activities",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent10Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent10",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent11",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Individual households",
+          "Farmers",
+          "Traders and retailers",
+          "Wholesalers",
+          "Local markets",
+          "Schools and educational institutions",
+          "Government institutions",
+          "Private companies",
+          "Restaurants and food vendors",
+          "Cooperatives and farmer groups",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent11Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent11",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent12",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Within the same community",
+          "Within the ward",
+          "Within the LGA",
+          "Other LGAs within Jigawa State",
+          "Other states in Nigeria",
+          "Outside Nigeria / International markets",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent12Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent12",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent13",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes, during the rainy season",
+          "Yes, during the dry season",
+          "Yes, during harvest periods",
+          "Yes, during festive periods",
+          "No significant seasonal changes",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent13Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent13",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent14",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Male individual",
+          "Female individual",
+          "Joint ownership (male and female)",
+          "Family",
+          "Male-led group",
+          "Women-led group",
+          "Youth-led group",
+          "Mixed group (men and women)",
+          "Cooperative society",
+          "Partnership",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent14Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent14",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent15",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Male owner",
+          "Female owner",
+          "Male manager",
+          "Female manager",
+          "Family members jointly",
+          "Group leadership / committee",
+          "Hired employee / professional manager",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent15Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent15",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent16",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Women actively participate in ownership and decision-making",
+          "Women participate mainly in daily operations",
+          "Women participate occasionally",
+          "Youth actively participate in ownership and decision-making",
+          "Youth participate mainly as employees",
+          "Both women and youth actively participate",
+          "Limited participation of women and youth",
+          "No significant participation",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent16Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent16",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent17",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes, registered with a cooperative authority",
+          "Yes, registered with a relevant government agency",
+          "Registered with a local government authority",
+          "No, not registered",
+          "Registration in progress",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent17Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent17",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent18",
+        "type": "select",
+        "required": false,
+        "options": [
+          "Yes, all required licences obtained",
+          "Some licences obtained",
+          "No licences obtained",
+          "Application in progress",
+          "Not applicable / no licence required",
+          "Don't know",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent18Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent18",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent19",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "High registration costs",
+          "Lack of information about registration procedures",
+          "Complicated documentation",
+          "Lack of awareness of benefits",
+          "Lack of identification documents",
+          "Business is too small or informal",
+          "Time constraints",
+          "Fear of taxes or government charges",
+          "No perceived need for registration",
+          "Other"
+        ],
+        "showIn": [
+          "ent17",
+          [
+            "No, not registered",
+            "Registration in progress",
+            "Other"
+          ]
+        ]
+      },
+      {
+        "id": "ent19Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent19",
+          "Other"
+        ],
+        "showIn": [
+          "ent17",
+          [
+            "No, not registered",
+            "Registration in progress",
+            "Other"
+          ]
+        ]
+      },
+      {
+        "id": "ent20",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes, cooperative",
+          "Yes, trade/business association",
+          "Yes, farmers' association",
+          "Yes, women entrepreneurs' group",
+          "Yes, youth association",
+          "Yes, community-based organisation",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent20Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent20",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent21",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Sales records",
+          "Purchase records",
+          "Income and expenditure records",
+          "Employee / wage records",
+          "Inventory / stock records",
+          "Customer records",
+          "Supplier records",
+          "Loan and debt records",
+          "Asset records",
+          "Production records",
+          "Tax and financial records",
+          "No records maintained",
+          "Other"
+        ],
+        "exclusiveOptions": [
+          "No records maintained"
+        ]
+      },
+      {
+        "id": "ent21Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent21",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent22",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Paper registers / notebooks",
+          "Excel spreadsheets",
+          "Mobile applications",
+          "Computerised accounting software",
+          "Both paper and digital formats",
+          "Records maintained by an accountant",
+          "No formal record-keeping",
+          "Other"
+        ],
+        "exclusiveOptions": [
+          "No formal record-keeping"
+        ]
+      },
+      {
+        "id": "ent22Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent22",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent23",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Daily",
+          "Weekly",
+          "Quarterly",
+          "Annually",
+          "Only when required",
+          "Not maintained",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent23Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent23",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent24",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Skilled and experienced workforce",
+          "Strong customer base",
+          "Good product quality",
+          "Affordable pricing",
+          "Reliable suppliers",
+          "Access to raw materials",
+          "Good business location",
+          "Strong market demand",
+          "Access to finance",
+          "Modern equipment and technology",
+          "Strong management and leadership",
+          "Good community reputation",
+          "Association/cooperative support",
+          "Other"
+        ],
+        "maxSelections": 3
+      },
+      {
+        "id": "ent24Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent24",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent25",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Permanent employees",
+          "Seasonal workers",
+          "Casual/daily wage workers",
+          "Paid family workers",
+          "Unpaid family workers",
+          "Apprentices/trainees",
+          "Self-employed owner",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent25Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent25",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent26",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Production/manufacturing",
+          "Farming/agricultural activities",
+          "Procurement/raw material collection",
+          "Processing/value addition",
+          "Packaging and storage",
+          "Buying and selling/marketing",
+          "Transportation and delivery",
+          "Customer service",
+          "Accounts/bookkeeping",
+          "Equipment operation",
+          "Repairs and maintenance",
+          "Supervision/management",
+          "Security/cleaning",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent26Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent26",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent27",
+        "type": "select",
+        "required": true,
+        "options": [
+          "1–2 days",
+          "3–4 days",
+          "5–6 days",
+          "7 days",
+          "Varies depending on workload",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent27Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent27",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent28",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Less than 4 hours",
+          "4–6 hours",
+          "7–8 hours",
+          "9–10 hours",
+          "More than 10 hours",
+          "Varies"
+        ]
+      },
+      {
+        "id": "ent29",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Daily wages",
+          "Weekly wages",
+          "Monthly salary",
+          "Payment per task/piece",
+          "Commission-based",
+          "Profit-sharing",
+          "Unpaid family contribution",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent29Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent29",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent30",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "All year round",
+          "Rainy season",
+          "Dry season",
+          "Harvest season",
+          "Festive periods",
+          "Depends on market demand",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent30Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent30",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent31",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Always",
+          "Often",
+          "Rarely",
+          "Never",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent31Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent31",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent32",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "No formal education",
+          "Primary education",
+          "Junior secondary education",
+          "Senior secondary education",
+          "Technical/vocational education",
+          "Diploma/NCE",
+          "University degree",
+          "Postgraduate qualification",
+          "Apprenticeship/on-the-job training",
+          "Informal skills acquired through experience",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent32Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent32",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent33",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Literacy and numeracy",
+          "Farming and livestock management",
+          "Food processing and preservation",
+          "Tailoring and fashion design",
+          "Carpentry and furniture making",
+          "Welding and fabrication",
+          "Trading and sales",
+          "Business management",
+          "Financial management/bookkeeping",
+          "Digital literacy/computer skills",
+          "Marketing and customer service",
+          "Technical equipment operation",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent33Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent33",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent34",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Lack of access to finance/capital",
+          "Lack of technical skills",
+          "Lack of vocational training",
+          "Limited employment opportunities",
+          "Cultural and social/religion restrictions",
+          "Household and caregiving responsibilities",
+          "Limited mobility/transportation",
+          "Safety and security concerns",
+          "Lack of tools and equipment",
+          "Inaccessible workplaces/infrastructure",
+          "Discrimination or unequal treatment",
+          "Lack of information about opportunities",
+          "Limited access to markets",
+          "Lack of land or productive assets",
+          "Poor internet/digital access",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent34Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent34",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent35",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Agricultural production",
+          "Livestock and poultry farming",
+          "Food processing and preservation",
+          "Tailoring and garment production",
+          "Soap and detergent making",
+          "Hairdressing and beauty services",
+          "Carpentry and furniture production",
+          "Welding and fabrication",
+          "Retail shops and petty trading",
+          "Transportation and logistics",
+          "Digital services and online businesses",
+          "ICT and computer services",
+          "Food vending/catering",
+          "Handicrafts and local products",
+          "Waste recycling and environmental services",
+          "Repair and maintenance services",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent35Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent35",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent36",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Agricultural seeds",
+          "Fertilizers and manure",
+          "Pesticides and herbicides",
+          "Animal feed and veterinary supplies",
+          "Grains and cereals",
+          "Vegetables and fruits",
+          "Livestock and poultry",
+          "Water and irrigation materials",
+          "Wood and timber",
+          "Textiles and fabrics",
+          "Leather and hides",
+          "Metal and construction materials",
+          "Food processing ingredients",
+          "Packaging materials",
+          "Fuel and lubricants",
+          "Finished goods for resale",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent36Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent36",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent37",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Own production",
+          "Local markets within the community",
+          "Nearby markets within the LGA",
+          "Other LGAs within Jigawa State",
+          "Other states in Nigeria",
+          "Imported from outside Nigeria",
+          "Cooperatives or farmer groups",
+          "Wholesalers/distributors",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent37Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent37",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent38",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Purchased",
+          "Self-produced",
+          "Received through government support",
+          "Received through NGOs/development programmes",
+          "Borrowed/shared",
+          "Combination of the above",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent38Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent38",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent39",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Throughout the year",
+          "Seasonally",
+          "Occasionally",
+          "Rarely",
+          "Not readily available",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent39Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent39",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent40",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Daily",
+          "Weekly",
+          "Monthly",
+          "Seasonally",
+          "As per order/demand",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent40Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent40",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent41",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Less than 10 units per day",
+          "10–25 units per day",
+          "26–50 units per day",
+          "51–100 units per day",
+          "101–500 units per day",
+          "More than 500 units per day",
+          "Varies depending on demand",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent41Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent41",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent42",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Less than 50 units",
+          "50–100 units",
+          "101–500 units",
+          "501–1,000 units",
+          "1,001–5,000 units",
+          "More than 5,000 units",
+          "Not applicable / Unable to estimate",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent42Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent42",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent43",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Throughout the year",
+          "Rainy season",
+          "Dry season",
+          "Harvest season",
+          "Festive periods",
+          "Market days",
+          "Depends on customer demand",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent43Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent43",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent44",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Less than 25%",
+          "25–50%",
+          "51–75%",
+          "76–100%",
+          "Don't know"
+        ]
+      },
+      {
+        "id": "ent45",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Lack of working capital",
+          "Shortage of raw materials",
+          "Limited customer demand",
+          "Inadequate machinery/equipment",
+          "Electricity and energy shortages",
+          "Shortage of skilled workers",
+          "Transportation challenges",
+          "Seasonal limitations",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent45Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent45",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent46",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Hand tools",
+          "Agricultural implements",
+          "Tractors and farm machinery",
+          "Irrigation pumps",
+          "Grinding mills",
+          "Processing machines",
+          "Sewing machines",
+          "Carpentry tools",
+          "Welding equipment",
+          "Refrigerators/freezers",
+          "Weighing scales",
+          "Computers and printers",
+          "Mobile phones/tablets",
+          "Transportation vehicles",
+          "Storage facilities",
+          "Packaging equipment",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent46Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent46",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent47",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Personally owned",
+          "Rented",
+          "Borrowed",
+          "Shared through cooperatives/groups",
+          "Provided by government",
+          "Provided by NGOs/development partners",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent47Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent47",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent48",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Very good",
+          "Good",
+          "Fair",
+          "Poor",
+          "Not functional"
+        ]
+      },
+      {
+        "id": "ent49",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Frequently",
+          "Occasionally",
+          "Rarely",
+          "Never"
+        ]
+      },
+      {
+        "id": "ent50",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Yes, locally available",
+          "Yes, but available outside the community",
+          "No",
+          "Dont know"
+        ]
+      },
+      {
+        "id": "ent51",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Public water supply",
+          "Borehole",
+          "Hand pump",
+          "Well",
+          "River/stream",
+          "Rainwater harvesting",
+          "Water vendors",
+          "Water tanker",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent51Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent51",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent52",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Electricity",
+          "Petrol generator",
+          "Diesel generator",
+          "Solar power",
+          "Battery/inverter",
+          "Firewood",
+          "Charcoal",
+          "Gas (LPG)",
+          "CNG",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent52Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent52",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent53",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Available throughout the day",
+          "Available for more than 12 hours",
+          "Available for 6–12 hours",
+          "Available for less than 6 hours",
+          "Highly irregular",
+          "No electricity access",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent53Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent53",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent54",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Available throughout the year",
+          "Available most of the year",
+          "Seasonal availability",
+          "Occasionally available",
+          "Difficult to access"
+        ]
+      },
+      {
+        "id": "ent55",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Warehouse",
+          "Cold storage/refrigeration",
+          "Silos/grain storage",
+          "Open storage space",
+          "Traditional storage facilities",
+          "No storage facility",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent55Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent55",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent56",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Plastic bags",
+          "Sacks",
+          "Cartons/cardboard boxes",
+          "Bottles/containers",
+          "Paper packaging",
+          "Reusable containers",
+          "No packaging",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent56Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent56",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent57",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Regular cleaning of premises",
+          "Use of protective clothing",
+          "Use of gloves and masks",
+          "Proper waste disposal",
+          "Safe storage of raw materials",
+          "Pest and rodent control",
+          "Regular equipment cleaning",
+          "Separate storage of raw and Unished products",
+          "No formal hygiene practices",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent57Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent57",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent58",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Insufficient storage space",
+          "Lack of refrigeration",
+          "Pest and rodent infestation",
+          "Spoilage and product damage",
+          "Poor packaging materials",
+          "High storage costs",
+          "Lack of proper handling facilities",
+          "No significant challenges",
+          "Electricity Supply",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent58Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent58",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent59",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Lack of working capital",
+          "High cost of raw materials",
+          "Irregular availability of inputs",
+          "Lack of modern equipment",
+          "Frequent machinery breakdowns",
+          "Inadequate electricity supply",
+          "Water shortages",
+          "Lack of skilled labour",
+          "Limited technical knowledge",
+          "Poor transportation and road access",
+          "Limited storage facilities",
+          "Lack of market access",
+          "Low customer demand",
+          "High operating costs",
+          "Security challenges",
+          "Seasonal disruptions",
+          "Government regulations/licensing challenges",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent59Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent59",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent60",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Mobile banking and digital payments",
+          "Mobile business applications",
+          "Online marketing and social media",
+          "Digital bookkeeping/accounting",
+          "Improved agricultural seeds",
+          "Modern irrigation systems",
+          "Solar-powered equipment",
+          "Agricultural machinery/mechanisation",
+          "Weather forecasting applications",
+          "Drones for agricultural activities",
+          "Automated processing equipment",
+          "E-commerce platforms",
+          "GPS and digital mapping",
+          "None of the above",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent60Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent60",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent61",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Below ₦20,000",
+          "₦20,000–₦50,000",
+          "₦50,001–₦100,000",
+          "₦100,001–₦250,000",
+          "₦250,001–₦500,000",
+          "₦500,001–₦1,000,000",
+          "₦1,000,001–₦5,000,000",
+          "Above ₦5,000,000",
+          "Prefer not to disclose",
+          "Don't know",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent61Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent61",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent62",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Below ₦20,000",
+          "₦20,000–₦50,000",
+          "₦50,001–₦100,000",
+          "₦100,001–₦250,000",
+          "₦250,001–₦500,000",
+          "₦500,001–₦1,000,000",
+          "₦1,000,001–₦5,000,000",
+          "Above ₦5,000,000",
+          "Prefer not to disclose",
+          "Don't know",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent62Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent62",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent63",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Below ₦20,000",
+          "₦20,000–₦50,000",
+          "₦50,001–₦100,000",
+          "₦100,001–₦250,000",
+          "₦250,001–₦500,000",
+          "₦500,001–₦1,000,000",
+          "₦1,000,001–₦5,000,000",
+          "Above ₦5,000,000",
+          "Prefer not to disclose",
+          "Don't know",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent63Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent63",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent64",
+        "type": "fixedMatrix",
+        "required": true,
+        "options": [
+          "Below ₦50,000",
+          "₦50,000–₦100,000",
+          "₦100,001–₦500,000",
+          "Above ₦500,001",
+          "Not Applicable"
+        ],
+        "fixedRows": [
+          "Purchase of raw materials/inputs",
+          "Employee wages and salaries",
+          "Rent and premises",
+          "Electricity",
+          "Generator fuel",
+          "Water expenses",
+          "Transportation and logistics",
+          "Packaging materials",
+          "Equipment maintenance and repairs",
+          "Loan repayments/interest",
+          "Taxes, permits and licensing fees",
+          "Communication and internet",
+          "Marketing and advertising",
+          "Storage expenses",
+          "Security expenses"
+        ]
+      },
+      {
+        "id": "ent65",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Below ₦10,000",
+          "₦10,000–₦25,000",
+          "₦25,001–₦50,000",
+          "₦50,001–₦100,000",
+          "₦100,001–₦250,000",
+          "₦250,001–₦500,000",
+          "₦500,001–₦1,000,000",
+          "Above ₦1,000,000",
+          "Don't know",
+          "Prefer not to disclose",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent65Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent65",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent66",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Business operates at a loss",
+          "No profit / Break-even",
+          "Below ₦10,000",
+          "₦10,000–₦25,000",
+          "₦25,001–₦50,000",
+          "₦50,001–₦100,000",
+          "₦100,001–₦250,000",
+          "₦250,001–₦500,000",
+          "₦500,001–₦1,000,000",
+          "Above ₦1,000,000",
+          "Don't know",
+          "Prefer not to disclose",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent66Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent66",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent67",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Daily",
+          "Weekly",
+          "Monthly",
+          "Seasonally",
+          "Annually",
+          "Only when required",
+          "Never",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent67Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent67",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent68",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Sales minus all operating expenses",
+          "Sales minus purchase/input costs only",
+          "Based on available cash balance",
+          "Estimated based on experience",
+          "Do not calculate profit",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent68Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent68",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent69",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Personal savings",
+          "Income from other businesses",
+          "Support from family and friends",
+          "Cooperative societies",
+          "Community savings groups",
+          "Rotating savings groups (Ajo/Adashe)",
+          "Microfinance institutions",
+          "Commercial banks",
+          "Government loans/programmes",
+          "NGO/development partner grants",
+          "Supplier credit",
+          "Customer advances",
+          "Money lenders",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent69Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent69",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent70",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No"
+        ]
+      },
+      {
+        "id": "ent71",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "BOI",
+          "BOA",
+          "Cooperative Bank",
+          "Commercial Banks",
+          "SMEDAN",
+          "Micro Finance",
+          "Donor",
+          "Not Applicable",
+          "Other"
+        ],
+        "show": [
+          "ent70",
+          "Yes"
+        ]
+      },
+      {
+        "id": "ent71Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent71",
+          "Other"
+        ],
+        "showIn": [
+          "ent70",
+          [
+            "Yes"
+          ]
+        ]
+      },
+      {
+        "id": "ent72",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "High interest rates",
+          "Lack of collateral",
+          "Lack of guarantors",
+          "Complicated application process",
+          "Lack of financial records",
+          "Lack of awareness about available loans",
+          "Long approval timelines",
+          "Fear of borrowing/repayment difficulties",
+          "Loan amounts are insufficient",
+          "No major challenges",
+          "Other"
+        ],
+        "exclusiveOptions": [
+          "No major challenges"
+        ]
+      },
+      {
+        "id": "ent72Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent72",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent73",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Start-up capital",
+          "Working capital loans",
+          "Equipment Unancing",
+          "Low-interest loans",
+          "Grants",
+          "Agricultural input credit",
+          "Cooperative Unancing",
+          "Financial literacy training",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent73Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent73",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent74",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Flooding",
+          "Drought",
+          "Erratic rainfall",
+          "Pest and disease outbreaks",
+          "High inflation",
+          "Increase in raw material prices",
+          "Fuel price increases",
+          "Electricity interruptions",
+          "Equipment breakdown",
+          "Theft or robbery",
+          "Fire incidents",
+          "Illness or death of business owner/family member",
+          "Loss of customers",
+          "Market closure or disruption",
+          "Transportation challenges",
+          "Insecurity",
+          "Labour shortages",
+          "Government policy/regulatory changes",
+          "None",
+          "Other"
+        ],
+        "exclusiveOptions": [
+          "None"
+        ]
+      },
+      {
+        "id": "ent74Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent74",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent75",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Frequently",
+          "Occasionally",
+          "Once in the past year",
+          "More than once in the past year",
+          "Never"
+        ]
+      },
+      {
+        "id": "ent76",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Maintaining emergency savings",
+          "Diversifying business activities",
+          "Diversifying customer base",
+          "Maintaining adequate inventory",
+          "Using improved storage facilities",
+          "Purchasing business insurance",
+          "Agricultural/crop insurance",
+          "Using backup generators or solar power",
+          "Maintaining equipment regularly",
+          "Keeping emergency supplies",
+          "Accessing cooperative support",
+          "Borrowing during emergencies",
+          "Maintaining alternative suppliers",
+          "Using digital records for monitoring",
+          "No formal risk management strategy",
+          "Other"
+        ],
+        "exclusiveOptions": [
+          "No formal risk management strategy"
+        ]
+      },
+      {
+        "id": "ent76Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent76",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent77",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Yes, business insurance",
+          "Yes, agricultural/crop insurance",
+          "Yes, health insurance",
+          "Yes, other insurance",
+          "No insurance",
+          "Don't know"
+        ],
+        "exclusiveOptions": [
+          "No insurance",
+          "Don't know"
+        ]
+      },
+      {
+        "id": "ent78",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes, regularly",
+          "Yes, occasionally",
+          "No",
+          "Prefer not to disclose"
+        ]
+      },
+      {
+        "id": "ent79",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Cash payments",
+          "Bank transfers",
+          "Mobile money/digital payments",
+          "Credit payments",
+          "Part payment/advance payment",
+          "Payment upon delivery",
+          "Barter/exchange of goods",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent79Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent79",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent80",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Always",
+          "Often",
+          "Sometimes",
+          "Rarely",
+          "Never"
+        ]
+      },
+      {
+        "id": "ent81",
+        "type": "select",
+        "required": true,
+        "options": [
+          "No credit Sales",
+          "1 month",
+          "1-3 Months",
+          "Beyond 3 months"
+        ]
+      },
+      {
+        "id": "ent82",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Word of mouth/referrals",
+          "Local markets",
+          "Friends and family",
+          "Existing customers",
+          "Social media (Facebook, Instagram, TikTok)",
+          "WhatsApp groups/status",
+          "Radio advertisements",
+          "Television advertisements",
+          "Posters and banners",
+          "Shop signage",
+          "Sales agents/marketing representatives",
+          "Community meetings/events",
+          "Online marketplaces/e-commerce platforms",
+          "Cooperatives and associations",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent82Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent82",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent83",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Low customer demand",
+          "Strong competition",
+          "High product prices",
+          "Limited market access",
+          "Poor transportation",
+          "Poor product quality",
+          "Inadequate packaging",
+          "Lack of storage facilities",
+          "Limited working capital",
+          "Delayed customer payments",
+          "Seasonal fluctuations in demand",
+          "Lack of marketing and promotional skills",
+          "Limited access to digital platforms",
+          "Lack of market information",
+          "Inadequate production capacity",
+          "Security challenges",
+          "Limited business networks",
+          "Poor Road Infrastructure",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent83Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent83",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent84",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Provides employment to local residents",
+          "Purchases agricultural produce from local farmers",
+          "Purchases livestock from local livestock keepers",
+          "Sources fish from local fishers",
+          "Provides business opportunities to local traders",
+          "Engages transporters and logistics providers",
+          "Provides work to casual/daily wage labourers",
+          "Supports women-owned businesses",
+          "Creates opportunities for youth entrepreneurs",
+          "Supports local artisans and craftspeople",
+          "Provides goods and services to households",
+          "Supplies raw materials to other businesses",
+          "Supports local vendors and small retailers",
+          "Provides apprenticeship and skills training",
+          "No direct support to other local livelihoods",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent84Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent84",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent85",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Food",
+          "Schooling",
+          "Health Care",
+          "Rent",
+          "Energy",
+          "Agriculture Inputs",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent85Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent85",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent86",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Adequate skilled workers are available locally.",
+          "Limited educational facilities affect recruitment.",
+          "Lack of technical/vocational training affects productivity.",
+          "Workers require additional training.",
+          "Lack of literacy and numeracy skills affects operations.",
+          "No significant impact.",
+          "Other"
+        ],
+        "exclusiveOptions": [
+          "No significant impact."
+        ]
+      },
+      {
+        "id": "ent86Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent86",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent87",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Poor road conditions",
+          "Unreliable electricity supply",
+          "Inadequate water supply",
+          "Poor internet connectivity",
+          "Limited mobile network coverage",
+          "Inadequate transportation facilities",
+          "Poor drainage systems",
+          "Inadequate sanitation facilities",
+          "Limited market infrastructure",
+          "Lack of storage facilities",
+          "Poor waste management facilities",
+          "No significant infrastructure challenges",
+          "Other"
+        ],
+        "exclusiveOptions": [
+          "No significant infrastructure challenges"
+        ]
+      },
+      {
+        "id": "ent87Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent87",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent88",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Improper solid waste disposal",
+          "Smoke and air pollution",
+          "Wastewater discharge",
+          "Chemical contamination",
+          "Excessive water consumption",
+          "Soil degradation",
+          "Noise pollution",
+          "Dust exposure",
+          "Plastic and packaging waste",
+          "Flooding and waterlogging",
+          "Fire hazards",
+          "Poor sanitation",
+          "No significant environmental risks",
+          "Other"
+        ],
+        "exclusiveOptions": [
+          "No significant environmental risks"
+        ]
+      },
+      {
+        "id": "ent88Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent88",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent89",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Physical injuries and accidents",
+          "Cuts and burns",
+          "Exposure to chemicals and pesticides",
+          "Exposure to dust and smoke",
+          "Excessive noise",
+          "Heat stress and dehydration",
+          "Poor ventilation",
+          "Heavy lifting and physical strain",
+          "Slips, trips and falls",
+          "Electrical hazards",
+          "Lack of protective equipment",
+          "Poor workplace sanitation",
+          "No significant occupational risks",
+          "Other"
+        ],
+        "exclusiveOptions": [
+          "No significant occupational risks"
+        ]
+      },
+      {
+        "id": "ent89Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent89",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent90",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Yes, all workers are provided with PPE.",
+          "Yes, most workers are provided with PPE.",
+          "Only some workers are provided with PPE.",
+          "No PPE is provided.",
+          "PPE is not applicable to this enterprise.",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent90Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent90",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent91",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Introducing new products",
+          "Expanding existing product lines",
+          "Improving product quality",
+          "Adding value to agricultural products",
+          "Introducing new services",
+          "Expanding into new markets",
+          "Increasing production capacity",
+          "Starting online sales/e-commerce",
+          "Introducing modern processing methods",
+          "Diversifying into other business activities",
+          "Expanding to other locations",
+          "Forming partnerships with other businesses",
+          "No expansion plans currently",
+          "Other"
+        ],
+        "exclusiveOptions": [
+          "No expansion plans currently"
+        ]
+      },
+      {
+        "id": "ent91Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent91",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent92",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Modern agricultural practices",
+          "Improved livestock and poultry management",
+          "Food processing and preservation",
+          "Tailoring and garment production",
+          "Carpentry and furniture making",
+          "Welding and fabrication",
+          "Machinery and equipment operation",
+          "Equipment maintenance and repair",
+          "Irrigation and water management",
+          "Product packaging and labelling",
+          "Quality control and standards",
+          "Workplace health and safety",
+          "Digital and technology skills",
+          "Other"
+        ]
+      },
+      {
+        "id": "ent92Other",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "ent92",
+          "Other"
+        ]
+      },
+      {
+        "id": "enterpriseRef",
+        "type": "text",
+        "required": false,
+        "options": []
+      },
+      {
+        "id": "financialMonth",
+        "type": "month",
+        "required": false,
+        "options": []
+      },
+      {
+        "id": "revenueExact",
+        "type": "number",
+        "required": false,
+        "options": [],
+        "min": 0
+      },
+      {
+        "id": "costExact",
+        "type": "number",
+        "required": false,
+        "options": [],
+        "min": 0
+      },
+      {
+        "id": "profitExact",
+        "type": "number",
+        "required": false,
+        "options": []
+      },
+      {
+        "id": "peakExact",
+        "type": "number",
+        "required": false,
+        "options": [],
+        "min": 0
+      },
+      {
+        "id": "leanExact",
+        "type": "number",
+        "required": false,
+        "options": [],
+        "min": 0
+      },
+      {
+        "id": "totalWorkers",
+        "type": "number",
+        "required": false,
+        "options": [],
+        "min": 0,
+        "integer": true
+      },
+      {
+        "id": "workerCount0",
+        "type": "number",
+        "required": false,
+        "options": [],
+        "min": 0,
+        "integer": true
+      },
+      {
+        "id": "workerCount1",
+        "type": "number",
+        "required": false,
+        "options": [],
+        "min": 0,
+        "integer": true
+      },
+      {
+        "id": "workerCount2",
+        "type": "number",
+        "required": false,
+        "options": [],
+        "min": 0,
+        "integer": true
+      },
+      {
+        "id": "workerCount3",
+        "type": "number",
+        "required": false,
+        "options": [],
+        "min": 0,
+        "integer": true
+      },
+      {
+        "id": "workerCount4",
+        "type": "number",
+        "required": false,
+        "options": [],
+        "min": 0,
+        "integer": true
+      },
+      {
+        "id": "workerCount5",
+        "type": "number",
+        "required": false,
+        "options": [],
+        "min": 0,
+        "integer": true
+      },
+      {
+        "id": "workerCount6",
+        "type": "number",
+        "required": false,
+        "options": [],
+        "min": 0,
+        "integer": true
+      },
+      {
+        "id": "measurementCommodity",
+        "type": "select",
+        "required": false,
+        "options": [
+          "Maize",
+          "Cowpea",
+          "Cassava",
+          "Hibiscus",
+          "Tomato",
+          "Paddy",
+          "Sorghum",
+          "Pearl Millet",
+          "Sesame",
+          "Groundnut",
+          "Melon Seeds",
+          "Onion",
+          "Bell pepper",
+          "Potato",
+          "Sugarcane",
+          "Okra",
+          "Chillies",
+          "Cabbage",
+          "Leafy Vegetables",
+          "Mango",
+          "Guava",
+          "Neem",
+          "Date Palm",
+          "Moringa",
+          "Gum Arabic",
+          "Citrus",
+          "Eucalyptus",
+          "Acacia Nilotica",
+          "Doum Palm",
+          "Cashew",
+          "Ginger",
+          "Hot Pepper",
+          "Garden Egg",
+          "Sweet Potato",
+          "Wheat",
+          "Soybean",
+          "Other",
+          "Bread wheat",
+          "Garlic",
+          "Services / non-crop"
+        ]
+      },
+      {
+        "id": "capacityUnit",
+        "type": "select",
+        "required": false,
+        "options": [
+          "kg",
+          "tonnes",
+          "litres",
+          "items",
+          "service transactions",
+          "Other"
+        ]
+      },
+      {
+        "id": "installedMonthlyCapacity",
+        "type": "number",
+        "required": false,
+        "options": [],
+        "min": 0
+      },
+      {
+        "id": "monthlyOutput",
+        "type": "number",
+        "required": false,
+        "options": [],
+        "min": 0
+      },
+      {
+        "id": "inputQuantity",
+        "type": "number",
+        "required": false,
+        "options": [],
+        "min": 0
+      },
+      {
+        "id": "inputUnit",
+        "type": "select",
+        "required": false,
+        "options": [
+          "kg",
+          "tonnes",
+          "litres",
+          "items",
+          "Other"
+        ]
+      },
+      {
+        "id": "inputPeriod",
+        "type": "select",
+        "required": false,
+        "options": [
+          "Daily",
+          "Weekly",
+          "Monthly",
+          "Seasonally",
+          "Per order"
+        ]
+      },
+      {
+        "id": "plannedSupportCost",
+        "type": "number",
+        "required": false,
+        "options": [],
+        "min": 0
+      },
+      {
+        "id": "expectedExtraJobs",
+        "type": "number",
+        "required": false,
+        "options": [],
+        "min": 0,
+        "integer": true
+      },
+      {
+        "id": "implementationMonths",
+        "type": "number",
+        "required": false,
+        "options": [],
+        "min": 0,
+        "integer": true
+      },
+      {
+        "id": "measurementNotes",
+        "type": "textarea",
+        "required": false,
+        "options": []
+      },
+      {
+        "id": "housing",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Mudhouse",
+          "Thatched House",
+          "Bamboo House",
+          "Wooden House",
+          "Compound house",
+          "Brick / Stones House",
+          "Not applicable"
+        ]
+      },
+      {
+        "id": "ownership",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Owned",
+          "Rented",
+          "Squatted",
+          "Provided Free"
+        ]
+      },
+      {
+        "id": "water",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Borewell",
+          "Tap",
+          "Well",
+          "Stream",
+          "Other"
+        ]
+      },
+      {
+        "id": "family",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Nuclear Family",
+          "Extended Family"
+        ]
+      },
+      {
+        "id": "size",
+        "type": "number",
+        "required": true,
+        "options": [],
+        "min": 0
+      },
+      {
+        "id": "employment",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Employed",
+          "Self-Employed",
+          "Unemployed",
+          "Student",
+          "Retired"
+        ]
+      },
+      {
+        "id": "process",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No"
+        ]
+      },
+      {
+        "id": "processedCrops",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Maize",
+          "Cowpea",
+          "Cassava",
+          "Hibiscus",
+          "Tomato",
+          "Paddy",
+          "Sorghum",
+          "Pearl Millet",
+          "Sesame",
+          "Groundnut",
+          "Melon Seeds",
+          "Onion",
+          "Bell pepper",
+          "Potato",
+          "Sugarcane",
+          "Okra",
+          "Chillies",
+          "Cabbage",
+          "Leafy Vegetables",
+          "Mango",
+          "Guava",
+          "Neem",
+          "Date Palm",
+          "Moringa",
+          "Gum Arabic",
+          "Citrus",
+          "Eucalyptus",
+          "Acacia Nilotica",
+          "Doum Palm",
+          "Cashew",
+          "Ginger",
+          "Hot Pepper",
+          "Garden Egg",
+          "Sweet Potato",
+          "Wheat",
+          "Soybean",
+          "Other",
+          "Bread wheat",
+          "Garlic"
+        ],
+        "show": [
+          "process",
+          "Yes"
+        ]
+      },
+      {
+        "id": "processQty",
+        "type": "matrix",
+        "required": true,
+        "options": [
+          "Less than 500 kg",
+          "501 kg - 1 ton",
+          "1-3 tons",
+          "3-5 tons",
+          "5-10 tons",
+          "Above 10 tons",
+          "Not applicable"
+        ],
+        "rows": "processedCrops",
+        "show": [
+          "process",
+          "Yes"
+        ]
+      },
+      {
+        "id": "operations",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Sorting & grading",
+          "Primary processing",
+          "Secondary processing",
+          "Tertiary processing",
+          "Value added products",
+          "Other"
+        ],
+        "show": [
+          "process",
+          "Yes"
+        ]
+      },
+      {
+        "id": "capacity",
+        "type": "text",
+        "required": true,
+        "options": [],
+        "show": [
+          "process",
+          "Yes"
+        ]
+      },
+      {
+        "id": "equipment",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Manual",
+          "Semi-mechanized",
+          "Industrial mechanized",
+          "Not applicable"
+        ],
+        "show": [
+          "process",
+          "Yes"
+        ]
+      },
+      {
+        "id": "equipmentSource",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Local fabricator",
+          "Imported",
+          "Donated",
+          "Other"
+        ],
+        "show": [
+          "process",
+          "Yes"
+        ]
+      },
+      {
+        "id": "trade",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Fresh",
+          "Processed",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "market",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Farm gate",
+          "Local",
+          "Regional",
+          "National",
+          "Export",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "tradedCrops",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Maize",
+          "Cowpea",
+          "Cassava",
+          "Hibiscus",
+          "Tomato",
+          "Paddy",
+          "Sorghum",
+          "Pearl Millet",
+          "Sesame",
+          "Groundnut",
+          "Melon Seeds",
+          "Onion",
+          "Bell pepper",
+          "Potato",
+          "Sugarcane",
+          "Okra",
+          "Chillies",
+          "Cabbage",
+          "Leafy Vegetables",
+          "Mango",
+          "Guava",
+          "Neem",
+          "Date Palm",
+          "Moringa",
+          "Gum Arabic",
+          "Citrus",
+          "Eucalyptus",
+          "Acacia Nilotica",
+          "Doum Palm",
+          "Cashew",
+          "Ginger",
+          "Hot Pepper",
+          "Garden Egg",
+          "Sweet Potato",
+          "Wheat",
+          "Soybean",
+          "Other",
+          "Not Applicable",
+          "Bread wheat",
+          "Garlic"
+        ]
+      },
+      {
+        "id": "tradeQty",
+        "type": "matrix",
+        "required": true,
+        "options": [
+          "1-3 tons",
+          "3-5 tons",
+          "5-10 tons",
+          "Above 10 tons",
+          "Not applicable"
+        ],
+        "rows": "tradedCrops"
+      },
+      {
+        "id": "rawPrice",
+        "type": "matrix",
+        "required": true,
+        "options": [
+          "Below ₦500k",
+          "₦500k-₦1m",
+          "₦1m-₦2m",
+          "₦2m-₦5m",
+          "Above ₦5m",
+          "Not applicable"
+        ],
+        "rows": "tradedCrops"
+      },
+      {
+        "id": "processedPrice",
+        "type": "matrix",
+        "required": true,
+        "options": [
+          "Below ₦500k",
+          "₦500k-₦1m",
+          "₦1m-₦2m",
+          "₦2m-₦5m",
+          "Above ₦5m",
+          "Not applicable"
+        ],
+        "rows": "tradedCrops"
+      },
+      {
+        "id": "processChallenges",
+        "type": "multi",
+        "required": true,
+        "options": [
+          "Power",
+          "Lack of processing facilities",
+          "High raw material loss",
+          "Packaging",
+          "Finance",
+          "Certification",
+          "Machinery breakdown",
+          "Market access",
+          "Other",
+          "Not Applicable"
+        ]
+      },
+      {
+        "id": "buyers",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Households",
+          "Retailers",
+          "Processors",
+          "Exporters",
+          "Aggregators",
+          "Other",
+          "Not Applicable"
+        ]
+      }
+    ]
+  }
+}

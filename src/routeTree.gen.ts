@@ -46,6 +46,7 @@ import { Route as AuthenticatedReviewRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedRolloutRouteImport } from './routes/_authenticated/rollout'
 import { Route as AuthenticatedSchemesRouteImport } from './routes/_authenticated/schemes'
 import { Route as AuthenticatedSoilCareRouteImport } from './routes/_authenticated/soil-care'
+import { Route as FieldworkApiSplatRouteImport } from './routes/fieldwork-api/$'
 import { Route as FpoPortalIndexRouteImport } from './routes/fpo-portal.index'
 import { Route as FpoPortalAdminRouteImport } from './routes/fpo-portal.admin'
 import { Route as FpoPortalComparisonRouteImport } from './routes/fpo-portal.comparison'
@@ -247,6 +248,11 @@ const AuthenticatedSoilCareRoute = AuthenticatedSoilCareRouteImport.update({
   path: '/soil-care',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const FieldworkApiSplatRoute = FieldworkApiSplatRouteImport.update({
+  id: '/fieldwork-api/$',
+  path: '/fieldwork-api/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FpoPortalIndexRoute = FpoPortalIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -330,6 +336,7 @@ export interface FileRoutesByFullPath {
   '/rollout': typeof AuthenticatedRolloutRoute
   '/schemes': typeof AuthenticatedSchemesRoute
   '/soil-care': typeof AuthenticatedSoilCareRoute
+  '/fieldwork-api/$': typeof FieldworkApiSplatRoute
   '/fpo-portal/admin': typeof FpoPortalAdminRoute
   '/fpo-portal/comparison': typeof FpoPortalComparisonRoute
   '/fpo-portal/members': typeof FpoPortalMembersRoute
@@ -376,6 +383,7 @@ export interface FileRoutesByTo {
   '/rollout': typeof AuthenticatedRolloutRoute
   '/schemes': typeof AuthenticatedSchemesRoute
   '/soil-care': typeof AuthenticatedSoilCareRoute
+  '/fieldwork-api/$': typeof FieldworkApiSplatRoute
   '/fpo-portal/admin': typeof FpoPortalAdminRoute
   '/fpo-portal/comparison': typeof FpoPortalComparisonRoute
   '/fpo-portal/members': typeof FpoPortalMembersRoute
@@ -425,6 +433,7 @@ export interface FileRoutesById {
   '/_authenticated/rollout': typeof AuthenticatedRolloutRoute
   '/_authenticated/schemes': typeof AuthenticatedSchemesRoute
   '/_authenticated/soil-care': typeof AuthenticatedSoilCareRoute
+  '/fieldwork-api/$': typeof FieldworkApiSplatRoute
   '/fpo-portal/admin': typeof FpoPortalAdminRoute
   '/fpo-portal/comparison': typeof FpoPortalComparisonRoute
   '/fpo-portal/members': typeof FpoPortalMembersRoute
@@ -474,6 +483,7 @@ export interface FileRouteTypes {
     | '/rollout'
     | '/schemes'
     | '/soil-care'
+    | '/fieldwork-api/$'
     | '/fpo-portal/admin'
     | '/fpo-portal/comparison'
     | '/fpo-portal/members'
@@ -520,6 +530,7 @@ export interface FileRouteTypes {
     | '/rollout'
     | '/schemes'
     | '/soil-care'
+    | '/fieldwork-api/$'
     | '/fpo-portal/admin'
     | '/fpo-portal/comparison'
     | '/fpo-portal/members'
@@ -568,6 +579,7 @@ export interface FileRouteTypes {
     | '/_authenticated/rollout'
     | '/_authenticated/schemes'
     | '/_authenticated/soil-care'
+    | '/fieldwork-api/$'
     | '/fpo-portal/admin'
     | '/fpo-portal/comparison'
     | '/fpo-portal/members'
@@ -593,6 +605,7 @@ export interface RootRouteChildren {
   PlatformRoute: typeof PlatformRoute
   RolesRoute: typeof RolesRoute
   TeamRoute: typeof TeamRoute
+  FieldworkApiSplatRoute: typeof FieldworkApiSplatRoute
   MobileV1BootstrapRoute: typeof MobileV1BootstrapRoute
   MobileV1MeRoute: typeof MobileV1MeRoute
   MobileV1AuthOtpRequestRoute: typeof MobileV1AuthOtpRequestRoute
@@ -860,6 +873,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSoilCareRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/fieldwork-api/$': {
+      id: '/fieldwork-api/$'
+      path: '/fieldwork-api/$'
+      fullPath: '/fieldwork-api/$'
+      preLoaderRoute: typeof FieldworkApiSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/fpo-portal/': {
       id: '/fpo-portal/'
       path: '/'
@@ -1017,6 +1037,7 @@ const rootRouteChildren: RootRouteChildren = {
   PlatformRoute: PlatformRoute,
   RolesRoute: RolesRoute,
   TeamRoute: TeamRoute,
+  FieldworkApiSplatRoute: FieldworkApiSplatRoute,
   MobileV1BootstrapRoute: MobileV1BootstrapRoute,
   MobileV1MeRoute: MobileV1MeRoute,
   MobileV1AuthOtpRequestRoute: MobileV1AuthOtpRequestRoute,

@@ -1,13 +1,13 @@
 {
   "title": "JAIP integrated leadership analytics",
-  "version": "2026-11-02.1",
+  "version": "2026-11-02.2",
   "classification": "questionnaire-derived metric contract; no completed response dataset supplied",
   "sourceFiles": [
     "Household Survey – Jigawa State.pdf",
     "FGD Survey – Jigawa State.pdf",
     "Key Informant Interview (KII) Survey – Jigawa State.pdf",
     "Enterprise Survey – Jigawa State.pdf",
-    "Final-Staffing-LivelihoodStudy-v03 (1).xlsx",
+    "FINAL Final-Staffing-LivelihoodStudy- updated 2.xlsx",
     "JAIP – Integrated Leadership Analytics & Investment Planning Framework (user-supplied pasted text)"
   ],
   "grain": {
@@ -149,5 +149,6 @@
     "exclusiveAnswers": "specified status/financial-band questions adapted from checkboxes to single choice, marked cardinalityAdapted",
     "otherDetails": "conditional Other descriptions added",
     "applicability": "Q8,19,71 conditional; source required flags preserved in source mapping"
-  }
+  },
+  "access": "Server-verified leadership accounts only; approved records retrieved from shared server storage. Examples are explicitly fictional."
 }

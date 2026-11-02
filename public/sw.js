@@ -30,6 +30,7 @@ self.addEventListener("activate", (event) => {
 function isPrivatePath(url) {
   return (
     url.pathname.startsWith("/api/") ||
+    url.pathname.startsWith("/fieldwork-api/") ||
     url.pathname.startsWith("/_serverFn") ||
     url.pathname.includes("/auth") ||
     url.searchParams.has("_serverFn")

@@ -1,12 +1,14 @@
 # Agrighar · Jigawa fieldwork application blueprint
 
-Prepared 1 November 2026. Status: application design and interactive prototype, not a production collection deployment. Standard review was selected by the project owner. No KrisTab-specific behavior has been assumed.
+Updated 2 November 2026. Phone-ID accounts and shared server review are implemented. The remaining sections describe the wider rollout design; future capabilities are requirements, not claims of implementation.
 
-## What can be reviewed now
+## Implemented account and collection flow
 
-An Android-responsive web preview with three role entry paths; a workbook-derived enumerator master; household, FGD and KII guided forms; draft/resume in IndexedDB; explicit foreground location capture; local submission, approval, return and rejection; local audit history; CSV exports; leadership views calculated from approved records; and a service-worker application shell.
+84 unique accounts are provisioned privately from the updated staffing workbook, including community liaisons and five authorised leaders. No roster or password hashes are included in public assets. The requested initial password is individually salted and hashed; first sign-in requires a new password. Sign-in needs connectivity.
 
-The role selector is a demonstration sign-in. It grants no production identity assurance. All changing records are in this browser. Another device cannot see them. “Online” is device connectivity, not server receipt. No real names, household information or sensitive interviews should be entered into this preview. Seeded respondents are fictional and labelled Demo. Public staff names are fictional and phone numbers are omitted. The original workbook roster remains local. The production master must be imported securely from the original workbook, not the masked preview.
+Sessions use HttpOnly cookies. Server checks enforce account status, assignment, author ownership, supervisor reporting relationships and the five-account leadership allowlist. Login activity and the first permitted login location appear in the scoped user master. Submitted responses are validated on the server. Review decisions require a server receipt and retain audit history.
+
+Each account has a separate device draft store. An unexpired cached field identity permits offline drafting; leadership needs online verification. Sync preserves conflicts and confirms server versions. Existing anonymous preview drafts are not imported into authenticated accounts. Device storage is not encrypted at rest by this application; shared devices require operating-system protection.
 
 ## Source register and precedence
 
@@ -120,4 +122,4 @@ Leadership now has all 12 requested views: statewide development, agriculture/pr
 
 Source financial bands remain categorical. Exact profit and margin are calculated only from optional same-month revenue/cost observations, with reconciliation warnings and explicit self-report status. Physical quantities with different units or commodities are not summed. Original worker-category checkboxes never become numeric headcounts. FGD and KII remain separate qualitative evidence. The capacity simulator (1,000 units, 40% current, 75% target) and readiness simulator (weights 25/20/20/15/10/10; initial 3/5 gives 60/100) are hypothetical scenarios, not enterprise classifications, funding eligibility or measured programme impact. The proposal register supports human assessment, with no automated selection or disbursement. Baseline/follow-up, funded interventions, budgets, verified costs, targets and sampling weights remain missing prerequisites for actual programme-impact or investment conclusions.
 
-Existing browser drafts retain the same IndexedDB store. New enterprise drafts pin enterprise-2026-11-02-v1 and translation pack 2026-11-02.2. Hausa/Fulfulde enterprise prompts and leadership navigation are draft translations; some new options and technical notes retain English pending native-speaker review. Kanuri remains excluded. The app shell caches all four forms, leadership views and language bundles for offline use after first online load. Secure authentication and shared server sync remain production work.
+Existing browser drafts retain the same IndexedDB store. New enterprise drafts pin enterprise-2026-11-02-v1 and translation pack 2026-11-02.2. Hausa/Fulfulde enterprise prompts and leadership navigation are draft translations; some new options and technical notes retain English pending native-speaker review. Kanuri remains excluded. The app shell caches all four forms, leadership views and language bundles for offline use after first online load. Phone-ID authentication and shared server sync are now connected. Native Android background tracking and field validation remain rollout work.
