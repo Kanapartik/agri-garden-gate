@@ -90,3 +90,11 @@ References:
 - https://developer.apple.com/documentation/uikit/using-background-tasks-to-update-your-app
 - https://developer.apple.com/documentation/corelocation/requesting-authorization-to-use-location-services
 - https://developer.apple.com/help/account/provisioning-profiles/create-an-ad-hoc-provisioning-profile
+
+## TestFlight signing — 5 November 2026
+
+Use the enrolled **Krisone Innovations LLC** team (`3HAW599K93`). The registered iOS bundle identifier is **com.agrivah.agrighar.jigawa**; the former `com.agrivah.fieldwork` identifier is unavailable to this team. The app target and test target use the new identifier namespace. Android's package identifier is unchanged.
+
+Release metadata comes from `MARKETING_VERSION` and `CURRENT_PROJECT_VERSION` (1.1.0 / 3), including the generated app Info.plist. App Store Connect app: https://appstoreconnect.apple.com/apps/6831253607
+
+If no development device is registered, archive with `CODE_SIGNING_ALLOWED=NO`, then export with automatic signing, method `app-store-connect`, team `3HAW599K93` and `-allowProvisioningUpdates`. Xcode successfully exported this app for App Store distribution with that workflow. No credentials or signing private keys are stored in this project.
