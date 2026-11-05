@@ -1,11 +1,11 @@
 # Agrighar Fieldwork for iPhone and iPad
 
-Version 1.0.0 release candidate · iOS/iPadOS 17+ · bundle ID
+Version 1.0.1 release candidate · iOS/iPadOS 17+ · bundle ID
 `com.agrivah.fieldwork`. This is separate from the existing Indian farmer pilot.
 
 ## Open the delivered project
 
-Unzip `Agrighar-Fieldwork-iOS-Xcode-1.0.0-rc1.zip`, open
+Unzip `Agrighar-Fieldwork-iOS-Xcode-1.0.1-rc1.zip`, open
 `AgrigharFieldwork.xcodeproj`, select **AgrigharFieldwork**, select an iPhone
 simulator and choose Run. The delivered ZIP already contains every offline screen,
 questionnaire, language pack and icon. There are no CocoaPods, package downloads or

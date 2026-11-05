@@ -1,8 +1,8 @@
 # iOS verification — 5 November 2026
 
-Release candidate 1.0.0 · Xcode 27.0 · iPhone 17 Pro simulator (iOS 26.5).
+Release candidate 1.0.1 · Xcode 27.0 · iPhone 17 Pro simulator (iOS 26.5).
 
-**14 XCTest checks passed, zero failures.** The final simulator test used Xcode's
+**15 XCTest checks passed, zero failures.** The final simulator test used Xcode's
 local ad-hoc signing (`CODE_SIGN_IDENTITY=-`) so the actual iOS Keychain and native
 WebKit bridge were available. No Apple Developer certificate was needed for these
 simulator checks. The ARM64 device archive also built successfully without signing.
@@ -40,3 +40,10 @@ on a supervisor's dashboard until uploaded.
 
 The delivered ZIP includes a self-contained Xcode project and bundled offline
 resources. An unsigned archive is a build result, not an iPhone-installable IPA.
+
+15. The location-exception input and Back/Continue navigation fit in the focused
+    iPhone survey viewport without scrolling the page (synthetic layout fixture).
+
+The focused question layout was also verified in an isolated browser at 288×568
+and with a 288×320 reduced-height viewport. Optional interview controls are in
+Options; saving/closing returns to the full navigation.

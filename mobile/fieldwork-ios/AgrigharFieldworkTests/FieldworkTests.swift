@@ -55,4 +55,24 @@ final class FieldworkTests:XCTestCase {
         XCTAssertEqual((try parseJSON(vault.get("receipt-JG-fixture-0001"))["record"] as? JSON)?["serverVersion"] as? Int,4)
     }
 
+    @MainActor func testFocusedQuestionKeepsInputAboveNavigation()async throws{
+        let scene=try XCTUnwrap(UIApplication.shared.connectedScenes.first as? UIWindowScene)
+        let controller=try XCTUnwrap(scene.windows.first(where:{$0.isKeyWindow})?.rootViewController)
+        let web=try XCTUnwrap(controller.view.subviews.compactMap{$0 as? WKWebView}.first)
+        let setup="""
+        session={userId:'qa-layout',name:'Synthetic layout check',role:'Enumerator',zone:'South-West'};
+        state={records:[],audit:[],points:[],logins:[]};
+        ROSTER=[{id:'qa-layout',name:'Synthetic layout check',lgas:['Dutse'],lga:'Dutse'}];
+        formRecord={id:'JG-layout-fixture',type:'HH',lga:'Dutse',status:'Draft',answers:{consent:'Yes',ward:'Synthetic',community:'Synthetic',date:'2026-11-05'},history:[],uiProgress:{step:0,question:4}};
+        step=0;wizardSection='';render();
+        """
+        _=try await web.evaluateJavaScript(setup)
+        try await Task.sleep(nanoseconds:300_000_000)
+        let fits=try await web.evaluateJavaScript("(()=>{const i=document.getElementById('f-locationReason').getBoundingClientRect(),n=document.querySelector('.wizard-actions').getBoundingClientRect();return i.top>=0&&i.bottom<=n.top&&n.bottom<=innerHeight+1&&document.documentElement.scrollHeight<=innerHeight+1})()") as? Bool
+        XCTAssertEqual(fits,true,"Question input and navigation must fit without page scrolling")
+        let image:UIImage=try await withCheckedThrowingContinuation{continuation in web.takeSnapshot(with:nil){image,error in if let image{continuation.resume(returning:image)}else{continuation.resume(throwing:error ?? APIError.invalidResponse)}}}
+        let attachment=XCTAttachment(image:image);attachment.name="Agrighar-focused-question";attachment.lifetime = .keepAlways;add(attachment)
+        _=try await web.evaluateJavaScript("formRecord=null;session=null;ROSTER=[];render()")
+    }
+
 }

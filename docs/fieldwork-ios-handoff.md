@@ -6,7 +6,7 @@ The requested delivery is the tested Xcode project first. Open
 ZIP includes the generated resources, so it opens without that preparation.
 
 The project builds for iOS/iPadOS 17+ and uses the existing fieldwork backend and
-accounts. Fourteen simulator tests passed, including actual bundled login rendering
+accounts. Fifteen simulator tests passed, including actual bundled login rendering
 in WebKit. An unsigned device archive verifies ARM64 compilation. No Apple signing
 identity was configured and no distribution upload was attempted.
 

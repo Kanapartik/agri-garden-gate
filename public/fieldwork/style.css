@@ -8,3 +8,50 @@
 /* Fieldwork mobile experience */
 .question-card{max-width:850px;margin:26px auto 16px;min-height:300px;padding:34px;border-radius:24px;box-shadow:0 12px 35px #173f3509}.question-card .field>label{font-size:24px;font-weight:650;line-height:1.35;display:block;margin:14px 0 24px}.question-card input,.question-card select,.question-card textarea{font-size:20px;min-height:60px;border-radius:14px}.question-card .chip{font-size:17px;padding:14px 18px;min-height:52px}.wizard-title{display:flex;justify-content:space-between;align-items:start;gap:15px}.wizard-title h1{margin:10px 0}.wizard-progress{display:flex;justify-content:space-between;margin-top:25px;color:#557466;font-size:13px}.wizard-actions{display:flex;gap:14px;align-items:center;justify-content:space-between;max-width:850px;margin:auto;position:sticky;bottom:0;background:#f5f8f4f5;padding:18px 0;backdrop-filter:blur(12px);z-index:3}.wizard-actions button{min-height:54px;min-width:120px}.wizard-tools{max-width:850px;margin:20px auto;color:#607368;font-size:13px;display:flex;gap:20px;flex-wrap:wrap}.wizard-tools input{width:auto;vertical-align:middle}.section-pills{display:flex;gap:7px;flex-wrap:wrap;margin-top:16px}.location-filters{display:flex;align-items:end;gap:24px;margin:25px 0}.location-filters label{flex:1}.location-person{display:flex;justify-content:space-between;gap:15px;align-items:center;border-bottom:1px solid #e5ece7;padding:16px 0}.location-person p{margin:5px 0}.route-plot{width:100%;min-height:220px}.content{padding-bottom:80px}
 @media(max-width:760px){.question-card{padding:22px;margin:18px 0 8px;min-height:280px}.question-card .field>label{font-size:22px}.wizard-actions{gap:8px}.wizard-actions #save-status{display:none}.wizard-actions button{flex:1}.wizard-title h1{font-size:26px}.wizard-title>button{font-size:12px;padding:10px;white-space:nowrap}.location-filters{flex-direction:column;align-items:stretch;gap:12px}.topbar .user-name{display:none}.nav{display:flex;overflow-x:auto;gap:4px;padding-bottom:8px}.nav button{white-space:nowrap;min-height:44px}.sidebar{position:relative}.sidebar .project,.sidebar .sidebar-bottom{display:none}.sidebar .brand{margin-bottom:12px}.content{padding:18px 16px 70px}.stats{grid-template-columns:repeat(2,1fr)}}
+
+/* Focused survey layout: reserve the visible screen for the question and input. */
+.wizard-header-actions{display:flex;align-items:center;gap:6px}
+#survey-options,#close-survey-options{display:none}
+@media(max-width:760px){
+ body.survey-active{height:var(--survey-viewport-height,100dvh);overflow:hidden;display:flex;flex-direction:column}
+ body.survey-active #language-bar{flex-shrink:0;min-height:38px;padding:5px 12px;gap:4px;flex-wrap:nowrap}
+ body.survey-active #language-bar .language-reference,body.survey-active #language-bar .language-status{display:none}
+ body.survey-active .language-controls{flex-wrap:nowrap;width:100%;justify-content:space-between;gap:8px}
+ body.survey-active .language-controls select{min-width:110px;width:auto;font-size:13px;padding:5px 8px}
+ body.survey-active #app{flex:1;min-height:0;width:100%}
+ body.survey-active .shell{height:100%;min-height:0;display:block}
+ body.survey-active .sidebar,body.survey-active .topbar{display:none}
+ body.survey-active .shell>div:not(.sidebar){height:100%;min-height:0}
+ body.survey-active .content{height:100%;width:100%;min-height:0;max-width:none;display:flex;flex-direction:column;padding:8px 12px max(8px,env(safe-area-inset-bottom));overflow:hidden}
+ body.survey-active .wizard-title{flex-shrink:0;gap:8px;align-items:center}
+ body.survey-active .wizard-title>div:first-child{min-width:0;flex:1}
+ body.survey-active .wizard-title h1{font-size:19px;letter-spacing:-.5px;margin:4px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ body.survey-active .wizard-title .eyebrow{font-size:8px;letter-spacing:1px}
+ body.survey-active .wizard-title p{margin:3px 0;font-size:10px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ body.survey-active .wizard-header-actions button{padding:8px;font-size:10px;min-height:36px;white-space:nowrap}
+ body.survey-active #survey-options{display:block}
+ body.survey-active .wizard-progress{flex-shrink:0;margin-top:9px;font-size:10px}
+ body.survey-active .content>.progress{flex-shrink:0;height:3px;margin:7px 0}
+ body.survey-active .question-card{flex:1;min-height:0;width:100%;max-width:none;margin:5px 0;padding:16px;border-radius:16px;overflow-y:auto;overscroll-behavior:contain;scroll-padding:12px}
+ body.survey-active .question-card>.eyebrow{font-size:9px}
+ body.survey-active .question-card .field>label{font-size:18px;line-height:1.35;margin:9px 0 12px}
+ body.survey-active .question-card .field>p{font-size:11px;line-height:1.4;margin:8px 0}
+ body.survey-active .question-card input,body.survey-active .question-card select,body.survey-active .question-card textarea{font-size:16px;min-height:46px;border-radius:10px}
+ body.survey-active .question-card textarea{min-height:88px;height:100px;resize:vertical}
+ body.survey-active .question-card .chip{font-size:14px;padding:10px 12px;min-height:44px}
+ body.survey-active .wizard-actions{flex-shrink:0;position:static;max-width:none;width:100%;gap:8px;margin:0;padding:7px 0 0;backdrop-filter:none}
+ body.survey-active .wizard-actions button{min-height:46px;min-width:0;font-size:13px}
+ body.survey-active .wizard-tools{display:none}
+ body.survey-active.survey-options-open .wizard-tools{position:fixed;inset:58px 12px max(12px,env(safe-area-inset-bottom));z-index:60;display:flex;flex-direction:column;align-content:start;gap:22px;margin:0;max-width:none;padding:22px;background:white;border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 90px #173f3544;overflow-y:auto}
+ body.survey-active #close-survey-options{display:block;align-self:flex-end}
+ body.survey-active.survey-options-open .language-reference{display:flex!important;font-size:10px}
+ body.survey-active.survey-options-open #language-bar{flex-wrap:wrap}
+ body.survey-active.survey-options-open .language-controls{flex-wrap:wrap}
+ body.survey-active.survey-keyboard-open #language-bar{display:none}
+ body.survey-active.survey-keyboard-open .wizard-title .eyebrow,body.survey-active.survey-keyboard-open .wizard-title p{display:none}
+ body.survey-active.survey-keyboard-open .question-card{padding:12px}
+ body.survey-active.survey-keyboard-open .question-card>.eyebrow{display:none}
+ body.survey-active.survey-keyboard-open .question-card .field>label{font-size:16px;margin:0 0 8px}
+ body.survey-active.survey-keyboard-open .question-card textarea{height:64px;min-height:58px}
+ body.survey-active.survey-keyboard-open .wizard-progress{margin-top:5px}
+}

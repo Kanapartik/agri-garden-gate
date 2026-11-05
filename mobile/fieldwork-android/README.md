@@ -1,6 +1,6 @@
 # Agrighar Fieldwork Android
 
-Release candidate 1.0.0-rc1, package `com.agrivah.fieldwork`, Android 8.0+.
+Release candidate 1.0.1-rc1, package `com.agrivah.fieldwork`, Android 8.0+.
 This is separate from the existing Indian farmer pilot application.
 
 The APK bundles the four survey instruments, English/Hausa/Fulfulde packs and
