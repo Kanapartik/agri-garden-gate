@@ -1,0 +1,21 @@
+/* Compact operational login on iPhone; question screens retain the shared layout. */
+@media(max-width:760px){
+ .login{display:flex;flex-direction:column;min-height:0}
+ .login-story{padding:14px 22px;min-height:0;display:block}
+ .login-story>.brand{font-size:23px;margin:0}
+ .login-story>div:not(.brand),.login-story>p{display:none}
+ .login-form{padding:18px 22px 22px;min-height:0}
+ .login-form h1{font-size:27px;margin:8px 0 10px}
+ .login-form>p.muted{margin:8px 0 14px;font-size:13px;line-height:1.45}
+ .login-form label{font-size:13px;margin:13px 0 7px}
+ .login-form input:not([type=checkbox]){font-size:16px;min-height:47px;padding:12px}
+ .login-form input[type=checkbox]{min-height:20px;width:20px;flex-shrink:0}
+ .login-form #auth-submit{min-height:48px;margin-top:4px}
+ .login-form>p.small.muted{font-size:11px;line-height:1.4;margin:9px 0}
+ .login-form p:has(a[href="/"]){display:none}
+ #language-bar{padding:9px 16px;gap:6px;font-size:11px}
+ .language-controls{gap:8px}
+ .language-controls select{font-size:13px;min-width:125px;padding:6px 9px}
+ body:has(.login) .language-reference{display:none}
+ .language-status{font-size:10px;line-height:1.35}
+}

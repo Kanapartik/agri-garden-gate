@@ -43,3 +43,10 @@ mobile/fieldwork-android/local.properties
 
 # Generated from public/fieldwork by the Android packaging script
 mobile/fieldwork-android/app/src/main/assets/fieldwork/
+
+# iOS generated bundles and local signing state
+mobile/fieldwork-ios/AgrigharFieldwork/fieldwork/
+mobile/fieldwork-ios/build/
+mobile/fieldwork-ios/dist/
+mobile/fieldwork-ios/**/*.xcuserstate
+mobile/fieldwork-ios/**/xcuserdata/
