@@ -2,7 +2,7 @@ import Foundation
 
 final class FieldworkAPI:NSObject,URLSessionTaskDelegate,@unchecked Sendable {
     static let origin=URL(string:"https://agrivah.com")!
-    private let paths:Set<String>=["login","password","session","bootstrap","records","review","logout","location","locations","location-events","leadership"]
+    private let paths:Set<String>=["login","password","session","bootstrap","records","review","deletion","exclusion","logout","location","locations","location-events","leadership"]
     let vault:Vault; let engine:SyncEngine; private let gate=AsyncGate()
     private lazy var session:URLSession={let config=URLSessionConfiguration.ephemeral;config.httpShouldSetCookies=false;config.httpCookieStorage=nil;config.urlCache=nil;config.requestCachePolicy = .reloadIgnoringLocalCacheData;config.timeoutIntervalForRequest=30;config.timeoutIntervalForResource=60;return URLSession(configuration:config,delegate:self,delegateQueue:nil)}()
     init(vault:Vault){self.vault=vault;engine=SyncEngine(vault:vault);super.init()}

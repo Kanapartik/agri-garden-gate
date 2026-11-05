@@ -13,9 +13,9 @@ export function validNewFieldworkPassword(value: unknown): value is string {
 export function fieldworkStatus(error: string): number {
  if(error === 'unauthorized' || error === 'invalid_credentials') return 401;
  if(error === 'forbidden') return 403;
- if(error === 'conflict' || error === 'record_locked') return 409;
+ if(error === 'conflict' || error === 'record_locked' || error === 'deletion_pending' || error === 'record_deleted') return 409;
  if(error === 'password_change_required') return 428;
  if(error === 'try_later') return 429;
- if(['invalid_request','invalid_record','incomplete_record','invalid_location','password_requirements','review_note_required','invalid_action'].includes(error)) return 422;
+ if(['invalid_request','invalid_record','incomplete_record','invalid_location','password_requirements','review_note_required','invalid_action','submitted_protected'].includes(error)) return 422;
  return 503;
 }

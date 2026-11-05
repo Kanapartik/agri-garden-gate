@@ -3,7 +3,7 @@ import android.content.Context;import org.json.*;import javax.net.ssl.HttpsURLCo
 final class Api {
  static final class AuthRequired extends IOException {}
  static final Object LOCK=new Object();static final String ORIGIN="https://agrivah.com";
- private static final Set<String> PATHS=new HashSet<>(Arrays.asList("login","password","session","bootstrap","records","review","logout","location","locations","location-events","leadership"));
+ private static final Set<String> PATHS=new HashSet<>(Arrays.asList("login","password","session","bootstrap","records","review","deletion","exclusion","logout","location","locations","location-events","leadership"));
  static JSONObject call(Vault v,String path,JSONObject body)throws Exception {
   if(!PATHS.contains(path))throw new SecurityException("Unsupported request");
   HttpsURLConnection c=(HttpsURLConnection)new URL(ORIGIN+"/fieldwork-api/"+path).openConnection();c.setConnectTimeout(15000);c.setReadTimeout(30000);c.setInstanceFollowRedirects(false);c.setRequestProperty("Accept","application/json");c.setRequestProperty("Cache-Control","no-store");String cookie=v.get("cookie","");if(!cookie.isEmpty())c.setRequestProperty("Cookie",cookie);

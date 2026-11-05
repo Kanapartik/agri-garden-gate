@@ -1,0 +1,25 @@
+const {PGlite}=require('@electric-sql/pglite');const fs=require('fs');const assert=require('node:assert/strict');
+(async()=>{const db=new PGlite();await db.exec(`create role anon;create role authenticated;create schema extensions;
+create table fieldwork_accounts(id uuid primary key,active boolean default true,role text,supervisor_id uuid,must_change_password boolean default false,full_name text);
+create table fieldwork_sessions(token_hash text,account_id uuid,revoked_at timestamptz,expires_at timestamptz);
+create table fieldwork_records(id text primary key,author_id uuid,lga text,zone text,type text,status text,server_version integer default 1,payload jsonb,updated_at timestamptz default now());
+create table fieldwork_record_audit(record_id text,actor_id uuid,action text,server_version integer,note text,occurred_at timestamptz default now());
+create function fieldwork_dispatch(text,text,jsonb default '{}') returns jsonb language plpgsql as $$ declare r jsonb;begin
+if $2='save_record' then r:=$3->'record';insert into fieldwork_records(id,author_id,status,payload) values(r->>'id',($1)::uuid,r->>'status',r) on conflict(id) do update set status=excluded.status,payload=excluded.payload,server_version=fieldwork_records.server_version+1;return jsonb_build_object('record',r);end if;
+return jsonb_build_object('records',(select coalesce(jsonb_agg(payload),'[]') from fieldwork_records));end $$;
+insert into fieldwork_accounts(id,role,full_name) values('00000000-0000-0000-0000-000000000001','enumerator','Collector'),('00000000-0000-0000-0000-000000000002','supervisor','Manager'),('00000000-0000-0000-0000-000000000003','enumerator','Other');
+update fieldwork_accounts set supervisor_id='00000000-0000-0000-0000-000000000002' where role='enumerator';
+insert into fieldwork_sessions select id::text,id,null,now()+interval '1 day' from fieldwork_accounts;`);
+await db.exec(fs.readFileSync('supabase/migrations/20261105020000_fieldwork_record_governance.sql','utf8'));
+const call=async(actor,action,payload)=>(await db.query('select fieldwork_dispatch($1,$2,$3) result',[`00000000-0000-0000-0000-00000000000${actor}`,action,JSON.stringify(payload)])).rows[0].result;
+let record={id:'JG-TEST-DRAFT',status:'Draft',created:'2026-11-01T12:00:00Z',answers:{date:'2030-01-01'},dashboardExcluded:true,everSubmitted:true};let res=await call(1,'save_record',{record});assert.equal(res.record.captureDate,'2026-11-01');assert.equal(res.record.dashboardExcluded,false);assert.equal(res.record.everSubmitted,false);
+res=await call(3,'deletion',{id:record.id,serverVersion:1,decision:'request',note:'test'});assert.equal(res.error,'forbidden');
+res=await call(1,'deletion',{id:record.id,serverVersion:1,decision:'request',note:'Duplicate draft'});assert.ok(res.record.deletionRequest);
+assert.equal((await call(1,'save_record',{record})).error,'deletion_pending');assert.equal((await call(1,'deletion',{id:record.id,serverVersion:2,decision:'approve',note:'self'})).error,'forbidden');
+res=await call(2,'deletion',{id:record.id,serverVersion:2,decision:'reject',note:'Complete this visit'});assert.equal(res.record.deletionRequest,null);
+await call(1,'deletion',{id:record.id,serverVersion:3,decision:'request',note:'No interview'});res=await call(2,'deletion',{id:record.id,serverVersion:4,decision:'approve',note:'Verified unused draft'});assert.equal(res.deletedId,record.id);assert.equal((await call(1,'save_record',{record})).error,'record_deleted');assert.deepEqual((await call(1,'records',{})).deletedIds,[record.id]);
+record={...record,id:'JG-TEST-SUBMITTED',status:'Submitted'};res=await call(1,'save_record',{record});assert.equal(res.record.everSubmitted,true);assert.equal(res.record.captureDate,'2026-11-01');assert.ok(res.record.submittedAt);assert.equal((await call(2,'deletion',{id:record.id,serverVersion:1,decision:'approve',note:'bad'})).error,'submitted_protected');
+res=await call(2,'exclusion',{id:record.id,serverVersion:1,excluded:true,note:'Poor quality'});assert.equal(res.record.dashboardExcluded,true);assert.equal(res.record.captureDate,'2026-11-01');
+res=await call(2,'exclusion',{id:record.id,serverVersion:2,excluded:false,note:'Verified'});assert.equal(res.record.dashboardExcluded,false);
+await assert.rejects(db.exec(`delete from fieldwork_records where id='JG-TEST-SUBMITTED'`),/cannot be deleted/);
+await db.exec(`update fieldwork_records set status='Returned',ever_submitted=false,capture_date='2030-01-01' where id='JG-TEST-SUBMITTED'`);const row=(await db.query('select * from fieldwork_records')).rows[0];assert.equal(row.ever_submitted,true);assert.equal(new Date(row.capture_date).toISOString().slice(0,10),'2026-11-01');console.log('PASS: permissions, deletion review/rejection, tombstones, submitted retention, exclusion/restore, immutable capture date and spoof protection');await db.close();})().catch(e=>{console.error(e);process.exit(1)});

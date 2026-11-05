@@ -47,3 +47,7 @@ resources. An unsigned archive is a build result, not an iPhone-installable IPA.
 The focused question layout was also verified in an isolated browser at 288×568
 and with a 288×320 reduced-height viewport. Optional interview controls are in
 Options; saving/closing returns to the full navigation.
+
+
+## 1.1.0 build 3 — 5 November 2026
+15 simulator tests passed. Shared UI verified at 288×568 with exact missing-question navigation after save/close. Deletion/exclusion controls require the separately reviewed database migration. Web tests: 22 passed; isolated workflow database and navigation checks passed.

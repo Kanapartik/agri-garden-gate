@@ -1,12 +1,12 @@
 {
-  "version": "1.0.1-rc1",
+  "version": "1.1.0-rc1",
   "packageId": "com.agrivah.fieldwork",
   "androidMinimum": "8.0",
   "releaseDate": "2026-11-05",
-  "bytes": 166051,
-  "sha256": "175e12bd0ae5a6660bd14f8af3851cd69b93c05dbd069ccfe712ae747fc337f6",
+  "bytes": 170221,
+  "sha256": "267f8910055c6ebc6c3f65ebc7a13784c0f84f747670c6a04f9f7213c674eba6",
   "classification": "signed release candidate; real-device field acceptance pending",
   "webTestsPassed": 22,
-  "androidTestsPassed": 8,
-  "change": "Focused mobile input layout; full field and navigation visible at 288x568 and reduced-height 288x320 viewport"
+  "iosTestsPassed": 15,
+  "change": "Compact language popup and hamburger navigation; exact missing-question links; capture dates; direct review; filters/sorting/pagination. Deletion/exclusion activate only after reviewed database migration."
 }
