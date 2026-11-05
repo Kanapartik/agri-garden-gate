@@ -4,7 +4,7 @@
   "androidMinimum": "8.0",
   "releaseDate": "2026-11-05",
   "bytes": 170221,
-  "sha256": "267f8910055c6ebc6c3f65ebc7a13784c0f84f747670c6a04f9f7213c674eba6",
+  "sha256": "c8f363119ddd75767eed14bfb82f432a8fc130a9f1d5074ce5c0b18a5edc7fc3",
   "classification": "signed release candidate; real-device field acceptance pending",
   "webTestsPassed": 22,
   "iosTestsPassed": 15,

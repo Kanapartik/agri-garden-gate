@@ -28,7 +28,7 @@ final class SyncEngine {
             let reply=try await transport("records",["record":record]);var data=reply.data
             if reply.status==401 || reply.status==428 {throw APIError.unauthorized}
             if reply.status==200,data["record"] is JSON {try vault.put("receipt-"+id,encodeJSON(data));try vault.remove("issue-"+id);if try vault.get(key)==snapshot{try vault.remove(key)}}
-            else {if reply.status==409 {let all=try await transport("records",nil);if let remote=(all.data["records"] as? [JSON])?.first(where:{$0["id"] as? String == id}){data["serverConflict"]=remote}};try vault.put("issue-"+id,encodeJSON(data));if reply.status>=500{throw APIError.offline}}
+            else {if data["error"] as? String == "record_deleted" {try vault.remove(key);try vault.remove("issue-"+id);try vault.remove("receipt-"+id);continue};if reply.status==409 {let all=try await transport("records",nil);if let remote=(all.data["records"] as? [JSON])?.first(where:{$0["id"] as? String == id}){data["serverConflict"]=remote}};try vault.put("issue-"+id,encodeJSON(data));if reply.status>=500{throw APIError.offline}}
         }
         let keys=Array(try vault.keys("geo-\(uid):").prefix(500));for start in stride(from:0,to:keys.count,by:100) {
             try Task.checkCancellation();let batch=Array(keys[start..<min(start+100,keys.count)]);let events=try batch.map{try parseJSON(vault.get($0))};let reply=try await transport("location-events",["events":events])
