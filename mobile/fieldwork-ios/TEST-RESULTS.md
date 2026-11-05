@@ -50,4 +50,4 @@ Options; saving/closing returns to the full navigation.
 
 
 ## 1.1.0 build 3 — 5 November 2026
-15 simulator tests passed. Shared UI verified at 288×568 with exact missing-question navigation after save/close. Deletion/exclusion controls require the separately reviewed database migration. Web tests: 22 passed; isolated workflow database and navigation checks passed.
+15 simulator tests passed. Shared UI verified at 288×568 with exact missing-question navigation after save/close. The separately reviewed database migration was approved and applied. Deletion/exclusion controls are enabled after server refresh. Web tests: 22 passed; isolated workflow database and navigation checks passed.

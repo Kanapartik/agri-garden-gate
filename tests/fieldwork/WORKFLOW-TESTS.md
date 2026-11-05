@@ -9,4 +9,4 @@ npx vitest run src/lib/fieldwork
 
 The database fixture stubs the existing dispatcher and exercises the new migration itself. Checks cover assigned-manager scope, no self approval, request/reject/approve, deletion locks, tombstones, immutable dates, submitted retention, exclusion/restore and forged client metadata. Existing auth/API tests cover the original service separately.
 
-Production migration `20261105020000_fieldwork_record_governance.sql` is awaiting explicit approval after automatic review rejected production execution. UI checks `workflowVersion` before exposing new governance controls. No production survey was deleted or excluded during development.
+Production migration `20261105020000_fieldwork_record_governance.sql` was applied on 5 November 2026 after explicit user approval following automatic review rejection. Production checks found 9 records, no missing capture dates, no unprotected submissions, and no deletion requests or exclusions. UI checks `workflowVersion` before exposing new governance controls. No production survey was deleted or excluded during development.
