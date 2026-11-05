@@ -1,0 +1,15 @@
+package com.agrivah.fieldwork;
+import androidx.test.platform.app.InstrumentationRegistry;import org.junit.*;import static org.junit.Assert.*;import org.json.*;import java.io.IOException;
+/** Real encrypted outbox and receipt processing with an isolated fake transport. */
+public final class SyncTest {
+ Vault vault;
+ @Before public void setup()throws Exception {android.content.Context c=InstrumentationRegistry.getInstrumentation().getTargetContext();c.deleteDatabase("qa-sync-tests.db");vault=new Vault(c,"qa-sync-tests.db");vault.put("account","{\"id\":\"qa\",\"mustChangePassword\":false}");}
+ @After public void close(){vault.close();}
+ JSONObject record()throws Exception{return new JSONObject("{\"id\":\"JG-fixture-0001\",\"user\":\"qa\",\"type\":\"HH\",\"lga\":\"Dutse\",\"status\":\"Draft\",\"answers\":{\"name\":\"synthetic\"},\"serverVersion\":0}");}
+ JSONObject response(int status,JSONObject data)throws Exception{return new JSONObject().put("status",status).put("data",data);}
+ @Test public void successfulReceiptClearsOnlyItsOwnOutbox()throws Exception {JSONObject r=record();vault.put("out-qa:record",r.toString());vault.put("out-other:record",r.toString());Api.drain(vault,(path,body)->response(200,new JSONObject().put("record",new JSONObject(body.getJSONObject("record").toString()).put("serverVersion",1))));assertEquals("",vault.get("out-qa:record",""));assertFalse(vault.get("out-other:record","").isEmpty());assertEquals(1,new JSONObject(vault.get("receipt-JG-fixture-0001","{}")).getJSONObject("record").getInt("serverVersion"));}
+ @Test public void interruptedUploadRetainsDurablePayload()throws Exception {vault.put("out-qa:record",record().toString());try{Api.drain(vault,(p,b)->{throw new IOException("offline fixture");});fail();}catch(IOException expected){}assertFalse(vault.get("out-qa:record","").isEmpty());}
+ @Test public void expiredSessionRetainsWorkForReauthentication()throws Exception {vault.put("out-qa:record",record().toString());try{Api.drain(vault,(p,b)->response(401,new JSONObject().put("error","unauthorized")));fail();}catch(Api.AuthRequired expected){}assertFalse(vault.get("out-qa:record","").isEmpty());}
+ @Test public void conflictRetainsLocalAndServerCopies()throws Exception {vault.put("out-qa:record",record().toString());Api.drain(vault,(p,b)->b==null?response(200,new JSONObject().put("records",new JSONArray().put(record().put("serverVersion",3)))):response(409,new JSONObject().put("error","conflict")));assertFalse(vault.get("out-qa:record","").isEmpty());assertEquals(3,new JSONObject(vault.get("issue-JG-fixture-0001","{}")).getJSONObject("serverConflict").getInt("serverVersion"));}
+ @Test public void locationAcknowledgementClearsPendingEvents()throws Exception {vault.put("geo-qa:event","{\"id\":\"test-location\"}");Api.drain(vault,(p,b)->{assertEquals("location-events",p);assertEquals(1,b.getJSONArray("events").length());return response(200,new JSONObject().put("accepted",new JSONArray().put("test-location")));});assertTrue(vault.keys("geo-qa:").isEmpty());}
+}

@@ -1,0 +1,14 @@
+/* GPS evidence is sampled, never presented as a measured road route. */
+(function(root){
+ const valid=p=>p&&Number.isFinite(p.lat)&&Math.abs(p.lat)<=90&&Number.isFinite(p.lng)&&Math.abs(p.lng)<=180&&!(p.lat===0&&p.lng===0)&&Number.isFinite(p.accuracy)&&p.accuracy>=0&&p.accuracy<=50&&!p.mock&&Number.isFinite(Date.parse(p.at));
+ const km=(a,b)=>{const r=x=>x*Math.PI/180,dlat=r(b.lat-a.lat),dlon=r(b.lng-a.lng),h=Math.sin(dlat/2)**2+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(dlon/2)**2;return 6371*2*Math.atan2(Math.sqrt(h),Math.sqrt(Math.max(0,1-h)));};
+ const day=p=>new Date(p.at).toLocaleDateString('en-CA',{timeZone:'Africa/Lagos'});
+ function analyseGroup(input){const points=[...new Map(input.map(p=>[p.id,p])).values()].sort((a,b)=>Date.parse(a.at)-Date.parse(b.at)),segments=[],legs=[];let trackKm=0,gaps=0,rejected=0,anchor=null,stop=null,login=null;
+  for(const p of points){if(!valid(p)){rejected++;anchor=null;continue;}const same=anchor&&anchor.userId===p.userId&&anchor.sessionId===p.sessionId&&day(anchor)===day(p);if(same){const seconds=(Date.parse(p.at)-Date.parse(anchor.at))/1000,d=km(anchor,p);if(seconds>300){gaps++;anchor=p;}else if(seconds<=0||d/seconds*3600>160){rejected++;anchor=null;}else if(d*1000>Math.max(20,anchor.accuracy,p.accuracy)){segments.push([anchor,p]);trackKm+=d;anchor=p;}}else anchor=p;
+   if(['login','report'].includes(p.kind)){if(!stop||stop.sessionId!==p.sessionId||stop.userId!==p.userId||day(stop)!==day(p)){stop=null;login=null;}if(p.kind==='login'){login=p;stop=p;continue;}const origin=stop;const elapsed=origin?(Date.parse(p.at)-Date.parse(origin.at))/3600000:0,dist=origin?km(origin,p):null;const reliable=origin&&elapsed>0&&dist/elapsed<=160;legs.push({from:origin,to:p,km:reliable?dist:null,fromLoginKm:login?km(login,p):null,quality:!origin?'No origin':!reliable?'Implausible jump':dist<0.02?'Same location':'Straight-line estimate'});stop=p;}
+  }
+  return {points,segments,legs,trackKm,gaps,rejected,latest:points.at(-1)||null,reportedKm:legs.reduce((n,l)=>n+(l.km||0),0)};
+ }
+ function analyse(input){const groups=new Map();for(const p of input){const key=p.userId+':'+p.sessionId+':'+(Number.isFinite(Date.parse(p.at))?day(p):'invalid');if(!groups.has(key))groups.set(key,[]);groups.get(key).push(p);}const summaries=[...groups.values()].map(analyseGroup),points=summaries.flatMap(s=>s.points).sort((a,b)=>Date.parse(a.at)-Date.parse(b.at));return {points,segments:summaries.flatMap(s=>s.segments),legs:summaries.flatMap(s=>s.legs).sort((a,b)=>Date.parse(a.to.at)-Date.parse(b.to.at)),trackKm:summaries.reduce((n,s)=>n+s.trackKm,0),reportedKm:summaries.reduce((n,s)=>n+s.reportedKm,0),gaps:summaries.reduce((n,s)=>n+s.gaps,0),rejected:summaries.reduce((n,s)=>n+s.rejected,0),latest:points.at(-1)||null};}
+ root.FieldworkTravel={valid,km,analyse};
+})(typeof window!=='undefined'?window:globalThis);

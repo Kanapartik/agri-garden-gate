@@ -3,7 +3,7 @@ import { fieldworkStatus, normalizeFieldworkLogin, validNewFieldworkPassword } f
 const COOKIE = 'agrivah_fieldwork_session';
 const MAX_BODY = 524288;
 const allowedGets: Record<string,string> = {session:'session',bootstrap:'bootstrap',records:'records',leadership:'leadership'};
-const allowedPosts: Record<string,string> = {logout:'logout',password:'change_password',records:'save_record',review:'review_record',location:'location'};
+const allowedPosts: Record<string,string> = {logout:'logout',password:'change_password',records:'save_record',review:'review_record',location:'location',locations:'locations','location-events':'append_locations'};
 function json(body: unknown,status=200,cookie?:string) {
  const headers=new Headers({'content-type':'application/json; charset=utf-8','cache-control':'no-store, private','pragma':'no-cache','x-content-type-options':'nosniff'});
  if(cookie)headers.set('set-cookie',cookie);

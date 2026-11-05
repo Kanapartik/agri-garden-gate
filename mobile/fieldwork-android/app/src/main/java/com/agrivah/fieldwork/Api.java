@@ -1,0 +1,27 @@
+package com.agrivah.fieldwork;
+import android.content.Context;import org.json.*;import javax.net.ssl.HttpsURLConnection;import java.net.*;import java.nio.charset.StandardCharsets;import java.io.*;import java.util.*;
+final class Api {
+ static final class AuthRequired extends IOException {}
+ static final Object LOCK=new Object();static final String ORIGIN="https://agrivah.com";
+ private static final Set<String> PATHS=new HashSet<>(Arrays.asList("login","password","session","bootstrap","records","review","logout","location","locations","location-events","leadership"));
+ static JSONObject call(Vault v,String path,JSONObject body)throws Exception {
+  if(!PATHS.contains(path))throw new SecurityException("Unsupported request");
+  HttpsURLConnection c=(HttpsURLConnection)new URL(ORIGIN+"/fieldwork-api/"+path).openConnection();c.setConnectTimeout(15000);c.setReadTimeout(30000);c.setInstanceFollowRedirects(false);c.setRequestProperty("Accept","application/json");c.setRequestProperty("Cache-Control","no-store");String cookie=v.get("cookie","");if(!cookie.isEmpty())c.setRequestProperty("Cookie",cookie);
+  if(body!=null){c.setRequestMethod("POST");c.setDoOutput(true);c.setRequestProperty("Origin",ORIGIN);c.setRequestProperty("Content-Type","application/json");byte[] bytes=body.toString().getBytes(StandardCharsets.UTF_8);c.setFixedLengthStreamingMode(bytes.length);try(OutputStream o=c.getOutputStream()){o.write(bytes);}}
+  int status=c.getResponseCode();String set=c.getHeaderField("Set-Cookie");if(set!=null&&set.startsWith("agrivah_fieldwork_session=")){String pair=set.split(";",2)[0];if(set.contains("Max-Age=0"))v.remove("cookie");else v.put("cookie",pair);}
+  InputStream in=status<400?c.getInputStream():c.getErrorStream();if(in==null)throw new IOException("No service response");ByteArrayOutputStream out=new ByteArrayOutputStream();try(in){byte[] b=new byte[8192];int n;while((n=in.read(b))!=-1){if(out.size()+n>10000000)throw new IOException("Response too large");out.write(b,0,n);}}finally{c.disconnect();}
+  JSONObject result=new JSONObject(out.toString("UTF-8"));
+  if(result.has("account")){JSONObject a=result.getJSONObject("account");v.put("account",a.toString());}
+  if(path.equals("logout")&&(status==200||status==401)){v.remove("cookie");v.remove("account");v.remove("identity");}
+  return new JSONObject().put("status",status).put("data",result);
+ }
+ static boolean equal(Object a,Object b)throws JSONException {if(a instanceof JSONObject&&b instanceof JSONObject){JSONObject x=(JSONObject)a,y=(JSONObject)b;if(x.length()!=y.length())return false;Iterator<String> ks=x.keys();while(ks.hasNext()){String k=ks.next();if(!y.has(k)||!equal(x.get(k),y.get(k)))return false;}return true;}if(a instanceof JSONArray&&b instanceof JSONArray){JSONArray x=(JSONArray)a,y=(JSONArray)b;if(x.length()!=y.length())return false;for(int i=0;i<x.length();i++)if(!equal(x.get(i),y.get(i)))return false;return true;}return Objects.equals(a,b);}
+ interface Remote {JSONObject call(String path,JSONObject body)throws Exception;}
+ static void drain(Vault v)throws Exception {drain(v,(path,body)->call(v,path,body));}
+ static void drain(Vault v,Remote transport)throws Exception {synchronized(LOCK){JSONObject account=new JSONObject(v.get("account","{}"));String uid=account.optString("id");if(uid.isEmpty()||account.optBoolean("mustChangePassword",true))return;
+  int processed=0;for(String key:v.keys("out-"+uid+":")){if(processed++>=20)break;String snapshot=v.get(key,"");if(snapshot.isEmpty())continue;JSONObject record=new JSONObject(snapshot);JSONObject receipt=v.get("receipt-"+record.getString("id"),"").isEmpty()?null:new JSONObject(v.get("receipt-"+record.getString("id"),"{}"));if(receipt!=null){JSONObject remote=receipt.getJSONObject("record");if(remote.optInt("serverVersion")==record.optInt("serverVersion")+1)record.put("serverVersion",remote.getInt("serverVersion"));if(equal(remote.opt("answers"),record.opt("answers"))&&remote.optString("status").equals(record.optString("status"))){if(snapshot.equals(v.get(key,"")))v.remove(key);continue;}}
+   JSONObject response=transport.call("records",new JSONObject().put("record",record)),data=response.getJSONObject("data");int status=response.getInt("status");if(status==401||status==428)throw new AuthRequired();if(status==200&&data.has("record")){v.put("receipt-"+record.getString("id"),data.toString());v.remove("issue-"+record.getString("id"));if(snapshot.equals(v.get(key,"")))v.remove(key);}else{if(status==409){JSONObject all=transport.call("records",null);JSONArray rows=all.getJSONObject("data").optJSONArray("records");if(rows!=null)for(int j=0;j<rows.length();j++)if(record.getString("id").equals(rows.getJSONObject(j).optString("id")))data.put("serverConflict",rows.getJSONObject(j));}v.put("issue-"+record.getString("id"),data.toString());if(status>=500)throw new IOException("Server unavailable");}
+  }
+  List<String> keys=v.keys("geo-"+uid+":");for(int start=0;start<Math.min(keys.size(),500);start+=100){JSONArray events=new JSONArray();List<String> batch=keys.subList(start,Math.min(start+100,keys.size()));for(String key:batch)events.put(new JSONObject(v.get(key,"{}")));JSONObject r=transport.call("location-events",new JSONObject().put("events",events));if(r.getInt("status")==200){for(String key:batch)v.remove(key);}else if(r.getInt("status")==401)throw new AuthRequired();else throw new IOException("Location upload pending");}
+ }}
+}

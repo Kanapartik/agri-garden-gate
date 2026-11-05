@@ -33,3 +33,13 @@ dist-ssr
 
 # Private fieldwork provisioning inputs (never publish staff data or credentials)
 .fieldwork-private/
+
+# Android local tools and signing material
+mobile/fieldwork-android/.gradle/
+mobile/fieldwork-android/**/build/
+mobile/fieldwork-android/local.properties
+*.jks
+*.keystore
+
+# Generated from public/fieldwork by the Android packaging script
+mobile/fieldwork-android/app/src/main/assets/fieldwork/

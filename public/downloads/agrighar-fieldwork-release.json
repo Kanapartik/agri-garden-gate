@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0-rc1",
+  "packageId": "com.agrivah.fieldwork",
+  "androidMinimum": "8.0",
+  "releaseDate": "2026-11-05",
+  "bytes": 166051,
+  "sha256": "e01f9d7437bf189494e36f48e55c466e5bc5b15da18d72c9512a8f218cb44f6b",
+  "classification": "signed release candidate; real-device field acceptance pending",
+  "webTestsPassed": 22,
+  "androidTestsPassed": 8
+}

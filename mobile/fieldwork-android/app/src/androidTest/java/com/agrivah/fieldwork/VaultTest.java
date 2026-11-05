@@ -1,0 +1,8 @@
+package com.agrivah.fieldwork;
+import androidx.test.platform.app.InstrumentationRegistry;import org.junit.Test;import static org.junit.Assert.*;import android.database.Cursor;import org.json.*;
+/** Device tests for durable encryption; no staff credentials or production calls. */
+public final class VaultTest  {
+ @Test public void testEncryptedPersistenceAcrossReopen(){Vault a=new Vault(InstrumentationRegistry.getInstrumentation().getTargetContext(),"qa-storage-tests.db");String id="test-state-"+System.nanoTime();a.put(id,"private-interview-fixture");try(Cursor c=a.getReadableDatabase().rawQuery("SELECT v FROM values_v1 WHERE k=?",new String[]{id})){assertTrue(c.moveToFirst());assertFalse(c.getString(0).contains("private-interview-fixture"));}a.close();Vault b=new Vault(InstrumentationRegistry.getInstrumentation().getTargetContext(),"qa-storage-tests.db");assertEquals("private-interview-fixture",b.get(id,""));b.remove(id);b.close();}
+ @Test public void testReceiptComparisonIgnoresJsonKeyOrder()throws Exception {assertTrue(Api.equal(new JSONObject("{\"a\":1,\"b\":[2,3]}"),new JSONObject("{\"b\":[2,3],\"a\":1}")));assertFalse(Api.equal(new JSONObject("{\"a\":1}"),new JSONObject("{\"a\":2}")));}
+ @Test public void testOutboxSurvivesReopen(){Vault a=new Vault(InstrumentationRegistry.getInstrumentation().getTargetContext(),"qa-storage-tests.db");String id="test-outbox-"+System.nanoTime();a.put(id,"{\"pendingSync\":true}");a.close();Vault b=new Vault(InstrumentationRegistry.getInstrumentation().getTargetContext(),"qa-storage-tests.db");assertTrue(b.keys("test-outbox-").contains(id));assertTrue(b.get(id,"").contains("pendingSync"));b.remove(id);b.close();}
+}

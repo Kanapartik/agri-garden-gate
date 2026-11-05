@@ -1,0 +1,14 @@
+package com.agrivah.fieldwork;
+import android.content.*;import android.database.Cursor;import android.database.sqlite.*;import android.security.keystore.*;import android.util.Base64;import java.security.*;import javax.crypto.*;import javax.crypto.spec.*;import java.nio.charset.StandardCharsets;import java.util.*;
+/** All private values are AES-GCM encrypted with a non-exportable Android key. */
+final class Vault extends SQLiteOpenHelper {
+ Vault(Context c){this(c,"fieldwork-vault.db");}
+ Vault(Context c,String database){super(c,database,null,1);setWriteAheadLoggingEnabled(true);}
+ public void onCreate(SQLiteDatabase d){d.execSQL("CREATE TABLE values_v1(k TEXT PRIMARY KEY,v TEXT NOT NULL)");}
+ public void onUpgrade(SQLiteDatabase d,int a,int b){throw new IllegalStateException("Unsupported vault version");}
+ private SecretKey key() throws Exception {KeyStore k=KeyStore.getInstance("AndroidKeyStore");k.load(null);if(k.containsAlias("fieldwork-v1"))return ((KeyStore.SecretKeyEntry)k.getEntry("fieldwork-v1",null)).getSecretKey();KeyGenerator g=KeyGenerator.getInstance("AES","AndroidKeyStore");g.init(new KeyGenParameterSpec.Builder("fieldwork-v1",KeyProperties.PURPOSE_ENCRYPT|KeyProperties.PURPOSE_DECRYPT).setBlockModes(KeyProperties.BLOCK_MODE_GCM).setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE).build());return g.generateKey();}
+ synchronized void put(String k,String value){try{Cipher c=Cipher.getInstance("AES/GCM/NoPadding");c.init(Cipher.ENCRYPT_MODE,key());c.updateAAD(k.getBytes(StandardCharsets.UTF_8));String v=Base64.encodeToString(c.getIV(),2)+"."+Base64.encodeToString(c.doFinal(value.getBytes(StandardCharsets.UTF_8)),2);ContentValues row=new ContentValues();row.put("k",k);row.put("v",v);getWritableDatabase().insertWithOnConflict("values_v1",null,row,SQLiteDatabase.CONFLICT_REPLACE);}catch(Exception e){throw new IllegalStateException("Encrypted storage failed",e);}}
+ synchronized String get(String k,String fallback){try(Cursor r=getReadableDatabase().rawQuery("SELECT v FROM values_v1 WHERE k=?",new String[]{k})){if(!r.moveToFirst())return fallback;String[] p=r.getString(0).split("\\.",2);Cipher c=Cipher.getInstance("AES/GCM/NoPadding");c.init(Cipher.DECRYPT_MODE,key(),new GCMParameterSpec(128,Base64.decode(p[0],2)));c.updateAAD(k.getBytes(StandardCharsets.UTF_8));return new String(c.doFinal(Base64.decode(p[1],2)),StandardCharsets.UTF_8);}catch(Exception e){throw new IllegalStateException("Cannot decrypt saved data. Do not clear app storage; contact support.",e);}}
+ synchronized void remove(String k){getWritableDatabase().delete("values_v1","k=?",new String[]{k});}
+ synchronized List<String> keys(String prefix){List<String> keys=new ArrayList<>();try(Cursor r=getReadableDatabase().rawQuery("SELECT k FROM values_v1 WHERE k LIKE ? ORDER BY k",new String[]{prefix+"%"})){while(r.moveToNext())keys.add(r.getString(0));}return keys;}
+}
