@@ -1,12 +1,13 @@
 {
-  "version": "1.1.0-rc1",
+  "version": "1.2.0-rc1",
+  "versionCode": 4,
   "packageId": "com.agrivah.fieldwork",
   "androidMinimum": "8.0",
-  "releaseDate": "2026-11-05",
-  "bytes": 170221,
-  "sha256": "c8f363119ddd75767eed14bfb82f432a8fc130a9f1d5074ce5c0b18a5edc7fc3",
+  "releaseDate": "2026-11-15",
+  "bytes": 182664,
+  "sha256": "1a349df07dd93bd9e38b7650f1824a3f15f1b5b7f66377695e061e78092f5a0d",
   "classification": "signed release candidate; real-device field acceptance pending",
   "webTestsPassed": 22,
-  "iosTestsPassed": 15,
-  "change": "Compact language popup and hamburger navigation; exact missing-question links; capture dates; direct review; filters/sorting/pagination. Deletion/exclusion activate only after reviewed database migration."
+  "iosTestsPassed": 16,
+  "change": "Four source-mapped Cassava surveys under Jigawa - Value Chain Analysis; existing surveys grouped under Jigawa - Livelihood Mapping Studies; separate study filters and exports; conditional section skipping"
 }

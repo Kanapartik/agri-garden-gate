@@ -75,4 +75,23 @@ final class FieldworkTests:XCTestCase {
         _=try await web.evaluateJavaScript("formRecord=null;session=null;ROSTER=[];render()")
     }
 
+    @MainActor func testCassavaStudyGroupsAndOfflineForms()async throws{
+        let scene=try XCTUnwrap(UIApplication.shared.connectedScenes.first as? UIWindowScene)
+        let controller=try XCTUnwrap(scene.windows.first(where:{$0.isKeyWindow})?.rootViewController)
+        let web=try XCTUnwrap(controller.view.subviews.compactMap{$0 as? WKWebView}.first)
+        let result=try await web.evaluateJavaScript("""
+        (()=>{
+          const types=['CF','CT','CP','CC'];
+          if(!types.every(type=>FORMS[type]?.length&&FORM_NAMES[type]&&CATALOG[type]?.length))return false;
+          session={userId:'qa-cassava',name:'Synthetic Cassava check',role:'Enumerator',zone:'South-West'};
+          state={records:[],audit:[],points:[],logins:[]};
+          ROSTER=[{id:'qa-cassava',name:'Synthetic Cassava check',lgas:['Dutse'],lga:'Dutse'}];
+          formRecord=null;view='collect';render();
+          const ok=document.querySelectorAll('[data-new]').length===8&&document.querySelectorAll('.study-surveys').length===2&&document.body.innerText.includes('Jigawa - Value Chain Analysis');
+          session=null;formRecord=null;ROSTER=[];render();return ok;
+        })()
+        """) as? Bool
+        XCTAssertEqual(result,true,"All eight surveys must be bundled offline in their two study groups")
+    }
+
 }
