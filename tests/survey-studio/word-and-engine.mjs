@@ -1,0 +1,7 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import {surveyWord} from '../../public/survey-studio/word-export.js';
+import {visibleQuestions,cleanAnswers,validateAnswer,questionHTML} from '../../public/survey-studio/form-engine.js';
+const d={title:'Jigawa & Field <Study>',description:'Complete survey',sections:[{id:'s1',title:'Visit & consent',questions:[{id:'q1',label:'Consent?',type:'yes_no',required:true},{id:'q2',label:'Household size',type:'number',required:true,min:1,integer:true,conditions:[{questionId:'q1',values:['Yes']}]},{id:'q3',label:'Rate access',type:'single_choice_grid',options:['Good','Poor'],rows:['Water','Roads'],required:true}]}]};
+assert.equal(visibleQuestions(d,{q1:'No'}).length,2);assert.equal(visibleQuestions(d,{q1:'Yes'}).length,3);assert.deepEqual(cleanAnswers(d,{q1:'No',q2:999,q3:{Water:'Good'}}),{q1:'No',q3:{Water:'Good'}});assert(validateAnswer(d.sections[0].questions[1],1.2));assert(validateAnswer(d.sections[0].questions[2],{Water:'Good'}));assert.equal(validateAnswer(d.sections[0].questions[2],{Water:'Good',Roads:'Poor'}),null);assert(!questionHTML({id:'q1',label:'<img src=x onerror=alert(1)>',type:'short_text'},'" autofocus onfocus="evil').includes('<img'));
+const blob=surveyWord(d,{version:3,state:'published'});await fs.writeFile('/tmp/agrighar-studio-survey.docx',new Uint8Array(await blob.arrayBuffer()));console.log('Word and conditional form engine: 8 checks passed; DOCX generated');

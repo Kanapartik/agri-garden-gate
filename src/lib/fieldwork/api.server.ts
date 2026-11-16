@@ -2,8 +2,8 @@ import { createClient } from '@supabase/supabase-js';
 import { fieldworkStatus, normalizeFieldworkLogin, validNewFieldworkPassword } from './identity';
 const COOKIE = 'agrivah_fieldwork_session';
 const MAX_BODY = 524288;
-const allowedGets: Record<string,string> = {session:'session',bootstrap:'bootstrap',records:'records',leadership:'leadership'};
-const allowedPosts: Record<string,string> = {logout:'logout',password:'change_password',records:'save_record',review:'review_record',deletion:'deletion',exclusion:'exclusion',location:'location',locations:'locations','location-events':'append_locations'};
+const allowedGets: Record<string,string> = {session:'session',bootstrap:'bootstrap',records:'records',leadership:'leadership',studio:'studio'};
+const allowedPosts: Record<string,string> = {studio:'studio',logout:'logout',password:'change_password',records:'save_record',review:'review_record',deletion:'deletion',exclusion:'exclusion',location:'location',locations:'locations','location-events':'append_locations'};
 function json(body: unknown,status=200,cookie?:string) {
  const headers=new Headers({'content-type':'application/json; charset=utf-8','cache-control':'no-store, private','pragma':'no-cache','x-content-type-options':'nosniff'});
  if(cookie)headers.set('set-cookie',cookie);
@@ -53,9 +53,9 @@ export async function handleFieldworkRequest(request:Request):Promise<Response>{
   if(!action)return json({error:'invalid_action'},405);
   const token=getCookie(request);if(!/^[a-f0-9]{64}$/.test(token))return json({error:'unauthorized'},401);
   if(action==='change_password'&&!validNewFieldworkPassword(body['password']))return json({error:'password_requirements'},422);
-  const {data,error}=await db.rpc('fieldwork_dispatch',{p_token_hash:await hashFieldworkToken(token),p_action:action,p_payload:body});
+  const {data,error}=await db.rpc(action==='studio'?'survey_studio_dispatch':'fieldwork_dispatch',{p_token_hash:await hashFieldworkToken(token),p_action:action,p_payload:body});
   if(error||!data)return json({error:'service_unavailable'},503);
-  if(data.error)return json({error:data.error},fieldworkStatus(data.error),data.error==='unauthorized'?cookie('',secure,0):undefined);
+  if(data.error)return json(action==='studio'?data:{error:data.error},fieldworkStatus(data.error),data.error==='unauthorized'?cookie('',secure,0):undefined);
   return json(data,200,action==='logout'?cookie('',secure,0):action==='change_password'?cookie(token,secure):undefined);
  }catch{
   // No request bodies, user IDs, passwords or tokens are logged.
