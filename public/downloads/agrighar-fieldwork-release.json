@@ -1,13 +1,11 @@
 {
-  "version": "1.2.0-rc1",
-  "versionCode": 4,
+  "version": "1.2.1-rc1",
+  "versionCode": 5,
   "packageId": "com.agrivah.fieldwork",
   "androidMinimum": "8.0",
-  "releaseDate": "2026-11-15",
-  "bytes": 182664,
-  "sha256": "1a349df07dd93bd9e38b7650f1824a3f15f1b5b7f66377695e061e78092f5a0d",
+  "releaseDate": "2026-11-16",
+  "bytes": 317913,
+  "sha256": "10af0f565db317a74108c1437a29d94b28415183ecfd3cd50ba58070327042b9",
   "classification": "signed release candidate; real-device field acceptance pending",
-  "webTestsPassed": 22,
-  "iosTestsPassed": 16,
-  "change": "Four source-mapped Cassava surveys under Jigawa - Value Chain Analysis; existing surveys grouped under Jigawa - Livelihood Mapping Studies; separate study filters and exports; conditional section skipping"
+  "change": "Supplied Agrighar logo replaces text branding; compact light/dark background presentation; service provider attribution for State of Jigawa; logo bundled offline"
 }

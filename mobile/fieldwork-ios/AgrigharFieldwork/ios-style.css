@@ -19,3 +19,4 @@
  body:has(.login) .language-reference{display:none}
  .language-status{font-size:10px;line-height:1.35}
 }
+@media(max-width:760px){.login-story .provider-brand{display:flex!important;flex-direction:row;align-items:center;gap:12px}.login-story .provider-logo{width:80px;height:52px}.login-story .provider-caption{display:block;font-size:10px;line-height:1.35;max-width:170px}}
